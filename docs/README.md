@@ -1,14 +1,27 @@
-# Zombie Survivors
+# Minecraft Survivors
 
-A Vampire Survivors-like roguelike game built with Godot 4.
+A Vampire Survivors-like roguelike game with a Minecraft theme, built with Godot 4.
 
 ## Game Overview
 
-Zombie Survivors is an action roguelike where you:
-- Control a character that auto-attacks
-- Survive waves of enemies
-- Collect experience to level up
+Minecraft Survivors is an action roguelike where you:
+- Play as **Steve**, surviving endless waves of mobs
+- Auto-attack with Minecraft weapons (swords, bows, magic)
+- Fight against **Zombies, Skeletons, Creepers, Spiders** and more
+- Collect experience orbs to level up
 - Choose upgrades to become more powerful
+
+## Theme
+
+| Element | Minecraft Version |
+|---------|-------------------|
+| Player | Steve |
+| Basic Enemy | Zombie |
+| Ranged Enemy | Skeleton |
+| Explosive Enemy | Creeper |
+| Fast Enemy | Spider |
+| Experience | XP Orbs |
+| Weapons | Diamond Sword, Bow, Enchantments |
 
 ## Getting Started
 
@@ -16,29 +29,29 @@ Zombie Survivors is an action roguelike where you:
 2. Open Godot and click "Import"
 3. Navigate to this folder and select `project.godot`
 4. Press F5 to run the game
-5. Use **WASD** or **Arrow keys** to move
+5. Use **WASD** or **Arrow keys** to move Steve
 
 ## Development Phases
 
 ### Phase 1: Core Foundation ✅
-- [x] Player character with 8-direction movement
+- [x] Steve (player) with 8-direction movement
 - [x] Smooth follow camera
-- [x] Infinite scrolling arena
+- [x] Infinite scrolling arena (grass field)
 
 ### Phase 2: Combat Basics (Planned)
-- [ ] Auto-attack weapon
-- [ ] Basic enemy AI
-- [ ] Enemy spawner
-- [ ] Health system
+- [ ] Auto-attack weapon (Diamond Sword)
+- [ ] Zombie AI (basic enemy)
+- [ ] Mob spawner
+- [ ] Health system (hearts)
 
 ### Phase 3: Progression Loop (Planned)
-- [ ] Experience gems
+- [ ] XP Orbs (experience)
 - [ ] Level up system
-- [ ] Upgrade selection UI
+- [ ] Upgrade selection UI (enchantments)
 
 ### Phase 4: Game Feel (Planned)
-- [ ] Game timer
-- [ ] Enemy waves
+- [ ] Day/Night timer
+- [ ] Mob waves (night = more mobs)
 - [ ] Game over screen
 
 ## Controls
@@ -53,15 +66,15 @@ Zombie Survivors is an action roguelike where you:
 ## Project Structure
 
 ```
-zombies_survivors/
+minecraft_survivors/
 ├── project.godot           # Project configuration
 ├── scenes/
 │   ├── main.tscn           # Main game scene
-│   └── player.tscn         # Player character
+│   └── player.tscn         # Steve character
 ├── scripts/
-│   ├── player.gd           # Player movement
+│   ├── player.gd           # Steve movement
 │   ├── camera.gd           # Camera follow
-│   └── arena.gd            # Background grid
+│   └── arena.gd            # Background (grass field)
 ├── assets/                 # Art & sound (empty)
 └── docs/
     ├── README.md           # This file
@@ -81,17 +94,32 @@ If you're new to game development, start here:
 |---|----------|-------------------|
 | 1 | [Introduction](./tutorials/01_introduction.md) | Project overview, what we're building |
 | 2 | [Godot Basics](./tutorials/02_godot_basics.md) | Nodes, scenes, scripts, vectors, input |
-| 3 | [Player Character](./tutorials/03_player.md) | Movement, physics, CharacterBody2D |
+| 3 | [Player Character](./tutorials/03_player.md) | Steve movement, physics, CharacterBody2D |
 | 4 | [Camera System](./tutorials/04_camera.md) | Smooth following, lerp interpolation |
 | 5 | [Arena Background](./tutorials/05_arena.md) | Custom drawing, infinite scrolling |
 | 6 | [Scene Structure](./tutorials/06_scene_structure.md) | Project organization, node trees |
 
 **Recommended reading order:** 1 → 2 → 3 → 4 → 5 → 6
 
+## Future Mobs
+
+| Mob | Behavior | Phase |
+|-----|----------|-------|
+| Zombie | Slow, walks toward Steve | 2 |
+| Skeleton | Ranged, shoots arrows | 3 |
+| Creeper | Explodes near Steve | 3 |
+| Spider | Fast, jumps | 3 |
+| Enderman | Teleports | 4 |
+| Witch | Throws potions | 4 |
+
 ## Requirements
 
 - Godot 4.2 or higher
 - No external dependencies
+
+## Disclaimer
+
+This is a fan-made learning project. Minecraft is a trademark of Mojang Studios. This project is not affiliated with or endorsed by Mojang or Microsoft.
 
 ## License
 
