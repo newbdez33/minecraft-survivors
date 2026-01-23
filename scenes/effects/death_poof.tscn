@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://deathpoof001"]
+
+[ext_resource type="Script" path="res://scripts/effects/death_poof.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/effects/death_poof.svg" id="2_texture"]
+
+[node name="DeathPoof" type="Node2D"]
+script = ExtResource("1_script")
+lifetime = 0.4
+expand_scale = 1.5
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(0.8, 0.8, 0.8, 0.9)
+texture = ExtResource("2_texture")
+region_enabled = true
+region_rect = Rect2(64, 0, 32, 32)

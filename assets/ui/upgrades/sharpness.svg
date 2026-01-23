@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" shape-rendering="crispEdges">
+  <!-- Sharpness: Diamond sword with red glow -->
+  <!-- Background glow -->
+  <rect x="12" y="2" width="8" height="8" fill="#ff6b6b" opacity="0.3"/>
+  <rect x="10" y="4" width="12" height="12" fill="#ff4444" opacity="0.2"/>
+
+  <!-- Sword blade (diamond blue) -->
+  <rect x="15" y="2" width="2" height="2" fill="#62d8e8"/>
+  <rect x="14" y="4" width="4" height="2" fill="#4fc3d4"/>
+  <rect x="13" y="6" width="6" height="2" fill="#3ab0c2"/>
+  <rect x="14" y="8" width="4" height="2" fill="#4fc3d4"/>
+  <rect x="15" y="10" width="2" height="4" fill="#62d8e8"/>
+
+  <!-- Sword edge highlight -->
+  <rect x="16" y="3" width="1" height="1" fill="#8eeef8"/>
+  <rect x="15" y="5" width="1" height="1" fill="#8eeef8"/>
+  <rect x="14" y="7" width="1" height="1" fill="#8eeef8"/>
+
+  <!-- Guard (gold) -->
+  <rect x="12" y="14" width="8" height="2" fill="#ffd700"/>
+  <rect x="11" y="14" width="1" height="2" fill="#daa520"/>
+  <rect x="20" y="14" width="1" height="2" fill="#daa520"/>
+
+  <!-- Handle (brown) -->
+  <rect x="15" y="16" width="2" height="6" fill="#8b4513"/>
+  <rect x="14" y="17" width="1" height="4" fill="#654321"/>
+  <rect x="17" y="17" width="1" height="4" fill="#a0522d"/>
+
+  <!-- Pommel -->
+  <rect x="14" y="22" width="4" height="2" fill="#ffd700"/>
+
+  <!-- Red damage sparkles -->
+  <rect x="8" y="6" width="2" height="2" fill="#ff4444"/>
+  <rect x="22" y="8" width="2" height="2" fill="#ff4444"/>
+  <rect x="6" y="12" width="2" height="2" fill="#ff6666"/>
+  <rect x="24" y="4" width="2" height="2" fill="#ff6666"/>
+</svg>
