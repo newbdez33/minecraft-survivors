@@ -7,13 +7,16 @@ signal attacked(enemies_hit: int)
 @export var damage: int = 10
 @export var attack_range: float = 100.0
 @export var attack_cooldown: float = 0.8
-@export var knockback: float = 100.0
+@export var knockback: float = 0.0
 @export var show_range_indicator: bool = true
 @export var range_color: Color = Color(0.3, 0.7, 1.0, 0.08)
 @export var range_border_color: Color = Color(0.4, 0.8, 1.0, 0.25)
+@export var hand_offset: float = 20.0  # Distance from player center to hand
 
 var can_attack: bool = true
 var enemies_in_range: Array = []
+var current_facing: Vector2 = Vector2.RIGHT
+var is_attacking: bool = false
 
 func _ready() -> void:
 	# Setup collision
@@ -34,6 +37,17 @@ func _ready() -> void:
 	if timer:
 		timer.timeout.connect(_on_attack_timer_timeout)
 		timer.wait_time = attack_cooldown
+
+	# Connect to player's facing direction
+	var player = get_parent()
+	if player and player.has_signal("facing_changed"):
+		player.facing_changed.connect(_on_player_facing_changed)
+		# Get initial facing direction
+		if "facing_direction" in player:
+			current_facing = player.facing_direction
+
+	# Set initial sword position
+	_update_sword_position()
 
 	# Trigger initial draw
 	queue_redraw()
@@ -59,9 +73,12 @@ func _perform_attack() -> void:
 			hit_count += 1
 
 			# Apply knockback
-			if knockback > 0 and enemy is CharacterBody2D:
+			if knockback > 0:
 				var direction = (enemy.global_position - global_position).normalized()
-				enemy.velocity = direction * knockback
+				if enemy.has_method("apply_knockback"):
+					enemy.apply_knockback(direction * knockback)
+				elif enemy is CharacterBody2D:
+					enemy.velocity = direction * knockback
 
 	if hit_count > 0:
 		attacked.emit(hit_count)
@@ -78,15 +95,44 @@ func _perform_attack() -> void:
 
 func _play_attack_animation() -> void:
 	var sprite = get_node_or_null("Sprite2D")
-	if sprite:
+	if sprite and not is_attacking:
+		is_attacking = true
 		# Bring sword to front during attack
 		sprite.z_index = 11
+
+		# Swing animation: -45 degrees to +45 degrees relative to current facing
+		var base_angle = current_facing.angle()
+		var start_angle = base_angle - PI / 4  # -45 degrees
+		var end_angle = base_angle + PI / 4    # +45 degrees
+
+		sprite.rotation = start_angle
 		var tween = create_tween()
-		tween.tween_property(sprite, "rotation", TAU, 0.2)
+		tween.tween_property(sprite, "rotation", end_angle, 0.15).set_ease(Tween.EASE_OUT)
+		tween.tween_property(sprite, "rotation", base_angle, 0.1).set_ease(Tween.EASE_IN)
 		tween.tween_callback(func():
-			sprite.rotation = 0
-			sprite.z_index = -1  # Move back behind Steve
+			is_attacking = false
+			_update_sword_position()
 		)
+
+func _on_player_facing_changed(direction: Vector2) -> void:
+	current_facing = direction
+	if not is_attacking:
+		_update_sword_position()
+
+func _update_sword_position() -> void:
+	var sprite = get_node_or_null("Sprite2D")
+	if sprite:
+		# Position sword at hand offset in facing direction
+		sprite.position = current_facing * hand_offset
+		# Rotate sword to point in facing direction (add 45 degrees for diagonal sword)
+		sprite.rotation = current_facing.angle() + PI / 4
+		# Flip sprite based on direction to keep sword looking correct
+		if current_facing.x < 0:
+			sprite.flip_v = true
+			sprite.z_index = 11  # In front when facing left
+		else:
+			sprite.flip_v = false
+			sprite.z_index = -1  # Behind when facing right
 
 func _on_attack_timer_timeout() -> void:
 	can_attack = true

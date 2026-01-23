@@ -110,6 +110,8 @@ func _apply_sweeping(upgrade) -> void:
 		var shape = sword.get_node_or_null("CollisionShape2D")
 		if shape and shape.shape is CircleShape2D:
 			shape.shape.radius = sword.attack_range
+		# Update visual range indicator
+		sword.queue_redraw()
 
 func get_upgrade_by_id(id: String):
 	for upgrade in available_upgrades:

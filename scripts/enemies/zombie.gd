@@ -11,6 +11,8 @@ signal died(xp_value: int)
 
 var target: Node2D = null
 var _health_component: Node = null
+var knockback_velocity: Vector2 = Vector2.ZERO
+var knockback_decay: float = 10.0  # How fast knockback fades
 
 func _ready() -> void:
 	add_to_group("enemies")
@@ -36,7 +38,14 @@ func _find_target() -> void:
 	if players.size() > 0:
 		target = players[0]
 
-func _physics_process(_delta: float) -> void:
+func _physics_process(delta: float) -> void:
+	# Apply knockback decay
+	if knockback_velocity.length() > 1.0:
+		knockback_velocity = knockback_velocity.lerp(Vector2.ZERO, knockback_decay * delta)
+		velocity = knockback_velocity
+		move_and_slide()
+		return
+
 	if not target:
 		return
 
@@ -44,6 +53,9 @@ func _physics_process(_delta: float) -> void:
 	var direction = (target.global_position - global_position).normalized()
 	velocity = direction * speed
 	move_and_slide()
+
+func apply_knockback(force: Vector2) -> void:
+	knockback_velocity = force
 
 func _on_hitbox_body_entered(body: Node2D) -> void:
 	# Damage player on contact

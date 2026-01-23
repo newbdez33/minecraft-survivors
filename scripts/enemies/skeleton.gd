@@ -14,6 +14,8 @@ signal died(xp_value: int)
 
 var target: Node2D = null
 var can_attack: bool = true
+var knockback_velocity: Vector2 = Vector2.ZERO
+var knockback_decay: float = 10.0
 
 func _ready() -> void:
 	add_to_group("enemies")
@@ -36,7 +38,14 @@ func _find_target() -> void:
 	if players.size() > 0:
 		target = players[0]
 
-func _physics_process(_delta: float) -> void:
+func _physics_process(delta: float) -> void:
+	# Apply knockback decay
+	if knockback_velocity.length() > 1.0:
+		knockback_velocity = knockback_velocity.lerp(Vector2.ZERO, knockback_decay * delta)
+		velocity = knockback_velocity
+		move_and_slide()
+		return
+
 	if not target or not is_instance_valid(target):
 		return
 
@@ -56,6 +65,9 @@ func _physics_process(_delta: float) -> void:
 	# Shoot if in range
 	if distance <= attack_range and can_attack:
 		shoot_arrow()
+
+func apply_knockback(force: Vector2) -> void:
+	knockback_velocity = force
 
 func shoot_arrow() -> void:
 	if not target or not is_instance_valid(target):

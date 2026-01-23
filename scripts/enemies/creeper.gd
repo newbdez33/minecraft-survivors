@@ -15,6 +15,8 @@ signal died(xp_value: int)
 var target: Node2D = null
 var is_fusing: bool = false
 var _fuse_elapsed: float = 0.0
+var knockback_velocity: Vector2 = Vector2.ZERO
+var knockback_decay: float = 10.0
 
 func _ready() -> void:
 	add_to_group("enemies")
@@ -27,6 +29,13 @@ func _find_target() -> void:
 		target = players[0]
 
 func _physics_process(delta: float) -> void:
+	# Apply knockback decay (unless fusing)
+	if not is_fusing and knockback_velocity.length() > 1.0:
+		knockback_velocity = knockback_velocity.lerp(Vector2.ZERO, knockback_decay * delta)
+		velocity = knockback_velocity
+		move_and_slide()
+		return
+
 	if not target or not is_instance_valid(target):
 		return
 
@@ -49,6 +58,10 @@ func _physics_process(delta: float) -> void:
 	# Start fuse when close
 	if distance <= trigger_distance:
 		start_fuse()
+
+func apply_knockback(force: Vector2) -> void:
+	if not is_fusing:
+		knockback_velocity = force
 
 func start_fuse() -> void:
 	if is_fusing:

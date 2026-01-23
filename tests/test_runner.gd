@@ -175,7 +175,7 @@ func _test_arena() -> void:
 		main.free()
 
 func _test_assets() -> void:
-	var characters = ["steve", "zombie", "skeleton", "creeper", "spider"]
+	var characters = ["steve", "zombie", "skeleton", "creeper", "spider", "enderman", "witch"]
 	for c in characters:
 		_assert_true(ResourceLoader.exists("res://assets/characters/" + c + ".svg"), "Asset: " + c + ".svg")
 
@@ -183,7 +183,7 @@ func _test_assets() -> void:
 	for t in tiles:
 		_assert_true(ResourceLoader.exists("res://assets/tiles/" + t + ".svg"), "Asset: " + t + ".svg")
 
-	var weapons = ["diamond_sword", "bow", "arrow"]
+	var weapons = ["diamond_sword", "bow", "arrow", "potion"]
 	for w in weapons:
 		_assert_true(ResourceLoader.exists("res://assets/weapons/" + w + ".svg"), "Asset: " + w + ".svg")
 
@@ -194,6 +194,10 @@ func _test_assets() -> void:
 	var effects = ["hit_effect", "death_poof", "explosion"]
 	for e in effects:
 		_assert_true(ResourceLoader.exists("res://assets/effects/" + e + ".svg"), "Asset: " + e + ".svg")
+
+	var ui_icons = ["sun", "moon"]
+	for u in ui_icons:
+		_assert_true(ResourceLoader.exists("res://assets/ui/" + u + ".svg"), "Asset: " + u + ".svg")
 
 # =============================================================================
 # PHASE 2: COMBAT BASICS TESTS (TDD - Write First)

@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" shape-rendering="crispEdges">
+  <!-- Sun - UI Icon - Minecraft Survivors -->
+
+  <!-- Sun rays (outer) -->
+  <rect x="14" y="2" width="4" height="4" fill="#FFD700"/>
+  <rect x="14" y="26" width="4" height="4" fill="#FFD700"/>
+  <rect x="2" y="14" width="4" height="4" fill="#FFD700"/>
+  <rect x="26" y="14" width="4" height="4" fill="#FFD700"/>
+
+  <!-- Diagonal rays -->
+  <rect x="5" y="5" width="3" height="3" fill="#FFD700"/>
+  <rect x="24" y="5" width="3" height="3" fill="#FFD700"/>
+  <rect x="5" y="24" width="3" height="3" fill="#FFD700"/>
+  <rect x="24" y="24" width="3" height="3" fill="#FFD700"/>
+
+  <!-- Sun body (outer) -->
+  <rect x="9" y="9" width="14" height="14" fill="#FFD700"/>
+
+  <!-- Sun body (inner, brighter) -->
+  <rect x="11" y="11" width="10" height="10" fill="#FFEC00"/>
+
+  <!-- Sun core (brightest) -->
+  <rect x="13" y="13" width="6" height="6" fill="#FFFF88"/>
+
+  <!-- Center highlight -->
+  <rect x="14" y="14" width="4" height="4" fill="#FFFFCC"/>
+</svg>
