@@ -83,6 +83,17 @@ See [phase4_game_feel.md](./phase4_game_feel.md) for details.
 - [x] Upgrade UI with 5s auto-select timer
 - [x] 277 tests passing
 
+### Phase 5: Game Enhancements (Planned)
+See [phase5_enhancements.md](./phase5_enhancements.md) for details.
+- [ ] **Poison Status Effect**: Witch potion causes damage over time
+  - Large splash radius (100px)
+  - 5s duration, 2 dmg per 0.5s tick
+  - Visual effects (green tint, particles)
+  - HUD status indicator
+- [ ] Boss enemies (Wither, Ender Dragon)
+- [ ] New weapons (Bow, Trident)
+- [ ] Settings menu
+
 ## Controls
 
 | Key | Action |

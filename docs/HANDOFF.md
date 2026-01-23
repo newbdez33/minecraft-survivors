@@ -172,12 +172,21 @@ cd minecraft-survivors
 ```
 
 ### 4. Next task
-Phase 4 is COMPLETE! Consider starting Phase 5 with new features:
-- Boss enemies (Wither, Ender Dragon)
-- New weapons (Bow, Trident)
-- Settings menu (volume, controls)
-- High score persistence
-- More upgrades
+Phase 4 is COMPLETE! Starting Phase 5 - Game Enhancements.
+
+See [phase5_enhancements.md](./phase5_enhancements.md) for detailed plan.
+
+**Phase 5 Features (Planned):**
+- [ ] **Poison System**: Witch potion causes DOT (damage over time)
+  - Large explosion radius (100px)
+  - 5 second poison duration
+  - 2 damage every 0.5 seconds
+  - Visual effects (green tint, particles)
+  - HUD status indicator
+- [ ] Boss enemies (Wither, Ender Dragon)
+- [ ] New weapons (Bow, Trident)
+- [ ] Settings menu (volume, controls)
+- [ ] High score persistence
 
 ---
 
