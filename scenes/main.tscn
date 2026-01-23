@@ -53,3 +53,5 @@ script = ExtResource("11_wave_manager")
 
 [node name="GameStats" type="Node" parent="."]
 script = ExtResource("12_game_stats")
+
+[node name="DayNightOverlay" type="CanvasModulate" parent="."]

@@ -1,30 +1,124 @@
 extends CanvasLayer
 class_name UpgradeUI
 ## UI for selecting upgrades when leveling up
+## - Default selection is the middle option
+## - WASD/Arrow keys to navigate
+## - 5 second timer to auto-select
 
 signal upgrade_selected(upgrade)
 
 @onready var container: Control = $Container
 @onready var title_label: Label = $Container/VBoxContainer/TitleLabel
 @onready var cards_container: HBoxContainer = $Container/VBoxContainer/CardsContainer
+@onready var timer_label: Label = $Container/VBoxContainer/TimerLabel
+
+## Selection timeout in seconds
+@export var selection_timeout: float = 5.0
 
 var _upgrades: Array = []
 var _card_buttons: Array[Button] = []
+var _selected_index: int = 0
+var _timer: float = 0.0
+var _is_active: bool = false
+
+## Normal and selected styles
+var _normal_style: StyleBoxFlat
+var _selected_style: StyleBoxFlat
 
 func _ready() -> void:
 	visible = false
 	if container:
 		container.visible = false
+	_create_styles()
+
+func _create_styles() -> void:
+	# Normal card style
+	_normal_style = StyleBoxFlat.new()
+	_normal_style.bg_color = Color(0.2, 0.2, 0.2, 0.9)
+	_normal_style.border_color = Color(0.4, 0.4, 0.4)
+	_normal_style.set_border_width_all(2)
+	_normal_style.set_corner_radius_all(8)
+
+	# Selected card style (gold border)
+	_selected_style = StyleBoxFlat.new()
+	_selected_style.bg_color = Color(0.25, 0.25, 0.2, 0.95)
+	_selected_style.border_color = Color(1.0, 0.84, 0.0)  # Gold
+	_selected_style.set_border_width_all(4)
+	_selected_style.set_corner_radius_all(8)
+
+func _process(delta: float) -> void:
+	if not _is_active:
+		return
+
+	# Update timer
+	_timer -= delta
+	if _timer <= 0:
+		_confirm_selection()
+		return
+
+	# Update timer display
+	if timer_label:
+		timer_label.text = "%0.1f" % _timer
+
+func _unhandled_input(event: InputEvent) -> void:
+	if not _is_active:
+		return
+
+	# Navigation with WASD or Arrow keys
+	if event.is_action_pressed("ui_left") or event.is_action_pressed("move_left"):
+		_move_selection(-1)
+		get_viewport().set_input_as_handled()
+	elif event.is_action_pressed("ui_right") or event.is_action_pressed("move_right"):
+		_move_selection(1)
+		get_viewport().set_input_as_handled()
+	elif event.is_action_pressed("ui_accept"):
+		_confirm_selection()
+		get_viewport().set_input_as_handled()
+
+func _move_selection(direction: int) -> void:
+	var new_index = _selected_index + direction
+	if new_index >= 0 and new_index < _card_buttons.size():
+		_selected_index = new_index
+		_update_selection_visuals()
+		_timer = selection_timeout  # Reset timer on manual selection
+
+func _update_selection_visuals() -> void:
+	for i in range(_card_buttons.size()):
+		var card = _card_buttons[i]
+		if i == _selected_index:
+			card.add_theme_stylebox_override("normal", _selected_style)
+			card.add_theme_stylebox_override("hover", _selected_style)
+			card.add_theme_stylebox_override("pressed", _selected_style)
+		else:
+			card.add_theme_stylebox_override("normal", _normal_style)
+			card.add_theme_stylebox_override("hover", _normal_style)
+			card.add_theme_stylebox_override("pressed", _normal_style)
+
+func _confirm_selection() -> void:
+	if _selected_index < _upgrades.size():
+		var selected = _upgrades[_selected_index]
+		upgrade_selected.emit(selected)
+		hide_ui()
 
 func show_upgrades(upgrades: Array) -> void:
 	_upgrades = upgrades
 	_create_cards()
+
+	# Default to middle option
+	_selected_index = _upgrades.size() / 2
+	_update_selection_visuals()
+
+	# Start timer
+	_timer = selection_timeout
+	_is_active = true
+
 	visible = true
 	if container:
 		container.visible = true
 	get_tree().paused = true
 
 func hide_ui() -> void:
+	_is_active = false
 	visible = false
 	if container:
 		container.visible = false
@@ -106,7 +200,17 @@ func _create_card(upgrade, index: int) -> Button:
 	return card
 
 func _on_card_pressed(index: int) -> void:
-	if index < _upgrades.size():
-		var selected = _upgrades[index]
-		upgrade_selected.emit(selected)
-		hide_ui()
+	_selected_index = index
+	_confirm_selection()
+
+## Get current selected index (for testing)
+func get_selected_index() -> int:
+	return _selected_index
+
+## Get remaining time (for testing)
+func get_remaining_time() -> float:
+	return _timer
+
+## Check if UI is active (for testing)
+func is_active() -> bool:
+	return _is_active

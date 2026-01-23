@@ -70,17 +70,18 @@ See [phase3_progression_loop.md](./phase3_progression_loop.md) for details.
 - [x] Spider (fast enemy)
 - [x] 117 tests passing
 
-### Phase 4: Game Feel (TDD)
+### Phase 4: Game Feel ✅
 See [phase4_game_feel.md](./phase4_game_feel.md) for details.
-- [ ] Day/Night cycle
-- [ ] Wave system (night = more mobs)
-- [ ] Game over screen
-- [ ] Game stats tracking
-- [ ] HUD enhancements
-- [ ] Localization (English, 日本語, 中文)
-- [ ] Enderman (teleports)
-- [ ] Witch (throws potions)
-- [ ] 72 new test cases planned
+- [x] Day/Night cycle (8-phase with visual tint + HUD icons)
+- [x] Wave system (scaling difficulty per wave)
+- [x] Game over screen with stats
+- [x] Game stats tracking (time, kills, level, wave)
+- [x] HUD enhancements (wave, kills, time, day/night icon)
+- [x] Localization (English, 日本語, 中文)
+- [x] Enderman (teleports when hit)
+- [x] Witch (throws potions)
+- [x] Upgrade UI with 5s auto-select timer
+- [x] 277 tests passing
 
 ## Controls
 
@@ -187,8 +188,8 @@ If you're new to game development, start here:
 | Skeleton | Ranged, shoots arrows | 3 | ✅ |
 | Creeper | Explodes near Steve | 3 | ✅ |
 | Spider | Fast, jumps | 3 | ✅ |
-| Enderman | Teleports when hit | 4 | Planned |
-| Witch | Throws potions | 4 | Planned |
+| Enderman | Teleports when hit (40 HP, 15 dmg) | 4 | ✅ |
+| Witch | Throws potions (20 HP, 12 dmg) | 4 | ✅ |
 
 ## Requirements
 

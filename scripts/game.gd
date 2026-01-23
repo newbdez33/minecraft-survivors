@@ -11,19 +11,22 @@ extends Node2D
 @onready var day_night_cycle: Node = $DayNightCycle
 @onready var wave_manager: Node = $WaveManager
 @onready var game_stats: Node = $GameStats
+@onready var day_night_overlay: CanvasModulate = $DayNightOverlay
 
 func _ready() -> void:
 	# Start tracking game stats
 	if game_stats:
 		game_stats.start_tracking()
 
-	# Connect wave manager signals
+	# Connect wave manager signals and start it
 	if wave_manager:
 		wave_manager.wave_started.connect(_on_wave_started)
+		wave_manager.start()
 
-	# Connect day/night cycle signals
+	# Connect day/night cycle signals and start it
 	if day_night_cycle:
 		day_night_cycle.time_changed.connect(_on_time_changed)
+		day_night_cycle.start()
 
 	# Connect player health to HUD
 	if player and hud:
@@ -115,10 +118,22 @@ func _on_enemy_killed(_xp_value: int) -> void:
 func _on_wave_started(wave_number: int) -> void:
 	if hud:
 		hud.set_wave(wave_number)
+	# Update spawner difficulty based on wave
+	if spawner:
+		spawner.set_wave(wave_number)
+	# Track highest wave in game stats
+	if game_stats:
+		game_stats.set_wave(wave_number)
 
-func _on_time_changed(time: float) -> void:
+func _on_time_changed(time: float, is_night: bool) -> void:
 	if hud:
 		hud.set_time(time)
+		# Update time icon with 8-phase granularity
+		if day_night_cycle:
+			hud.set_time_icon(time, day_night_cycle.day_duration, day_night_cycle.night_duration)
 	# Update game stats survival time
 	if game_stats:
 		game_stats.survival_time = time
+	# Apply visual day/night tint
+	if day_night_cycle and day_night_overlay:
+		day_night_overlay.color = day_night_cycle.get_current_tint()

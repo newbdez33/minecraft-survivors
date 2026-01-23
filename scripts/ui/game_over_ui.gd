@@ -7,14 +7,14 @@ class_name GameOverUI
 signal restart_pressed
 signal quit_pressed
 
-@onready var title_label: Label = $Panel/VBoxContainer/TitleLabel
-@onready var stats_container: VBoxContainer = $Panel/VBoxContainer/StatsContainer
-@onready var time_label: Label = $Panel/VBoxContainer/StatsContainer/TimeLabel
-@onready var kills_label: Label = $Panel/VBoxContainer/StatsContainer/KillsLabel
-@onready var level_label: Label = $Panel/VBoxContainer/StatsContainer/LevelLabel
-@onready var wave_label: Label = $Panel/VBoxContainer/StatsContainer/WaveLabel
-@onready var restart_button: Button = $Panel/VBoxContainer/ButtonContainer/RestartButton
-@onready var quit_button: Button = $Panel/VBoxContainer/ButtonContainer/QuitButton
+@onready var title_label: Label = $Panel/MarginContainer/VBoxContainer/TitleLabel
+@onready var stats_container: VBoxContainer = $Panel/MarginContainer/VBoxContainer/StatsContainer
+@onready var time_label: Label = $Panel/MarginContainer/VBoxContainer/StatsContainer/TimeLabel
+@onready var kills_label: Label = $Panel/MarginContainer/VBoxContainer/StatsContainer/KillsLabel
+@onready var level_label: Label = $Panel/MarginContainer/VBoxContainer/StatsContainer/LevelLabel
+@onready var wave_label: Label = $Panel/MarginContainer/VBoxContainer/StatsContainer/WaveLabel
+@onready var restart_button: Button = $Panel/MarginContainer/VBoxContainer/ButtonContainer/RestartButton
+@onready var quit_button: Button = $Panel/MarginContainer/VBoxContainer/ButtonContainer/QuitButton
 
 ## Stats to display
 var _stats: Dictionary = {}

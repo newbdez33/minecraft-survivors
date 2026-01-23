@@ -8,10 +8,21 @@ class_name HUD
 @onready var wave_label: Label = $TopRightContainer/WaveLabel
 @onready var kills_label: Label = $TopRightContainer/KillsLabel
 @onready var time_label: Label = $TopCenterContainer/TimeLabel
+@onready var day_night_icon: TextureRect = $TopCenterContainer/DayNightIcon
 
 var heart_full_texture: Texture2D
 var heart_half_texture: Texture2D
 var heart_empty_texture: Texture2D
+# Day/night cycle textures (8 phases)
+var sun_dawn_texture: Texture2D      # 0-5s: Dawn
+var sun_morning_texture: Texture2D   # 5-20s: Morning
+var sun_texture: Texture2D           # 20-40s: Midday
+var sun_afternoon_texture: Texture2D # 40-55s: Afternoon
+var sun_dusk_texture: Texture2D      # 55-60s: Dusk
+var moon_rise_texture: Texture2D     # 60-75s: Moon rising
+var moon_texture: Texture2D          # 75-105s: Night
+var moon_late_texture: Texture2D     # 105-115s: Late night
+var moon_set_texture: Texture2D      # 115-120s: Moon setting
 
 var max_hearts: int = 10
 var heart_nodes: Array[TextureRect] = []
@@ -22,6 +33,21 @@ func _ready() -> void:
 	heart_full_texture = load("res://assets/items/heart_full.svg")
 	heart_half_texture = load("res://assets/items/heart_half.svg")
 	heart_empty_texture = load("res://assets/items/heart_empty.svg")
+
+	# Load day/night textures (8 phases)
+	sun_dawn_texture = load("res://assets/ui/sun_dawn.svg")
+	sun_morning_texture = load("res://assets/ui/sun_morning.svg")
+	sun_texture = load("res://assets/ui/sun.svg")
+	sun_afternoon_texture = load("res://assets/ui/sun_afternoon.svg")
+	sun_dusk_texture = load("res://assets/ui/sun_dusk.svg")
+	moon_rise_texture = load("res://assets/ui/moon_rise.svg")
+	moon_texture = load("res://assets/ui/moon.svg")
+	moon_late_texture = load("res://assets/ui/moon_late.svg")
+	moon_set_texture = load("res://assets/ui/moon_set.svg")
+
+	# Initialize day/night icon to dawn
+	if day_night_icon and sun_dawn_texture:
+		day_night_icon.texture = sun_dawn_texture
 
 	# Create heart display
 	_create_hearts()
@@ -86,3 +112,68 @@ func set_time(time_seconds: float) -> void:
 		var minutes = int(time_seconds) / 60
 		var seconds = int(time_seconds) % 60
 		time_label.text = "%02d:%02d" % [minutes, seconds]
+
+func set_day_night(is_night: bool) -> void:
+	if day_night_icon:
+		if is_night and moon_texture:
+			day_night_icon.texture = moon_texture
+		elif sun_texture:
+			day_night_icon.texture = sun_texture
+
+## Set time of day icon based on exact time (8 phases over 120s cycle)
+## 0-5s: Dawn, 5-20s: Morning, 20-40s: Midday, 40-55s: Afternoon
+## 55-60s: Dusk, 60-75s: Moon rise, 75-105s: Night, 105-115s: Late night, 115-120s: Moon set
+func set_time_icon(current_time: float, day_duration: float = 60.0, night_duration: float = 60.0) -> void:
+	if not day_night_icon:
+		return
+
+	var cycle_duration = day_duration + night_duration
+	var time = fmod(current_time, cycle_duration)
+
+	# Day phases (0 to day_duration)
+	if time < 5.0:  # Dawn (0-5s)
+		if sun_dawn_texture:
+			day_night_icon.texture = sun_dawn_texture
+	elif time < 20.0:  # Morning (5-20s)
+		if sun_morning_texture:
+			day_night_icon.texture = sun_morning_texture
+	elif time < 40.0:  # Midday (20-40s)
+		if sun_texture:
+			day_night_icon.texture = sun_texture
+	elif time < 55.0:  # Afternoon (40-55s)
+		if sun_afternoon_texture:
+			day_night_icon.texture = sun_afternoon_texture
+	elif time < day_duration:  # Dusk (55-60s)
+		if sun_dusk_texture:
+			day_night_icon.texture = sun_dusk_texture
+	# Night phases (day_duration to cycle_duration)
+	elif time < day_duration + 15.0:  # Moon rise (60-75s)
+		if moon_rise_texture:
+			day_night_icon.texture = moon_rise_texture
+	elif time < day_duration + 45.0:  # Full night (75-105s)
+		if moon_texture:
+			day_night_icon.texture = moon_texture
+	elif time < day_duration + 55.0:  # Late night (105-115s)
+		if moon_late_texture:
+			day_night_icon.texture = moon_late_texture
+	else:  # Moon set (115-120s)
+		if moon_set_texture:
+			day_night_icon.texture = moon_set_texture
+
+## Set time of day icon (0=DAWN, 1=DAY, 2=DUSK, 3=NIGHT) - legacy method
+func set_time_of_day(time_of_day: int) -> void:
+	if not day_night_icon:
+		return
+	match time_of_day:
+		0:  # DAWN
+			if sun_dawn_texture:
+				day_night_icon.texture = sun_dawn_texture
+		1:  # DAY
+			if sun_texture:
+				day_night_icon.texture = sun_texture
+		2:  # DUSK
+			if sun_dusk_texture:
+				day_night_icon.texture = sun_dusk_texture
+		3:  # NIGHT
+			if moon_texture:
+				day_night_icon.texture = moon_texture

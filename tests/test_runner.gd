@@ -72,7 +72,11 @@ func _init() -> void:
 		# Step 12: Integration
 		_run_test_suite("Spawner Integration Tests", _test_spawner_integration)
 		_run_test_suite("HUD Integration Tests", _test_hud_integration)
+		_run_test_suite("Game Behavior Tests", _test_game_behavior)
+		_run_test_suite("Wave-Spawner Integration Tests", _test_wave_spawner_integration)
+		_run_test_suite("Game Over Stats Tests", _test_game_over_stats)
 		_run_test_suite("Main Scene Integration Tests", _test_main_scene_integration)
+		_run_test_suite("Upgrade UI Selection Tests", _test_upgrade_ui_selection)
 
 	# Print summary
 	_print_summary()
@@ -525,12 +529,33 @@ func _test_upgrade_ui() -> void:
 		# T3.5.6: UI is CanvasLayer
 		_assert_true(ui is CanvasLayer, "T3.5.6: Upgrade UI is CanvasLayer")
 
+		# T3.5.7: UI has selection_timeout property (5 seconds default)
+		_assert_true("selection_timeout" in ui, "T3.5.7: Upgrade UI has selection_timeout property")
+		if "selection_timeout" in ui:
+			_assert_true(ui.selection_timeout == 5.0, "T3.5.8: Default selection timeout is 5 seconds")
+		else:
+			_assert_true(false, "T3.5.8: Default selection timeout is 5 seconds")
+
+		# T3.5.9: UI has get_selected_index method
+		_assert_true(ui.has_method("get_selected_index"), "T3.5.9: Upgrade UI has get_selected_index method")
+
+		# T3.5.10: UI has get_remaining_time method
+		_assert_true(ui.has_method("get_remaining_time"), "T3.5.10: Upgrade UI has get_remaining_time method")
+
+		# T3.5.11: UI has is_active method
+		_assert_true(ui.has_method("is_active"), "T3.5.11: Upgrade UI has is_active method")
+
 		ui.free()
 	else:
 		_assert_true(false, "T3.5.3: Upgrade UI has show_upgrades method")
 		_assert_true(false, "T3.5.4: Upgrade UI has hide method")
 		_assert_true(false, "T3.5.5: Upgrade UI has upgrade_selected signal")
 		_assert_true(false, "T3.5.6: Upgrade UI is CanvasLayer")
+		_assert_true(false, "T3.5.7: Upgrade UI has selection_timeout property")
+		_assert_true(false, "T3.5.8: Default selection timeout is 5 seconds")
+		_assert_true(false, "T3.5.9: Upgrade UI has get_selected_index method")
+		_assert_true(false, "T3.5.10: Upgrade UI has get_remaining_time method")
+		_assert_true(false, "T3.5.11: Upgrade UI has is_active method")
 
 func _test_skeleton() -> void:
 	# T3.6.1: Skeleton script exists
@@ -1144,6 +1169,184 @@ func _test_hud_integration() -> void:
 		_assert_true(false, "T4.12.9: HUD has wave display")
 		_assert_true(false, "T4.12.10: HUD has kills display")
 
+func _test_game_behavior() -> void:
+	# T4.12.20: Game.gd starts DayNightCycle
+	var game_script = load("res://scripts/game.gd")
+	_assert_not_null(game_script, "T4.12.20: Game script loads")
+
+	# Check the script source for proper behavior
+	if game_script:
+		var source = FileAccess.open("res://scripts/game.gd", FileAccess.READ)
+		if source:
+			var content = source.get_as_text()
+			source.close()
+			# T4.12.21: Check that day_night_cycle.start() is called
+			_assert_true(content.contains("day_night_cycle.start()"), "T4.12.21: Game starts DayNightCycle")
+			# T4.12.22: Check that _on_time_changed handles 2 parameters
+			_assert_true(content.contains("_on_time_changed(") and content.contains("is_night"), "T4.12.22: _on_time_changed handles is_night param")
+			# T4.12.23: Check that wave_manager.start() is called
+			_assert_true(content.contains("wave_manager.start()"), "T4.12.23: Game starts WaveManager")
+		else:
+			_assert_true(false, "T4.12.21: Game starts DayNightCycle")
+			_assert_true(false, "T4.12.22: _on_time_changed handles is_night param")
+			_assert_true(false, "T4.12.23: Game starts WaveManager")
+
+func _test_wave_spawner_integration() -> void:
+	var spawner_script = load("res://scripts/spawner.gd")
+	if not spawner_script:
+		_assert_true(false, "T4.13.1: Spawner script loads for wave tests")
+		return
+
+	var spawner = Node.new()
+	spawner.set_script(spawner_script)
+
+	# T4.13.1: Spawner has set_wave method
+	_assert_true(spawner.has_method("set_wave"), "T4.13.1: Spawner has set_wave method")
+
+	# Store initial values
+	var initial_interval = spawner.spawn_interval
+	var initial_max = spawner.max_enemies
+
+	# T4.13.2: Wave 1 keeps default spawn interval
+	spawner.set_wave(1)
+	_assert_equal(spawner.spawn_interval, initial_interval, "T4.13.2: Wave 1 spawn_interval unchanged")
+
+	# T4.13.3: Wave 2 decreases spawn interval
+	spawner.set_wave(2)
+	_assert_true(spawner.spawn_interval < initial_interval, "T4.13.3: Wave 2 spawn_interval decreased")
+
+	# T4.13.4: Wave 5 has faster spawning than wave 2
+	var wave2_interval = spawner.spawn_interval
+	spawner.set_wave(5)
+	_assert_true(spawner.spawn_interval < wave2_interval, "T4.13.4: Wave 5 faster than wave 2")
+
+	# T4.13.5: Spawn interval has minimum (doesn't go below 0.8)
+	spawner.set_wave(20)
+	_assert_true(spawner.spawn_interval >= 0.8, "T4.13.5: Spawn interval minimum is 0.8")
+
+	# T4.13.6: Wave 1 sets base max_enemies (30)
+	spawner.set_wave(1)
+	var wave1_max = spawner.max_enemies
+	_assert_equal(wave1_max, 30, "T4.13.6: Wave 1 max_enemies is 30")
+
+	# T4.13.7: Wave 2 increases max_enemies (35)
+	spawner.set_wave(2)
+	_assert_true(spawner.max_enemies > wave1_max, "T4.13.7: Wave 2 max_enemies increased")
+
+	# T4.13.8: Wave 5 has more max_enemies than wave 2
+	var wave2_max = spawner.max_enemies
+	spawner.set_wave(5)
+	_assert_true(spawner.max_enemies > wave2_max, "T4.13.8: Wave 5 more enemies than wave 2")
+
+	# Reset weights for enemy type tests
+	spawner.skeleton_weight = 0.0
+	spawner.spider_weight = 0.0
+	spawner.creeper_weight = 0.0
+	spawner.enderman_weight = 0.0
+	spawner.witch_weight = 0.0
+
+	# T4.13.9: Wave 1 has no skeleton weight boost
+	spawner.set_wave(1)
+	_assert_equal(spawner.skeleton_weight, 0.0, "T4.13.9: Wave 1 no skeleton boost")
+
+	# T4.13.10: Wave 2 adds skeleton weight
+	spawner.skeleton_weight = 0.0
+	spawner.set_wave(2)
+	_assert_true(spawner.skeleton_weight > 0, "T4.13.10: Wave 2 adds skeletons")
+
+	# T4.13.11: Wave 3 adds spider weight
+	spawner.spider_weight = 0.0
+	spawner.set_wave(3)
+	_assert_true(spawner.spider_weight > 0, "T4.13.11: Wave 3 adds spiders")
+
+	# T4.13.12: Wave 4 adds creeper weight
+	spawner.creeper_weight = 0.0
+	spawner.set_wave(4)
+	_assert_true(spawner.creeper_weight > 0, "T4.13.12: Wave 4 adds creepers")
+
+	# T4.13.13: Wave 5 adds enderman weight
+	spawner.enderman_weight = 0.0
+	spawner.set_wave(5)
+	_assert_true(spawner.enderman_weight > 0, "T4.13.13: Wave 5 adds enderman")
+
+	# T4.13.14: Wave 6 adds witch weight
+	spawner.witch_weight = 0.0
+	spawner.set_wave(6)
+	_assert_true(spawner.witch_weight > 0, "T4.13.14: Wave 6 adds witch")
+
+	spawner.free()
+
+	# T4.13.15: Game.gd connects wave to spawner
+	var source = FileAccess.open("res://scripts/game.gd", FileAccess.READ)
+	if source:
+		var content = source.get_as_text()
+		source.close()
+		_assert_true(content.contains("spawner.set_wave"), "T4.13.15: Game connects wave to spawner")
+	else:
+		_assert_true(false, "T4.13.15: Game connects wave to spawner")
+
+func _test_game_over_stats() -> void:
+	# T4.14.1: GameOverUI scene loads
+	var game_over_scene = load("res://scenes/ui/game_over_ui.tscn")
+	_assert_not_null(game_over_scene, "T4.14.1: GameOverUI scene loads")
+
+	if game_over_scene:
+		var game_over = game_over_scene.instantiate()
+
+		# T4.14.2: GameOverUI has TitleLabel (check node path)
+		var title = game_over.get_node_or_null("Panel/MarginContainer/VBoxContainer/TitleLabel")
+		_assert_not_null(title, "T4.14.2: GameOverUI TitleLabel found at correct path")
+
+		# T4.14.3: GameOverUI has TimeLabel (check node path)
+		var time_lbl = game_over.get_node_or_null("Panel/MarginContainer/VBoxContainer/StatsContainer/TimeLabel")
+		_assert_not_null(time_lbl, "T4.14.3: GameOverUI TimeLabel found at correct path")
+
+		# T4.14.4: GameOverUI has KillsLabel (check node path)
+		var kills_lbl = game_over.get_node_or_null("Panel/MarginContainer/VBoxContainer/StatsContainer/KillsLabel")
+		_assert_not_null(kills_lbl, "T4.14.4: GameOverUI KillsLabel found at correct path")
+
+		# T4.14.5: GameOverUI has LevelLabel (check node path)
+		var level_lbl = game_over.get_node_or_null("Panel/MarginContainer/VBoxContainer/StatsContainer/LevelLabel")
+		_assert_not_null(level_lbl, "T4.14.5: GameOverUI LevelLabel found at correct path")
+
+		# T4.14.6: GameOverUI has WaveLabel (check node path)
+		var wave_lbl = game_over.get_node_or_null("Panel/MarginContainer/VBoxContainer/StatsContainer/WaveLabel")
+		_assert_not_null(wave_lbl, "T4.14.6: GameOverUI WaveLabel found at correct path")
+
+		game_over.free()
+	else:
+		_assert_true(false, "T4.14.2: GameOverUI TitleLabel found at correct path")
+		_assert_true(false, "T4.14.3: GameOverUI TimeLabel found at correct path")
+		_assert_true(false, "T4.14.4: GameOverUI KillsLabel found at correct path")
+		_assert_true(false, "T4.14.5: GameOverUI LevelLabel found at correct path")
+		_assert_true(false, "T4.14.6: GameOverUI WaveLabel found at correct path")
+
+	# T4.14.7: GameOverUI script has correct node paths
+	var source = FileAccess.open("res://scripts/ui/game_over_ui.gd", FileAccess.READ)
+	if source:
+		var content = source.get_as_text()
+		source.close()
+		_assert_true(content.contains("Panel/MarginContainer/VBoxContainer/TitleLabel"), "T4.14.7: Script has correct TitleLabel path")
+		_assert_true(content.contains("Panel/MarginContainer/VBoxContainer/StatsContainer/TimeLabel"), "T4.14.8: Script has correct TimeLabel path")
+		_assert_true(content.contains("Panel/MarginContainer/VBoxContainer/StatsContainer/KillsLabel"), "T4.14.9: Script has correct KillsLabel path")
+		_assert_true(content.contains("Panel/MarginContainer/VBoxContainer/StatsContainer/WaveLabel"), "T4.14.10: Script has correct WaveLabel path")
+	else:
+		_assert_true(false, "T4.14.7: Script has correct TitleLabel path")
+		_assert_true(false, "T4.14.8: Script has correct TimeLabel path")
+		_assert_true(false, "T4.14.9: Script has correct KillsLabel path")
+		_assert_true(false, "T4.14.10: Script has correct WaveLabel path")
+
+	# T4.14.11: Game.gd updates game_stats.set_wave on wave change
+	var game_source = FileAccess.open("res://scripts/game.gd", FileAccess.READ)
+	if game_source:
+		var game_content = game_source.get_as_text()
+		game_source.close()
+		_assert_true(game_content.contains("game_stats.set_wave"), "T4.14.11: Game updates game_stats wave")
+		_assert_true(game_content.contains("game_stats.set_level") or game_content.contains("game_stats.highest_level"), "T4.14.12: Game updates game_stats level")
+	else:
+		_assert_true(false, "T4.14.11: Game updates game_stats wave")
+		_assert_true(false, "T4.14.12: Game updates game_stats level")
+
 func _test_main_scene_integration() -> void:
 	# T4.12.11: Main scene loads
 	var main_scene = load("res://scenes/main.tscn")
@@ -1188,3 +1391,84 @@ func _test_main_scene_integration() -> void:
 		_assert_true(false, "T4.12.16: Main has DayNightCycle")
 		_assert_true(false, "T4.12.17: Main has WaveManager")
 		_assert_true(false, "T4.12.18: Main has GameStats")
+
+# =============================================================================
+# PHASE 4: UPGRADE UI SELECTION TESTS (TDD - Timer & Navigation)
+# =============================================================================
+
+func _test_upgrade_ui_selection() -> void:
+	var upgrade_ui_scene = load("res://scenes/ui/upgrade_ui.tscn")
+	_assert_not_null(upgrade_ui_scene, "T4.15.1: UpgradeUI scene loads")
+
+	if not upgrade_ui_scene:
+		_assert_true(false, "T4.15.2: UpgradeUI has _selected_index property")
+		_assert_true(false, "T4.15.3: UpgradeUI has _timer property")
+		_assert_true(false, "T4.15.4: UpgradeUI has _is_active property")
+		_assert_true(false, "T4.15.5: UpgradeUI selection_timeout default is 5.0")
+		_assert_true(false, "T4.15.6: UpgradeUI has _move_selection method")
+		_assert_true(false, "T4.15.7: UpgradeUI has _confirm_selection method")
+		_assert_true(false, "T4.15.8: UpgradeUI has _update_selection_visuals method")
+		_assert_true(false, "T4.15.9: UpgradeUI has _normal_style property")
+		_assert_true(false, "T4.15.10: UpgradeUI has _selected_style property")
+		_assert_true(false, "T4.15.11: UpgradeUI scene has TimerLabel")
+		_assert_true(false, "T4.15.12: UpgradeUI default selection is middle (index 1 of 3)")
+		return
+
+	var ui = upgrade_ui_scene.instantiate()
+
+	# T4.15.2: Has _selected_index property
+	_assert_true("_selected_index" in ui, "T4.15.2: UpgradeUI has _selected_index property")
+
+	# T4.15.3: Has _timer property
+	_assert_true("_timer" in ui, "T4.15.3: UpgradeUI has _timer property")
+
+	# T4.15.4: Has _is_active property
+	_assert_true("_is_active" in ui, "T4.15.4: UpgradeUI has _is_active property")
+
+	# T4.15.5: selection_timeout default is 5.0 seconds
+	if "selection_timeout" in ui:
+		_assert_equal(ui.selection_timeout, 5.0, "T4.15.5: UpgradeUI selection_timeout default is 5.0")
+	else:
+		_assert_true(false, "T4.15.5: UpgradeUI selection_timeout default is 5.0")
+
+	# T4.15.6: Has _move_selection method
+	_assert_true(ui.has_method("_move_selection"), "T4.15.6: UpgradeUI has _move_selection method")
+
+	# T4.15.7: Has _confirm_selection method
+	_assert_true(ui.has_method("_confirm_selection"), "T4.15.7: UpgradeUI has _confirm_selection method")
+
+	# T4.15.8: Has _update_selection_visuals method
+	_assert_true(ui.has_method("_update_selection_visuals"), "T4.15.8: UpgradeUI has _update_selection_visuals method")
+
+	# T4.15.9: Has _normal_style property
+	_assert_true("_normal_style" in ui, "T4.15.9: UpgradeUI has _normal_style property")
+
+	# T4.15.10: Has _selected_style property
+	_assert_true("_selected_style" in ui, "T4.15.10: UpgradeUI has _selected_style property")
+
+	# T4.15.11: Scene has TimerLabel node
+	var timer_label = ui.get_node_or_null("Container/VBoxContainer/TimerLabel")
+	_assert_not_null(timer_label, "T4.15.11: UpgradeUI scene has TimerLabel")
+
+	# T4.15.12: Test default selection is middle
+	# Create mock upgrades (3 items, middle should be index 1)
+	var mock_upgrades = []
+	for i in range(3):
+		var mock = RefCounted.new()
+		mock.set_meta("display_name", "Upgrade " + str(i))
+		mock.set_meta("icon_path", "")
+		mock.set_meta("current_level", 0)
+		mock.set_meta("max_level", 5)
+		mock_upgrades.append(mock)
+
+	# Check script source for middle selection logic
+	var source = FileAccess.open("res://scripts/ui/upgrade_ui.gd", FileAccess.READ)
+	if source:
+		var content = source.get_as_text()
+		source.close()
+		# Check for middle selection: _selected_index = _upgrades.size() / 2
+		_assert_true(content.contains("_selected_index = _upgrades.size() / 2"), "T4.15.12: UpgradeUI default selection is middle")
+	else:
+		_assert_true(false, "T4.15.12: UpgradeUI default selection is middle")
+
+	ui.free()

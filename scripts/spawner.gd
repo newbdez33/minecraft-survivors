@@ -156,3 +156,24 @@ func set_spawn_rate(interval: float) -> void:
 	spawn_interval = interval
 	if spawn_timer:
 		spawn_timer.wait_time = interval
+
+func set_wave(wave: int) -> void:
+	# Increase difficulty based on wave
+	# Faster spawns: 2.0s → 1.5s → 1.0s → 0.8s
+	var new_interval = max(0.8, 2.0 - (wave - 1) * 0.15)
+	set_spawn_rate(new_interval)
+
+	# More max enemies: 30 → 40 → 50 → 60...
+	max_enemies = 30 + (wave - 1) * 5
+
+	# Boost weights based on wave (in addition to time-based)
+	if wave >= 2:
+		skeleton_weight = max(skeleton_weight, 20.0)
+	if wave >= 3:
+		spider_weight = max(spider_weight, 15.0)
+	if wave >= 4:
+		creeper_weight = max(creeper_weight, 10.0)
+	if wave >= 5:
+		enderman_weight = max(enderman_weight, 8.0)
+	if wave >= 6:
+		witch_weight = max(witch_weight, 5.0)

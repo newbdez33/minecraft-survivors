@@ -37,33 +37,49 @@ A Vampire Survivors-like roguelike game with Minecraft theme built in Godot 4.5.
 
 ### Phase 4: Game Feel ✅ COMPLETE
 
-#### All Steps Complete (1-12):
+#### All Steps Complete (1-15):
 | Step | System | Status | Description |
 |------|--------|--------|-------------|
 | 1 | GameStats | ✅ | Tracks survival time, kills, damage, XP |
-| 2 | DayNightCycle | ✅ | DAWN→DAY→DUSK→NIGHT cycle |
+| 2 | DayNightCycle | ✅ | 8-phase cycle with visual tint |
 | 3 | WaveManager | ✅ | Wave-based spawning with scaling |
 | 4 | GameOverUI | ✅ | Death screen with stats |
 | 5 | Localization | ✅ | EN, JA, ZH support |
 | 6 | Integration | ✅ | Game.gd connects all systems |
-| 7 | New Assets | ✅ | Enderman, Witch, Potion, Sun, Moon SVGs |
+| 7 | New Assets | ✅ | Enderman, Witch, Potion, 8 Sun/Moon phase icons |
 | 8 | Enderman Enemy | ✅ | Teleports when hit (40 HP, 15 dmg) |
 | 9 | Witch Enemy | ✅ | Ranged, throws potions (20 HP, 12 dmg) |
 | 10 | Potion Projectile | ✅ | 200 speed, 60 splash radius |
 | 11 | Update Spawner | ✅ | Enderman@120s, Witch@150s |
 | 12 | Final Integration | ✅ | HUD shows Wave/Kills/Time, all signals connected |
+| 13 | Day/Night Visuals | ✅ | CanvasModulate tint + 8-phase HUD icons |
+| 14 | Upgrade UI Timer | ✅ | 5s auto-select, A/D navigation, middle default |
+| 15 | Visual Tests | ✅ | Auto-running screenshot tests for day/night cycle |
+
+#### Day/Night 8-Phase Icons:
+| Phase | Time | Icon |
+|-------|------|------|
+| Dawn | 0-5s | sun_dawn.svg |
+| Morning | 5-20s | sun_morning.svg |
+| Midday | 20-40s | sun.svg |
+| Afternoon | 40-55s | sun_afternoon.svg |
+| Dusk | 55-60s | sun_dusk.svg |
+| Moon Rise | 60-75s | moon_rise.svg |
+| Night | 75-105s | moon.svg |
+| Late Night | 105-115s | moon_late.svg |
+| Moon Set | 115-120s | moon_set.svg |
 
 ---
 
 ## Test Status
 
-**229 tests passing** (0 failures)
+**277 tests passing** (0 failures)
 
 ```
 Phase 1: Core Foundation - 37 tests
 Phase 2: Combat Basics - 32 tests
-Phase 3: Progression Loop - 58 tests
-Phase 4: Game Feel - 102 tests (incl. Enderman, Witch, Potion, Integration)
+Phase 3: Progression Loop - 63 tests (incl. Upgrade UI timer tests)
+Phase 4: Game Feel - 145 tests (incl. Enderman, Witch, Potion, Integration, Day/Night)
 ```
 
 Run tests with:
@@ -120,12 +136,19 @@ minecraft-survivors/
 
 Located in `docs/screenshots/`:
 
-| File | Description |
-|------|-------------|
+| Folder | Description |
+|--------|-------------|
 | `phase4_gameplay_*.png` | Gameplay screenshots |
-| `localization/V4.7.3_game_over_en.png` | Game Over - English |
-| `localization/V4.7.3_game_over_ja.png` | Game Over - Japanese |
-| `localization/V4.7.3_game_over_zh.png` | Game Over - Chinese |
+| `localization/` | Game Over screens in EN, JA, ZH |
+| `day_night_icons/` | 9 screenshots of day/night icon phases |
+
+### Day/Night Icon Screenshots:
+```
+01_dawn.png, 02_morning.png, 03_midday.png, 04_afternoon.png,
+05_dusk.png, 06_moon_rise.png, 07_night.png, 08_late_night.png, 09_moon_set.png
+```
+
+Run visual test: `godot --path . tests/visual/test_day_night_icons.tscn`
 
 ---
 
