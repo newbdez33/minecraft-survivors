@@ -16,6 +16,8 @@ var test_results: Array = []
 const RUN_PHASE2_TESTS: bool = true
 # Set to true to run Phase 3 tests (TDD - will fail until implemented)
 const RUN_PHASE3_TESTS: bool = true
+# Set to true to run Phase 4 tests (TDD - will fail until implemented)
+const RUN_PHASE4_TESTS: bool = true
 
 func _init() -> void:
 	print("\n" + "=".repeat(60))
@@ -53,6 +55,16 @@ func _init() -> void:
 		_run_test_suite("Arrow Tests", _test_arrow)
 		_run_test_suite("Creeper Tests", _test_creeper)
 		_run_test_suite("Spider Tests", _test_spider)
+
+	# Phase 4 Tests (TDD - write first, implement later)
+	if RUN_PHASE4_TESTS:
+		print("[PHASE 4: Game Feel - TDD]")
+		print("")
+		_run_test_suite("Game Stats Tests", _test_game_stats)
+		_run_test_suite("Day/Night Cycle Tests", _test_day_night_cycle)
+		_run_test_suite("Wave Manager Tests", _test_wave_manager)
+		_run_test_suite("Game Over UI Tests", _test_game_over_ui)
+		_run_test_suite("Localization Tests", _test_localization)
 
 	# Print summary
 	_print_summary()
@@ -639,3 +651,197 @@ func _test_spider() -> void:
 		_assert_true(false, "T3.6.24: Spider has speed property")
 		_assert_true(false, "T3.6.25: Spider has jump method")
 		_assert_true(false, "T3.6.26: Spider is CharacterBody2D")
+
+# =============================================================================
+# PHASE 4: GAME FEEL TESTS (TDD)
+# =============================================================================
+
+func _test_game_stats() -> void:
+	# T4.4.1: GameStats script loads
+	var game_stats_script = load("res://scripts/systems/game_stats.gd")
+	_assert_not_null(game_stats_script, "T4.4.1: GameStats script loads")
+
+	if game_stats_script:
+		var game_stats = game_stats_script.new()
+
+		# T4.4.2: GameStats has survival_time property
+		_assert_true("survival_time" in game_stats, "T4.4.2: GameStats has survival_time property")
+
+		# T4.4.3: GameStats has kills property
+		_assert_true("kills" in game_stats, "T4.4.3: GameStats has kills property")
+
+		# T4.4.4: GameStats has add_kill method
+		_assert_true(game_stats.has_method("add_kill"), "T4.4.4: GameStats has add_kill method")
+
+		# T4.4.5: GameStats has reset method
+		_assert_true(game_stats.has_method("reset"), "T4.4.5: GameStats has reset method")
+
+		# T4.4.6: GameStats has get_stats method
+		_assert_true(game_stats.has_method("get_stats"), "T4.4.6: GameStats has get_stats method")
+
+		game_stats.free()
+	else:
+		_assert_true(false, "T4.4.2: GameStats has survival_time property")
+		_assert_true(false, "T4.4.3: GameStats has kills property")
+		_assert_true(false, "T4.4.4: GameStats has add_kill method")
+		_assert_true(false, "T4.4.5: GameStats has reset method")
+		_assert_true(false, "T4.4.6: GameStats has get_stats method")
+
+func _test_day_night_cycle() -> void:
+	# T4.1.1: DayNightCycle script loads
+	var day_night_script = load("res://scripts/systems/day_night_cycle.gd")
+	_assert_not_null(day_night_script, "T4.1.1: DayNightCycle script loads")
+
+	if day_night_script:
+		var day_night = day_night_script.new()
+
+		# T4.1.2: DayNightCycle has current_time property
+		_assert_true("current_time" in day_night, "T4.1.2: DayNightCycle has current_time property")
+
+		# T4.1.3: DayNightCycle has day_duration property
+		_assert_true("day_duration" in day_night, "T4.1.3: DayNightCycle has day_duration property")
+
+		# T4.1.4: DayNightCycle has night_duration property
+		_assert_true("night_duration" in day_night, "T4.1.4: DayNightCycle has night_duration property")
+
+		# T4.1.5: DayNightCycle has is_night method
+		_assert_true(day_night.has_method("is_night"), "T4.1.5: DayNightCycle has is_night method")
+
+		# T4.1.6: DayNightCycle has get_time_of_day method
+		_assert_true(day_night.has_method("get_time_of_day"), "T4.1.6: DayNightCycle has get_time_of_day method")
+
+		# T4.1.7: DayNightCycle has time_changed signal
+		_assert_true(day_night.has_signal("time_changed"), "T4.1.7: DayNightCycle has time_changed signal")
+
+		# T4.1.8: DayNightCycle has night_started signal
+		_assert_true(day_night.has_signal("night_started"), "T4.1.8: DayNightCycle has night_started signal")
+
+		# T4.1.9: DayNightCycle has day_started signal
+		_assert_true(day_night.has_signal("day_started"), "T4.1.9: DayNightCycle has day_started signal")
+
+		day_night.free()
+	else:
+		_assert_true(false, "T4.1.2: DayNightCycle has current_time property")
+		_assert_true(false, "T4.1.3: DayNightCycle has day_duration property")
+		_assert_true(false, "T4.1.4: DayNightCycle has night_duration property")
+		_assert_true(false, "T4.1.5: DayNightCycle has is_night method")
+		_assert_true(false, "T4.1.6: DayNightCycle has get_time_of_day method")
+		_assert_true(false, "T4.1.7: DayNightCycle has time_changed signal")
+		_assert_true(false, "T4.1.8: DayNightCycle has night_started signal")
+		_assert_true(false, "T4.1.9: DayNightCycle has day_started signal")
+
+func _test_wave_manager() -> void:
+	# T4.2.1: WaveManager script loads
+	var wave_script = load("res://scripts/systems/wave_manager.gd")
+	_assert_not_null(wave_script, "T4.2.1: WaveManager script loads")
+
+	if wave_script:
+		var wave_manager = wave_script.new()
+
+		# T4.2.2: WaveManager has current_wave property
+		_assert_true("current_wave" in wave_manager, "T4.2.2: WaveManager has current_wave property")
+
+		# T4.2.3: WaveManager has wave_interval property
+		_assert_true("wave_interval" in wave_manager, "T4.2.3: WaveManager has wave_interval property")
+
+		# T4.2.4: WaveManager has start_wave method
+		_assert_true(wave_manager.has_method("start_wave"), "T4.2.4: WaveManager has start_wave method")
+
+		# T4.2.5: WaveManager has get_enemies_for_wave method
+		_assert_true(wave_manager.has_method("get_enemies_for_wave"), "T4.2.5: WaveManager has get_enemies_for_wave method")
+
+		# T4.2.6: WaveManager has wave_started signal
+		_assert_true(wave_manager.has_signal("wave_started"), "T4.2.6: WaveManager has wave_started signal")
+
+		# T4.2.7: WaveManager has wave_completed signal
+		_assert_true(wave_manager.has_signal("wave_completed"), "T4.2.7: WaveManager has wave_completed signal")
+
+		# T4.2.8: WaveManager scales enemies per wave
+		var wave1_enemies = wave_manager.get_enemies_for_wave(1)
+		var wave5_enemies = wave_manager.get_enemies_for_wave(5)
+		_assert_true(wave5_enemies > wave1_enemies, "T4.2.8: WaveManager scales enemies per wave")
+
+		wave_manager.free()
+	else:
+		_assert_true(false, "T4.2.2: WaveManager has current_wave property")
+		_assert_true(false, "T4.2.3: WaveManager has wave_interval property")
+		_assert_true(false, "T4.2.4: WaveManager has start_wave method")
+		_assert_true(false, "T4.2.5: WaveManager has get_enemies_for_wave method")
+		_assert_true(false, "T4.2.6: WaveManager has wave_started signal")
+		_assert_true(false, "T4.2.7: WaveManager has wave_completed signal")
+		_assert_true(false, "T4.2.8: WaveManager scales enemies per wave")
+
+func _test_game_over_ui() -> void:
+	# T4.3.1: GameOverUI script loads
+	var game_over_script = load("res://scripts/ui/game_over_ui.gd")
+	_assert_not_null(game_over_script, "T4.3.1: GameOverUI script loads")
+
+	# T4.3.2: GameOverUI scene loads
+	var game_over_scene = load("res://scenes/ui/game_over_ui.tscn")
+	_assert_not_null(game_over_scene, "T4.3.2: GameOverUI scene loads")
+
+	if game_over_scene:
+		var game_over = game_over_scene.instantiate()
+
+		# T4.3.3: GameOverUI has show_game_over method
+		_assert_true(game_over.has_method("show_game_over"), "T4.3.3: GameOverUI has show_game_over method")
+
+		# T4.3.4: GameOverUI has set_stats method
+		_assert_true(game_over.has_method("set_stats"), "T4.3.4: GameOverUI has set_stats method")
+
+		# T4.3.5: GameOverUI has restart_pressed signal
+		_assert_true(game_over.has_signal("restart_pressed"), "T4.3.5: GameOverUI has restart_pressed signal")
+
+		# T4.3.6: GameOverUI has quit_pressed signal
+		_assert_true(game_over.has_signal("quit_pressed"), "T4.3.6: GameOverUI has quit_pressed signal")
+
+		# T4.3.7: GameOverUI is CanvasLayer
+		_assert_true(game_over is CanvasLayer, "T4.3.7: GameOverUI is CanvasLayer")
+
+		game_over.free()
+	else:
+		_assert_true(false, "T4.3.3: GameOverUI has show_game_over method")
+		_assert_true(false, "T4.3.4: GameOverUI has set_stats method")
+		_assert_true(false, "T4.3.5: GameOverUI has restart_pressed signal")
+		_assert_true(false, "T4.3.6: GameOverUI has quit_pressed signal")
+		_assert_true(false, "T4.3.7: GameOverUI is CanvasLayer")
+
+func _test_localization() -> void:
+	# T4.7.1: LocalizationManager script loads
+	var loc_script = load("res://scripts/systems/localization_manager.gd")
+	_assert_not_null(loc_script, "T4.7.1: LocalizationManager script loads")
+
+	if loc_script:
+		var loc_manager = loc_script.new()
+
+		# T4.7.2: LocalizationManager has set_language method
+		_assert_true(loc_manager.has_method("set_language"), "T4.7.2: LocalizationManager has set_language method")
+
+		# T4.7.3: LocalizationManager has get_current_language method
+		_assert_true(loc_manager.has_method("get_current_language"), "T4.7.3: LocalizationManager has get_current_language method")
+
+		# T4.7.4: LocalizationManager has get_available_languages method
+		_assert_true(loc_manager.has_method("get_available_languages"), "T4.7.4: LocalizationManager has get_available_languages method")
+
+		# T4.7.5: LocalizationManager has language_changed signal
+		_assert_true(loc_manager.has_signal("language_changed"), "T4.7.5: LocalizationManager has language_changed signal")
+
+		# T4.7.6: LocalizationManager supports English
+		var langs = loc_manager.get_available_languages()
+		_assert_true("en" in langs, "T4.7.6: LocalizationManager supports English")
+
+		# T4.7.7: LocalizationManager supports Japanese
+		_assert_true("ja" in langs, "T4.7.7: LocalizationManager supports Japanese")
+
+		# T4.7.8: LocalizationManager supports Chinese
+		_assert_true("zh" in langs, "T4.7.8: LocalizationManager supports Chinese")
+
+		loc_manager.free()
+	else:
+		_assert_true(false, "T4.7.2: LocalizationManager has set_language method")
+		_assert_true(false, "T4.7.3: LocalizationManager has get_current_language method")
+		_assert_true(false, "T4.7.4: LocalizationManager has get_available_languages method")
+		_assert_true(false, "T4.7.5: LocalizationManager has language_changed signal")
+		_assert_true(false, "T4.7.6: LocalizationManager supports English")
+		_assert_true(false, "T4.7.7: LocalizationManager supports Japanese")
+		_assert_true(false, "T4.7.8: LocalizationManager supports Chinese")

@@ -1,0 +1,48 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" uid="uid://phase4gameover" path="res://scenes/ui/game_over_ui.tscn" id="1_game_over"]
+
+[sub_resource type="GDScript" id="GDScript_test"]
+script/source = "extends Node2D
+
+## Chinese localization visual test
+
+func _ready() -> void:
+	# Add background
+	var bg = ColorRect.new()
+	bg.color = Color(0.1, 0.4, 0.1)
+	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
+	add_child(bg)
+	move_child(bg, 0)
+
+	# Wait for UI to be ready then set text
+	var timer = get_tree().create_timer(0.1)
+	timer.timeout.connect(_set_chinese_text)
+
+
+func _set_chinese_text() -> void:
+	var game_over = $GameOverUI
+	game_over.visible = true
+
+	# Access labels through the panel
+	var panel = game_over.get_node(\"Panel\")
+	var vbox = panel.get_node(\"VBoxContainer\")
+
+	var title = vbox.get_node(\"TitleLabel\")
+	title.text = \"你死了！\"
+
+	var stats = vbox.get_node(\"StatsContainer\")
+	stats.get_node(\"TimeLabel\").text = \"存活时间: 03:05\"
+	stats.get_node(\"KillsLabel\").text = \"击杀: 47\"
+	stats.get_node(\"LevelLabel\").text = \"等级: 6\"
+	stats.get_node(\"WaveLabel\").text = \"波次: 4\"
+
+	var buttons = vbox.get_node(\"ButtonContainer\")
+	buttons.get_node(\"RestartButton\").text = \"重生\"
+	buttons.get_node(\"QuitButton\").text = \"退出\"
+"
+
+[node name="TestScene" type="Node2D"]
+script = SubResource("GDScript_test")
+
+[node name="GameOverUI" parent="." instance=ExtResource("1_game_over")]

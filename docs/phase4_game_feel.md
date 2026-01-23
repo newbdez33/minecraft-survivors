@@ -297,7 +297,88 @@ Potion (Area2D)
 
 ---
 
-### 4.7 New Art Assets (新美术资源)
+### 4.7 Localization / 多言語対応 / 多语言支持 (i18n)
+
+**描述**: 支持英语、日语、中文三种语言
+
+**支持语言**:
+| 语言 | 代码 | 名称 |
+|------|------|------|
+| English | en | English |
+| 日本語 | ja | 日本語 |
+| 中文 | zh | 简体中文 |
+
+**需要翻译的文本**:
+| Key | English | 日本語 | 中文 |
+|-----|---------|--------|------|
+| GAME_TITLE | Minecraft Survivors | マインクラフト サバイバーズ | 我的世界 幸存者 |
+| YOU_DIED | You Died! | 死亡した！ | 你死了！ |
+| RESPAWN | Respawn | リスポーン | 重生 |
+| QUIT | Quit | 終了 | 退出 |
+| WAVE | Wave | ウェーブ | 波次 |
+| KILLS | Kills | 撃破数 | 击杀 |
+| LEVEL | Level | レベル | 等级 |
+| DAY | Day | 日目 | 第 天 |
+| NIGHT | Night | 夜 | 夜晚 |
+| SURVIVAL_TIME | Survival Time | 生存時間 | 存活时间 |
+| LEVEL_UP | Level Up! | レベルアップ！ | 升级！ |
+| CHOOSE_UPGRADE | Choose an Upgrade | 強化を選択 | 选择强化 |
+| SHARPNESS | Sharpness | 鋭さ | 锋利 |
+| KNOCKBACK | Knockback | ノックバック | 击退 |
+| LOOTING | Looting | ドロップ増加 | 抢夺 |
+| PROTECTION | Protection | 防護 | 保护 |
+| SWIFTNESS | Swiftness | 俊敏 | 迅捷 |
+| SWEEPING | Sweeping Edge | 範囲攻撃 | 横扫之刃 |
+| SETTINGS | Settings | 設定 | 设置 |
+| LANGUAGE | Language | 言語 | 语言 |
+
+**Godot 本地化实现**:
+- 使用 Godot 内置的 `TranslationServer`
+- CSV 格式翻译文件
+- 自动检测系统语言
+- 支持运行时切换语言
+
+**测试用例**:
+- [ ] T4.7.1: Localization script loads
+- [ ] T4.7.2: Translation CSV files exist (en, ja, zh)
+- [ ] T4.7.3: LocalizationManager has get_text method
+- [ ] T4.7.4: LocalizationManager has set_language method
+- [ ] T4.7.5: LocalizationManager has get_current_language method
+- [ ] T4.7.6: LocalizationManager has get_available_languages method
+- [ ] T4.7.7: All UI text uses tr() function
+- [ ] T4.7.8: Language persists after restart
+
+**视觉测试** (详见 [localization_plan.md](./localization_plan.md#93-visual-test-plan-视觉测试)):
+- [ ] V4.7.1: HUD 截图验证 (EN/JA/ZH)
+- [ ] V4.7.2: Upgrade UI 截图验证 (EN/JA/ZH)
+- [ ] V4.7.3: Game Over 截图验证 (EN/JA/ZH)
+- [ ] V4.7.4: CJK 字符渲染正确 (无豆腐块)
+
+**文件结构**:
+```
+localization/
+├── translations.en.csv    # English
+├── translations.ja.csv    # 日本語
+└── translations.zh.csv    # 中文
+```
+
+**CSV 格式**:
+```csv
+key,en,ja,zh
+GAME_TITLE,Minecraft Survivors,マインクラフト サバイバーズ,我的世界 幸存者
+YOU_DIED,You Died!,死亡した！,你死了！
+...
+```
+
+**节点结构**:
+```
+LocalizationManager (Node - Autoload/Singleton)
+└── (manages TranslationServer)
+```
+
+---
+
+### 4.8 New Art Assets (新美术资源)
 
 **需要创建的 SVG**:
 | 资源 | 路径 | 描述 |
@@ -309,11 +390,11 @@ Potion (Area2D)
 | moon.svg | assets/ui/ | 月亮图标 |
 
 **测试用例**:
-- [ ] T4.7.1: Asset: enderman.svg
-- [ ] T4.7.2: Asset: witch.svg
-- [ ] T4.7.3: Asset: potion.svg
-- [ ] T4.7.4: Asset: sun.svg
-- [ ] T4.7.5: Asset: moon.svg
+- [ ] T4.8.1: Asset: enderman.svg
+- [ ] T4.8.2: Asset: witch.svg
+- [ ] T4.8.3: Asset: potion.svg
+- [ ] T4.8.4: Asset: sun.svg
+- [ ] T4.8.5: Asset: moon.svg
 
 ---
 
@@ -354,42 +435,51 @@ Potion (Area2D)
 3. 运行测试 → ./run_tests.sh
 ```
 
-### Step 6: New Assets
+### Step 6: Localization (i18n)
+```
+1. 写测试 → tests/unit/test_localization.gd
+2. 创建翻译文件 → localization/translations.*.csv
+3. 实现 → scripts/systems/localization_manager.gd
+4. 更新所有 UI 使用 tr() 函数
+5. 运行测试 → ./run_tests.sh
+```
+
+### Step 7: New Assets
 ```
 1. 写测试 → 更新 tests/unit/test_assets.gd
 2. 创建 SVG → assets/characters/, assets/ui/
 3. 运行测试 → ./run_tests.sh
 ```
 
-### Step 7: Enderman Enemy
+### Step 8: Enderman Enemy
 ```
 1. 写测试 → tests/unit/test_enderman.gd
 2. 实现 → scripts/enemies/enderman.gd, scenes/enemies/enderman.tscn
 3. 运行测试 → ./run_tests.sh
 ```
 
-### Step 8: Witch Enemy
+### Step 9: Witch Enemy
 ```
 1. 写测试 → tests/unit/test_witch.gd
 2. 实现 → scripts/enemies/witch.gd, scenes/enemies/witch.tscn
 3. 运行测试 → ./run_tests.sh
 ```
 
-### Step 9: Potion Projectile
+### Step 10: Potion Projectile
 ```
 1. 写测试 → tests/unit/test_potion.gd
 2. 实现 → scripts/projectiles/potion.gd, scenes/projectiles/potion.tscn
 3. 运行测试 → ./run_tests.sh
 ```
 
-### Step 10: Update Spawner
+### Step 11: Update Spawner
 ```
 1. 写测试 → 更新 tests/unit/test_spawner.gd
 2. 实现 → 更新 scripts/spawner.gd (spawn Enderman, Witch)
 3. 运行测试 → ./run_tests.sh
 ```
 
-### Step 11: Integration
+### Step 12: Integration
 ```
 1. 写集成测试 → tests/integration/test_game_feel.gd
 2. 集成所有组件到 main.tscn
@@ -406,49 +496,56 @@ minecraft_survivors/
 │   ├── systems/
 │   │   ├── upgrade_manager.gd
 │   │   ├── upgrade.gd
-│   │   ├── game_stats.gd         # 新增
-│   │   ├── day_night_cycle.gd    # 新增
-│   │   └── wave_manager.gd       # 新增
+│   │   ├── game_stats.gd            # 新增
+│   │   ├── day_night_cycle.gd       # 新增
+│   │   ├── wave_manager.gd          # 新增
+│   │   └── localization_manager.gd  # 新增 (i18n)
 │   ├── enemies/
 │   │   ├── zombie.gd
 │   │   ├── skeleton.gd
 │   │   ├── creeper.gd
 │   │   ├── spider.gd
-│   │   ├── enderman.gd           # 新增
-│   │   └── witch.gd              # 新增
+│   │   ├── enderman.gd              # 新增
+│   │   └── witch.gd                 # 新增
 │   ├── projectiles/
 │   │   ├── arrow.gd
-│   │   └── potion.gd             # 新增
+│   │   └── potion.gd                # 新增
 │   └── ui/
-│       ├── hud.gd                # 更新
-│       ├── upgrade_ui.gd
-│       └── game_over_ui.gd       # 新增
+│       ├── hud.gd                   # 更新 (i18n)
+│       ├── upgrade_ui.gd            # 更新 (i18n)
+│       └── game_over_ui.gd          # 新增 (i18n)
 ├── scenes/
 │   ├── enemies/
-│   │   ├── enderman.tscn         # 新增
-│   │   └── witch.tscn            # 新增
+│   │   ├── enderman.tscn            # 新增
+│   │   └── witch.tscn               # 新增
 │   ├── projectiles/
-│   │   └── potion.tscn           # 新增
+│   │   └── potion.tscn              # 新增
 │   └── ui/
-│       └── game_over_ui.tscn     # 新增
+│       └── game_over_ui.tscn        # 新增
+├── localization/                     # 新增 (i18n)
+│   ├── translations.csv             # 主翻译文件
+│   ├── translations.en.translation  # English (compiled)
+│   ├── translations.ja.translation  # 日本語 (compiled)
+│   └── translations.zh.translation  # 中文 (compiled)
 ├── assets/
 │   ├── characters/
-│   │   ├── enderman.svg          # 新增
-│   │   └── witch.svg             # 新增
+│   │   ├── enderman.svg             # 新增
+│   │   └── witch.svg                # 新增
 │   ├── weapons/
-│   │   └── potion.svg            # 新增
+│   │   └── potion.svg               # 新增
 │   └── ui/
-│       ├── sun.svg               # 新增
-│       └── moon.svg              # 新增
+│       ├── sun.svg                  # 新增
+│       └── moon.svg                 # 新增
 └── tests/
     └── unit/
-        ├── test_game_stats.gd    # 新增
-        ├── test_day_night.gd     # 新增
-        ├── test_wave_manager.gd  # 新增
-        ├── test_game_over.gd     # 新增
-        ├── test_enderman.gd      # 新增
-        ├── test_witch.gd         # 新增
-        └── test_potion.gd        # 新增
+        ├── test_game_stats.gd       # 新增
+        ├── test_day_night.gd        # 新增
+        ├── test_wave_manager.gd     # 新增
+        ├── test_game_over.gd        # 新增
+        ├── test_localization.gd     # 新增 (i18n)
+        ├── test_enderman.gd         # 新增
+        ├── test_witch.gd            # 新增
+        └── test_potion.gd           # 新增
 ```
 
 ---
@@ -456,7 +553,7 @@ minecraft_survivors/
 ## 验收标准
 
 Phase 4 完成条件:
-- [ ] 所有测试通过 (预计 170+ tests)
+- [ ] 所有测试通过 (预计 180+ tests)
 - [ ] 日夜循环正常工作
 - [ ] 夜晚时怪物生成加快
 - [ ] 波次系统正常工作
@@ -465,6 +562,9 @@ Phase 4 完成条件:
 - [ ] 可以重新开始游戏
 - [ ] Enderman 可以传送
 - [ ] Witch 可以投掷药水
+- [ ] 支持英语、日语、中文切换
+- [ ] 语言设置保存并持久化
+- [ ] 所有 UI 文本正确显示翻译
 - [ ] 游戏可以持续运行不崩溃
 
 ---
@@ -478,16 +578,18 @@ Phase 4 完成条件:
 | Game Over UI | 8 |
 | Game Stats | 6 |
 | HUD Enhancements | 6 |
+| Localization (i18n) | 8 |
 | Enderman | 8 |
 | Witch | 8 |
 | Potion | 6 |
 | New Assets | 5 |
-| **总计** | **64** |
+| **总计** | **72** |
 
-Phase 4 预计新增 64 个测试用例。
+Phase 4 预计新增 72 个测试用例。
 
 ---
 
 ## 更新日志
 
+- **2026-01-23**: 添加多语言支持 (English, 日本語, 中文)
 - **2026-01-23**: 创建 Phase 4 计划文档 (TDD 方法)
