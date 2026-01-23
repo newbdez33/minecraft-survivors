@@ -1,8 +1,8 @@
 # Project Handoff Document
 
-**Last Updated:** 2024-01-23
+**Last Updated:** 2026-01-24
 **Project:** Minecraft Survivors
-**Current Phase:** Phase 4 - Game Feel (In Progress)
+**Current Phase:** Phase 4 - Game Feel (COMPLETE ✅)
 
 ---
 
@@ -35,39 +35,35 @@ A Vampire Survivors-like roguelike game with Minecraft theme built in Godot 4.5.
   - Sweeping Edge (range)
 - HUD with health/XP bars
 
-### Phase 4: Game Feel (In Progress) 🔄
+### Phase 4: Game Feel ✅ COMPLETE
 
-#### Completed Steps (1-6):
-| Step | System | Status | Tests |
-|------|--------|--------|-------|
-| 1 | GameStats | ✅ Done | Tracks survival time, kills, damage, XP |
-| 2 | DayNightCycle | ✅ Done | DAWN→DAY→DUSK→NIGHT cycle |
-| 3 | WaveManager | ✅ Done | Wave-based spawning with scaling |
-| 4 | GameOverUI | ✅ Done | Death screen with stats |
-| 5 | Localization | ✅ Done | EN, JA, ZH support |
-| 6 | Integration | ✅ Done | Game.gd connects all systems |
-
-#### Remaining Steps (7-12):
-| Step | System | Status |
-|------|--------|--------|
-| 7 | New Assets | ⏳ Pending |
-| 8 | Enderman Enemy | ⏳ Pending |
-| 9 | Witch Enemy | ⏳ Pending |
-| 10 | Potion Pickups | ⏳ Pending |
-| 11 | Update Spawner | ⏳ Pending |
-| 12 | Final Integration | ⏳ Pending |
+#### All Steps Complete (1-12):
+| Step | System | Status | Description |
+|------|--------|--------|-------------|
+| 1 | GameStats | ✅ | Tracks survival time, kills, damage, XP |
+| 2 | DayNightCycle | ✅ | DAWN→DAY→DUSK→NIGHT cycle |
+| 3 | WaveManager | ✅ | Wave-based spawning with scaling |
+| 4 | GameOverUI | ✅ | Death screen with stats |
+| 5 | Localization | ✅ | EN, JA, ZH support |
+| 6 | Integration | ✅ | Game.gd connects all systems |
+| 7 | New Assets | ✅ | Enderman, Witch, Potion, Sun, Moon SVGs |
+| 8 | Enderman Enemy | ✅ | Teleports when hit (40 HP, 15 dmg) |
+| 9 | Witch Enemy | ✅ | Ranged, throws potions (20 HP, 12 dmg) |
+| 10 | Potion Projectile | ✅ | 200 speed, 60 splash radius |
+| 11 | Update Spawner | ✅ | Enderman@120s, Witch@150s |
+| 12 | Final Integration | ✅ | HUD shows Wave/Kills/Time, all signals connected |
 
 ---
 
 ## Test Status
 
-**155 tests passing** (0 failures)
+**229 tests passing** (0 failures)
 
 ```
-Phase 1: Core Foundation - 25 tests
-Phase 2: Combat Basics - 52 tests
-Phase 3: Progression Loop - 40 tests
-Phase 4: Game Feel - 38 tests
+Phase 1: Core Foundation - 37 tests
+Phase 2: Combat Basics - 32 tests
+Phase 3: Progression Loop - 58 tests
+Phase 4: Game Feel - 102 tests (incl. Enderman, Witch, Potion, Integration)
 ```
 
 Run tests with:
@@ -153,7 +149,12 @@ cd minecraft-survivors
 ```
 
 ### 4. Next task
-Continue Phase 4 Step 7: Create new enemy assets (Enderman, Witch) and potion pickup sprites.
+Phase 4 is COMPLETE! Consider starting Phase 5 with new features:
+- Boss enemies (Wither, Ender Dragon)
+- New weapons (Bow, Trident)
+- Settings menu (volume, controls)
+- High score persistence
+- More upgrades
 
 ---
 
