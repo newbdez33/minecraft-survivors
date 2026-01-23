@@ -65,6 +65,10 @@ func _init() -> void:
 		_run_test_suite("Wave Manager Tests", _test_wave_manager)
 		_run_test_suite("Game Over UI Tests", _test_game_over_ui)
 		_run_test_suite("Localization Tests", _test_localization)
+		# Step 8-10: New Enemies
+		_run_test_suite("Enderman Tests", _test_enderman)
+		_run_test_suite("Witch Tests", _test_witch)
+		_run_test_suite("Potion Tests", _test_potion)
 
 	# Print summary
 	_print_summary()
@@ -849,3 +853,223 @@ func _test_localization() -> void:
 		_assert_true(false, "T4.7.6: LocalizationManager supports English")
 		_assert_true(false, "T4.7.7: LocalizationManager supports Japanese")
 		_assert_true(false, "T4.7.8: LocalizationManager supports Chinese")
+
+# =============================================================================
+# PHASE 4 STEP 8: ENDERMAN TESTS (TDD - Write First)
+# =============================================================================
+
+func _test_enderman() -> void:
+	# T4.6.1: Enderman script loads
+	var enderman_script = load("res://scripts/enemies/enderman.gd")
+	_assert_not_null(enderman_script, "T4.6.1: Enderman script loads")
+
+	# T4.6.2: Enderman scene loads
+	var enderman_scene = load("res://scenes/enemies/enderman.tscn")
+	_assert_not_null(enderman_scene, "T4.6.2: Enderman scene loads")
+
+	if enderman_scene:
+		var enderman = enderman_scene.instantiate()
+
+		# T4.6.3: Enderman has health property (40)
+		_assert_true("health" in enderman, "T4.6.3: Enderman has health property")
+		if "health" in enderman:
+			_assert_equal(enderman.health, 40, "T4.6.3a: Enderman health is 40")
+
+		# T4.6.4: Enderman has speed property (70)
+		_assert_true("speed" in enderman, "T4.6.4: Enderman has speed property")
+		if "speed" in enderman:
+			_assert_equal(enderman.speed, 70, "T4.6.4a: Enderman speed is 70")
+
+		# T4.6.5: Enderman has teleport method
+		_assert_true(enderman.has_method("teleport"), "T4.6.5: Enderman has teleport method")
+
+		# T4.6.6: Enderman has teleport_cooldown property
+		_assert_true("teleport_cooldown" in enderman, "T4.6.6: Enderman has teleport_cooldown property")
+		if "teleport_cooldown" in enderman:
+			_assert_equal(enderman.teleport_cooldown, 3.0, "T4.6.6a: Enderman teleport_cooldown is 3.0")
+
+		# T4.6.7: Enderman has teleport_range property
+		_assert_true("teleport_range" in enderman, "T4.6.7: Enderman has teleport_range property")
+		if "teleport_range" in enderman:
+			_assert_equal(enderman.teleport_range, 200.0, "T4.6.7a: Enderman teleport_range is 200")
+
+		# T4.6.8: Enderman has damage property (15)
+		_assert_true("damage" in enderman, "T4.6.8: Enderman has damage property")
+		if "damage" in enderman:
+			_assert_equal(enderman.damage, 15, "T4.6.8a: Enderman damage is 15")
+
+		# T4.6.9: Enderman has xp_value property (15)
+		_assert_true("xp_value" in enderman, "T4.6.9: Enderman has xp_value property")
+		if "xp_value" in enderman:
+			_assert_equal(enderman.xp_value, 15, "T4.6.9a: Enderman xp_value is 15")
+
+		# T4.6.10: Enderman is CharacterBody2D
+		_assert_true(enderman is CharacterBody2D, "T4.6.10: Enderman is CharacterBody2D")
+
+		# T4.6.11: Enderman has can_teleport property
+		_assert_true("can_teleport" in enderman, "T4.6.11: Enderman has can_teleport property")
+
+		# T4.6.12: Enderman has apply_knockback method (for knockback system)
+		_assert_true(enderman.has_method("apply_knockback"), "T4.6.12: Enderman has apply_knockback method")
+
+		enderman.free()
+	else:
+		# Script/scene doesn't exist yet - fail remaining tests
+		_assert_true(false, "T4.6.3: Enderman has health property")
+		_assert_true(false, "T4.6.3a: Enderman health is 40")
+		_assert_true(false, "T4.6.4: Enderman has speed property")
+		_assert_true(false, "T4.6.4a: Enderman speed is 70")
+		_assert_true(false, "T4.6.5: Enderman has teleport method")
+		_assert_true(false, "T4.6.6: Enderman has teleport_cooldown property")
+		_assert_true(false, "T4.6.6a: Enderman teleport_cooldown is 3.0")
+		_assert_true(false, "T4.6.7: Enderman has teleport_range property")
+		_assert_true(false, "T4.6.7a: Enderman teleport_range is 200")
+		_assert_true(false, "T4.6.8: Enderman has damage property")
+		_assert_true(false, "T4.6.8a: Enderman damage is 15")
+		_assert_true(false, "T4.6.9: Enderman has xp_value property")
+		_assert_true(false, "T4.6.9a: Enderman xp_value is 15")
+		_assert_true(false, "T4.6.10: Enderman is CharacterBody2D")
+		_assert_true(false, "T4.6.11: Enderman has can_teleport property")
+		_assert_true(false, "T4.6.12: Enderman has apply_knockback method")
+
+# =============================================================================
+# PHASE 4 STEP 9: WITCH TESTS (TDD - Write First)
+# =============================================================================
+
+func _test_witch() -> void:
+	# T4.6.13: Witch script loads
+	var witch_script = load("res://scripts/enemies/witch.gd")
+	_assert_not_null(witch_script, "T4.6.13: Witch script loads")
+
+	# T4.6.14: Witch scene loads
+	var witch_scene = load("res://scenes/enemies/witch.tscn")
+	_assert_not_null(witch_scene, "T4.6.14: Witch scene loads")
+
+	if witch_scene:
+		var witch = witch_scene.instantiate()
+
+		# T4.6.15: Witch has health property (20)
+		_assert_true("health" in witch, "T4.6.15: Witch has health property")
+		if "health" in witch:
+			_assert_equal(witch.health, 20, "T4.6.15a: Witch health is 20")
+
+		# T4.6.16: Witch has speed property (35)
+		_assert_true("speed" in witch, "T4.6.16: Witch has speed property")
+		if "speed" in witch:
+			_assert_equal(witch.speed, 35, "T4.6.16a: Witch speed is 35")
+
+		# T4.6.17: Witch has throw_potion method
+		_assert_true(witch.has_method("throw_potion"), "T4.6.17: Witch has throw_potion method")
+
+		# T4.6.18: Witch has attack_range property (250)
+		_assert_true("attack_range" in witch, "T4.6.18: Witch has attack_range property")
+		if "attack_range" in witch:
+			_assert_equal(witch.attack_range, 250.0, "T4.6.18a: Witch attack_range is 250")
+
+		# T4.6.19: Witch has attack_cooldown property (3.0)
+		_assert_true("attack_cooldown" in witch, "T4.6.19: Witch has attack_cooldown property")
+		if "attack_cooldown" in witch:
+			_assert_equal(witch.attack_cooldown, 3.0, "T4.6.19a: Witch attack_cooldown is 3.0")
+
+		# T4.6.20: Witch has potion_damage property (12)
+		_assert_true("potion_damage" in witch, "T4.6.20: Witch has potion_damage property")
+		if "potion_damage" in witch:
+			_assert_equal(witch.potion_damage, 12, "T4.6.20a: Witch potion_damage is 12")
+
+		# T4.6.21: Witch has xp_value property (12)
+		_assert_true("xp_value" in witch, "T4.6.21: Witch has xp_value property")
+		if "xp_value" in witch:
+			_assert_equal(witch.xp_value, 12, "T4.6.21a: Witch xp_value is 12")
+
+		# T4.6.22: Witch has preferred_distance property
+		_assert_true("preferred_distance" in witch, "T4.6.22: Witch has preferred_distance property")
+
+		# T4.6.23: Witch is CharacterBody2D
+		_assert_true(witch is CharacterBody2D, "T4.6.23: Witch is CharacterBody2D")
+
+		# T4.6.24: Witch has apply_knockback method
+		_assert_true(witch.has_method("apply_knockback"), "T4.6.24: Witch has apply_knockback method")
+
+		witch.free()
+	else:
+		# Script/scene doesn't exist yet - fail remaining tests
+		_assert_true(false, "T4.6.15: Witch has health property")
+		_assert_true(false, "T4.6.15a: Witch health is 20")
+		_assert_true(false, "T4.6.16: Witch has speed property")
+		_assert_true(false, "T4.6.16a: Witch speed is 35")
+		_assert_true(false, "T4.6.17: Witch has throw_potion method")
+		_assert_true(false, "T4.6.18: Witch has attack_range property")
+		_assert_true(false, "T4.6.18a: Witch attack_range is 250")
+		_assert_true(false, "T4.6.19: Witch has attack_cooldown property")
+		_assert_true(false, "T4.6.19a: Witch attack_cooldown is 3.0")
+		_assert_true(false, "T4.6.20: Witch has potion_damage property")
+		_assert_true(false, "T4.6.20a: Witch potion_damage is 12")
+		_assert_true(false, "T4.6.21: Witch has xp_value property")
+		_assert_true(false, "T4.6.21a: Witch xp_value is 12")
+		_assert_true(false, "T4.6.22: Witch has preferred_distance property")
+		_assert_true(false, "T4.6.23: Witch is CharacterBody2D")
+		_assert_true(false, "T4.6.24: Witch has apply_knockback method")
+
+# =============================================================================
+# PHASE 4 STEP 10: POTION TESTS (TDD - Write First)
+# =============================================================================
+
+func _test_potion() -> void:
+	# T4.6.25: Potion script loads
+	var potion_script = load("res://scripts/projectiles/potion.gd")
+	_assert_not_null(potion_script, "T4.6.25: Potion script loads")
+
+	# T4.6.26: Potion scene loads
+	var potion_scene = load("res://scenes/projectiles/potion.tscn")
+	_assert_not_null(potion_scene, "T4.6.26: Potion scene loads")
+
+	if potion_scene:
+		var potion = potion_scene.instantiate()
+
+		# T4.6.27: Potion has speed property (200)
+		_assert_true("speed" in potion, "T4.6.27: Potion has speed property")
+		if "speed" in potion:
+			_assert_equal(potion.speed, 200.0, "T4.6.27a: Potion speed is 200")
+
+		# T4.6.28: Potion has damage property (12)
+		_assert_true("damage" in potion, "T4.6.28: Potion has damage property")
+		if "damage" in potion:
+			_assert_equal(potion.damage, 12, "T4.6.28a: Potion damage is 12")
+
+		# T4.6.29: Potion has splash_radius property (60)
+		_assert_true("splash_radius" in potion, "T4.6.29: Potion has splash_radius property")
+		if "splash_radius" in potion:
+			_assert_equal(potion.splash_radius, 60.0, "T4.6.29a: Potion splash_radius is 60")
+
+		# T4.6.30: Potion has lifetime property (2.0)
+		_assert_true("lifetime" in potion, "T4.6.30: Potion has lifetime property")
+		if "lifetime" in potion:
+			_assert_equal(potion.lifetime, 2.0, "T4.6.30a: Potion lifetime is 2.0")
+
+		# T4.6.31: Potion has set_direction method
+		_assert_true(potion.has_method("set_direction"), "T4.6.31: Potion has set_direction method")
+
+		# T4.6.32: Potion has explode method
+		_assert_true(potion.has_method("explode"), "T4.6.32: Potion has explode method")
+
+		# T4.6.33: Potion is Area2D
+		_assert_true(potion is Area2D, "T4.6.33: Potion is Area2D")
+
+		# T4.6.34: Potion has direction property
+		_assert_true("direction" in potion, "T4.6.34: Potion has direction property")
+
+		potion.free()
+	else:
+		# Script/scene doesn't exist yet - fail remaining tests
+		_assert_true(false, "T4.6.27: Potion has speed property")
+		_assert_true(false, "T4.6.27a: Potion speed is 200")
+		_assert_true(false, "T4.6.28: Potion has damage property")
+		_assert_true(false, "T4.6.28a: Potion damage is 12")
+		_assert_true(false, "T4.6.29: Potion has splash_radius property")
+		_assert_true(false, "T4.6.29a: Potion splash_radius is 60")
+		_assert_true(false, "T4.6.30: Potion has lifetime property")
+		_assert_true(false, "T4.6.30a: Potion lifetime is 2.0")
+		_assert_true(false, "T4.6.31: Potion has set_direction method")
+		_assert_true(false, "T4.6.32: Potion has explode method")
+		_assert_true(false, "T4.6.33: Potion is Area2D")
+		_assert_true(false, "T4.6.34: Potion has direction property")
