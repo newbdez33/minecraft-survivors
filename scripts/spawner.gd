@@ -3,6 +3,7 @@ class_name MobSpawner
 ## Spawns enemies around the player at regular intervals
 
 signal enemy_spawned(enemy: Node2D)
+signal enemy_killed(xp_value: int)
 
 @export var spawn_interval: float = 2.0
 @export var max_enemies: int = 50
@@ -14,12 +15,16 @@ var zombie_scene: PackedScene
 var skeleton_scene: PackedScene
 var creeper_scene: PackedScene
 var spider_scene: PackedScene
+var enderman_scene: PackedScene
+var witch_scene: PackedScene
 
 # Spawn weights (increase over time)
 var zombie_weight: float = 100.0
 var skeleton_weight: float = 0.0
 var creeper_weight: float = 0.0
 var spider_weight: float = 0.0
+var enderman_weight: float = 0.0
+var witch_weight: float = 0.0
 
 var player: Node2D = null
 var spawn_timer: Timer
@@ -42,6 +47,8 @@ func _ready() -> void:
 	skeleton_scene = load("res://scenes/enemies/skeleton.tscn")
 	creeper_scene = load("res://scenes/enemies/creeper.tscn")
 	spider_scene = load("res://scenes/enemies/spider.tscn")
+	enderman_scene = load("res://scenes/enemies/enderman.tscn")
+	witch_scene = load("res://scenes/enemies/witch.tscn")
 
 func _process(delta: float) -> void:
 	game_time += delta
@@ -60,6 +67,14 @@ func _update_spawn_weights() -> void:
 	# Creepers after 90 seconds
 	if game_time > 90.0:
 		creeper_weight = min(30.0, (game_time - 90.0) * 0.3)
+
+	# Enderman after 120 seconds (rare, teleporting enemy)
+	if game_time > 120.0:
+		enderman_weight = min(20.0, (game_time - 120.0) * 0.2)
+
+	# Witch after 150 seconds (rare, ranged enemy)
+	if game_time > 150.0:
+		witch_weight = min(15.0, (game_time - 150.0) * 0.15)
 
 func _find_player() -> void:
 	await get_tree().process_frame
@@ -105,7 +120,7 @@ func _spawn_enemy() -> void:
 	enemy_spawned.emit(enemy)
 
 func _select_enemy_type() -> PackedScene:
-	var total_weight = zombie_weight + skeleton_weight + creeper_weight + spider_weight
+	var total_weight = zombie_weight + skeleton_weight + creeper_weight + spider_weight + enderman_weight + witch_weight
 	var roll = randf() * total_weight
 
 	if roll < zombie_weight:
@@ -122,11 +137,20 @@ func _select_enemy_type() -> PackedScene:
 
 	if roll < creeper_weight:
 		return creeper_scene
+	roll -= creeper_weight
+
+	if roll < enderman_weight:
+		return enderman_scene
+	roll -= enderman_weight
+
+	if roll < witch_weight:
+		return witch_scene
 
 	return zombie_scene
 
-func _on_enemy_died(_xp_value: int) -> void:
+func _on_enemy_died(xp_value: int) -> void:
 	current_enemy_count -= 1
+	enemy_killed.emit(xp_value)
 
 func set_spawn_rate(interval: float) -> void:
 	spawn_interval = interval

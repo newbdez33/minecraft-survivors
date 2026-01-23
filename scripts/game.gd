@@ -8,17 +8,22 @@ extends Node2D
 @onready var upgrade_manager: Node = $UpgradeManager
 @onready var upgrade_ui: CanvasLayer = $UpgradeUI
 @onready var game_over_ui: CanvasLayer = $GameOverUI
-
-## Game statistics
-var game_stats: Node = null
+@onready var day_night_cycle: Node = $DayNightCycle
+@onready var wave_manager: Node = $WaveManager
+@onready var game_stats: Node = $GameStats
 
 func _ready() -> void:
-	# Initialize game stats
-	var stats_script = load("res://scripts/systems/game_stats.gd")
-	if stats_script:
-		game_stats = stats_script.new()
-		add_child(game_stats)
+	# Start tracking game stats
+	if game_stats:
 		game_stats.start_tracking()
+
+	# Connect wave manager signals
+	if wave_manager:
+		wave_manager.wave_started.connect(_on_wave_started)
+
+	# Connect day/night cycle signals
+	if day_night_cycle:
+		day_night_cycle.time_changed.connect(_on_time_changed)
 
 	# Connect player health to HUD
 	if player and hud:
@@ -44,6 +49,10 @@ func _ready() -> void:
 	if game_over_ui:
 		game_over_ui.restart_pressed.connect(_on_restart_pressed)
 		game_over_ui.quit_pressed.connect(_on_quit_pressed)
+
+	# Connect spawner enemy_killed signal
+	if spawner:
+		spawner.enemy_killed.connect(_on_enemy_killed)
 
 func _on_player_health_changed(current: int, maximum: int) -> void:
 	if hud:
@@ -95,7 +104,21 @@ func _on_restart_pressed() -> void:
 func _on_quit_pressed() -> void:
 	get_tree().quit()
 
-## Called when an enemy is killed (connect from enemy death)
-func on_enemy_killed() -> void:
+## Called when an enemy is killed via spawner signal
+func _on_enemy_killed(_xp_value: int) -> void:
 	if game_stats:
 		game_stats.add_kill()
+		# Update kills display
+		if hud:
+			hud.set_kills(game_stats.kills)
+
+func _on_wave_started(wave_number: int) -> void:
+	if hud:
+		hud.set_wave(wave_number)
+
+func _on_time_changed(time: float) -> void:
+	if hud:
+		hud.set_time(time)
+	# Update game stats survival time
+	if game_stats:
+		game_stats.survival_time = time

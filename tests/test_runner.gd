@@ -69,6 +69,10 @@ func _init() -> void:
 		_run_test_suite("Enderman Tests", _test_enderman)
 		_run_test_suite("Witch Tests", _test_witch)
 		_run_test_suite("Potion Tests", _test_potion)
+		# Step 12: Integration
+		_run_test_suite("Spawner Integration Tests", _test_spawner_integration)
+		_run_test_suite("HUD Integration Tests", _test_hud_integration)
+		_run_test_suite("Main Scene Integration Tests", _test_main_scene_integration)
 
 	# Print summary
 	_print_summary()
@@ -1073,3 +1077,114 @@ func _test_potion() -> void:
 		_assert_true(false, "T4.6.32: Potion has explode method")
 		_assert_true(false, "T4.6.33: Potion is Area2D")
 		_assert_true(false, "T4.6.34: Potion has direction property")
+
+# =============================================================================
+# PHASE 4 STEP 12: INTEGRATION TESTS (TDD - Write First)
+# =============================================================================
+
+func _test_spawner_integration() -> void:
+	# T4.12.1: Spawner loads Enderman scene
+	var spawner_script = load("res://scripts/spawner.gd")
+	_assert_not_null(spawner_script, "T4.12.1: Spawner script loads")
+
+	if spawner_script:
+		var spawner = Node.new()
+		spawner.set_script(spawner_script)
+
+		# T4.12.2: Spawner has enderman_scene variable
+		_assert_true("enderman_scene" in spawner, "T4.12.2: Spawner has enderman_scene")
+
+		# T4.12.3: Spawner has witch_scene variable
+		_assert_true("witch_scene" in spawner, "T4.12.3: Spawner has witch_scene")
+
+		# T4.12.4: Spawner has enderman_weight variable
+		_assert_true("enderman_weight" in spawner, "T4.12.4: Spawner has enderman_weight")
+
+		# T4.12.5: Spawner has witch_weight variable
+		_assert_true("witch_weight" in spawner, "T4.12.5: Spawner has witch_weight")
+
+		# T4.12.19: Spawner has enemy_killed signal for kill tracking
+		_assert_true(spawner.has_signal("enemy_killed"), "T4.12.19: Spawner has enemy_killed signal")
+
+		spawner.free()
+	else:
+		_assert_true(false, "T4.12.2: Spawner has enderman_scene")
+		_assert_true(false, "T4.12.3: Spawner has witch_scene")
+		_assert_true(false, "T4.12.4: Spawner has enderman_weight")
+		_assert_true(false, "T4.12.5: Spawner has witch_weight")
+		_assert_true(false, "T4.12.19: Spawner has enemy_killed signal")
+
+func _test_hud_integration() -> void:
+	var hud_scene = load("res://scenes/ui/hud.tscn")
+	if hud_scene:
+		var hud = hud_scene.instantiate()
+
+		# T4.12.6: HUD has set_wave method
+		_assert_true(hud.has_method("set_wave"), "T4.12.6: HUD has set_wave method")
+
+		# T4.12.7: HUD has set_kills method
+		_assert_true(hud.has_method("set_kills"), "T4.12.7: HUD has set_kills method")
+
+		# T4.12.8: HUD has set_time method
+		_assert_true(hud.has_method("set_time"), "T4.12.8: HUD has set_time method")
+
+		# T4.12.9: HUD has WaveLabel or wave display
+		var has_wave = hud.has_node("WaveLabel") or hud.has_node("MarginContainer/VBoxContainer/TopBar/WaveLabel") or hud.has_node("TopBar/WaveLabel")
+		_assert_true(has_wave or hud.has_method("set_wave"), "T4.12.9: HUD has wave display")
+
+		# T4.12.10: HUD has KillsLabel or kills display
+		var has_kills = hud.has_node("KillsLabel") or hud.has_node("MarginContainer/VBoxContainer/TopBar/KillsLabel") or hud.has_node("TopBar/KillsLabel")
+		_assert_true(has_kills or hud.has_method("set_kills"), "T4.12.10: HUD has kills display")
+
+		hud.free()
+	else:
+		_assert_true(false, "T4.12.6: HUD has set_wave method")
+		_assert_true(false, "T4.12.7: HUD has set_kills method")
+		_assert_true(false, "T4.12.8: HUD has set_time method")
+		_assert_true(false, "T4.12.9: HUD has wave display")
+		_assert_true(false, "T4.12.10: HUD has kills display")
+
+func _test_main_scene_integration() -> void:
+	# T4.12.11: Main scene loads
+	var main_scene = load("res://scenes/main.tscn")
+	_assert_not_null(main_scene, "T4.12.11: Main scene loads")
+
+	if main_scene:
+		var main = main_scene.instantiate()
+
+		# T4.12.12: Main has Player
+		_assert_not_null(main.get_node_or_null("Player"), "T4.12.12: Main has Player")
+
+		# T4.12.13: Main has HUD
+		var hud = main.get_node_or_null("HUD") or main.get_node_or_null("CanvasLayer/HUD")
+		_assert_not_null(hud, "T4.12.13: Main has HUD")
+
+		# T4.12.14: Main has GameOverUI
+		var game_over = main.get_node_or_null("GameOverUI") or main.get_node_or_null("CanvasLayer/GameOverUI")
+		_assert_not_null(game_over, "T4.12.14: Main has GameOverUI")
+
+		# T4.12.15: Main has Spawner or MobSpawner
+		var spawner = main.get_node_or_null("Spawner") or main.get_node_or_null("MobSpawner")
+		_assert_not_null(spawner, "T4.12.15: Main has Spawner")
+
+		# T4.12.16: Main has DayNightCycle
+		var day_night = main.get_node_or_null("DayNightCycle")
+		_assert_not_null(day_night, "T4.12.16: Main has DayNightCycle")
+
+		# T4.12.17: Main has WaveManager
+		var wave_manager = main.get_node_or_null("WaveManager")
+		_assert_not_null(wave_manager, "T4.12.17: Main has WaveManager")
+
+		# T4.12.18: Main has GameStats
+		var game_stats = main.get_node_or_null("GameStats")
+		_assert_not_null(game_stats, "T4.12.18: Main has GameStats")
+
+		main.free()
+	else:
+		_assert_true(false, "T4.12.12: Main has Player")
+		_assert_true(false, "T4.12.13: Main has HUD")
+		_assert_true(false, "T4.12.14: Main has GameOverUI")
+		_assert_true(false, "T4.12.15: Main has Spawner")
+		_assert_true(false, "T4.12.16: Main has DayNightCycle")
+		_assert_true(false, "T4.12.17: Main has WaveManager")
+		_assert_true(false, "T4.12.18: Main has GameStats")

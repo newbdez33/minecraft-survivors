@@ -5,6 +5,9 @@ class_name HUD
 @onready var hearts_container: HBoxContainer = $MarginContainer/VBoxContainer/HeartsContainer
 @onready var xp_bar: ProgressBar = $MarginContainer/VBoxContainer/XPBar
 @onready var level_label: Label = $MarginContainer/VBoxContainer/LevelLabel
+@onready var wave_label: Label = $TopRightContainer/WaveLabel
+@onready var kills_label: Label = $TopRightContainer/KillsLabel
+@onready var time_label: Label = $TopCenterContainer/TimeLabel
 
 var heart_full_texture: Texture2D
 var heart_half_texture: Texture2D
@@ -69,3 +72,17 @@ func set_level(level: int) -> void:
 	_current_level = level
 	if level_label:
 		level_label.text = "Lv. " + str(level)
+
+func set_wave(wave: int) -> void:
+	if wave_label:
+		wave_label.text = "Wave " + str(wave)
+
+func set_kills(kills: int) -> void:
+	if kills_label:
+		kills_label.text = "Kills: " + str(kills)
+
+func set_time(time_seconds: float) -> void:
+	if time_label:
+		var minutes = int(time_seconds) / 60
+		var seconds = int(time_seconds) % 60
+		time_label.text = "%02d:%02d" % [minutes, seconds]

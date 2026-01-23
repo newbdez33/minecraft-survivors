@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://main001"]
+[gd_scene load_steps=12 format=3 uid="uid://main001"]
 
 [ext_resource type="PackedScene" uid="uid://player001" path="res://scenes/player.tscn" id="1_player"]
 [ext_resource type="Script" path="res://scripts/camera.gd" id="2_camera"]
@@ -9,6 +9,9 @@
 [ext_resource type="Script" path="res://scripts/systems/upgrade_manager.gd" id="7_upgrade_manager"]
 [ext_resource type="PackedScene" uid="uid://upgradeui001" path="res://scenes/ui/upgrade_ui.tscn" id="8_upgrade_ui"]
 [ext_resource type="PackedScene" uid="uid://phase4gameover" path="res://scenes/ui/game_over_ui.tscn" id="9_game_over_ui"]
+[ext_resource type="Script" path="res://scripts/systems/day_night_cycle.gd" id="10_day_night"]
+[ext_resource type="Script" path="res://scripts/systems/wave_manager.gd" id="11_wave_manager"]
+[ext_resource type="Script" path="res://scripts/systems/game_stats.gd" id="12_game_stats"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("6_game")
@@ -41,3 +44,12 @@ script = ExtResource("7_upgrade_manager")
 [node name="UpgradeUI" parent="." instance=ExtResource("8_upgrade_ui")]
 
 [node name="GameOverUI" parent="." instance=ExtResource("9_game_over_ui")]
+
+[node name="DayNightCycle" type="Node" parent="."]
+script = ExtResource("10_day_night")
+
+[node name="WaveManager" type="Node" parent="."]
+script = ExtResource("11_wave_manager")
+
+[node name="GameStats" type="Node" parent="."]
+script = ExtResource("12_game_stats")
