@@ -14,6 +14,7 @@ monitoring = true
 monitorable = false
 script = ExtResource("1_sword")
 attack_range = 100.0
+knockback = 0.0
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 z_index = -1

@@ -6,6 +6,7 @@ signal health_changed(current: int, maximum: int)
 signal died
 signal xp_changed(current: int, needed: int)
 signal leveled_up(new_level: int)
+signal facing_changed(direction: Vector2)
 
 @export var speed: float = 200.0
 @export var max_health: int = 100
@@ -21,6 +22,13 @@ var _health_component: Node = null
 var current_xp: int = 0
 var current_level: int = 1
 var xp_to_next_level: int = 10
+
+# Upgrade bonuses
+var xp_multiplier: float = 1.0  # Looting upgrade
+var damage_reduction: float = 0.0  # Protection upgrade (0.0 = 0%, 0.1 = 10%)
+
+# Facing direction for weapon positioning
+var facing_direction: Vector2 = Vector2.RIGHT
 
 func _ready() -> void:
 	current_health = max_health
@@ -44,6 +52,11 @@ func _physics_process(_delta: float) -> void:
 
 	if input_direction != Vector2.ZERO:
 		velocity = input_direction.normalized() * speed
+		# Update facing direction when moving
+		var new_facing = input_direction.normalized()
+		if new_facing != facing_direction:
+			facing_direction = new_facing
+			facing_changed.emit(facing_direction)
 	else:
 		velocity = Vector2.ZERO
 
@@ -59,10 +72,14 @@ func take_damage(amount: int) -> void:
 	if is_invincible:
 		return
 
+	# Apply protection damage reduction
+	var actual_damage = int(amount * (1.0 - damage_reduction))
+	actual_damage = max(1, actual_damage)  # Always take at least 1 damage
+
 	if _health_component:
-		_health_component.take_damage(amount)
+		_health_component.take_damage(actual_damage)
 	else:
-		current_health = max(0, current_health - amount)
+		current_health = max(0, current_health - actual_damage)
 		health_changed.emit(current_health, max_health)
 		if current_health <= 0:
 			_on_died()
@@ -110,7 +127,9 @@ func _on_died() -> void:
 
 # XP/Level System
 func add_xp(amount: int) -> void:
-	current_xp += amount
+	# Apply looting multiplier
+	var actual_xp = int(amount * xp_multiplier)
+	current_xp += actual_xp
 
 	# Check for level up
 	while current_xp >= xp_to_next_level:
