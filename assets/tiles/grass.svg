@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" shape-rendering="crispEdges">
+  <!-- Grass Tile - Top-down view - Minecraft Survivors -->
+
+  <!-- Base grass -->
+  <rect x="0" y="0" width="32" height="32" fill="#7CBD6B"/>
+
+  <!-- Darker grass patches for texture -->
+  <rect x="0" y="0" width="4" height="4" fill="#5A9C4A"/>
+  <rect x="8" y="4" width="4" height="4" fill="#5A9C4A"/>
+  <rect x="20" y="0" width="4" height="4" fill="#5A9C4A"/>
+  <rect x="28" y="8" width="4" height="4" fill="#5A9C4A"/>
+  <rect x="4" y="12" width="4" height="4" fill="#5A9C4A"/>
+  <rect x="16" y="12" width="4" height="4" fill="#5A9C4A"/>
+  <rect x="0" y="20" width="4" height="4" fill="#5A9C4A"/>
+  <rect x="12" y="20" width="4" height="4" fill="#5A9C4A"/>
+  <rect x="24" y="20" width="4" height="4" fill="#5A9C4A"/>
+  <rect x="8" y="28" width="4" height="4" fill="#5A9C4A"/>
+  <rect x="20" y="28" width="4" height="4" fill="#5A9C4A"/>
+
+  <!-- Small dirt specks -->
+  <rect x="6" y="6" width="2" height="2" fill="#8B6B47"/>
+  <rect x="26" y="14" width="2" height="2" fill="#8B6B47"/>
+  <rect x="2" y="26" width="2" height="2" fill="#8B6B47"/>
+</svg>

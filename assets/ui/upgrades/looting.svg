@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" shape-rendering="crispEdges">
+  <!-- Looting: Gold coins/gems with sparkles -->
+  <!-- Main gold coin -->
+  <rect x="10" y="12" width="12" height="12" fill="#ffd700"/>
+  <rect x="8" y="14" width="2" height="8" fill="#daa520"/>
+  <rect x="22" y="14" width="2" height="8" fill="#daa520"/>
+  <rect x="12" y="10" width="8" height="2" fill="#ffd700"/>
+  <rect x="12" y="24" width="8" height="2" fill="#daa520"/>
+
+  <!-- Coin highlight -->
+  <rect x="12" y="14" width="4" height="4" fill="#ffec8b"/>
+  <rect x="11" y="15" width="2" height="2" fill="#fff8dc"/>
+
+  <!-- Dollar/XP symbol on coin -->
+  <rect x="15" y="14" width="2" height="2" fill="#daa520"/>
+  <rect x="14" y="16" width="4" height="2" fill="#daa520"/>
+  <rect x="15" y="18" width="2" height="2" fill="#daa520"/>
+  <rect x="14" y="20" width="4" height="2" fill="#daa520"/>
+
+  <!-- Second coin (behind) -->
+  <rect x="4" y="16" width="8" height="8" fill="#ffc125"/>
+  <rect x="6" y="14" width="4" height="2" fill="#ffc125"/>
+  <rect x="2" y="18" width="2" height="4" fill="#cd9b1d"/>
+
+  <!-- Sparkles (green for XP) -->
+  <rect x="24" y="4" width="4" height="4" fill="#7cfc00"/>
+  <rect x="26" y="2" width="2" height="2" fill="#adff2f"/>
+  <rect x="22" y="6" width="2" height="2" fill="#adff2f"/>
+  <rect x="28" y="6" width="2" height="2" fill="#adff2f"/>
+
+  <rect x="2" y="6" width="2" height="2" fill="#7cfc00"/>
+  <rect x="6" y="4" width="2" height="2" fill="#7cfc00"/>
+
+  <rect x="26" y="24" width="2" height="2" fill="#7cfc00"/>
+  <rect x="28" y="22" width="2" height="2" fill="#adff2f"/>
+</svg>

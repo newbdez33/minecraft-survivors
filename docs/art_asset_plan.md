@@ -7,6 +7,7 @@
 - **风格**: Minecraft 像素风格 (16x16 或 32x32 像素)
 - **视角**: 俯视角 (Top-down) - 不是 Minecraft 原版的侧视角
 - **调色板**: 使用 Minecraft 的经典配色
+- **格式**: SVG (可缩放矢量图形)
 
 ```
 俯视角示例:
@@ -17,32 +18,41 @@
 
 ---
 
+## 资源完成状态
+
+### 已完成 ✅
+
+| 文件 | 尺寸 | 路径 | 状态 |
+|------|------|------|------|
+| steve.svg | 32x32 | assets/characters/ | ✅ 已集成 |
+| zombie.svg | 32x32 | assets/characters/ | ✅ 完成 |
+| skeleton.svg | 32x32 | assets/characters/ | ✅ 完成 |
+| creeper.svg | 32x32 | assets/characters/ | ✅ 完成 |
+| spider.svg | 48x32 | assets/characters/ | ✅ 完成 |
+| grass.svg | 32x32 | assets/tiles/ | ✅ 已集成 |
+| grass_variant1.svg | 32x32 | assets/tiles/ | ✅ 已集成 |
+| grass_variant2.svg | 32x32 | assets/tiles/ | ✅ 已集成 |
+| dirt.svg | 32x32 | assets/tiles/ | ✅ 完成 |
+| diamond_sword.svg | 16x16 | assets/weapons/ | ✅ 完成 |
+| bow.svg | 16x16 | assets/weapons/ | ✅ 完成 |
+| arrow.svg | 16x8 | assets/weapons/ | ✅ 完成 |
+| xp_orb.svg | 16x16 | assets/items/ | ✅ 完成 |
+| heart_full.svg | 16x16 | assets/items/ | ✅ 完成 |
+| heart_half.svg | 16x16 | assets/items/ | ✅ 完成 |
+| heart_empty.svg | 16x16 | assets/items/ | ✅ 完成 |
+| hit_effect.svg | 128x32 (4帧) | assets/effects/ | ✅ 完成 |
+| death_poof.svg | 160x32 (5帧) | assets/effects/ | ✅ 完成 |
+| explosion.svg | 384x64 (6帧) | assets/effects/ | ✅ 完成 |
+
+---
+
 ## 一、角色贴图 (Characters)
 
-### 1. Steve (玩家)
+### 1. Steve (玩家) ✅
 
-| 文件名 | 尺寸 | 描述 |
-|--------|------|------|
-| `steve_idle.png` | 32x32 | Steve 站立 |
-| `steve_walk_down.png` | 32x32 x 4帧 | Steve 向下走动画 |
-| `steve_walk_up.png` | 32x32 x 4帧 | Steve 向上走动画 |
-| `steve_walk_left.png` | 32x32 x 4帧 | Steve 向左走动画 |
-| `steve_walk_right.png` | 32x32 x 4帧 | Steve 向右走动画 |
-
-**简化版** (如果不想做动画):
-| 文件名 | 尺寸 | 描述 |
-|--------|------|------|
-| `steve.png` | 32x32 | Steve 单帧 (俯视角) |
-
-**Steve 俯视角参考**:
-```
-    ┌──────┐
-    │ 棕棕 │  ← 头发 (棕色)
-    │ 肤肤 │  ← 脸 (肤色)
-    │ 蓝蓝 │  ← 衣服 (青色/蓝色)
-    │ 蓝蓝 │
-    └──────┘
-```
+| 文件名 | 尺寸 | 描述 | 状态 |
+|--------|------|------|------|
+| `steve.svg` | 32x32 | Steve 俯视角 | ✅ 已集成到 player.tscn |
 
 颜色参考:
 - 头发: `#4A3728` (深棕色)
@@ -52,22 +62,11 @@
 
 ---
 
-### 2. Zombie (僵尸) - 基础敌人
+### 2. Zombie (僵尸) ✅
 
-| 文件名 | 尺寸 | 描述 |
-|--------|------|------|
-| `zombie.png` | 32x32 | Zombie 单帧 |
-| `zombie_walk.png` | 32x32 x 4帧 | (可选) 走路动画 |
-
-**Zombie 俯视角参考**:
-```
-    ┌──────┐
-    │ 绿绿 │  ← 头 (绿色)
-    │ 绿绿 │  ← 脸 (深绿色)
-    │ 青青 │  ← 衣服 (青色，破烂)
-    │ 蓝蓝 │  ← 裤子 (蓝色)
-    └──────┘
-```
+| 文件名 | 尺寸 | 描述 | 状态 |
+|--------|------|------|------|
+| `zombie.svg` | 32x32 | Zombie 俯视角 | ✅ 完成 |
 
 颜色参考:
 - 皮肤: `#7BC45C` (僵尸绿)
@@ -77,35 +76,24 @@
 
 ---
 
-### 3. Skeleton (骷髅) - 远程敌人
+### 3. Skeleton (骷髅) ✅
 
-| 文件名 | 尺寸 | 描述 |
-|--------|------|------|
-| `skeleton.png` | 32x32 | Skeleton 单帧 |
+| 文件名 | 尺寸 | 描述 | 状态 |
+|--------|------|------|------|
+| `skeleton.svg` | 32x32 | Skeleton 俯视角 | ✅ 完成 |
 
-**颜色参考**:
+颜色参考:
 - 骨头: `#C8C8C8` (浅灰色)
 - 阴影: `#8B8B8B` (深灰色)
 - 眼睛: `#1A1A1A` (黑色)
 
 ---
 
-### 4. Creeper (苦力怕) - 爆炸敌人
+### 4. Creeper (苦力怕) ✅
 
-| 文件名 | 尺寸 | 描述 |
-|--------|------|------|
-| `creeper.png` | 32x32 | Creeper 单帧 |
-| `creeper_flash.png` | 32x32 | (可选) 爆炸前闪烁 (白色) |
-
-**Creeper 俯视角参考**:
-```
-    ┌──────┐
-    │ ▓░▓░ │  ← 绿色迷彩
-    │ █  █ │  ← 眼睛 (黑色)
-    │ ▓░▓░ │
-    │ ░▓░▓ │
-    └──────┘
-```
+| 文件名 | 尺寸 | 描述 | 状态 |
+|--------|------|------|------|
+| `creeper.svg` | 32x32 | Creeper 俯视角 | ✅ 完成 |
 
 颜色参考:
 - 浅绿: `#6AAB4E`
@@ -114,11 +102,11 @@
 
 ---
 
-### 5. Spider (蜘蛛) - 快速敌人
+### 5. Spider (蜘蛛) ✅
 
-| 文件名 | 尺寸 | 描述 |
-|--------|------|------|
-| `spider.png` | 48x32 | Spider (稍宽，因为有腿) |
+| 文件名 | 尺寸 | 描述 | 状态 |
+|--------|------|------|------|
+| `spider.svg` | 48x32 | Spider 俯视角 (宽) | ✅ 完成 |
 
 颜色参考:
 - 身体: `#4A4040` (深灰棕)
@@ -126,14 +114,13 @@
 
 ---
 
-## 二、武器贴图 (Weapons)
+## 二、武器贴图 (Weapons) ✅
 
-### 1. Diamond Sword (钻石剑)
-
-| 文件名 | 尺寸 | 描述 |
-|--------|------|------|
-| `diamond_sword.png` | 16x16 | 钻石剑图标 |
-| `sword_slash.png` | 64x64 x 4帧 | (可选) 挥剑特效 |
+| 文件名 | 尺寸 | 描述 | 状态 |
+|--------|------|------|------|
+| `diamond_sword.svg` | 16x16 | 钻石剑图标 | ✅ 完成 |
+| `bow.svg` | 16x16 | 弓图标 | ✅ 完成 |
+| `arrow.svg` | 16x8 | 箭矢 | ✅ 完成 |
 
 颜色参考:
 - 剑刃: `#33EBCB` (钻石青色)
@@ -141,67 +128,30 @@
 
 ---
 
-### 2. Bow & Arrow (弓箭) - Phase 3
+## 三、物品贴图 (Items) ✅
 
-| 文件名 | 尺寸 | 描述 |
-|--------|------|------|
-| `bow.png` | 16x16 | 弓图标 |
-| `arrow.png` | 16x8 | 箭矢 |
-
----
-
-## 三、物品贴图 (Items)
-
-### 1. XP Orb (经验球)
-
-| 文件名 | 尺寸 | 描述 |
-|--------|------|------|
-| `xp_orb.png` | 16x16 | 经验球 (绿色发光) |
-| `xp_orb_anim.png` | 16x16 x 4帧 | (可选) 动画版本 |
+| 文件名 | 尺寸 | 描述 | 状态 |
+|--------|------|------|------|
+| `xp_orb.svg` | 16x16 | 经验球 (绿色发光) | ✅ 完成 |
+| `heart_full.svg` | 16x16 | 满心 | ✅ 完成 |
+| `heart_half.svg` | 16x16 | 半心 | ✅ 完成 |
+| `heart_empty.svg` | 16x16 | 空心 | ✅ 完成 |
 
 颜色参考:
-- 核心: `#AEFF00` (亮黄绿)
-- 外圈: `#5EFF00` (绿色)
-- 发光: `#CCFF00` (黄绿色)
-
----
-
-### 2. Heart (爱心/生命值)
-
-| 文件名 | 尺寸 | 描述 |
-|--------|------|------|
-| `heart_full.png` | 16x16 | 满心 |
-| `heart_half.png` | 16x16 | 半心 |
-| `heart_empty.png` | 16x16 | 空心 |
-
-颜色参考:
-- 红色: `#FF0000`
-- 深红: `#AA0000`
+- XP核心: `#AEFF00` (亮黄绿)
+- 红心: `#FF0000` / `#AA0000`
 - 空心: `#555555`
 
 ---
 
-## 四、场景贴图 (Environment)
+## 四、场景贴图 (Environment) ✅
 
-### 1. 地面 (Ground Tiles)
-
-| 文件名 | 尺寸 | 描述 |
-|--------|------|------|
-| `grass.png` | 32x32 | 草地 |
-| `grass_variant1.png` | 32x32 | 草地变体1 (小花) |
-| `grass_variant2.png` | 32x32 | 草地变体2 (小草) |
-| `dirt.png` | 32x32 | 泥土 |
-| `stone.png` | 32x32 | (可选) 石头 |
-
-**草地俯视角参考**:
-```
-┌────────────────┐
-│ ░░▒░░░▒░░░░▒░░ │  深浅不一的绿色
-│ ░░░░▒░░░▒░░░░░ │  偶尔有小花/草
-│ ░▒░░░░░░░░▒░░░ │
-│ ░░░░░▒░░░░░░▒░ │
-└────────────────┘
-```
+| 文件名 | 尺寸 | 描述 | 状态 |
+|--------|------|------|------|
+| `grass.svg` | 32x32 | 草地 | ✅ 已集成到 arena.gd |
+| `grass_variant1.svg` | 32x32 | 草地变体 (小花) | ✅ 已集成到 arena.gd |
+| `grass_variant2.svg` | 32x32 | 草地变体 (草丛) | ✅ 已集成到 arena.gd |
+| `dirt.svg` | 32x32 | 泥土 | ✅ 完成 |
 
 颜色参考:
 - 草地浅: `#7CBD6B`
@@ -210,50 +160,13 @@
 
 ---
 
-## 五、UI 贴图 (User Interface)
+## 五、特效贴图 (Effects) ✅
 
-### 1. 血条 / HUD
-
-| 文件名 | 尺寸 | 描述 |
-|--------|------|------|
-| `hotbar_bg.png` | 182x22 | (可选) 快捷栏背景 |
-| `ui_frame.png` | 可变 | UI 边框 |
-
----
-
-## 六、特效贴图 (Effects)
-
-| 文件名 | 尺寸 | 描述 |
-|--------|------|------|
-| `hit_effect.png` | 32x32 x 4帧 | 击中特效 |
-| `death_poof.png` | 32x32 x 5帧 | 死亡烟雾 |
-| `explosion.png` | 64x64 x 6帧 | Creeper 爆炸 |
-
----
-
-## 资源获取方式
-
-### 方案 A: 自己绘制 (推荐学习)
-- 使用免费像素画工具:
-  - **Aseprite** (付费，但很专业)
-  - **Piskel** (免费，在线) - https://www.piskelapp.com/
-  - **LibreSprite** (免费，Aseprite 开源版)
-  - **Pixilart** (免费，在线) - https://www.pixilart.com/
-
-### 方案 B: 使用免费素材
-- **OpenGameArt** - https://opengameart.org/
-  - 搜索 "top down rpg" 或 "pixel art characters"
-- **Itch.io** - https://itch.io/game-assets/free
-  - 很多免费像素素材包
-- **Kenney** - https://kenney.nl/assets
-  - 高质量免费素材
-
-### 方案 C: 使用 AI 生成
-- 使用 AI 图片生成工具生成基础图，再用像素画工具调整
-
-### 方案 D: 委托/购买
-- Fiverr, 淘宝等平台找人绘制
-- 购买现成的 Minecraft 风格素材包
+| 文件名 | 尺寸 | 描述 | 状态 |
+|--------|------|------|------|
+| `hit_effect.svg` | 128x32 | 击中特效 (4帧 spritesheet) | ✅ 完成 |
+| `death_poof.svg` | 160x32 | 死亡烟雾 (5帧 spritesheet) | ✅ 完成 |
+| `explosion.svg` | 384x64 | Creeper 爆炸 (6帧 spritesheet) | ✅ 完成 |
 
 ---
 
@@ -262,81 +175,77 @@
 ```
 assets/
 ├── characters/
-│   ├── steve.png
-│   ├── zombie.png
-│   ├── skeleton.png
-│   ├── creeper.png
-│   └── spider.png
+│   ├── steve.svg      ✅
+│   ├── zombie.svg     ✅
+│   ├── skeleton.svg   ✅
+│   ├── creeper.svg    ✅
+│   └── spider.svg     ✅
 ├── weapons/
-│   ├── diamond_sword.png
-│   ├── bow.png
-│   └── arrow.png
+│   ├── diamond_sword.svg  ✅
+│   ├── bow.svg            ✅
+│   └── arrow.svg          ✅
 ├── items/
-│   ├── xp_orb.png
-│   ├── heart_full.png
-│   ├── heart_half.png
-│   └── heart_empty.png
+│   ├── xp_orb.svg         ✅
+│   ├── heart_full.svg     ✅
+│   ├── heart_half.svg     ✅
+│   └── heart_empty.svg    ✅
 ├── tiles/
-│   ├── grass.png
-│   ├── grass_variant1.png
-│   ├── grass_variant2.png
-│   └── dirt.png
+│   ├── grass.svg          ✅
+│   ├── grass_variant1.svg ✅
+│   ├── grass_variant2.svg ✅
+│   └── dirt.svg           ✅
 ├── effects/
-│   ├── hit_effect.png
-│   ├── death_poof.png
-│   └── explosion.png
+│   ├── hit_effect.svg     ✅
+│   ├── death_poof.svg     ✅
+│   └── explosion.svg      ✅
 └── ui/
-    └── (UI elements)
+    └── (待添加)
 ```
 
 ---
 
-## 优先级
+## 集成状态
 
-### Phase 1.5 (现在做)
-1. ⭐ `steve.png` - 玩家角色
-2. ⭐ `grass.png` - 地面
-3. ⭐ `grass_variant1.png` - 地面变体
+### Phase 1.5 ✅ 完成
+- [x] `steve.svg` - 已集成到 `scenes/player.tscn`
+- [x] `grass.svg` - 已集成到 `scripts/arena.gd`
+- [x] `grass_variant1.svg` - 已集成到 `scripts/arena.gd`
+- [x] `grass_variant2.svg` - 已集成到 `scripts/arena.gd`
 
-### Phase 2 需要
-4. `zombie.png` - 基础敌人
-5. `diamond_sword.png` - 武器
-6. `xp_orb.png` - 经验球
-7. `heart_full.png` / `heart_half.png` / `heart_empty.png` - 生命值
+### Phase 2 待集成
+- [ ] `zombie.svg` - 需要创建敌人系统
+- [ ] `diamond_sword.svg` - 需要创建武器系统
+- [ ] `xp_orb.svg` - 需要创建拾取系统
+- [ ] `heart_*.svg` - 需要创建 HUD 系统
 
-### Phase 3 需要
-8. `skeleton.png`
-9. `creeper.png`
-10. `spider.png`
-11. `bow.png` / `arrow.png`
-
----
-
-## 技术规格总结
-
-| 类型 | 建议尺寸 | 格式 |
-|------|----------|------|
-| 角色 | 32x32 px | PNG (透明背景) |
-| 地面 | 32x32 px | PNG |
-| 物品 | 16x16 px | PNG (透明背景) |
-| 特效 | 32x32 或 64x64 px | PNG (透明背景) |
-| UI | 根据需要 | PNG (透明背景) |
-
-**重要**: 所有贴图使用 **PNG 格式**，角色和物品需要**透明背景**。
+### Phase 3 待集成
+- [ ] `skeleton.svg` - 远程敌人
+- [ ] `creeper.svg` - 爆炸敌人
+- [ ] `spider.svg` - 快速敌人
+- [ ] `bow.svg` / `arrow.svg` - 远程武器
+- [ ] `hit_effect.svg` - 击中特效
+- [ ] `death_poof.svg` - 死亡特效
+- [ ] `explosion.svg` - 爆炸特效
 
 ---
 
-## 下一步
+## 技术规格
 
-1. 确定使用哪种方案获取资源
-2. 先制作/获取最优先的 3 个贴图:
-   - Steve
-   - 草地
-   - 草地变体
-3. 在 Godot 中替换 placeholder
-4. 测试效果
+| 类型 | 尺寸 | 格式 |
+|------|------|------|
+| 角色 | 32x32 px | SVG |
+| 地面 | 32x32 px | SVG |
+| 物品 | 16x16 px | SVG |
+| 武器 | 16x16 或 16x8 px | SVG |
+| 特效 | Spritesheet | SVG |
 
-需要我帮你做什么？
-- 创建资源文件夹结构？
-- 寻找免费素材？
-- 制作简单的 placeholder 贴图？
+**注意**:
+- 所有 SVG 使用 `shape-rendering="crispEdges"` 保持像素锐利
+- Godot 导入时会自动光栅化 SVG
+- 可根据需要调整导入设置中的缩放比例
+
+---
+
+## 更新日志
+
+- **2026-01-23**: 创建所有 19 个 SVG 资源，集成 Steve 和草地瓷砖到游戏中
