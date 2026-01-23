@@ -77,9 +77,10 @@ See [phase4_game_feel.md](./phase4_game_feel.md) for details.
 - [ ] Game over screen
 - [ ] Game stats tracking
 - [ ] HUD enhancements
+- [ ] Localization (English, 日本語, 中文)
 - [ ] Enderman (teleports)
 - [ ] Witch (throws potions)
-- [ ] 64 new test cases planned
+- [ ] 72 new test cases planned
 
 ## Controls
 
