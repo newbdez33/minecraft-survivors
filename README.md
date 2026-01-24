@@ -1,5 +1,7 @@
 # Minecraft Survivors
 
+[![Deploy to GitHub Pages](https://github.com/newbdez33/minecraft-survivors/actions/workflows/deploy-web.yml/badge.svg)](https://github.com/newbdez33/minecraft-survivors/actions/workflows/deploy-web.yml)
+
 A Vampire Survivors-like roguelike game with Minecraft theme. Play as Steve and survive waves of mobs!
 
 ## Play Now
