@@ -15,21 +15,21 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.7)
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Container"]
+[node name="MainVBox" type="VBoxContainer" parent="Container"]
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -350.0
-offset_top = -200.0
-offset_right = 350.0
-offset_bottom = 200.0
+offset_left = -500.0
+offset_top = -220.0
+offset_right = 500.0
+offset_bottom = 220.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 30
+theme_override_constants/separation = 20
 
-[node name="TitleLabel" type="Label" parent="Container/VBoxContainer"]
+[node name="TitleLabel" type="Label" parent="Container/MainVBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.843137, 0, 1)
 theme_override_font_sizes/font_size = 36
@@ -37,12 +37,53 @@ text = "LEVEL UP!"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="CardsContainer" type="HBoxContainer" parent="Container/VBoxContainer"]
+[node name="SectionsContainer" type="HBoxContainer" parent="Container/MainVBox"]
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_constants/separation = 20
+size_flags_vertical = 3
+theme_override_constants/separation = 40
 
-[node name="TimerLabel" type="Label" parent="Container/VBoxContainer"]
+[node name="EnchantSection" type="VBoxContainer" parent="Container/MainVBox/SectionsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+
+[node name="EnchantLabel" type="Label" parent="Container/MainVBox/SectionsContainer/EnchantSection"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.6, 1, 1)
+theme_override_font_sizes/font_size = 20
+text = "Enchantments"
+horizontal_alignment = 1
+
+[node name="CardsContainer" type="HBoxContainer" parent="Container/MainVBox/SectionsContainer/EnchantSection"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+theme_override_constants/separation = 15
+
+[node name="Separator" type="VSeparator" parent="Container/MainVBox/SectionsContainer"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="WeaponSection" type="VBoxContainer" parent="Container/MainVBox/SectionsContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_constants/separation = 10
+
+[node name="WeaponLabel" type="Label" parent="Container/MainVBox/SectionsContainer/WeaponSection"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.3, 0.7, 0.9, 1)
+theme_override_font_sizes/font_size = 20
+text = "Weapons"
+horizontal_alignment = 1
+
+[node name="WeaponCardsContainer" type="HBoxContainer" parent="Container/MainVBox/SectionsContainer/WeaponSection"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+theme_override_constants/separation = 15
+
+[node name="TimerLabel" type="Label" parent="Container/MainVBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 0.8)
 theme_override_font_sizes/font_size = 28

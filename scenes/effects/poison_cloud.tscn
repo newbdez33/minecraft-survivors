@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3 uid="uid://poisoncloud001"]
+
+[ext_resource type="Script" path="res://scripts/effects/poison_cloud.gd" id="1_cloud"]
+
+[node name="PoisonCloud" type="Area2D"]
+collision_layer = 4
+collision_mask = 1
+script = ExtResource("1_cloud")
+duration = 5.0
+size = 80.0
+poison_duration = 3.0
+poison_damage_per_tick = 2
+poison_tick_interval = 0.5
+cloud_damage = 5

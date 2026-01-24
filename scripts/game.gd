@@ -1,6 +1,9 @@
 extends Node2D
 ## Main game controller
 ## Connects player signals to HUD, manages upgrades and game state
+##
+## Test Mode: Run with --test-mode to enable automatic testing
+## Options: --scenario=FULL_AUTO --duration=120 --speed=1.0 --no-screenshots
 
 @onready var player: CharacterBody2D = $Player
 @onready var hud: CanvasLayer = $HUD
@@ -13,7 +16,12 @@ extends Node2D
 @onready var game_stats: Node = $GameStats
 @onready var day_night_overlay: CanvasModulate = $DayNightOverlay
 
+var _sword: Node = null
+
 func _ready() -> void:
+	# Check for test mode
+	_check_test_mode()
+
 	# Start tracking game stats
 	if game_stats:
 		game_stats.start_tracking()
@@ -47,6 +55,8 @@ func _ready() -> void:
 	# Connect upgrade UI
 	if upgrade_ui:
 		upgrade_ui.upgrade_selected.connect(_on_upgrade_selected)
+		if upgrade_manager:
+			upgrade_ui.set_upgrade_manager(upgrade_manager)
 
 	# Connect game over UI
 	if game_over_ui:
@@ -56,6 +66,12 @@ func _ready() -> void:
 	# Connect spawner enemy_killed signal
 	if spawner:
 		spawner.enemy_killed.connect(_on_enemy_killed)
+
+	# Connect sword evolution
+	if player:
+		_sword = player.get_node_or_null("Sword")
+		if _sword and _sword.has_signal("evolved"):
+			_sword.evolved.connect(_on_sword_evolved)
 
 func _on_player_health_changed(current: int, maximum: int) -> void:
 	if hud:
@@ -72,8 +88,9 @@ func _on_player_leveled_up(new_level: int) -> void:
 	# Show upgrade selection
 	if upgrade_manager and upgrade_ui:
 		var upgrades = upgrade_manager.get_random_upgrades(3)
-		if upgrades.size() > 0:
-			upgrade_ui.show_upgrades(upgrades)
+		var weapon_upgrades = upgrade_manager.get_weapon_upgrades()
+		if upgrades.size() > 0 or weapon_upgrades.size() > 0:
+			upgrade_ui.show_upgrades(upgrades, weapon_upgrades)
 
 func _on_upgrade_selected(upgrade) -> void:
 	if upgrade_manager:
@@ -115,6 +132,18 @@ func _on_enemy_killed(_xp_value: int) -> void:
 		if hud:
 			hud.set_kills(game_stats.kills)
 
+	# Notify sword for evolution tracking
+	if _sword and _sword.has_method("on_enemy_killed"):
+		_sword.on_enemy_killed()
+
+## Called when sword evolves to a new tier
+func _on_sword_evolved(new_tier: int) -> void:
+	if _sword and _sword.has_method("get_tier_name"):
+		var tier_name = _sword.get_tier_name()
+		print("[GAME] Sword evolved to: %s" % tier_name)
+		if hud and hud.has_method("show_notification"):
+			hud.show_notification("Sword evolved to %s!" % tier_name)
+
 func _on_wave_started(wave_number: int) -> void:
 	if hud:
 		hud.set_wave(wave_number)
@@ -137,3 +166,62 @@ func _on_time_changed(time: float, is_night: bool) -> void:
 	# Apply visual day/night tint
 	if day_night_cycle and day_night_overlay:
 		day_night_overlay.color = day_night_cycle.get_current_tint()
+
+## Test Mode Support
+func _check_test_mode() -> void:
+	var args = OS.get_cmdline_user_args()
+	var test_mode_enabled = false
+
+	for arg in args:
+		if arg == "--test-mode" or arg.begins_with("--test"):
+			test_mode_enabled = true
+			break
+
+	if test_mode_enabled:
+		_start_test_mode(args)
+
+func _start_test_mode(args: PackedStringArray) -> void:
+	print("[GAME] Test mode detected, loading test framework...")
+
+	var test_mode_scene = load("res://scenes/testing/test_mode.tscn")
+	if not test_mode_scene:
+		print("[GAME] ERROR: Could not load test mode scene")
+		return
+
+	var test_mode = test_mode_scene.instantiate()
+
+	# Parse test mode arguments
+	for arg in args:
+		if arg.begins_with("--scenario="):
+			var scenario_name = arg.split("=")[1].to_upper()
+			test_mode.scenario = _get_scenario_enum(scenario_name)
+		elif arg.begins_with("--duration="):
+			test_mode.test_duration = float(arg.split("=")[1])
+		elif arg.begins_with("--speed="):
+			test_mode.speed_multiplier = float(arg.split("=")[1])
+		elif arg == "--no-screenshots":
+			test_mode.auto_screenshots = false
+		elif arg == "--god-mode":
+			test_mode.god_mode = true
+		elif arg == "--fast-progression":
+			test_mode.fast_progression = true
+		elif arg == "--fast-sword" or arg == "--fast-evolution":
+			test_mode.fast_sword_evolution = true
+		elif arg == "--fast-all":
+			test_mode.god_mode = true
+			test_mode.fast_progression = true
+			test_mode.fast_sword_evolution = true
+
+	add_child(test_mode)
+	print("[GAME] Test mode started: %s" % test_mode.TestScenario.keys()[test_mode.scenario])
+
+func _get_scenario_enum(scenario_name: String) -> int:
+	match scenario_name:
+		"FULL_AUTO": return 0
+		"POISON_TEST": return 1
+		"SURVIVAL_TEST": return 2
+		"UPGRADE_TEST": return 3
+		"DAY_NIGHT_TEST": return 4
+		"SWORD_TEST": return 5
+		"WEAPON_TEST": return 6
+		_: return 0

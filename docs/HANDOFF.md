@@ -2,7 +2,7 @@
 
 **Last Updated:** 2026-01-24
 **Project:** Minecraft Survivors
-**Current Phase:** Phase 4 - Game Feel (COMPLETE ✅)
+**Current Phase:** Phase 5 - Game Enhancements (IN PROGRESS 🔄)
 
 ---
 
@@ -73,13 +73,14 @@ A Vampire Survivors-like roguelike game with Minecraft theme built in Godot 4.5.
 
 ## Test Status
 
-**277 tests passing** (0 failures)
+**389 tests passing** (0 failures)
 
 ```
 Phase 1: Core Foundation - 37 tests
 Phase 2: Combat Basics - 32 tests
 Phase 3: Progression Loop - 63 tests (incl. Upgrade UI timer tests)
 Phase 4: Game Feel - 145 tests (incl. Enderman, Witch, Potion, Integration, Day/Night)
+Phase 5: Game Enhancements - 112 tests (Status Effects, Score, Combo, Weapons, UI)
 ```
 
 Run tests with:
@@ -172,25 +173,49 @@ cd minecraft-survivors
 ```
 
 ### 4. Next task
-Phase 4 is COMPLETE! Starting Phase 5 - Game Enhancements.
+Phase 5 IN PROGRESS - Game Enhancements.
 
 See [phase5_enhancements.md](./phase5_enhancements.md) for detailed plan.
 
-**Phase 5 Features (Planned):**
-- [ ] **Poison System**: Witch potion causes DOT (damage over time)
-  - Large explosion radius (100px)
-  - 5 second poison duration
-  - 2 damage every 0.5 seconds
-  - Visual effects (green tint, particles)
-  - HUD status indicator
-- [ ] **Scoreboard**: High score tracking and leaderboard
+**Phase 5 Features Completed:**
+- [x] **Poison System**: Witch potion causes DOT (damage over time)
+  - Square pixel-style poison cloud (80x80 Minecraft style)
+  - 5 second cloud duration with fade-out
+  - Poison stacking: multiple poisons stack damage (+2 per stack)
+  - Player visual: pulsing green tint + floating pixel particles
+  - StatusEffectManager component with stacking support
+- [x] **Upgrade UI Enhancements**:
+  - Left side: Enchantments (random selection)
+  - Right side: Weapons (1 random owned weapon)
+  - Dynamic weapon icons (sword shows wood/stone/iron/diamond based on tier)
+  - "All Weapons Maxed Out!" placeholder when fully upgraded
+- [x] **Weapon Slots System**: 4 fixed positions around player
+  - Weapons don't rotate with player movement
+  - Bow fires from visual sprite position
+- [x] **Score System**: High score tracking
   - Score formula: kills×10 + time + level×50 + wave×100
   - Top 10 local storage (user://scores.json)
-  - Game Over shows score + rank
-  - Dedicated scoreboard UI
+  - ScoreCalculator and ScoreStorage classes
+- [x] **Combo System**: Kill streaks for XP bonus
+  - 3 second timeout
+  - Milestones at 10/25/50/100 kills
+  - XP bonuses up to +50%
+- [x] **Haste Upgrade**: Attack speed boost
+- [x] **Bow Weapon**: Ranged auto-attack
+  - PlayerArrow projectile
+  - Upgrade levels 1-5
+- [x] **Screen Feedback**: Damage numbers, screen shake
+- [x] **Status Icons**: HUD status effect display
+- [x] **Main Menu**: Start, Settings, Scoreboard buttons
+- [x] **Settings Panel**: Volume, language, screen shake toggles
+- [x] **Lucky Drop System**: Rare item drops from enemies
+- [x] **Auto Test Mode**: Automatic gameplay testing with screenshots
+
+**Phase 5 Features Remaining:**
+- [ ] Achievement System
+- [ ] Unlockable Characters (Alex)
+- [ ] Weapon Evolution (Bow → Crossbow)
 - [ ] Boss enemies (Wither, Ender Dragon)
-- [ ] New weapons (Bow, Trident)
-- [ ] Settings menu (volume, controls)
 
 ---
 
