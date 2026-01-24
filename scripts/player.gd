@@ -80,9 +80,19 @@ func _physics_process(_delta: float) -> void:
 	move_and_slide()
 
 func get_input_direction() -> Vector2:
+	# Check keyboard input first
 	var direction = Vector2.ZERO
 	direction.x = Input.get_action_strength("move_right") - Input.get_action_strength("move_left")
 	direction.y = Input.get_action_strength("move_down") - Input.get_action_strength("move_up")
+
+	# If no keyboard input, check for mouse control (left click held)
+	if direction == Vector2.ZERO and Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+		var mouse_pos = get_global_mouse_position()
+		var to_mouse = mouse_pos - global_position
+		# Only move if mouse is far enough from player (dead zone)
+		if to_mouse.length() > 20:
+			direction = to_mouse.normalized()
+
 	return direction
 
 func take_damage(amount: int) -> void:

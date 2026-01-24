@@ -43,7 +43,7 @@ STONE_SWORD,Stone Sword,石剑,石の剣
 IRON_SWORD,Iron Sword,铁剑,鉄の剣
 DIAMOND_SWORD,Diamond Sword,钻石剑,ダイヤの剣
 DESC_SWORD,+2 damage +5 range,+2伤害 +5范围,+2ダメージ +5範囲
-DESC_BOW,+3 DMG +25 range (Lv4→Crossbow),+3伤害 +25范围 (4级→弩),+3ダメージ +25範囲 (Lv4→クロスボウ)
+DESC_BOW,+3 DMG +25 range,+3伤害 +25范围,+3ダメージ +25範囲
 DESC_SHARPNESS,+{value} damage,+{value}伤害,+{value}ダメージ
 DESC_KNOCKBACK,+{value} knockback,+{value}击退,+{value}ノックバック
 DESC_LOOTING,+{value}% XP gain,+{value}%经验获取,+{value}%経験値
