@@ -1,0 +1,123 @@
+[gd_scene load_steps=6 format=3 uid="uid://swordvisualtest"]
+
+[ext_resource type="Texture2D" path="res://assets/weapons/wood_sword.svg" id="1_wood"]
+[ext_resource type="Texture2D" path="res://assets/weapons/stone_sword.svg" id="2_stone"]
+[ext_resource type="Texture2D" path="res://assets/weapons/iron_sword.svg" id="3_iron"]
+[ext_resource type="Texture2D" path="res://assets/weapons/diamond_sword.svg" id="4_diamond"]
+[ext_resource type="Script" path="res://scripts/testing/sword_visual_test.gd" id="5_script"]
+
+[node name="SwordVisualTest" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("5_script")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.15, 0.15, 0.15, 1)
+
+[node name="VBox" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+
+[node name="Title" type="Label" parent="VBox"]
+layout_mode = 2
+text = "SWORD VISUAL TEST"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SwordsContainer" type="HBoxContainer" parent="VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 50
+alignment = 1
+
+[node name="WoodPanel" type="VBoxContainer" parent="VBox/SwordsContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="Label" type="Label" parent="VBox/SwordsContainer/WoodPanel"]
+layout_mode = 2
+text = "WOOD"
+horizontal_alignment = 1
+
+[node name="WoodSword" type="TextureRect" parent="VBox/SwordsContainer/WoodPanel"]
+custom_minimum_size = Vector2(128, 128)
+layout_mode = 2
+texture = ExtResource("1_wood")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="StonePanel" type="VBoxContainer" parent="VBox/SwordsContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="Label" type="Label" parent="VBox/SwordsContainer/StonePanel"]
+layout_mode = 2
+text = "STONE"
+horizontal_alignment = 1
+
+[node name="StoneSword" type="TextureRect" parent="VBox/SwordsContainer/StonePanel"]
+custom_minimum_size = Vector2(128, 128)
+layout_mode = 2
+texture = ExtResource("2_stone")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="IronPanel" type="VBoxContainer" parent="VBox/SwordsContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="Label" type="Label" parent="VBox/SwordsContainer/IronPanel"]
+layout_mode = 2
+text = "IRON"
+horizontal_alignment = 1
+
+[node name="IronSword" type="TextureRect" parent="VBox/SwordsContainer/IronPanel"]
+custom_minimum_size = Vector2(128, 128)
+layout_mode = 2
+texture = ExtResource("3_iron")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="DiamondPanel" type="VBoxContainer" parent="VBox/SwordsContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="Label" type="Label" parent="VBox/SwordsContainer/DiamondPanel"]
+layout_mode = 2
+text = "DIAMOND"
+horizontal_alignment = 1
+
+[node name="DiamondSword" type="TextureRect" parent="VBox/SwordsContainer/DiamondPanel"]
+custom_minimum_size = Vector2(128, 128)
+layout_mode = 2
+texture = ExtResource("4_diamond")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Instructions" type="Label" parent="VBox"]
+layout_mode = 2
+text = "Press S to take screenshot | Press ESC to exit"
+horizontal_alignment = 1
+
+[node name="StatusLabel" type="Label" parent="VBox"]
+layout_mode = 2
+horizontal_alignment = 1

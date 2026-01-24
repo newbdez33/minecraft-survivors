@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=3 uid="uid://crossbowbolt001"]
+
+[ext_resource type="Script" path="res://scripts/projectiles/crossbow_bolt.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/weapons/arrow.svg" id="2_texture"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bolt"]
+size = Vector2(20, 6)
+
+[node name="CrossbowBolt" type="Area2D"]
+collision_layer = 8
+collision_mask = 2
+script = ExtResource("1_script")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(1, 0.6, 0.2, 1)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("2_texture")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_bolt")

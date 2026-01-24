@@ -18,6 +18,8 @@ const RUN_PHASE2_TESTS: bool = true
 const RUN_PHASE3_TESTS: bool = true
 # Set to true to run Phase 4 tests (TDD - will fail until implemented)
 const RUN_PHASE4_TESTS: bool = true
+# Set to true to run Phase 5 tests (TDD - will fail until implemented)
+const RUN_PHASE5_TESTS: bool = true
 
 func _init() -> void:
 	print("\n" + "=".repeat(60))
@@ -77,6 +79,39 @@ func _init() -> void:
 		_run_test_suite("Game Over Stats Tests", _test_game_over_stats)
 		_run_test_suite("Main Scene Integration Tests", _test_main_scene_integration)
 		_run_test_suite("Upgrade UI Selection Tests", _test_upgrade_ui_selection)
+
+	# Phase 5 Tests (TDD - write first, implement later)
+	if RUN_PHASE5_TESTS:
+		print("[PHASE 5: Game Enhancements - TDD]")
+		print("")
+		_run_test_suite("Status Effect Tests", _test_status_effect)
+		_run_test_suite("Status Effect Manager Tests", _test_status_effect_manager)
+		_run_test_suite("Poison System Tests", _test_poison_system)
+		_run_test_suite("Score Calculator Tests", _test_score_calculator)
+		_run_test_suite("Score Storage Tests", _test_score_storage)
+		_run_test_suite("Combo System Tests", _test_combo_system)
+		_run_test_suite("Haste Upgrade Tests", _test_haste_upgrade)
+		_run_test_suite("Damage Number Tests", _test_damage_number)
+		_run_test_suite("Screen Shake Tests", _test_screen_shake)
+		_run_test_suite("Bow Weapon Tests", _test_bow_weapon)
+		_run_test_suite("Player Arrow Tests", _test_player_arrow)
+		_run_test_suite("Lucky Drop Tests", _test_lucky_drop)
+		_run_test_suite("Health Pickup Tests", _test_health_pickup)
+		_run_test_suite("Health Pickup Spawner Tests", _test_health_pickup_spawner)
+		_run_test_suite("Main Menu Tests", _test_main_menu)
+		_run_test_suite("Settings Panel Tests", _test_settings_panel)
+		_run_test_suite("Scoreboard Panel Tests", _test_scoreboard_panel)
+		_run_test_suite("Status Container Tests", _test_status_container)
+		_run_test_suite("Status Icon Tests", _test_status_icon)
+		_run_test_suite("Achievement Tests", _test_achievement)
+		_run_test_suite("Achievement Manager Tests", _test_achievement_manager)
+		_run_test_suite("Character Tests", _test_character)
+		_run_test_suite("Character Manager Tests", _test_character_manager)
+		_run_test_suite("Crossbow Tests", _test_crossbow)
+		_run_test_suite("Crossbow Bolt Tests", _test_crossbow_bolt)
+		_run_test_suite("Weapon Evolution Tests", _test_weapon_evolution)
+		_run_test_suite("Weapon Evolution Manager Tests", _test_weapon_evolution_manager)
+		_run_test_suite("Sword Tier Evolution Tests", _test_sword_tier_evolution)
 
 	# Print summary
 	_print_summary()
@@ -1068,7 +1103,7 @@ func _test_potion() -> void:
 		# T4.6.29: Potion has splash_radius property (60)
 		_assert_true("splash_radius" in potion, "T4.6.29: Potion has splash_radius property")
 		if "splash_radius" in potion:
-			_assert_equal(potion.splash_radius, 60.0, "T4.6.29a: Potion splash_radius is 60")
+			_assert_equal(potion.splash_radius, 100.0, "T4.6.29a: Potion splash_radius is 100")
 
 		# T4.6.30: Potion has lifetime property (2.0)
 		_assert_true("lifetime" in potion, "T4.6.30: Potion has lifetime property")
@@ -1095,7 +1130,7 @@ func _test_potion() -> void:
 		_assert_true(false, "T4.6.28: Potion has damage property")
 		_assert_true(false, "T4.6.28a: Potion damage is 12")
 		_assert_true(false, "T4.6.29: Potion has splash_radius property")
-		_assert_true(false, "T4.6.29a: Potion splash_radius is 60")
+		_assert_true(false, "T4.6.29a: Potion splash_radius is 100")
 		_assert_true(false, "T4.6.30: Potion has lifetime property")
 		_assert_true(false, "T4.6.30a: Potion lifetime is 2.0")
 		_assert_true(false, "T4.6.31: Potion has set_direction method")
@@ -1472,3 +1507,675 @@ func _test_upgrade_ui_selection() -> void:
 		_assert_true(false, "T4.15.12: UpgradeUI default selection is middle")
 
 	ui.free()
+
+# =============================================================================
+# PHASE 5: GAME ENHANCEMENTS TESTS (TDD)
+# =============================================================================
+
+func _test_status_effect() -> void:
+	# T5.1.1: StatusEffect script loads
+	var script = load("res://scripts/components/status_effect.gd")
+	_assert_not_null(script, "T5.1.1: StatusEffect script loads")
+
+	if script == null:
+		_skip_test("T5.1.2-T5.1.5", "StatusEffect script not found")
+		return
+
+	var effect = script.new()
+	_assert_not_null(effect, "T5.1.2: StatusEffect can be instantiated")
+
+	# T5.1.3: Has Type enum with POISON
+	_assert_true("Type" in effect or effect.get_script().get_script_constant_map().has("Type"),
+		"T5.1.3: StatusEffect has Type enum")
+
+	# T5.1.4: Has duration property
+	_assert_true("duration" in effect, "T5.1.4: StatusEffect has duration property")
+
+	# T5.1.5: Has tick_interval property
+	_assert_true("tick_interval" in effect, "T5.1.5: StatusEffect has tick_interval property")
+
+	# T5.1.6: Has damage_per_tick property
+	_assert_true("damage_per_tick" in effect, "T5.1.6: StatusEffect has damage_per_tick property")
+
+	# T5.1.7: Has remaining_time property
+	_assert_true("remaining_time" in effect, "T5.1.7: StatusEffect has remaining_time property")
+
+func _test_status_effect_manager() -> void:
+	# T5.1.8: StatusEffectManager script loads
+	var script = load("res://scripts/components/status_effect_manager.gd")
+	_assert_not_null(script, "T5.1.8: StatusEffectManager script loads")
+
+	if script == null:
+		_skip_test("T5.1.9-T5.1.14", "StatusEffectManager script not found")
+		return
+
+	var manager = script.new()
+	_assert_not_null(manager, "T5.1.9: StatusEffectManager can be instantiated")
+
+	# T5.1.10: Has apply_effect method
+	_assert_true(manager.has_method("apply_effect"), "T5.1.10: Manager has apply_effect method")
+
+	# T5.1.11: Has remove_effect method
+	_assert_true(manager.has_method("remove_effect"), "T5.1.11: Manager has remove_effect method")
+
+	# T5.1.12: Has has_effect method
+	_assert_true(manager.has_method("has_effect"), "T5.1.12: Manager has has_effect method")
+
+	# T5.1.13: Has clear_all_effects method
+	_assert_true(manager.has_method("clear_all_effects"), "T5.1.13: Manager has clear_all_effects method")
+
+	# T5.1.14: Has active_effects array
+	_assert_true("active_effects" in manager, "T5.1.14: Manager has active_effects array")
+
+	# T5.1.15: Has effect_applied signal
+	_assert_true(manager.has_signal("effect_applied"), "T5.1.15: Manager has effect_applied signal")
+
+	# T5.1.16: Has effect_removed signal
+	_assert_true(manager.has_signal("effect_removed"), "T5.1.16: Manager has effect_removed signal")
+
+	# T5.1.17: Has effect_tick signal
+	_assert_true(manager.has_signal("effect_tick"), "T5.1.17: Manager has effect_tick signal")
+
+func _test_poison_system() -> void:
+	# T5.1.18: Potion has applies_poison property
+	var potion_scene = load("res://scenes/projectiles/potion.tscn")
+	if potion_scene == null:
+		_skip_test("T5.1.18-T5.1.24", "Potion scene not found")
+		return
+
+	var potion = potion_scene.instantiate()
+	_assert_true("applies_poison" in potion, "T5.1.18: Potion has applies_poison property")
+
+	# T5.1.19: Potion splash_radius is 100
+	_assert_true("splash_radius" in potion, "T5.1.19: Potion has splash_radius property")
+	if "splash_radius" in potion:
+		_assert_equal(potion.splash_radius, 100.0, "T5.1.20: Potion splash_radius is 100")
+
+	# T5.1.21: Potion has poison_duration
+	_assert_true("poison_duration" in potion, "T5.1.21: Potion has poison_duration property")
+	if "poison_duration" in potion:
+		_assert_equal(potion.poison_duration, 5.0, "T5.1.22: Potion poison_duration is 5.0")
+
+	# T5.1.23: Potion has poison_damage_per_tick
+	_assert_true("poison_damage_per_tick" in potion, "T5.1.23: Potion has poison_damage_per_tick")
+	if "poison_damage_per_tick" in potion:
+		_assert_equal(potion.poison_damage_per_tick, 2, "T5.1.24: Potion poison_damage is 2")
+
+	# T5.1.25: Potion has poison_tick_interval
+	_assert_true("poison_tick_interval" in potion, "T5.1.25: Potion has poison_tick_interval")
+	if "poison_tick_interval" in potion:
+		_assert_equal(potion.poison_tick_interval, 0.5, "T5.1.26: Potion tick_interval is 0.5")
+
+	potion.free()
+
+	# T5.1.27: Player has StatusEffectManager
+	var player_scene = load("res://scenes/player.tscn")
+	if player_scene:
+		var player = player_scene.instantiate()
+		var sem = player.get_node_or_null("StatusEffectManager")
+		_assert_not_null(sem, "T5.1.27: Player has StatusEffectManager node")
+		player.free()
+
+func _test_score_calculator() -> void:
+	# T5.2.1: ScoreCalculator script loads
+	var script = load("res://scripts/systems/score_calculator.gd")
+	_assert_not_null(script, "T5.2.1: ScoreCalculator script loads")
+
+	if script == null:
+		_skip_test("T5.2.2-T5.2.7", "ScoreCalculator script not found")
+		return
+
+	# T5.2.2: Has calculate static method
+	_assert_true(script.has_method("calculate"), "T5.2.2: ScoreCalculator has calculate method")
+
+	# T5.2.3: Has correct constants
+	var constants = script.get_script_constant_map()
+	_assert_true(constants.has("KILL_POINTS"), "T5.2.3: Has KILL_POINTS constant")
+	_assert_true(constants.has("TIME_POINTS"), "T5.2.4: Has TIME_POINTS constant")
+	_assert_true(constants.has("LEVEL_POINTS"), "T5.2.5: Has LEVEL_POINTS constant")
+	_assert_true(constants.has("WAVE_POINTS"), "T5.2.6: Has WAVE_POINTS constant")
+
+	# T5.2.7: Constants have correct values
+	if constants.has("KILL_POINTS"):
+		_assert_equal(constants["KILL_POINTS"], 10, "T5.2.7: KILL_POINTS is 10")
+	if constants.has("TIME_POINTS"):
+		_assert_equal(constants["TIME_POINTS"], 1, "T5.2.8: TIME_POINTS is 1")
+	if constants.has("LEVEL_POINTS"):
+		_assert_equal(constants["LEVEL_POINTS"], 50, "T5.2.9: LEVEL_POINTS is 50")
+	if constants.has("WAVE_POINTS"):
+		_assert_equal(constants["WAVE_POINTS"], 100, "T5.2.10: WAVE_POINTS is 100")
+
+func _test_score_storage() -> void:
+	# T5.2.11: ScoreStorage script loads
+	var script = load("res://scripts/systems/score_storage.gd")
+	_assert_not_null(script, "T5.2.11: ScoreStorage script loads")
+
+	if script == null:
+		_skip_test("T5.2.12-T5.2.18", "ScoreStorage script not found")
+		return
+
+	var storage = script.new()
+	_assert_not_null(storage, "T5.2.12: ScoreStorage can be instantiated")
+
+	# T5.2.13: Has save_score method
+	_assert_true(storage.has_method("save_score"), "T5.2.13: Has save_score method")
+
+	# T5.2.14: Has load_scores method
+	_assert_true(storage.has_method("load_scores"), "T5.2.14: Has load_scores method")
+
+	# T5.2.15: Has get_high_score method
+	_assert_true(storage.has_method("get_high_score"), "T5.2.15: Has get_high_score method")
+
+	# T5.2.16: Has is_high_score method
+	_assert_true(storage.has_method("is_high_score"), "T5.2.16: Has is_high_score method")
+
+	# T5.2.17: Has MAX_ENTRIES constant
+	var constants = script.get_script_constant_map()
+	_assert_true(constants.has("MAX_ENTRIES"), "T5.2.17: Has MAX_ENTRIES constant")
+	if constants.has("MAX_ENTRIES"):
+		_assert_equal(constants["MAX_ENTRIES"], 10, "T5.2.18: MAX_ENTRIES is 10")
+
+func _test_combo_system() -> void:
+	# T5.5.1: ComboSystem script loads
+	var script = load("res://scripts/systems/combo_system.gd")
+	_assert_not_null(script, "T5.5.1: ComboSystem script loads")
+
+	if script == null:
+		_skip_test("T5.5.2-T5.5.8", "ComboSystem script not found")
+		return
+
+	var combo = script.new()
+	_assert_not_null(combo, "T5.5.2: ComboSystem can be instantiated")
+
+	# T5.5.3: Has current_combo property
+	_assert_true("current_combo" in combo, "T5.5.3: Has current_combo property")
+
+	# T5.5.4: Has on_enemy_killed method
+	_assert_true(combo.has_method("on_enemy_killed"), "T5.5.4: Has on_enemy_killed method")
+
+	# T5.5.5: Has on_player_damaged method
+	_assert_true(combo.has_method("on_player_damaged"), "T5.5.5: Has on_player_damaged method")
+
+	# T5.5.6: Has get_xp_bonus method
+	_assert_true(combo.has_method("get_xp_bonus"), "T5.5.6: Has get_xp_bonus method")
+
+	# T5.5.7: Has combo_timeout property (3 seconds)
+	_assert_true("combo_timeout" in combo, "T5.5.7: Has combo_timeout property")
+	if "combo_timeout" in combo:
+		_assert_equal(combo.combo_timeout, 3.0, "T5.5.8: combo_timeout is 3.0")
+
+	# T5.5.9: Has milestone_reached signal
+	_assert_true(combo.has_signal("milestone_reached"), "T5.5.9: Has milestone_reached signal")
+
+	# T5.5.10: Has combo_changed signal
+	_assert_true(combo.has_signal("combo_changed"), "T5.5.10: Has combo_changed signal")
+
+func _test_haste_upgrade() -> void:
+	# T5.U.1: Haste upgrade exists in upgrade manager
+	var upgrade_manager_script = load("res://scripts/systems/upgrade_manager.gd")
+	if upgrade_manager_script == null:
+		_skip_test("T5.U.1-T5.U.4", "UpgradeManager script not found")
+		return
+
+	# Check if haste is in the upgrades
+	var source = FileAccess.open("res://scripts/systems/upgrade_manager.gd", FileAccess.READ)
+	if source:
+		var content = source.get_as_text()
+		source.close()
+		_assert_true(content.contains("haste") or content.contains("Haste"), "T5.U.1: Haste upgrade defined")
+		_assert_true(content.contains("attack_speed") or content.contains("cooldown"), "T5.U.2: Haste affects attack speed")
+
+# =============================================================================
+# PHASE 5: ADDITIONAL FEATURES TESTS
+# =============================================================================
+
+func _test_damage_number() -> void:
+	var script = load("res://scripts/effects/damage_number.gd")
+	_assert_not_null(script, "T5.8.1: DamageNumber script loads")
+
+	if script:
+		var dmg_num = script.new()
+		_assert_not_null(dmg_num, "T5.8.2: DamageNumber can be instantiated")
+		_assert_true(dmg_num.has_method("setup"), "T5.8.3: DamageNumber has setup method")
+		_assert_true("rise_speed" in dmg_num, "T5.8.4: DamageNumber has rise_speed")
+		_assert_true("duration" in dmg_num, "T5.8.5: DamageNumber has duration")
+		dmg_num.free()
+
+func _test_screen_shake() -> void:
+	var script = load("res://scripts/effects/screen_shake.gd")
+	_assert_not_null(script, "T5.8.6: ScreenShake script loads")
+
+	if script:
+		var shake = script.new()
+		_assert_not_null(shake, "T5.8.7: ScreenShake can be instantiated")
+		_assert_true(shake.has_method("shake"), "T5.8.8: ScreenShake has shake method")
+		_assert_true(shake.has_method("shake_light"), "T5.8.9: ScreenShake has shake_light")
+		_assert_true(shake.has_method("shake_heavy"), "T5.8.10: ScreenShake has shake_heavy")
+		_assert_true(shake.has_signal("shake_started"), "T5.8.11: ScreenShake has shake_started signal")
+		shake.free()
+
+func _test_bow_weapon() -> void:
+	var script = load("res://scripts/weapons/bow.gd")
+	_assert_not_null(script, "T5.W.1: Bow script loads")
+
+	var scene = load("res://scenes/weapons/bow.tscn")
+	_assert_not_null(scene, "T5.W.2: Bow scene loads")
+
+	if scene:
+		var bow = scene.instantiate()
+		_assert_not_null(bow, "T5.W.3: Bow can be instantiated")
+		_assert_true("damage" in bow, "T5.W.4: Bow has damage property")
+		_assert_true("attack_speed" in bow, "T5.W.5: Bow has attack_speed property")
+		_assert_true("range" in bow, "T5.W.6: Bow has range property")
+		_assert_true("level" in bow, "T5.W.7: Bow has level property")
+		_assert_true(bow.has_signal("arrow_fired"), "T5.W.8: Bow has arrow_fired signal")
+		bow.free()
+
+func _test_player_arrow() -> void:
+	var script = load("res://scripts/projectiles/player_arrow.gd")
+	_assert_not_null(script, "T5.W.9: PlayerArrow script loads")
+
+	var scene = load("res://scenes/projectiles/player_arrow.tscn")
+	_assert_not_null(scene, "T5.W.10: PlayerArrow scene loads")
+
+	if scene:
+		var arrow = scene.instantiate()
+		_assert_not_null(arrow, "T5.W.11: PlayerArrow can be instantiated")
+		_assert_true("speed" in arrow, "T5.W.12: PlayerArrow has speed")
+		_assert_true("damage" in arrow, "T5.W.13: PlayerArrow has damage")
+		_assert_true("piercing" in arrow, "T5.W.14: PlayerArrow has piercing")
+		_assert_true(arrow.has_method("set_direction"), "T5.W.15: PlayerArrow has set_direction")
+		arrow.free()
+
+func _test_lucky_drop() -> void:
+	var script = load("res://scripts/systems/lucky_drop.gd")
+	_assert_not_null(script, "T5.7.1: LuckyDrop script loads")
+
+	if script:
+		_assert_true(script.has_method("roll_drop"), "T5.7.2: LuckyDrop has roll_drop method")
+		_assert_true(script.has_method("apply_drop"), "T5.7.3: LuckyDrop has apply_drop method")
+		_assert_true(script.has_method("get_drop_name"), "T5.7.4: LuckyDrop has get_drop_name method")
+
+		# Test drop table exists
+		var constants = script.get_script_constant_map()
+		_assert_true(constants.has("DROP_TABLE"), "T5.7.5: LuckyDrop has DROP_TABLE")
+		_assert_true(constants.has("DROP_NAMES"), "T5.7.6: LuckyDrop has DROP_NAMES")
+
+func _test_health_pickup() -> void:
+	var script = load("res://scripts/pickups/health_pickup.gd")
+	_assert_not_null(script, "T5.7.7: HealthPickup script loads")
+
+	var scene = load("res://scenes/pickups/health_pickup.tscn")
+	_assert_not_null(scene, "T5.7.8: HealthPickup scene loads")
+
+	if scene:
+		var pickup = scene.instantiate()
+		_assert_not_null(pickup, "T5.7.9: HealthPickup instantiates")
+		_assert_true(pickup.has_signal("collected"), "T5.7.10: HealthPickup has collected signal")
+		_assert_true("heal_percent" in pickup, "T5.7.11: HealthPickup has heal_percent property")
+		_assert_true("attract_radius" in pickup, "T5.7.12: HealthPickup has attract_radius property")
+		_assert_true("despawn_time" in pickup, "T5.7.13: HealthPickup has despawn_time property")
+		pickup.free()
+
+	# Test asset exists
+	var texture = load("res://assets/items/golden_apple.svg")
+	_assert_not_null(texture, "T5.7.14: Golden apple asset exists")
+
+func _test_health_pickup_spawner() -> void:
+	var script = load("res://scripts/systems/health_pickup_spawner.gd")
+	_assert_not_null(script, "T5.7.15: HealthPickupSpawner script loads")
+
+	if script:
+		var spawner = script.new()
+		_assert_not_null(spawner, "T5.7.16: HealthPickupSpawner instantiates")
+		_assert_true(spawner.has_signal("pickup_spawned"), "T5.7.17: Spawner has pickup_spawned signal")
+		_assert_true("spawn_interval" in spawner, "T5.7.18: Spawner has spawn_interval property")
+		_assert_true("max_pickups" in spawner, "T5.7.19: Spawner has max_pickups property")
+		_assert_true("initial_delay" in spawner, "T5.7.20: Spawner has initial_delay property")
+		_assert_true(spawner.has_method("set_spawn_rate"), "T5.7.21: Spawner has set_spawn_rate method")
+		_assert_true(spawner.has_method("set_wave"), "T5.7.22: Spawner has set_wave method")
+		spawner.free()
+
+	# Test main scene includes health pickup spawner
+	var main_scene = load("res://scenes/main.tscn")
+	if main_scene:
+		var main = main_scene.instantiate()
+		var health_spawner = main.get_node_or_null("HealthPickupSpawner")
+		_assert_not_null(health_spawner, "T5.7.23: Main scene has HealthPickupSpawner")
+		main.free()
+
+func _test_main_menu() -> void:
+	var script = load("res://scripts/ui/main_menu.gd")
+	_assert_not_null(script, "T5.0.1: MainMenu script loads")
+
+	var scene = load("res://scenes/ui/main_menu.tscn")
+	_assert_not_null(scene, "T5.0.2: MainMenu scene loads")
+
+	if scene:
+		var menu = scene.instantiate()
+		_assert_not_null(menu, "T5.0.3: MainMenu can be instantiated")
+		_assert_true(menu.has_signal("start_pressed"), "T5.0.4: MainMenu has start_pressed signal")
+		_assert_true(menu.has_signal("settings_pressed"), "T5.0.5: MainMenu has settings_pressed signal")
+		_assert_true(menu.has_signal("scoreboard_pressed"), "T5.0.6: MainMenu has scoreboard_pressed signal")
+		menu.free()
+
+func _test_settings_panel() -> void:
+	var script = load("res://scripts/ui/settings_panel.gd")
+	_assert_not_null(script, "T5.0.7: SettingsPanel script loads")
+
+	if script:
+		var panel = script.new()
+		_assert_not_null(panel, "T5.0.8: SettingsPanel can be instantiated")
+		_assert_true(panel.has_method("save_settings"), "T5.0.9: SettingsPanel has save_settings")
+		_assert_true(panel.has_method("load_settings"), "T5.0.10: SettingsPanel has load_settings")
+		_assert_true("settings" in panel, "T5.0.11: SettingsPanel has settings dict")
+		panel.free()
+
+func _test_scoreboard_panel() -> void:
+	var script = load("res://scripts/ui/scoreboard_panel.gd")
+	_assert_not_null(script, "T5.2.13: ScoreboardPanel script loads")
+
+	if script:
+		var panel = script.new()
+		_assert_not_null(panel, "T5.2.14: ScoreboardPanel can be instantiated")
+		_assert_true(panel.has_method("refresh_scores"), "T5.2.15: ScoreboardPanel has refresh_scores")
+		_assert_true(panel.has_method("highlight_score"), "T5.2.16: ScoreboardPanel has highlight_score")
+		_assert_true(panel.has_signal("closed"), "T5.2.17: ScoreboardPanel has closed signal")
+		panel.free()
+
+func _test_status_container() -> void:
+	var script = load("res://scripts/ui/status_container.gd")
+	_assert_not_null(script, "T5.1.24: StatusContainer script loads")
+
+	if script:
+		var container = script.new()
+		_assert_not_null(container, "T5.1.25: StatusContainer can be instantiated")
+		_assert_true(container.has_method("connect_to_player"), "T5.1.26: StatusContainer has connect_to_player")
+		container.free()
+
+func _test_status_icon() -> void:
+	var script = load("res://scripts/ui/status_icon.gd")
+	_assert_not_null(script, "T5.1.22: StatusIcon script loads")
+
+	if script:
+		var icon = script.new()
+		_assert_not_null(icon, "T5.1.23: StatusIcon can be instantiated")
+		_assert_true(icon.has_method("setup"), "T5.1.24a: StatusIcon has setup")
+		_assert_true(icon.has_method("update_time"), "T5.1.25a: StatusIcon has update_time")
+		icon.free()
+
+func _test_achievement() -> void:
+	var script = load("res://scripts/systems/achievement.gd")
+	_assert_not_null(script, "T5.2.1: Achievement script loads")
+
+	if script:
+		var achievement = script.new("test_id", "Test Name", "Test Desc", 10, 50)
+		_assert_not_null(achievement, "T5.2.2: Achievement can be instantiated")
+		_assert_equal(achievement.id, "test_id", "T5.2.3: Achievement has correct id")
+		_assert_equal(achievement.name, "Test Name", "T5.2.4: Achievement has correct name")
+		_assert_equal(achievement.description, "Test Desc", "T5.2.5: Achievement has correct description")
+		_assert_equal(achievement.target, 10, "T5.2.6: Achievement has correct target")
+		_assert_equal(achievement.reward_emeralds, 50, "T5.2.7: Achievement has correct reward")
+		_assert_false(achievement.is_unlocked, "T5.2.8: Achievement starts locked")
+		_assert_equal(achievement.progress, 0, "T5.2.9: Achievement starts with 0 progress")
+
+		# Test progress checking
+		_assert_false(achievement.check_progress(5), "T5.2.10: Progress below target doesn't unlock")
+		_assert_equal(achievement.progress, 5, "T5.2.11: Progress is updated")
+		_assert_true(achievement.check_progress(10), "T5.2.12: Progress at target unlocks")
+		_assert_true(achievement.is_unlocked, "T5.2.13: Achievement is now unlocked")
+		_assert_true(achievement.unlock_date.length() > 0, "T5.2.14: Unlock date is set")
+
+		# Test progress percent
+		_assert_equal(achievement.get_progress_percent(), 1.0, "T5.2.15: Progress percent is 1.0 when complete")
+
+		# Test to_dict and from_dict
+		var dict = achievement.to_dict()
+		_assert_true("id" in dict, "T5.2.16: to_dict includes id")
+		_assert_true("is_unlocked" in dict, "T5.2.17: to_dict includes is_unlocked")
+		_assert_true("progress" in dict, "T5.2.18: to_dict includes progress")
+
+func _test_achievement_manager() -> void:
+	var script = load("res://scripts/systems/achievement_manager.gd")
+	_assert_not_null(script, "T5.2.19: AchievementManager script loads")
+
+	if script:
+		var manager = script.new()
+		_assert_not_null(manager, "T5.2.20: AchievementManager can be instantiated")
+		_assert_true(manager.has_signal("achievement_unlocked"), "T5.2.21: Has achievement_unlocked signal")
+		_assert_true(manager.has_signal("progress_updated"), "T5.2.22: Has progress_updated signal")
+		_assert_true(manager.has_method("check_kill_count"), "T5.2.23: Has check_kill_count")
+		_assert_true(manager.has_method("check_survival_time"), "T5.2.24: Has check_survival_time")
+		_assert_true(manager.has_method("check_level"), "T5.2.25: Has check_level")
+		_assert_true(manager.has_method("check_wave"), "T5.2.26: Has check_wave")
+		_assert_true(manager.has_method("check_combo"), "T5.2.27: Has check_combo")
+		_assert_true(manager.has_method("get_achievement"), "T5.2.28: Has get_achievement")
+		_assert_true(manager.has_method("get_all_achievements"), "T5.2.29: Has get_all_achievements")
+		_assert_true(manager.has_method("save_achievements"), "T5.2.30: Has save_achievements")
+		_assert_true(manager.has_method("load_achievements"), "T5.2.31: Has load_achievements")
+
+		# Test achievement definitions exist
+		_assert_true(manager.ACHIEVEMENT_DEFS.size() > 0, "T5.2.32: Has achievement definitions")
+		_assert_true("first_kill" in manager.ACHIEVEMENT_DEFS, "T5.2.33: Has first_kill achievement")
+		_assert_true("survive_60" in manager.ACHIEVEMENT_DEFS, "T5.2.34: Has survive_60 achievement")
+		_assert_true("level_5" in manager.ACHIEVEMENT_DEFS, "T5.2.35: Has level_5 achievement")
+		_assert_true("wave_3" in manager.ACHIEVEMENT_DEFS, "T5.2.36: Has wave_3 achievement")
+
+func _test_character() -> void:
+	var script = load("res://scripts/systems/character.gd")
+	_assert_not_null(script, "T5.3.1: GameCharacter script loads")
+
+	if script:
+		var character = script.new("steve", "Steve", "Default character")
+		_assert_not_null(character, "T5.3.2: GameCharacter can be instantiated")
+		_assert_equal(character.id, "steve", "T5.3.3: Character has correct id")
+		_assert_equal(character.name, "Steve", "T5.3.4: Character has correct name")
+		_assert_equal(character.description, "Default character", "T5.3.5: Character has correct description")
+		_assert_equal(character.health_mult, 1.0, "T5.3.6: Character has default health multiplier")
+		_assert_equal(character.speed_mult, 1.0, "T5.3.7: Character has default speed multiplier")
+		_assert_equal(character.damage_mult, 1.0, "T5.3.8: Character has default damage multiplier")
+		_assert_equal(character.xp_mult, 1.0, "T5.3.9: Character has default xp multiplier")
+		_assert_equal(character.pickup_range_mult, 1.0, "T5.3.10: Character has default pickup range multiplier")
+		_assert_false(character.is_unlocked, "T5.3.11: Character starts locked by default")
+
+		# Test to_dict and from_dict
+		character.is_unlocked = true
+		var dict = character.to_dict()
+		_assert_true("id" in dict, "T5.3.12: to_dict includes id")
+		_assert_true("is_unlocked" in dict, "T5.3.13: to_dict includes is_unlocked")
+
+		var new_char = script.new()
+		new_char.from_dict(dict)
+		_assert_true(new_char.is_unlocked, "T5.3.14: from_dict restores is_unlocked")
+
+		_assert_true(character.has_method("apply_to_player"), "T5.3.15: Has apply_to_player method")
+
+func _test_character_manager() -> void:
+	var script = load("res://scripts/systems/character_manager.gd")
+	_assert_not_null(script, "T5.3.16: CharacterManager script loads")
+
+	if script:
+		var manager = script.new()
+		_assert_not_null(manager, "T5.3.17: CharacterManager can be instantiated")
+		_assert_true(manager.has_signal("character_unlocked"), "T5.3.18: Has character_unlocked signal")
+		_assert_true(manager.has_signal("character_selected"), "T5.3.19: Has character_selected signal")
+		_assert_true(manager.has_method("get_character"), "T5.3.20: Has get_character")
+		_assert_true(manager.has_method("get_selected_character"), "T5.3.21: Has get_selected_character")
+		_assert_true(manager.has_method("select_character"), "T5.3.22: Has select_character")
+		_assert_true(manager.has_method("apply_selected_to_player"), "T5.3.23: Has apply_selected_to_player")
+		_assert_true(manager.has_method("check_unlock_conditions"), "T5.3.24: Has check_unlock_conditions")
+		_assert_true(manager.has_method("get_unlocked_characters"), "T5.3.25: Has get_unlocked_characters")
+		_assert_true(manager.has_method("get_all_characters"), "T5.3.26: Has get_all_characters")
+
+		# Test character definitions exist
+		_assert_true(manager.CHARACTER_DEFS.size() > 0, "T5.3.27: Has character definitions")
+		_assert_true("steve" in manager.CHARACTER_DEFS, "T5.3.28: Has steve character")
+		_assert_true("alex" in manager.CHARACTER_DEFS, "T5.3.29: Has alex character")
+		_assert_equal(manager.selected_character_id, "steve", "T5.3.30: Default selected is steve")
+
+		# Test steve is unlocked by default
+		var steve_def = manager.CHARACTER_DEFS["steve"]
+		_assert_true(steve_def.unlocked, "T5.3.31: Steve is unlocked by default")
+
+		# Test alex unlock condition
+		var alex_def = manager.CHARACTER_DEFS["alex"]
+		_assert_false(alex_def.unlocked, "T5.3.32: Alex is locked by default")
+		_assert_equal(alex_def.unlock_type, "survival_time", "T5.3.33: Alex unlock type is survival_time")
+		_assert_equal(alex_def.unlock_value, 900, "T5.3.34: Alex unlock value is 900 (15 min)")
+
+func _test_crossbow() -> void:
+	var script = load("res://scripts/weapons/crossbow.gd")
+	_assert_not_null(script, "T5.4.1: Crossbow script loads")
+
+	var scene = load("res://scenes/weapons/crossbow.tscn")
+	_assert_not_null(scene, "T5.4.2: Crossbow scene loads")
+
+	if scene:
+		var crossbow = scene.instantiate()
+		_assert_not_null(crossbow, "T5.4.3: Crossbow can be instantiated")
+		_assert_true(crossbow is Node2D, "T5.4.4: Crossbow is Node2D")
+		_assert_true(crossbow.has_signal("bolt_fired"), "T5.4.5: Crossbow has bolt_fired signal")
+		_assert_equal(crossbow.damage, 20, "T5.4.6: Crossbow has correct base damage")
+		_assert_equal(crossbow.attack_speed, 0.8, "T5.4.7: Crossbow has correct attack speed")
+		_assert_equal(crossbow.range, 400.0, "T5.4.8: Crossbow has correct range")
+		_assert_equal(crossbow.bolt_speed, 600.0, "T5.4.9: Crossbow has correct bolt speed")
+		_assert_equal(crossbow.pierce_count, 3, "T5.4.10: Crossbow has pierce count of 3")
+		_assert_equal(crossbow.level, 1, "T5.4.11: Crossbow starts at level 1")
+		_assert_true(crossbow.has_method("upgrade"), "T5.4.12: Crossbow has upgrade method")
+		_assert_true(crossbow.has_method("get_total_damage"), "T5.4.13: Crossbow has get_total_damage")
+		_assert_true(crossbow.has_method("get_total_pierce"), "T5.4.14: Crossbow has get_total_pierce")
+
+		# Test level scaling
+		_assert_equal(crossbow.get_total_damage(), 20, "T5.4.15: Level 1 damage is 20")
+		crossbow.upgrade()
+		_assert_equal(crossbow.level, 2, "T5.4.16: Upgrade increases level")
+		_assert_equal(crossbow.get_total_damage(), 25, "T5.4.17: Level 2 damage is 25")
+		_assert_equal(crossbow.get_total_pierce(), 4, "T5.4.18: Level 2 pierce is 4")
+		crossbow.free()
+
+func _test_crossbow_bolt() -> void:
+	var script = load("res://scripts/projectiles/crossbow_bolt.gd")
+	_assert_not_null(script, "T5.4.19: CrossbowBolt script loads")
+
+	var scene = load("res://scenes/projectiles/crossbow_bolt.tscn")
+	_assert_not_null(scene, "T5.4.20: CrossbowBolt scene loads")
+
+	if scene:
+		var bolt = scene.instantiate()
+		_assert_not_null(bolt, "T5.4.21: CrossbowBolt can be instantiated")
+		_assert_true(bolt is Area2D, "T5.4.22: CrossbowBolt is Area2D")
+		_assert_true(bolt.has_signal("enemy_hit"), "T5.4.23: CrossbowBolt has enemy_hit signal")
+		_assert_true(bolt.has_method("set_direction"), "T5.4.24: CrossbowBolt has set_direction")
+		_assert_equal(bolt.damage, 20, "T5.4.25: CrossbowBolt has default damage")
+		_assert_equal(bolt.speed, 600.0, "T5.4.26: CrossbowBolt has default speed")
+		_assert_equal(bolt.pierce_count, 3, "T5.4.27: CrossbowBolt has default pierce count")
+		_assert_equal(bolt.lifetime, 3.0, "T5.4.28: CrossbowBolt has 3 second lifetime")
+
+		# Test direction setting
+		bolt.set_direction(Vector2(1, 0))
+		_assert_equal(bolt._direction, Vector2(1, 0), "T5.4.29: Direction is set correctly")
+		bolt.free()
+
+func _test_weapon_evolution() -> void:
+	var script = load("res://scripts/systems/weapon_evolution.gd")
+	_assert_not_null(script, "T5.5.1: WeaponEvolution script loads")
+
+	if script:
+		var evolution = script.new("bow", "sharpness", 5, "crossbow", "res://scenes/weapons/crossbow.tscn")
+		_assert_not_null(evolution, "T5.5.2: WeaponEvolution can be instantiated")
+		_assert_equal(evolution.base_weapon_id, "bow", "T5.5.3: Base weapon is bow")
+		_assert_equal(evolution.required_upgrade_id, "sharpness", "T5.5.4: Required upgrade is sharpness")
+		_assert_equal(evolution.required_upgrade_level, 5, "T5.5.5: Required level is 5")
+		_assert_equal(evolution.result_weapon_id, "crossbow", "T5.5.6: Result weapon is crossbow")
+		_assert_true(evolution.result_scene_path.length() > 0, "T5.5.7: Result scene path is set")
+
+		# Test can_evolve
+		_assert_false(evolution.can_evolve("sword", {"sharpness": 5}), "T5.5.8: Wrong weapon can't evolve")
+		_assert_false(evolution.can_evolve("bow", {"sharpness": 3}), "T5.5.9: Low upgrade can't evolve")
+		_assert_true(evolution.can_evolve("bow", {"sharpness": 5}), "T5.5.10: Correct conditions can evolve")
+		_assert_true(evolution.can_evolve("bow", {"sharpness": 6}), "T5.5.11: Higher upgrade can also evolve")
+
+func _test_weapon_evolution_manager() -> void:
+	var script = load("res://scripts/systems/weapon_evolution_manager.gd")
+	_assert_not_null(script, "T5.5.12: WeaponEvolutionManager script loads")
+
+	if script:
+		var manager = script.new()
+		_assert_not_null(manager, "T5.5.13: WeaponEvolutionManager can be instantiated")
+		_assert_true(manager.has_signal("evolution_available"), "T5.5.14: Has evolution_available signal")
+		_assert_true(manager.has_signal("weapon_evolved"), "T5.5.15: Has weapon_evolved signal")
+		_assert_true(manager.has_method("set_player"), "T5.5.16: Has set_player method")
+		_assert_true(manager.has_method("set_upgrade_manager"), "T5.5.17: Has set_upgrade_manager method")
+		_assert_true(manager.has_method("check_evolutions"), "T5.5.18: Has check_evolutions method")
+		_assert_true(manager.has_method("evolve_weapon"), "T5.5.19: Has evolve_weapon method")
+		_assert_true(manager.has_method("get_evolution_by_id"), "T5.5.20: Has get_evolution_by_id method")
+
+		# Test evolution definitions
+		_assert_true(manager.EVOLUTION_DEFS.size() > 0, "T5.5.21: Has evolution definitions")
+		_assert_true("crossbow" in manager.EVOLUTION_DEFS, "T5.5.22: Has crossbow evolution")
+
+		var crossbow_def = manager.EVOLUTION_DEFS["crossbow"]
+		_assert_equal(crossbow_def.base, "bow", "T5.5.23: Crossbow base is bow")
+		_assert_equal(crossbow_def.upgrade, "sharpness", "T5.5.24: Crossbow requires sharpness")
+		_assert_equal(crossbow_def.level, 5, "T5.5.25: Crossbow requires level 5")
+
+func _test_sword_tier_evolution() -> void:
+	# T5.6.1: SwordBase script exists
+	var script = load("res://scripts/weapons/sword_base.gd")
+	_assert_not_null(script, "T5.6.1: SwordBase script loads")
+
+	# T5.6.2: Wood sword scene exists
+	var scene = load("res://scenes/weapons/wood_sword.tscn")
+	_assert_not_null(scene, "T5.6.2: Wood Sword scene loads")
+
+	if scene:
+		var sword = scene.instantiate()
+
+		# T5.6.3: Sword starts at Wood tier
+		_assert_equal(sword.current_tier, SwordBase.Tier.WOOD, "T5.6.3: Sword starts at WOOD tier")
+
+		# T5.6.4: Wood sword has correct damage
+		_assert_equal(sword.damage, 5, "T5.6.4: Wood sword damage is 5")
+
+		# T5.6.5: Wood sword has correct range
+		_assert_equal(sword.attack_range, 30.0, "T5.6.5: Wood sword range is 30")
+
+		# T5.6.6: Wood sword has correct cooldown
+		_assert_equal(sword.attack_cooldown, 1.2, "T5.6.6: Wood sword cooldown is 1.2")
+
+		# T5.6.7: Kill count starts at 0
+		_assert_equal(sword.kill_count, 0, "T5.6.7: Kill count starts at 0")
+
+		# T5.6.8: on_enemy_killed increments kill count
+		sword.on_enemy_killed()
+		_assert_equal(sword.kill_count, 1, "T5.6.8: Kill count increments")
+
+		# T5.6.9: Evolve to Stone at 50 kills
+		for i in range(49):
+			sword.on_enemy_killed()
+		_assert_equal(sword.current_tier, SwordBase.Tier.STONE, "T5.6.9: Evolves to STONE at 50 kills")
+
+		# T5.6.10: Stone sword has correct damage
+		_assert_equal(sword.damage, 8, "T5.6.10: Stone sword damage is 8")
+
+		# T5.6.11: Stone sword has correct range
+		_assert_equal(sword.attack_range, 35.0, "T5.6.11: Stone sword range is 35")
+
+		# T5.6.12: Kill count resets after evolution
+		_assert_equal(sword.kill_count, 0, "T5.6.12: Kill count resets after evolution")
+
+		# T5.6.13: Tier name getter works
+		_assert_equal(sword.get_tier_name(), "Stone Sword", "T5.6.13: Tier name is correct")
+
+		# T5.6.14: Kills to next tier works
+		_assert_equal(sword.get_kills_to_next_tier(), 150, "T5.6.14: Kills to next tier is 150")
+
+		# T5.6.15: set_tier works
+		sword.set_tier(SwordBase.Tier.DIAMOND)
+		_assert_equal(sword.damage, 15, "T5.6.15: Diamond sword damage is 15")
+		_assert_equal(sword.attack_range, 45.0, "T5.6.16: Diamond sword range is 45")
+
+		# T5.6.17: Diamond is max tier
+		_assert_equal(sword.get_kills_to_next_tier(), -1, "T5.6.17: Diamond has no next tier")
+
+		sword.free()

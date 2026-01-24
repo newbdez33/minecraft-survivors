@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://bow001"]
+
+[ext_resource type="Script" path="res://scripts/weapons/bow.gd" id="1_bow"]
+[ext_resource type="Texture2D" path="res://assets/weapons/bow.svg" id="2_texture"]
+
+[node name="Bow" type="Node2D"]
+z_index = 5
+script = ExtResource("1_bow")
+damage = 8
+attack_speed = 1.0
+range = 300.0
+arrow_speed = 400.0
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(3, 3)
+texture = ExtResource("2_texture")

@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://test_mode_001"]
+
+[ext_resource type="Script" path="res://scripts/testing/test_mode.gd" id="1_test_mode"]
+
+[node name="TestMode" type="Node"]
+script = ExtResource("1_test_mode")
+scenario = 0
+test_duration = 120.0
+auto_screenshots = true
+speed_multiplier = 1.0

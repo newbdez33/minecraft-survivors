@@ -4,6 +4,219 @@
 
 ---
 
+## Phase 5.5: Sword Tier Evolution (剑进化系统)
+
+**优先级**: 高
+**状态**: 待实现
+
+### Overview (概述)
+玩家初始持有木剑，通过收集材料或达成条件进化到更高级别的剑。
+
+```
+🪵 Wood Sword → 🪨 Stone Sword → 🔩 Iron Sword → 💎 Diamond Sword
+```
+
+### Sword Tiers (剑等级)
+
+**注意**: 当前钻石剑范围100px太大，需要缩小让战斗更有挑战性。
+
+| 等级 | 名称 | 伤害 | 攻速 | 范围 | 颜色 |
+|------|------|------|------|------|------|
+| 1 | 木剑 (Wood) | 5 | 1.2s | 30 | 🟫 棕色 |
+| 2 | 石剑 (Stone) | 8 | 1.0s | 35 | ⬜ 灰色 |
+| 3 | 铁剑 (Iron) | 12 | 0.9s | 40 | 🔲 银色 |
+| 4 | 钻石剑 (Diamond) | 15 | 0.8s | 45 | 🔷 蓝色 |
+
+**Range Comparison (范围对比):**
+- 当前: 100px (太大，敌人还没靠近就死了)
+- 目标: 30-45px (近身肉搏战斗)
+
+### Evolution Requirements (进化条件)
+
+**方案 A: 材料收集** (推荐)
+
+| 进化 | 所需材料 | 获取方式 |
+|------|----------|----------|
+| Wood → Stone | 圆石×5 | 击杀敌人掉落 |
+| Stone → Iron | 铁锭×5 | 击杀敌人掉落 (稀有) |
+| Iron → Diamond | 钻石×3 | Boss掉落 / 宝箱 |
+
+**方案 B: 击杀数进化**
+
+| 进化 | 击杀数 | 预计时间 |
+|------|--------|----------|
+| Wood → Stone | 50 kills | ~2分钟 |
+| Stone → Iron | 150 kills | ~5分钟 |
+| Iron → Diamond | 400 kills | ~10分钟 |
+
+**方案 C: 等级进化**
+
+| 进化 | 玩家等级 |
+|------|----------|
+| Wood → Stone | Level 5 |
+| Stone → Iron | Level 10 |
+| Iron → Diamond | Level 18 |
+
+### Visual Design (视觉设计)
+
+```
+Wood Sword:     ╱▔╲    棕色木质纹理
+                │  │
+                └──┘
+
+Stone Sword:    ╱▔╲    灰色石质纹理
+                │▓▓│
+                └──┘
+
+Iron Sword:     ╱▔╲    银色金属光泽
+                │░░│
+                └──┘
+
+Diamond Sword:  ╱▔╲    蓝色钻石光泽 + 闪光特效
+                │◆◆│
+                └──┘
+```
+
+### Evolution Effects (进化特效)
+- 进化时播放升级动画
+- 屏幕闪光效果
+- 显示 "Sword Evolved!" 文字
+- 音效 (叮~)
+
+### Implementation Plan (实现计划)
+
+1. **创建剑基类** `base_sword.gd`
+   - 通用剑逻辑
+   - 进化方法 `evolve()`
+   - 等级属性 `tier`
+
+2. **创建各等级剑资源**
+   - `wood_sword.tscn` (初始)
+   - `stone_sword.tscn`
+   - `iron_sword.tscn`
+   - `diamond_sword.tscn` (最终)
+
+3. **创建剑管理器** `sword_manager.gd`
+   - 追踪当前剑等级
+   - 检查进化条件
+   - 执行进化替换
+
+4. **更新材料系统**
+   - 添加圆石、铁锭掉落
+   - 材料收集UI
+
+5. **进化UI**
+   - 进化进度条
+   - 进化提示
+
+### Assets Needed (所需资源)
+
+| 资源 | 文件名 |
+|------|--------|
+| 木剑图标 | `wood_sword.svg` |
+| 石剑图标 | `stone_sword.svg` |
+| 铁剑图标 | `iron_sword.svg` |
+| 钻石剑图标 | `diamond_sword.svg` (已有) |
+| 圆石图标 | `cobblestone.svg` |
+| 铁锭图标 | `iron_ingot.svg` |
+| 钻石图标 | `diamond.svg` |
+| 进化特效 | `evolution_effect.tscn` |
+
+---
+
+## Phase 6: Crafting System (合成系统)
+
+**优先级**: 高
+**状态**: 待实现
+
+### Materials Collection (素材收集)
+地图上生成可收集的素材，类似XP球自动吸收。
+
+| 素材 | 图标 | 出现条件 | 稀有度 |
+|------|------|----------|--------|
+| 木棍 (Stick) | 🪵 | 随机生成 | 普通 |
+| 煤炭 (Coal) | ⬛ | 随机生成 | 普通 |
+| 铁块 (Iron) | 🔩 | 击杀敌人掉落 | 少见 |
+| 金块 (Gold) | 🥇 | 击杀敌人掉落 | 稀有 |
+| 红石粉 (Redstone) | 🔴 | 波数奖励 | 稀有 |
+| 钻石 (Diamond) | 💎 | Boss掉落 | 极稀有 |
+
+### Auto-Crafting Recipes (自动合成配方)
+收集足够素材时自动合成道具。
+
+| 道具 | 配方 | 效果 |
+|------|------|------|
+| **火把** | 煤炭×1 + 木棍×1 | 夜间照亮200px范围，持续60秒，范围内敌人+20%受伤 |
+| **金苹果** | 金块×8 | 全额回血 + 5秒伤害提升 |
+| **铁傀儡** | 铁块×4 + 红石×1 | 召唤临时战斗伙伴30秒 |
+| **TNT** | 红石×1 + 煤炭×4 | 放置后3秒爆炸，范围伤害 |
+| **附魔书** | 钻石×1 + 红石×1 | 随机升级一个被动技能 |
+
+### Night Illumination (夜间照明)
+- 火把创建光照区域 (半径200px)
+- 光照区域内敌人受到额外伤害
+- 可同时放置多个火把，光照叠加
+- 白天自动消失
+
+---
+
+## Phase 7: Minecraft Dungeons Weapon System (MC地下城武器系统)
+
+**优先级**: 高
+**参考**: https://minecraft.fandom.com/wiki/Minecraft_Dungeons:Weapon
+
+### Melee Weapons (近战武器)
+
+| 武器 | 类型 | 攻速 | 特殊能力 |
+|------|------|------|----------|
+| 剑 (Sword) | 基础 | 中 | 平衡的速度与伤害 |
+| 大剑 (Claymore) | 重型 | 慢 | 强力击退效果 |
+| 双刃 (Daggers) | 双持 | 快 | 双持攻击，高攻速 |
+| 斧头 (Axe) | 重型 | 慢 | 旋转攻击能力 |
+| 长戟 (Glaive) | 长柄 | 中 | 攻击范围+50% |
+| 战棍 (Battlestaff) | 连击 | 快 | 多段连击伤害递增 |
+| 钉锤 (Mace) | 钝器 | 慢 | 10%眩晕几率 |
+| 镰刀 (Sickles) | 双持 | 快 | 攻击回血 |
+| 拳套 (Gauntlets) | 拳击 | 极快 | 连续快速打击 |
+| 鞭子 (Whip) | 范围 | 中 | 直线穿透多个敌人 |
+
+### Ranged Weapons (远程武器)
+
+| 武器 | 类型 | 射速 | 特殊能力 |
+|------|------|------|----------|
+| 弓 (Bow) | 基础 | 中 | 标准远程攻击 |
+| 长弓 (Longbow) | 重型 | 慢 | 高伤害，穿透 |
+| 短弓 (Shortbow) | 轻型 | 快 | 快速射击 |
+| 十字弓 (Crossbow) | 机械 | 中 | 穿透箭矢 |
+| 灵魂弩 (Soul Crossbow) | 魔法 | 慢 | 灵魂伤害类型 |
+| 竖琴弓 (Harp Crossbow) | 特殊 | 慢 | 扇形5箭齐发 |
+
+### Weapon Tiers (武器品质)
+
+| 品质 | 颜色 | 词缀数量 | 掉落率 |
+|------|------|----------|--------|
+| 普通 (Common) | 白色 | 0 | 60% |
+| 优秀 (Uncommon) | 绿色 | 1 | 25% |
+| 稀有 (Rare) | 蓝色 | 2 | 12% |
+| 传说 (Unique) | 橙色 | 3 + 特殊能力 | 3% |
+
+### Enchantment System (附魔系统)
+
+每把武器最多3个附魔槽位，可选择不同附魔。
+
+| 附魔 | 效果 | 最高等级 |
+|------|------|----------|
+| 锋利 (Sharpness) | +伤害 | III |
+| 火焰附加 (Fire Aspect) | 燃烧DOT | II |
+| 抢夺 (Looting) | +XP/掉落 | III |
+| 连锁 (Chains) | 闪电链接附近敌人 | III |
+| 光辉 (Radiance) | 攻击回血 | III |
+| 漩涡 (Swirling) | 旋转攻击伤害 | III |
+| 雷鸣 (Thundering) | 触发雷击 | III |
+| 回响 (Echo) | 触发额外攻击 | III |
+
+---
+
 ## More Characters (更多角色)
 
 **优先级**: 低

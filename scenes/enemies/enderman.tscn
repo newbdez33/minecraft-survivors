@@ -5,10 +5,10 @@
 [ext_resource type="Script" path="res://scripts/components/health.gd" id="3_health"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_enderman"]
-size = Vector2(24, 32)
+size = Vector2(32, 56)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_hitbox"]
-radius = 16.0
+radius = 24.0
 
 [node name="Enderman" type="CharacterBody2D" groups=["enemies"]]
 collision_layer = 2
@@ -22,6 +22,7 @@ teleport_cooldown = 3.0
 teleport_range = 200.0
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(1.5, 2.0)
 texture = ExtResource("2_texture")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

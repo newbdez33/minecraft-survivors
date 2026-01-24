@@ -315,7 +315,7 @@ func _create_disabled_placeholder() -> Control:
 	vbox.alignment = BoxContainer.ALIGNMENT_CENTER
 
 	var label = Label.new()
-	label.text = "All Weapons\nMaxed Out!"
+	label.text = tr("ALL_MAXED")
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.add_theme_font_size_override("font_size", 16)
 	label.add_theme_color_override("font_color", Color(0.5, 0.5, 0.5))
@@ -412,7 +412,7 @@ func _create_card(upgrade, index: int, is_weapon: bool, is_evolution: bool = fal
 
 	# Level label
 	var level_label = Label.new()
-	level_label.text = "Lv " + str(upgrade.current_level + 1) + "/" + str(upgrade.max_level)
+	level_label.text = tr("LEVEL") + " " + str(upgrade.current_level + 1) + "/" + str(upgrade.max_level)
 	level_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	level_label.add_theme_font_size_override("font_size", 11 if not is_evolution else 14)
 	level_label.add_theme_color_override("font_color", Color(0.7, 0.7, 0.7))
