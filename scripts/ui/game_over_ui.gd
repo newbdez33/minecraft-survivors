@@ -22,6 +22,7 @@ var _stats: Dictionary = {}
 
 func _ready() -> void:
 	visible = false
+	process_mode = Node.PROCESS_MODE_ALWAYS  # Process input even when paused
 
 	if restart_button:
 		restart_button.pressed.connect(_on_restart_pressed)
@@ -29,11 +30,39 @@ func _ready() -> void:
 		quit_button.pressed.connect(_on_quit_pressed)
 
 
+func _unhandled_input(event: InputEvent) -> void:
+	if not visible:
+		return
+
+	# Enter or Space to restart
+	if event.is_action_pressed("ui_accept"):
+		_on_restart_pressed()
+		get_viewport().set_input_as_handled()
+
+	# Escape to quit
+	elif event.is_action_pressed("ui_cancel"):
+		_on_quit_pressed()
+		get_viewport().set_input_as_handled()
+
+	# Tab to switch between buttons
+	elif event.is_action_pressed("ui_focus_next") or event.is_action_pressed("ui_focus_prev"):
+		if restart_button and quit_button:
+			if restart_button.has_focus():
+				quit_button.grab_focus()
+			else:
+				restart_button.grab_focus()
+			get_viewport().set_input_as_handled()
+
+
 ## Show the game over screen
 func show_game_over() -> void:
 	visible = true
 	get_tree().paused = true
 	_update_display()
+
+	# Focus restart button for keyboard navigation
+	if restart_button:
+		restart_button.grab_focus()
 
 
 ## Hide the game over screen
@@ -72,7 +101,7 @@ func _update_display() -> void:
 		restart_button.text = _tr("RESPAWN", "Respawn")
 
 	if quit_button:
-		quit_button.text = _tr("QUIT", "Quit")
+		quit_button.text = _tr("MAIN_MENU", "Main Menu")
 
 
 ## Translation helper with fallback
@@ -90,4 +119,5 @@ func _on_restart_pressed() -> void:
 
 func _on_quit_pressed() -> void:
 	quit_pressed.emit()
-	get_tree().quit()
+	get_tree().paused = false
+	get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn")

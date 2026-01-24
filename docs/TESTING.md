@@ -202,6 +202,9 @@ godot --path . tests/visual/full_test_runner.tscn
 
 # Run unit tests only
 godot --headless --script tests/test_runner.gd
+
+# Run auto visual test with screenshots (60 seconds)
+godot res://scenes/main.tscn -- --test-mode --duration=60
 ```
 
 ### Manual Testing
@@ -209,6 +212,45 @@ godot --headless --script tests/test_runner.gd
 # Run interactive test mode (F12 = screenshot, 1-6 = apply upgrades, K = kill player)
 godot --path . tests/visual/gameplay_test.tscn
 ```
+
+---
+
+## ⚠️ IMPORTANT: Post-Coding Verification
+
+**ALWAYS run auto visual test after finishing any coding task:**
+
+```bash
+# Standard test (60 seconds)
+godot res://scenes/main.tscn -- --test-mode --duration=60
+
+# Fast test with all features (recommended for quick verification)
+godot res://scenes/main.tscn -- --test-mode --duration=60 --fast-all
+
+# Test specific features
+godot res://scenes/main.tscn -- --test-mode --duration=60 --god-mode --fast-sword
+```
+
+### Test Mode Options
+
+| Flag | Description |
+|------|-------------|
+| `--test-mode` | Enable automated testing |
+| `--duration=N` | Test duration in seconds (default: 120) |
+| `--speed=N` | Game speed multiplier (default: 1.0) |
+| `--no-screenshots` | Disable automatic screenshots |
+| `--god-mode` | Player invincibility |
+| `--fast-progression` | 10x XP gain for faster level-ups |
+| `--fast-sword` | Sword evolves at 5/10/15 kills instead of 50/150/400 |
+| `--fast-all` | Enable all fast options (god-mode + fast-progression + fast-sword) |
+
+### What the test verifies:
+1. Run automated gameplay
+2. Capture screenshots at key moments
+3. Track: kills, level, wave, sword tier, poison hits
+4. Test sword evolution (Wood → Stone → Iron → Diamond)
+5. Verify game systems work together
+
+**Screenshots location:** `docs/screenshots/testing/<timestamp>/`
 
 ---
 

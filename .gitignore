@@ -33,3 +33,11 @@ mono_crash.*.json
 # OS generated
 .DS_Store
 Thumbs.db
+
+docs/screenshots/testing/
+
+docs/screenshots/
+
+*.import
+
+nul

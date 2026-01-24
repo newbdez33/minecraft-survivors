@@ -18,7 +18,14 @@
       "Bash(git checkout:*)",
       "Bash(gh repo view:*)",
       "Bash(gh repo rename:*)",
-      "Bash(git remote set-url:*)"
+      "Bash(git remote set-url:*)",
+      "Bash(git pull:*)",
+      "Bash(dir \"C:\\\\Users\\\\newbd\\\\Apps\\\\Godot\\\\*.exe\" /b)",
+      "Bash(Get-ChildItem \"C:\\\\Users\\\\newbd\\\\Apps\\\\Godot\" -Recurse -Filter \"*.exe\")",
+      "Bash(Select-Object -First 5 -ExpandProperty FullName)",
+      "Bash(\"C:/Users/newbd/Apps/Godot/Godot_v4.5.1-stable_win64_console.exe\" --headless --script tests/test_runner.gd)",
+      "Bash(\"C:/Users/newbd/Apps/Godot/Godot_v4.5.1-stable_win64_console.exe\" --headless --import)",
+      "Bash(ls:*)"
     ]
   }
 }
