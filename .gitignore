@@ -8,6 +8,7 @@
 .import/
 
 # Builds
+build/
 *.x86_64
 *.x86_32
 *.pck
