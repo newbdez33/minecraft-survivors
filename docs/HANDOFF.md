@@ -183,10 +183,14 @@ See [phase5_enhancements.md](./phase5_enhancements.md) for detailed plan.
   - 2 damage every 0.5 seconds
   - Visual effects (green tint, particles)
   - HUD status indicator
+- [ ] **Scoreboard**: High score tracking and leaderboard
+  - Score formula: kills×10 + time + level×50 + wave×100
+  - Top 10 local storage (user://scores.json)
+  - Game Over shows score + rank
+  - Dedicated scoreboard UI
 - [ ] Boss enemies (Wither, Ender Dragon)
 - [ ] New weapons (Bow, Trident)
 - [ ] Settings menu (volume, controls)
-- [ ] High score persistence
 
 ---
 

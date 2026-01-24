@@ -90,6 +90,10 @@ See [phase5_enhancements.md](./phase5_enhancements.md) for details.
   - 5s duration, 2 dmg per 0.5s tick
   - Visual effects (green tint, particles)
   - HUD status indicator
+- [ ] **Scoreboard**: High score tracking and leaderboard
+  - Score = kills×10 + time + level×50 + wave×100
+  - Top 10 local storage
+  - Display on game over + dedicated UI
 - [ ] Boss enemies (Wither, Ender Dragon)
 - [ ] New weapons (Bow, Trident)
 - [ ] Settings menu
