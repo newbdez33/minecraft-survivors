@@ -1,15 +1,19 @@
 ; Engine configuration file.
 ; It's best edited using the editor UI and not directly,
-; but this file documents our project settings.
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
 
 config_version=5
 
 [application]
 
-config/name="Zombie Survivors"
-config/description="A Vampire Survivors-like roguelike game"
+config/name="Minecraft Survivors"
+config/description="A Vampire Survivors-like roguelike game with Minecraft theme - Play as Steve and survive waves of mobs!"
 run/main_scene="res://scenes/main.tscn"
-config/features=PackedStringArray("4.2", "Forward Plus")
+config/features=PackedStringArray("4.5", "Forward Plus")
 
 [display]
 
@@ -54,3 +58,4 @@ move_right={
 [rendering]
 
 textures/canvas_textures/default_texture_filter=0
+textures/vram_compression/import_etc2_astc=true

@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" shape-rendering="crispEdges">
+  <!-- Sun Dusk - UI Icon - Minecraft Survivors (Deep orange/red sunset) -->
+
+  <!-- Sun rays (deep orange-red) -->
+  <rect x="14" y="2" width="4" height="4" fill="#FF6030"/>
+  <rect x="14" y="26" width="4" height="4" fill="#FF5020"/>
+  <rect x="2" y="14" width="4" height="4" fill="#FF6030"/>
+  <rect x="26" y="14" width="4" height="4" fill="#FF6030"/>
+
+  <!-- Diagonal rays (darker) -->
+  <rect x="5" y="5" width="3" height="3" fill="#E05030"/>
+  <rect x="24" y="5" width="3" height="3" fill="#E05030"/>
+  <rect x="5" y="24" width="3" height="3" fill="#D04020"/>
+  <rect x="24" y="24" width="3" height="3" fill="#D04020"/>
+
+  <!-- Sun body (outer - deep orange) -->
+  <rect x="9" y="9" width="14" height="14" fill="#FF7040"/>
+
+  <!-- Sun body (inner - orange) -->
+  <rect x="11" y="11" width="10" height="10" fill="#FF9050"/>
+
+  <!-- Sun core (warm orange-yellow) -->
+  <rect x="13" y="13" width="6" height="6" fill="#FFAA60"/>
+
+  <!-- Center highlight -->
+  <rect x="14" y="14" width="4" height="4" fill="#FFC080"/>
+
+  <!-- Horizon line (purple/dark) -->
+  <rect x="0" y="28" width="32" height="2" fill="#804060" opacity="0.5"/>
+  <rect x="0" y="30" width="32" height="2" fill="#402040" opacity="0.5"/>
+</svg>

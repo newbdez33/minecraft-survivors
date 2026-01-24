@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" shape-rendering="crispEdges">
+  <!-- Skeleton - Top-down view - Minecraft Survivors -->
+
+  <!-- Skull -->
+  <rect x="9" y="4" width="14" height="12" fill="#C8C8C8"/>
+  <rect x="9" y="4" width="14" height="3" fill="#8B8B8B"/>
+
+  <!-- Eye sockets -->
+  <rect x="11" y="8" width="3" height="4" fill="#1A1A1A"/>
+  <rect x="18" y="8" width="3" height="4" fill="#1A1A1A"/>
+
+  <!-- Nose hole -->
+  <rect x="15" y="12" width="2" height="2" fill="#1A1A1A"/>
+
+  <!-- Spine/ribcage -->
+  <rect x="14" y="16" width="4" height="10" fill="#C8C8C8"/>
+  <rect x="10" y="18" width="12" height="2" fill="#8B8B8B"/>
+  <rect x="10" y="22" width="12" height="2" fill="#8B8B8B"/>
+
+  <!-- Arms (bones) -->
+  <rect x="4" y="17" width="6" height="2" fill="#C8C8C8"/>
+  <rect x="22" y="17" width="6" height="2" fill="#C8C8C8"/>
+  <rect x="4" y="19" width="2" height="4" fill="#8B8B8B"/>
+  <rect x="26" y="19" width="2" height="4" fill="#8B8B8B"/>
+
+  <!-- Legs (bones) -->
+  <rect x="11" y="26" width="3" height="4" fill="#C8C8C8"/>
+  <rect x="18" y="26" width="3" height="4" fill="#C8C8C8"/>
+</svg>

@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://explosion001"]
+
+[ext_resource type="Script" path="res://scripts/effects/explosion.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/effects/explosion.svg" id="2_texture"]
+
+[node name="Explosion" type="Node2D"]
+script = ExtResource("1_script")
+lifetime = 0.5
+expand_scale = 2.0
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(1, 0.6, 0.2, 1)
+scale = Vector2(1.5, 1.5)
+texture = ExtResource("2_texture")

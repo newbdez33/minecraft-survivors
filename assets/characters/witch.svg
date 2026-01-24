@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" shape-rendering="crispEdges">
+  <!-- Witch - Top-down view - Minecraft Survivors -->
+
+  <!-- Hat (pointed, purple) -->
+  <rect x="14" y="0" width="4" height="3" fill="#2D1B4E"/>
+  <rect x="12" y="3" width="8" height="2" fill="#3D2B5E"/>
+  <rect x="8" y="5" width="16" height="2" fill="#4D3B6E"/>
+
+  <!-- Hat brim -->
+  <rect x="6" y="7" width="20" height="2" fill="#2D1B4E"/>
+
+  <!-- Face (gray/pale) -->
+  <rect x="10" y="9" width="12" height="8" fill="#8B8B7A"/>
+
+  <!-- Wart on nose -->
+  <rect x="15" y="13" width="2" height="2" fill="#5A5A4A"/>
+  <rect x="16" y="12" width="1" height="1" fill="#6B8B4A"/>
+
+  <!-- Eyes (red, glowing) -->
+  <rect x="12" y="11" width="2" height="2" fill="#AA0000"/>
+  <rect x="18" y="11" width="2" height="2" fill="#AA0000"/>
+
+  <!-- Robe (dark purple) -->
+  <rect x="8" y="17" width="16" height="10" fill="#3D2B5E"/>
+  <rect x="10" y="17" width="12" height="10" fill="#4D3B6E"/>
+
+  <!-- Robe details -->
+  <rect x="14" y="19" width="4" height="2" fill="#2D1B4E"/>
+
+  <!-- Arms holding potion -->
+  <rect x="4" y="18" width="4" height="4" fill="#8B8B7A"/>
+  <rect x="24" y="18" width="4" height="4" fill="#8B8B7A"/>
+
+  <!-- Hands -->
+  <rect x="4" y="22" width="3" height="2" fill="#7A7A6A"/>
+  <rect x="25" y="22" width="3" height="2" fill="#7A7A6A"/>
+
+  <!-- Robe bottom -->
+  <rect x="10" y="27" width="5" height="3" fill="#3D2B5E"/>
+  <rect x="17" y="27" width="5" height="3" fill="#3D2B5E"/>
+</svg>

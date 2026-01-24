@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" shape-rendering="crispEdges">
+  <!-- Grass with Tufts - Top-down view - Minecraft Survivors -->
+
+  <!-- Base grass -->
+  <rect x="0" y="0" width="32" height="32" fill="#7CBD6B"/>
+
+  <!-- Darker grass patches -->
+  <rect x="12" y="0" width="4" height="4" fill="#5A9C4A"/>
+  <rect x="0" y="8" width="4" height="4" fill="#5A9C4A"/>
+  <rect x="20" y="8" width="4" height="4" fill="#5A9C4A"/>
+  <rect x="8" y="16" width="4" height="4" fill="#5A9C4A"/>
+  <rect x="28" y="16" width="4" height="4" fill="#5A9C4A"/>
+  <rect x="16" y="24" width="4" height="4" fill="#5A9C4A"/>
+
+  <!-- Grass tuft 1 (tall grass blades) -->
+  <rect x="4" y="2" width="2" height="6" fill="#4A8C3A"/>
+  <rect x="6" y="4" width="2" height="4" fill="#4A8C3A"/>
+  <rect x="8" y="3" width="2" height="5" fill="#4A8C3A"/>
+
+  <!-- Grass tuft 2 -->
+  <rect x="22" y="18" width="2" height="6" fill="#4A8C3A"/>
+  <rect x="24" y="20" width="2" height="4" fill="#4A8C3A"/>
+  <rect x="26" y="19" width="2" height="5" fill="#4A8C3A"/>
+
+  <!-- Grass tuft 3 -->
+  <rect x="10" y="26" width="2" height="4" fill="#4A8C3A"/>
+  <rect x="12" y="27" width="2" height="3" fill="#4A8C3A"/>
+
+  <!-- Small stones -->
+  <rect x="18" y="2" width="2" height="2" fill="#888888"/>
+  <rect x="2" y="22" width="2" height="2" fill="#888888"/>
+</svg>

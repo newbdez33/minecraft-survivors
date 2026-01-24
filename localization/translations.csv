@@ -1,0 +1,30 @@
+keys,en,ja,zh
+GAME_TITLE,Minecraft Survivors,マインクラフト サバイバーズ,我的世界 幸存者
+YOU_DIED,You Died!,死亡した！,你死了！
+RESPAWN,Respawn,リスポーン,重生
+QUIT,Quit,終了,退出
+WAVE,Wave,ウェーブ,波次
+KILLS,Kills,撃破数,击杀
+LEVEL,Level,レベル,等级
+DAY,Day,日目,白天
+NIGHT,Night,夜,夜晚
+SURVIVAL_TIME,Survival Time,生存時間,存活时间
+LEVEL_UP,Level Up!,レベルアップ！,升级！
+CHOOSE_UPGRADE,Choose an Upgrade,強化を選択してください,请选择一项强化
+SHARPNESS,Sharpness,鋭さ,锋利
+SHARPNESS_DESC,+5 damage per level,レベルごとに攻撃力+5,每级 +5 伤害
+KNOCKBACK,Knockback,ノックバック,击退
+KNOCKBACK_DESC,+30 knockback per level,レベルごとにノックバック+30,每级 +30 击退
+LOOTING,Looting,ドロップ増加,抢夺
+LOOTING_DESC,+20% XP gain per level,レベルごとにXP獲得+20%,每级 +20% 经验获取
+PROTECTION,Protection,防護,保护
+PROTECTION_DESC,-10% damage taken per level,レベルごとに被ダメージ-10%,每级 -10% 受到伤害
+SWIFTNESS,Swiftness,俊敏,迅捷
+SWIFTNESS_DESC,+15% move speed per level,レベルごとに移動速度+15%,每级 +15% 移动速度
+SWEEPING,Sweeping Edge,範囲攻撃,横扫之刃
+SWEEPING_DESC,+20 attack range per level,レベルごとに攻撃範囲+20,每级 +20 攻击范围
+SETTINGS,Settings,設定,设置
+LANGUAGE,Language,言語,语言
+PAUSED,Paused,ポーズ中,已暂停
+RESUME,Resume,再開,继续
+MAIN_MENU,Main Menu,メインメニュー,主菜单
