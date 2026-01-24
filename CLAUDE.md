@@ -18,10 +18,10 @@ minecraft-survivors/
 ├── assets/              # SVG pixel art assets
 │   ├── characters/      # Player and enemy sprites
 │   ├── effects/         # Visual effect sprites
-│   ├── items/           # Collectibles (xp_orb, heart)
+│   ├── items/           # Collectibles (xp_orb, heart, meat, golden_apple)
 │   ├── tiles/           # Ground tiles (grass, dirt)
 │   ├── ui/              # UI icons (upgrades, day/night)
-│   └── weapons/         # Weapon sprites
+│   └── weapons/         # Weapon sprites (wood/stone/iron/diamond swords, bow, crossbow)
 ├── docs/                # Comprehensive documentation
 │   ├── tutorials/       # Beginner learning guides
 │   └── screenshots/     # Test verification images
@@ -62,10 +62,15 @@ minecraft-survivors/
 | `scripts/systems/upgrade_manager.gd` | Upgrade system (9 upgrades) |
 | `scripts/systems/wave_manager.gd` | Wave-based difficulty scaling |
 | `scripts/systems/day_night_cycle.gd` | 8-phase day/night visual system |
+| `scripts/systems/health_pickup_spawner.gd` | Periodic health pickup spawning |
 | `scripts/components/health.gd` | Reusable health component |
 | `scripts/components/status_effect_manager.gd` | Poison/buff stacking system |
 | `scripts/components/weapon_slots.gd` | 4-slot weapon system |
+| `scripts/weapons/sword_base.gd` | Sword evolution system (4 tiers) |
+| `scripts/pickups/health_pickup.gd` | Golden Apple healing pickup |
+| `scripts/pickups/meat_pickup.gd` | Meat drop from enemies |
 | `tests/test_runner.gd` | Central test orchestrator (389 tests) |
+| `docs/GAME_DATA.md` | Comprehensive game data reference (bilingual) |
 
 ## Development Commands
 
@@ -206,16 +211,37 @@ Tags containing "alpha", "beta", or "rc" are marked as prereleases.
 
 ## Important Systems
 
+### Weapon Evolution System
+Swords use a 4-tier evolution system (`scripts/weapons/sword_base.gd`):
+
+| Tier | Name | Damage | Range | Cooldown | Kills to Evolve |
+|------|------|--------|-------|----------|-----------------|
+| 1 | Wood Sword | 5 | 60 | 1.2s | 50 |
+| 2 | Stone Sword | 8 | 70 | 1.0s | 150 |
+| 3 | Iron Sword | 12 | 80 | 0.9s | 400 |
+| 4 | Diamond Sword | 15 | 90 | 0.8s | Max tier |
+
+**Per-level upgrades:** +2 damage, +5 range, -5% cooldown
+**Evolution bonuses:** Extra stats when evolving to next tier
+
 ### Upgrade System
 9 upgrades managed by `UpgradeManager`:
-- Sharpness (damage)
-- Protection (defense)
-- Swiftness (speed)
-- Knockback
-- Looting (XP bonus)
-- Sweeping (range)
-- Haste (attack speed)
-- And more...
+- Sharpness (+5 damage per level)
+- Protection (-10% damage taken)
+- Swiftness (+15% movement speed)
+- Knockback (+30 knockback force)
+- Looting (+20% XP gain)
+- Sweeping Edge (+20 attack range)
+- Haste (-10% attack cooldown)
+
+### Health Pickup System
+Two types of health pickups:
+- **Meat** - Drops from enemies (10-25% chance), heals 10 HP
+- **Golden Apple** - Spawns every 20s, heals 50% max HP
+
+`HealthPickupSpawner` adjusts spawn rate based on player health:
+- Health < 30%: Spawns at minimum interval (15s)
+- Health < 50%: Spawns at half interval
 
 ### Wave System
 `WaveManager` handles exponential difficulty scaling:
@@ -227,6 +253,22 @@ base_count = base_enemies_per_wave * pow(wave_scaling, wave - 1)
 ### Day/Night Cycle
 8 visual phases with CanvasModulate tint overlay:
 - Dawn → Morning → Midday → Afternoon → Dusk → Night → Midnight → Late Night
+
+### Enemy Data
+6 enemy types with unique behaviors:
+
+| Enemy | HP | Damage | Speed | XP | Special |
+|-------|-----|--------|-------|-----|---------|
+| Zombie | 20 | 10 | 60 | 5 | Basic chaser |
+| Skeleton | 15 | 8 | 40 | 8 | Ranged arrows |
+| Spider | 12 | 8 | 100 | 6 | Jump attack |
+| Creeper | 25 | 30 | 50 | 10 | Explodes |
+| Enderman | 40 | 15 | 70 | 15 | Teleports when hit |
+| Witch | 20 | 12 | 35 | 12 | Throws poison potions |
+
+**Anti-sticking:** All enemies have push-back when < 30px from player.
+
+For complete game data, see `docs/GAME_DATA.md` (bilingual EN/ZH).
 
 ## Common Tasks
 
@@ -244,9 +286,16 @@ base_count = base_enemies_per_wave * pow(wave_scaling, wave - 1)
 
 ### Adding a New Weapon
 1. Create sprite in `assets/weapons/`
-2. Create script in `scripts/weapons/`
+2. Create script in `scripts/weapons/` (extend `SwordBase` for melee weapons with evolution)
 3. Create scene in `scenes/weapons/`
 4. Integrate with `weapon_slots.gd` component
+
+### Adding a New Pickup
+1. Create sprite in `assets/items/`
+2. Create script in `scripts/pickups/` with `collected` signal
+3. Create scene in `scenes/pickups/`
+4. For enemy drops: add drop logic to enemy scripts
+5. For map spawns: integrate with `HealthPickupSpawner`
 
 ## Documentation
 
@@ -254,6 +303,7 @@ Detailed documentation is in `docs/`:
 - `README.md` - Project overview
 - `HANDOFF.md` - Current development status
 - `TESTING.md` - Manual testing guide
+- `GAME_DATA.md` - Complete game data reference (bilingual EN/ZH)
 - `phase1-5_*.md` - Development phase guides
 - `upgrade_system.md` - Upgrade mechanics
 - `tutorials/` - Beginner learning guides
@@ -262,10 +312,14 @@ Detailed documentation is in `docs/`:
 
 **Phase 4 (Game Feel):** Complete
 **Phase 5 (Enhancements):** In Progress
-- Poison stacking
-- Weapon slots system
-- Score/combo systems
-- Main menu and settings
+- ✅ Poison stacking with visual effects
+- ✅ Weapon slots system (4 positions)
+- ✅ Score/combo systems
+- ✅ Main menu and settings
+- ✅ Sword evolution system (Wood → Stone → Iron → Diamond)
+- ✅ Health pickups (Meat drops, Golden Apple spawns)
+- ✅ Enemy anti-sticking mechanism
+- ✅ Bow weapon with Crossbow evolution
 - [ ] Achievement system (pending)
 - [ ] Boss enemies (pending)
 
