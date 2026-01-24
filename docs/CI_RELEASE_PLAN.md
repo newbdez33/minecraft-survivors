@@ -1,6 +1,6 @@
 # GitHub CI Release Plan
 
-**Status**: 📋 PLANNED (Not Implemented)
+**Status**: ✅ IMPLEMENTED
 **Priority**: Medium
 **Target**: Windows & macOS builds
 
@@ -330,10 +330,10 @@ iconutil -c icns icon.iconset
 
 ## Implementation Checklist
 
-- [ ] Create `assets/icon.ico` (Windows)
-- [ ] Create `assets/icon.icns` (macOS)
-- [ ] Create `export_presets.cfg`
-- [ ] Create `.github/workflows/release.yml`
+- [ ] Create `assets/icon.ico` (Windows) - Optional, builds work without custom icon
+- [ ] Create `assets/icon.icns` (macOS) - Optional, builds work without custom icon
+- [x] Create `export_presets.cfg` - Already exists with Windows, macOS, Linux
+- [x] Create `.github/workflows/release.yml` - DONE
 - [ ] Test build locally with Godot export
 - [ ] Push first tag to test CI
 - [ ] Verify releases are created correctly

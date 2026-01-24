@@ -217,8 +217,11 @@ See [phase5_enhancements.md](./phase5_enhancements.md) for detailed plan.
 - [ ] Weapon Evolution (Bow → Crossbow)
 - [ ] Boss enemies (Wither, Ender Dragon)
 
-**Planned (Not Started):**
-- [ ] GitHub CI Release (Windows + macOS) - See [CI_RELEASE_PLAN.md](./CI_RELEASE_PLAN.md)
+**Infrastructure:**
+- [x] GitHub CI Release (Windows + macOS) - See [CI_RELEASE_PLAN.md](./CI_RELEASE_PLAN.md)
+  - `.github/workflows/release.yml` triggers on `v*` tags
+  - Builds Windows (.exe) and macOS (.app) via chickensoft-games/setup-godot
+  - Creates GitHub Release with zip files automatically
 
 ---
 

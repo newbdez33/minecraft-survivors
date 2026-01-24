@@ -1,0 +1,118 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+env:
+  GODOT_VERSION: 4.5.1
+  GAME_NAME: MinecraftSurvivors
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Godot
+        uses: chickensoft-games/setup-godot@v2
+        with:
+          version: ${{ env.GODOT_VERSION }}
+          use-dotnet: false
+
+      - name: Verify Godot
+        run: godot --version
+
+      - name: Import Project
+        run: godot --headless --import
+        timeout-minutes: 5
+
+      - name: Create Build Directory
+        run: mkdir -p build/windows
+        shell: bash
+
+      - name: Build Windows
+        run: godot --headless --export-release "Windows Desktop" build/windows/${{ env.GAME_NAME }}.exe
+        timeout-minutes: 10
+
+      - name: Package Windows
+        run: |
+          cd build/windows
+          7z a -tzip ../../${{ env.GAME_NAME }}-Windows-${{ github.ref_name }}.zip *
+        shell: bash
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-build
+          path: ${{ env.GAME_NAME }}-Windows-${{ github.ref_name }}.zip
+          retention-days: 5
+
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Godot
+        uses: chickensoft-games/setup-godot@v2
+        with:
+          version: ${{ env.GODOT_VERSION }}
+          use-dotnet: false
+
+      - name: Verify Godot
+        run: godot --version
+
+      - name: Import Project
+        run: godot --headless --import
+        timeout-minutes: 5
+
+      - name: Create Build Directory
+        run: mkdir -p build/macos
+
+      - name: Build macOS
+        run: godot --headless --export-release "macOS" build/macos/${{ env.GAME_NAME }}.app
+        timeout-minutes: 10
+
+      - name: Package macOS
+        run: |
+          cd build/macos
+          zip -r ../../${{ env.GAME_NAME }}-macOS-${{ github.ref_name }}.zip ${{ env.GAME_NAME }}.app
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-build
+          path: ${{ env.GAME_NAME }}-macOS-${{ github.ref_name }}.zip
+          retention-days: 5
+
+  create-release:
+    needs: [build-windows, build-macos]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download Windows Build
+        uses: actions/download-artifact@v4
+        with:
+          name: windows-build
+
+      - name: Download macOS Build
+        uses: actions/download-artifact@v4
+        with:
+          name: macos-build
+
+      - name: List Files
+        run: ls -la
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            MinecraftSurvivors-Windows-${{ github.ref_name }}.zip
+            MinecraftSurvivors-macOS-${{ github.ref_name }}.zip
+          generate_release_notes: true
+          draft: false
+          prerelease: ${{ contains(github.ref_name, 'alpha') || contains(github.ref_name, 'beta') || contains(github.ref_name, 'rc') }}
