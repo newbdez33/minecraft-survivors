@@ -223,6 +223,10 @@ See [phase5_enhancements.md](./phase5_enhancements.md) for detailed plan.
   - `.github/workflows/release.yml` triggers on `v*` tags
   - Builds Windows (.exe) and macOS (.app) via chickensoft-games/setup-godot
   - Creates GitHub Release with zip files automatically
+- [x] GitHub Pages Deployment (Web)
+  - `.github/workflows/deploy-web.yml` triggers on push to main
+  - Builds Web/HTML5 version automatically
+  - Deploys to GitHub Pages with COOP/COEP headers for SharedArrayBuffer
 
 ---
 

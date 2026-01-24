@@ -210,7 +210,7 @@ Key translation keys:
 
 ## CI/CD
 
-### GitHub Actions Workflow
+### Release Workflow
 Located at `.github/workflows/release.yml`:
 
 1. **Trigger:** Git tags matching `v*` (e.g., `v1.0.0`)
@@ -221,6 +221,15 @@ Located at `.github/workflows/release.yml`:
 
 ### Prerelease Detection
 Tags containing "alpha", "beta", or "rc" are marked as prereleases.
+
+### GitHub Pages Deployment
+Located at `.github/workflows/deploy-web.yml`:
+
+1. **Trigger:** Push to `main` branch (when develop is merged)
+2. **build-web:** Builds Web/HTML5 version using Godot
+3. **deploy:** Deploys to GitHub Pages with COOP/COEP headers
+
+Play the game at: `https://<username>.github.io/<repo-name>/`
 
 ## Important Systems
 
