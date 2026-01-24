@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://2q41aexp0g06"
-path="res://.godot/imported/arrow.svg-9dbf670183500a771670cab6ec6e1787.ctex"
+uid="uid://bo7wb5y485uls"
+path="res://.godot/imported/crossbow.svg-22be7eb959b96ddf4a4577005946db98.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/weapons/arrow.svg"
-dest_files=["res://.godot/imported/arrow.svg-9dbf670183500a771670cab6ec6e1787.ctex"]
+source_file="res://assets/weapons/crossbow.svg"
+dest_files=["res://.godot/imported/crossbow.svg-22be7eb959b96ddf4a4577005946db98.ctex"]
 
 [params]
 
