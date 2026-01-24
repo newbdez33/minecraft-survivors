@@ -10,6 +10,7 @@ const LuckyDropClass = preload("res://scripts/systems/lucky_drop.gd")
 
 var _is_attracted: bool = false
 var _target: Node2D = null
+var _bob_tween: Tween = null
 
 func _ready() -> void:
 	collision_layer = 0
@@ -21,9 +22,13 @@ func _ready() -> void:
 	_setup_visual()
 
 	# Bob animation
-	var tween = create_tween().set_loops()
-	tween.tween_property(self, "position:y", position.y - 5, 0.5)
-	tween.tween_property(self, "position:y", position.y + 5, 0.5)
+	_bob_tween = create_tween().set_loops()
+	_bob_tween.tween_property(self, "position:y", position.y - 5, 0.5)
+	_bob_tween.tween_property(self, "position:y", position.y + 5, 0.5)
+
+func _exit_tree() -> void:
+	if _bob_tween and _bob_tween.is_valid():
+		_bob_tween.kill()
 
 func _setup_visual() -> void:
 	var sprite = get_node_or_null("Sprite2D")

@@ -53,3 +53,6 @@ func _try_hit(target: Node) -> void:
 	# Check if we've hit max enemies
 	if _hit_enemies.size() >= pierce_count:
 		queue_free()
+
+func _exit_tree() -> void:
+	_hit_enemies.clear()

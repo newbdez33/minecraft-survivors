@@ -155,3 +155,9 @@ func _apply_poison_to_player(player: Node) -> void:
 			poison_damage_per_tick
 		)
 		status_manager.apply_effect(poison)
+
+func _exit_tree() -> void:
+	# Clean up arrays to prevent memory leaks
+	_pixel_data.clear()
+	_particles.clear()
+	_players_in_cloud.clear()
