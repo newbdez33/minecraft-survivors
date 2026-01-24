@@ -33,6 +33,11 @@ var damage_reduction: float = 0.0  # Protection upgrade (0.0 = 0%, 0.1 = 10%)
 # Facing direction for weapon positioning
 var facing_direction: Vector2 = Vector2.RIGHT
 
+# Mouse click-to-move target
+var _mouse_target: Vector2 = Vector2.ZERO
+var _has_mouse_target: bool = false
+const MOUSE_TARGET_THRESHOLD: float = 10.0  # Stop when this close to target
+
 func _ready() -> void:
 	current_health = max_health
 	xp_to_next_level = base_xp_requirement
@@ -79,10 +84,33 @@ func _physics_process(_delta: float) -> void:
 
 	move_and_slide()
 
+func _input(event: InputEvent) -> void:
+	# Handle mouse click for click-to-move
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+			_mouse_target = get_global_mouse_position()
+			_has_mouse_target = true
+
 func get_input_direction() -> Vector2:
+	# Check keyboard input first
 	var direction = Vector2.ZERO
 	direction.x = Input.get_action_strength("move_right") - Input.get_action_strength("move_left")
 	direction.y = Input.get_action_strength("move_down") - Input.get_action_strength("move_up")
+
+	# Keyboard input cancels mouse target
+	if direction != Vector2.ZERO:
+		_has_mouse_target = false
+		return direction
+
+	# Move towards mouse click target
+	if _has_mouse_target:
+		var to_target = _mouse_target - global_position
+		if to_target.length() > MOUSE_TARGET_THRESHOLD:
+			direction = to_target.normalized()
+		else:
+			# Reached target
+			_has_mouse_target = false
+
 	return direction
 
 func take_damage(amount: int) -> void:
