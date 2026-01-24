@@ -82,7 +82,9 @@ func start_fuse() -> void:
 	var timer = get_node_or_null("FuseTimer")
 	if timer:
 		timer.wait_time = fuse_time
-		timer.timeout.connect(explode)
+		# Only connect if not already connected
+		if not timer.timeout.is_connected(explode):
+			timer.timeout.connect(explode)
 		timer.start()
 
 func _flash_sprite() -> void:
