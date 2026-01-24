@@ -146,6 +146,140 @@
 
 ---
 
+## iOS Release (iOS发布)
+
+**优先级**: 低
+**依赖**: PC版本稳定后
+
+**要求**:
+- Apple Developer账号 ($99/年)
+- Xcode (macOS)
+- App Store Connect配置
+
+**发布清单**:
+| 项目 | 说明 |
+|------|------|
+| Bundle ID | com.minecraftsurvivors.game |
+| 图标 | 1024x1024 App Icon |
+| 截图 | iPhone 6.5", iPad 12.9" |
+| 隐私政策 | 必需 (即使不收集数据) |
+| 年龄分级 | 9+ (偶尔/轻微卡通暴力) |
+
+**Godot iOS导出配置**:
+```ini
+[preset.ios]
+name="iOS"
+platform="iOS"
+bundle_identifier="com.minecraftsurvivors.game"
+signature/apple_team_id="YOUR_TEAM_ID"
+application/icon="res://assets/icon_ios.png"
+```
+
+**CI配置** (需要 macOS runner):
+```yaml
+build-ios:
+  runs-on: macos-latest
+  steps:
+    - name: Build iOS
+      run: godot --headless --export-release "iOS" build/ios/MinecraftSurvivors.ipa
+    - name: Upload to App Store Connect
+      uses: apple-actions/upload-testflight-build@v1
+```
+
+---
+
+## Android Release (Android发布)
+
+**优先级**: 低
+**依赖**: PC版本稳定后
+
+**要求**:
+- Google Play Developer账号 ($25 一次性)
+- Android SDK
+- 签名密钥 (keystore)
+
+**发布清单**:
+| 项目 | 说明 |
+|------|------|
+| Package Name | com.minecraftsurvivors.game |
+| 图标 | 512x512 圆角图标 |
+| Feature Graphic | 1024x500 |
+| 截图 | 手机/平板各尺寸 |
+| 内容分级 | PEGI 7 / ESRB E10+ |
+| 隐私政策 | 必需 |
+
+**Godot Android导出配置**:
+```ini
+[preset.android]
+name="Android"
+platform="Android"
+package/unique_name="com.minecraftsurvivors.game"
+package/name="Minecraft Survivors"
+version/code=1
+version/name="1.0.0"
+launcher_icons/main_192x192="res://assets/icon_android.png"
+keystore/release="path/to/release.keystore"
+keystore/release_user="alias"
+keystore/release_password="password"
+```
+
+**CI配置**:
+```yaml
+build-android:
+  runs-on: ubuntu-latest
+  steps:
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v3
+
+    - name: Build Android APK
+      run: godot --headless --export-release "Android" build/android/MinecraftSurvivors.apk
+
+    - name: Build Android AAB (for Play Store)
+      run: godot --headless --export-release "Android" build/android/MinecraftSurvivors.aab
+
+    - name: Upload to Google Play
+      uses: r0adkll/upload-google-play@v1
+      with:
+        serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT }}
+        packageName: com.minecraftsurvivors.game
+        releaseFiles: build/android/MinecraftSurvivors.aab
+        track: internal
+```
+
+**触控适配需求**:
+- 虚拟摇杆 (左下角)
+- 虚拟按钮 (可选，因为自动攻击)
+- 触屏升级选择
+- UI缩放适配不同屏幕
+
+---
+
+## Web Release (Web发布)
+
+**优先级**: 极低
+**依赖**: PC版本稳定后
+
+**发布平台**:
+- itch.io
+- GitHub Pages
+- 自建网站
+
+**Godot Web导出配置**:
+```ini
+[preset.web]
+name="Web"
+platform="Web"
+export_path="build/web/index.html"
+```
+
+**限制**:
+- 需要 HTTPS
+- 首次加载较慢 (~20MB)
+- 不支持多线程
+- 存档使用 IndexedDB
+
+---
+
 ## Economy System (经济系统)
 
 **优先级**: 低
