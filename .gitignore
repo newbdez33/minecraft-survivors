@@ -9,6 +9,9 @@
 
 # Builds
 build/
+
+# Tools (local Godot installation)
+tools/
 *.x86_64
 *.x86_32
 *.pck
