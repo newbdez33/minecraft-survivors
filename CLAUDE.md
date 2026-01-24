@@ -195,6 +195,19 @@ var text = tr("GAME_TITLE")
 LocalizationManager.set_language("ja")
 ```
 
+### Real-time Language Switching
+All UI components connect to `LocalizationManager.language_changed` signal to refresh when language changes:
+- HUD (Level, Wave, Kills labels)
+- Pause Menu
+- Settings Panel
+- Game Over UI
+
+Key translation keys:
+- `HUD_LEVEL`, `HUD_WAVE`, `HUD_KILLS` - Gameplay HUD
+- `YOU_DIED`, `SURVIVAL_TIME`, `RESPAWN` - Game Over screen
+- `PAUSED`, `RESUME`, `SETTINGS` - Pause Menu
+- `ALL_MAXED` - Upgrade UI when weapons maxed
+
 ## CI/CD
 
 ### GitHub Actions Workflow

@@ -1,30 +1,61 @@
-keys,en,ja,zh
-GAME_TITLE,Minecraft Survivors,マインクラフト サバイバーズ,我的世界 幸存者
-YOU_DIED,You Died!,死亡した！,你死了！
-RESPAWN,Respawn,リスポーン,重生
-QUIT,Quit,終了,退出
-WAVE,Wave,ウェーブ,波次
-KILLS,Kills,撃破数,击杀
-LEVEL,Level,レベル,等级
-DAY,Day,日目,白天
-NIGHT,Night,夜,夜晚
-SURVIVAL_TIME,Survival Time,生存時間,存活时间
-LEVEL_UP,Level Up!,レベルアップ！,升级！
-CHOOSE_UPGRADE,Choose an Upgrade,強化を選択してください,请选择一项强化
-SHARPNESS,Sharpness,鋭さ,锋利
-SHARPNESS_DESC,+5 damage per level,レベルごとに攻撃力+5,每级 +5 伤害
-KNOCKBACK,Knockback,ノックバック,击退
-KNOCKBACK_DESC,+30 knockback per level,レベルごとにノックバック+30,每级 +30 击退
-LOOTING,Looting,ドロップ増加,抢夺
-LOOTING_DESC,+20% XP gain per level,レベルごとにXP獲得+20%,每级 +20% 经验获取
-PROTECTION,Protection,防護,保护
-PROTECTION_DESC,-10% damage taken per level,レベルごとに被ダメージ-10%,每级 -10% 受到伤害
-SWIFTNESS,Swiftness,俊敏,迅捷
-SWIFTNESS_DESC,+15% move speed per level,レベルごとに移動速度+15%,每级 +15% 移动速度
-SWEEPING,Sweeping Edge,範囲攻撃,横扫之刃
-SWEEPING_DESC,+20 attack range per level,レベルごとに攻撃範囲+20,每级 +20 攻击范围
-SETTINGS,Settings,設定,设置
-LANGUAGE,Language,言語,语言
-PAUSED,Paused,ポーズ中,已暂停
-RESUME,Resume,再開,继续
-MAIN_MENU,Main Menu,メインメニュー,主菜单
+keys,en,zh,ja
+GAME_TITLE,Minecraft Survivors,我的世界 幸存者,マインクラフト サバイバーズ
+GAME_SUBTITLE,A Vampire Survivors-like game,类吸血鬼幸存者游戏,ヴァンパイアサバイバーズ風ゲーム
+START_GAME,Start Game,开始游戏,ゲーム開始
+SETTINGS,Settings,设置,設定
+SCOREBOARD,Scoreboard,排行榜,スコアボード
+HIGH_SCORES,High Scores,最高分,ハイスコア
+CLOSE,Close,关闭,閉じる
+SFX_VOLUME,SFX Volume,音效音量,効果音
+MUSIC_VOLUME,Music Volume,音乐音量,BGM音量
+SCREEN_SHAKE,Screen Shake,屏幕震动,画面揺れ
+DAMAGE_NUMBERS,Damage Numbers,伤害数字,ダメージ表示
+PAUSE_ON_UPGRADE,Pause on Upgrade,升级时暂停,アップグレード時停止
+MAIN_MENU,Main Menu,主菜单,メインメニュー
+NO_SCORES,No scores yet!,暂无分数!,まだスコアがありません!
+SCORE,Score,分数,スコア
+DATE,Date,日期,日付
+PAUSED,PAUSED,暂停,ポーズ
+RESUME,Resume,继续,再開
+QUIT,Quit,退出,終了
+GAME_OVER,GAME OVER,游戏结束,ゲームオーバー
+RESTART,Restart,重新开始,リスタート
+SURVIVED,Survived,存活时间,生存時間
+KILLS,Kills,击杀数,キル数
+LEVEL,Lv,等级,Lv
+WAVE,Wave,波次,ウェーブ
+WEAPONS,Weapons,武器,武器
+WEAPONS_MAX,Weapons (MAX),武器 (已满),武器 (MAX)
+EVOLUTION,★ EVOLUTION ★,★ 进化 ★,★ 進化 ★
+BONUS,BONUS,奖励,ボーナス
+UPGRADE_SWORD,Sword,剑,剣
+UPGRADE_BOW,Bow,弓,弓
+UPGRADE_CROSSBOW,Crossbow,弩,クロスボウ
+UPGRADE_SHARPNESS,Sharpness,锋利,鋭さ
+UPGRADE_KNOCKBACK,Knockback,击退,ノックバック
+UPGRADE_LOOTING,Looting,抢夺,ドロップ増加
+UPGRADE_PROTECTION,Protection,保护,防護
+UPGRADE_SWIFTNESS,Swiftness,迅捷,俊敏
+UPGRADE_SWEEPING,Sweeping Edge,横扫之刃,スイープ
+UPGRADE_HASTE,Haste,急迫,加速
+WOOD_SWORD,Wood Sword,木剑,木の剣
+STONE_SWORD,Stone Sword,石剑,石の剣
+IRON_SWORD,Iron Sword,铁剑,鉄の剣
+DIAMOND_SWORD,Diamond Sword,钻石剑,ダイヤの剣
+DESC_SWORD,+2 damage +5 range,+2伤害 +5范围,+2ダメージ +5範囲
+DESC_BOW,+3 DMG +25 range (Lv4→Crossbow),+3伤害 +25范围 (4级→弩),+3ダメージ +25範囲 (Lv4→クロスボウ)
+DESC_SHARPNESS,+{value} damage,+{value}伤害,+{value}ダメージ
+DESC_KNOCKBACK,+{value} knockback,+{value}击退,+{value}ノックバック
+DESC_LOOTING,+{value}% XP gain,+{value}%经验获取,+{value}%経験値
+DESC_PROTECTION,-{value}% damage taken,-{value}%受到伤害,-{value}%被ダメージ
+DESC_SWIFTNESS,+{value}% move speed,+{value}%移动速度,+{value}%移動速度
+DESC_SWEEPING,+{value} attack range,+{value}攻击范围,+{value}攻撃範囲
+DESC_HASTE,-{value}% attack cooldown,-{value}%攻击冷却,-{value}%クールダウン
+LANGUAGE,Language,语言,言語
+YOU_DIED,You Died!,你死了!,死んでしまった!
+SURVIVAL_TIME,Survival Time,存活时间,生存時間
+RESPAWN,Respawn,重生,リスポーン
+HUD_LEVEL,Lv.,等级,Lv.
+HUD_WAVE,Wave,波次,ウェーブ
+HUD_KILLS,Kills,击杀,キル
+ALL_MAXED,All Weapons Maxed Out!,所有武器已满级!,全武器MAX!

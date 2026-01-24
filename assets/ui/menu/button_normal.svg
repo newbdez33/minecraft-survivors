@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 40" width="200" height="40" shape-rendering="crispEdges">
+  <!-- Minecraft stone button - normal state -->
+  <!-- Outer dark border -->
+  <rect x="0" y="0" width="200" height="40" fill="#1a1a1a"/>
+  <!-- Light top/left edge (3D bevel) -->
+  <rect x="2" y="2" width="196" height="2" fill="#c0c0c0"/>
+  <rect x="2" y="2" width="2" height="36" fill="#c0c0c0"/>
+  <!-- Dark bottom/right edge -->
+  <rect x="2" y="36" width="196" height="2" fill="#505050"/>
+  <rect x="196" y="2" width="2" height="36" fill="#505050"/>
+  <!-- Main button body - stone gray -->
+  <rect x="4" y="4" width="192" height="32" fill="#8b8b8b"/>
+  <!-- Texture pattern - subtle stone texture -->
+  <rect x="10" y="8" width="4" height="4" fill="#7a7a7a"/>
+  <rect x="30" y="15" width="3" height="3" fill="#9a9a9a"/>
+  <rect x="60" y="10" width="4" height="4" fill="#7a7a7a"/>
+  <rect x="90" y="20" width="3" height="3" fill="#9a9a9a"/>
+  <rect x="120" y="8" width="4" height="4" fill="#7a7a7a"/>
+  <rect x="150" y="18" width="3" height="3" fill="#9a9a9a"/>
+  <rect x="180" y="12" width="4" height="4" fill="#7a7a7a"/>
+</svg>

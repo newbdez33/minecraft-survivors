@@ -1,0 +1,398 @@
+[gd_scene load_steps=10 format=3 uid="uid://mainmenu001"]
+
+[ext_resource type="Script" path="res://scripts/ui/main_menu.gd" id="1_script"]
+[ext_resource type="Script" path="res://scripts/ui/settings_panel.gd" id="2_settings"]
+[ext_resource type="Script" path="res://scripts/ui/scoreboard_panel.gd" id="3_scoreboard"]
+[ext_resource type="Texture2D" path="res://assets/ui/menu/background.svg" id="4_bg"]
+[ext_resource type="Texture2D" path="res://assets/ui/menu/title_logo.svg" id="5_logo"]
+[ext_resource type="Texture2D" path="res://assets/ui/menu/button_normal.svg" id="6_btn_normal"]
+[ext_resource type="Texture2D" path="res://assets/ui/menu/button_hover.svg" id="7_btn_hover"]
+[ext_resource type="Texture2D" path="res://assets/ui/menu/button_pressed.svg" id="8_btn_pressed"]
+[ext_resource type="Texture2D" path="res://assets/ui/menu/panel_bg.svg" id="9_panel"]
+
+[node name="MainMenu" type="CanvasLayer"]
+layer = 10
+script = ExtResource("1_script")
+
+[node name="Background" type="TextureRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("4_bg")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="Container" type="CenterContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="VBox" type="VBoxContainer" parent="Container"]
+custom_minimum_size = Vector2(400, 0)
+theme_override_constants/separation = 12
+
+[node name="TitleContainer" type="VBoxContainer" parent="Container/VBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 100)
+theme_override_constants/separation = 0
+
+[node name="Title" type="Label" parent="Container/VBox/TitleContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.8, 0.3, 1)
+theme_override_colors/font_shadow_color = Color(0.2, 0.1, 0, 0.8)
+theme_override_colors/font_outline_color = Color(0.3, 0.15, 0, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 48
+text = "MINECRAFT"
+horizontal_alignment = 1
+
+[node name="Subtitle" type="Label" parent="Container/VBox/TitleContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.6, 0.2, 1)
+theme_override_colors/font_shadow_color = Color(0.2, 0.1, 0, 0.8)
+theme_override_colors/font_outline_color = Color(0.3, 0.15, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 36
+text = "SURVIVORS"
+horizontal_alignment = 1
+
+[node name="Spacer" type="Control" parent="Container/VBox"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+
+[node name="StartButton" type="TextureButton" parent="Container/VBox"]
+custom_minimum_size = Vector2(300, 50)
+layout_mode = 2
+size_flags_horizontal = 4
+texture_normal = ExtResource("6_btn_normal")
+texture_pressed = ExtResource("8_btn_pressed")
+texture_hover = ExtResource("7_btn_hover")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="Label" type="Label" parent="Container/VBox/StartButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_colors/font_shadow_color = Color(1, 1, 1, 0.3)
+theme_override_font_sizes/font_size = 22
+text = "Start Game"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SettingsButton" type="TextureButton" parent="Container/VBox"]
+custom_minimum_size = Vector2(300, 50)
+layout_mode = 2
+size_flags_horizontal = 4
+texture_normal = ExtResource("6_btn_normal")
+texture_pressed = ExtResource("8_btn_pressed")
+texture_hover = ExtResource("7_btn_hover")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="Label" type="Label" parent="Container/VBox/SettingsButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_colors/font_shadow_color = Color(1, 1, 1, 0.3)
+theme_override_font_sizes/font_size = 22
+text = "Settings"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ScoreboardButton" type="TextureButton" parent="Container/VBox"]
+custom_minimum_size = Vector2(300, 50)
+layout_mode = 2
+size_flags_horizontal = 4
+texture_normal = ExtResource("6_btn_normal")
+texture_pressed = ExtResource("8_btn_pressed")
+texture_hover = ExtResource("7_btn_hover")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="Label" type="Label" parent="Container/VBox/ScoreboardButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_colors/font_shadow_color = Color(1, 1, 1, 0.3)
+theme_override_font_sizes/font_size = 22
+text = "Scoreboard"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="QuitButton" type="TextureButton" parent="Container/VBox"]
+custom_minimum_size = Vector2(300, 50)
+layout_mode = 2
+size_flags_horizontal = 4
+texture_normal = ExtResource("6_btn_normal")
+texture_pressed = ExtResource("8_btn_pressed")
+texture_hover = ExtResource("7_btn_hover")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="Label" type="Label" parent="Container/VBox/QuitButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_colors/font_shadow_color = Color(1, 1, 1, 0.3)
+theme_override_font_sizes/font_size = 22
+text = "Quit"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Version" type="Label" parent="Container/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.7, 0.7, 1)
+theme_override_font_sizes/font_size = 14
+horizontal_alignment = 1
+text = "v1.0.0"
+
+[node name="DimOverlay" type="ColorRect" parent="."]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0, 0, 0, 0.7)
+
+[node name="SettingsPanel" type="PanelContainer" parent="."]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -180.0
+offset_top = -200.0
+offset_right = 180.0
+offset_bottom = 200.0
+script = ExtResource("2_settings")
+
+[node name="PanelBg" type="TextureRect" parent="SettingsPanel"]
+layout_mode = 2
+texture = ExtResource("9_panel")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="MarginContainer" type="MarginContainer" parent="SettingsPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 25
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 25
+theme_override_constants/margin_bottom = 20
+
+[node name="VBox" type="VBoxContainer" parent="SettingsPanel/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="SettingsPanel/MarginContainer/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.8, 0.4, 1)
+theme_override_font_sizes/font_size = 24
+text = "Settings"
+horizontal_alignment = 1
+
+[node name="Spacer" type="Control" parent="SettingsPanel/MarginContainer/VBox"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
+[node name="SFXVolume" type="HBoxContainer" parent="SettingsPanel/MarginContainer/VBox"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="SettingsPanel/MarginContainer/VBox/SFXVolume"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "SFX Volume"
+
+[node name="Slider" type="HSlider" parent="SettingsPanel/MarginContainer/VBox/SFXVolume"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 1.0
+step = 0.1
+value = 0.8
+
+[node name="MusicVolume" type="HBoxContainer" parent="SettingsPanel/MarginContainer/VBox"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="SettingsPanel/MarginContainer/VBox/MusicVolume"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Music Volume"
+
+[node name="Slider" type="HSlider" parent="SettingsPanel/MarginContainer/VBox/MusicVolume"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 1.0
+step = 0.1
+value = 0.6
+
+[node name="ScreenShake" type="HBoxContainer" parent="SettingsPanel/MarginContainer/VBox"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="SettingsPanel/MarginContainer/VBox/ScreenShake"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Screen Shake"
+
+[node name="CheckBox" type="CheckBox" parent="SettingsPanel/MarginContainer/VBox/ScreenShake"]
+layout_mode = 2
+button_pressed = true
+
+[node name="DamageNumbers" type="HBoxContainer" parent="SettingsPanel/MarginContainer/VBox"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="SettingsPanel/MarginContainer/VBox/DamageNumbers"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Damage Numbers"
+
+[node name="CheckBox" type="CheckBox" parent="SettingsPanel/MarginContainer/VBox/DamageNumbers"]
+layout_mode = 2
+button_pressed = true
+
+[node name="PauseUpgrade" type="HBoxContainer" parent="SettingsPanel/MarginContainer/VBox"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="SettingsPanel/MarginContainer/VBox/PauseUpgrade"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Pause on Upgrade"
+
+[node name="CheckBox" type="CheckBox" parent="SettingsPanel/MarginContainer/VBox/PauseUpgrade"]
+layout_mode = 2
+button_pressed = true
+
+[node name="Language" type="HBoxContainer" parent="SettingsPanel/MarginContainer/VBox"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="SettingsPanel/MarginContainer/VBox/Language"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Language"
+
+[node name="OptionButton" type="OptionButton" parent="SettingsPanel/MarginContainer/VBox/Language"]
+layout_mode = 2
+item_count = 3
+popup/item_0/text = "English"
+popup/item_1/text = "日本語"
+popup/item_2/text = "中文"
+
+[node name="Spacer2" type="Control" parent="SettingsPanel/MarginContainer/VBox"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
+[node name="CloseButton" type="TextureButton" parent="SettingsPanel/MarginContainer/VBox"]
+custom_minimum_size = Vector2(200, 40)
+layout_mode = 2
+size_flags_horizontal = 4
+texture_normal = ExtResource("6_btn_normal")
+texture_pressed = ExtResource("8_btn_pressed")
+texture_hover = ExtResource("7_btn_hover")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="Label" type="Label" parent="SettingsPanel/MarginContainer/VBox/CloseButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_font_sizes/font_size = 18
+text = "Close"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ScoreboardPanel" type="PanelContainer" parent="."]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -180.0
+offset_top = -200.0
+offset_right = 180.0
+offset_bottom = 200.0
+script = ExtResource("3_scoreboard")
+
+[node name="PanelBg" type="TextureRect" parent="ScoreboardPanel"]
+layout_mode = 2
+texture = ExtResource("9_panel")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="MarginContainer" type="MarginContainer" parent="ScoreboardPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 25
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 25
+theme_override_constants/margin_bottom = 20
+
+[node name="VBox" type="VBoxContainer" parent="ScoreboardPanel/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="ScoreboardPanel/MarginContainer/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.8, 0.4, 1)
+theme_override_font_sizes/font_size = 24
+text = "High Scores"
+horizontal_alignment = 1
+
+[node name="ScoresContainer" type="VBoxContainer" parent="ScoreboardPanel/MarginContainer/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="CloseButton" type="TextureButton" parent="ScoreboardPanel/MarginContainer/VBox"]
+custom_minimum_size = Vector2(200, 40)
+layout_mode = 2
+size_flags_horizontal = 4
+texture_normal = ExtResource("6_btn_normal")
+texture_pressed = ExtResource("8_btn_pressed")
+texture_hover = ExtResource("7_btn_hover")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="Label" type="Label" parent="ScoreboardPanel/MarginContainer/VBox/CloseButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_font_sizes/font_size = 18
+text = "Close"
+horizontal_alignment = 1
+vertical_alignment = 1

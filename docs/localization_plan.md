@@ -680,4 +680,5 @@ godot --path . --script tests/visual/test_localization_visual.gd
 
 ## 12. 更新日志
 
+- **2026-01-24**: HUD 实时语言切换 - 暂停菜单中切换语言时 HUD 自动刷新
 - **2026-01-23**: 创建本地化技术方案文档

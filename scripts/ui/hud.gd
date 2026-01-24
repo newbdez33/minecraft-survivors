@@ -9,6 +9,7 @@ class_name HUD
 @onready var kills_label: Label = $TopRightContainer/KillsLabel
 @onready var time_label: Label = $TopCenterContainer/TimeLabel
 @onready var day_night_icon: TextureRect = $TopCenterContainer/DayNightIcon
+@onready var notification_label: Label = $NotificationContainer/NotificationLabel
 
 var heart_full_texture: Texture2D
 var heart_half_texture: Texture2D
@@ -29,6 +30,11 @@ var heart_nodes: Array[TextureRect] = []
 var _current_level: int = 1
 
 func _ready() -> void:
+	# Connect to language changes
+	var localization_manager = get_node_or_null("/root/LocalizationManager")
+	if localization_manager and localization_manager.has_signal("language_changed"):
+		localization_manager.language_changed.connect(_on_language_changed)
+
 	# Load heart textures
 	heart_full_texture = load("res://assets/items/heart_full.svg")
 	heart_half_texture = load("res://assets/items/heart_half.svg")
@@ -70,6 +76,29 @@ func _create_hearts() -> void:
 		hearts_container.add_child(heart)
 		heart_nodes.append(heart)
 
+## Refresh all HUD labels with current translations
+func refresh_labels() -> void:
+	# Refresh with current values using translations
+	set_level(_current_level)
+	if wave_label:
+		# Get current wave text and extract number
+		var current_text = wave_label.text
+		var wave_num = 1
+		if current_text.contains(" "):
+			wave_num = int(current_text.split(" ")[-1])
+		set_wave(wave_num)
+	if kills_label:
+		# Get current kills text and extract number
+		var current_text = kills_label.text
+		var kills_num = 0
+		if current_text.contains(":"):
+			kills_num = int(current_text.split(":")[-1].strip_edges())
+		set_kills(kills_num)
+
+## Called when language changes via LocalizationManager
+func _on_language_changed(_locale: String) -> void:
+	refresh_labels()
+
 func update_health(current_health: int, maximum_health: int = 100) -> void:
 	# Each heart = 10 health points
 	var health_per_heart = maximum_health / max_hearts
@@ -97,15 +126,15 @@ func update_xp(current: int, needed: int) -> void:
 func set_level(level: int) -> void:
 	_current_level = level
 	if level_label:
-		level_label.text = "Lv. " + str(level)
+		level_label.text = tr("HUD_LEVEL") + " " + str(level)
 
 func set_wave(wave: int) -> void:
 	if wave_label:
-		wave_label.text = "Wave " + str(wave)
+		wave_label.text = tr("HUD_WAVE") + " " + str(wave)
 
 func set_kills(kills: int) -> void:
 	if kills_label:
-		kills_label.text = "Kills: " + str(kills)
+		kills_label.text = tr("HUD_KILLS") + ": " + str(kills)
 
 func set_time(time_seconds: float) -> void:
 	if time_label:
@@ -177,3 +206,17 @@ func set_time_of_day(time_of_day: int) -> void:
 		3:  # NIGHT
 			if moon_texture:
 				day_night_icon.texture = moon_texture
+
+## Show a temporary notification message
+func show_notification(message: String, duration: float = 3.0) -> void:
+	if not notification_label:
+		return
+
+	notification_label.text = message
+	notification_label.modulate.a = 1.0
+
+	# Fade out after duration
+	var tween = create_tween()
+	tween.tween_interval(duration - 0.5)
+	tween.tween_property(notification_label, "modulate:a", 0.0, 0.5)
+	tween.tween_callback(func(): notification_label.text = "")

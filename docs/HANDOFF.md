@@ -210,6 +210,7 @@ See [phase5_enhancements.md](./phase5_enhancements.md) for detailed plan.
 - [x] **Settings Panel**: Volume, language, screen shake toggles
 - [x] **Lucky Drop System**: Rare item drops from enemies
 - [x] **Auto Test Mode**: Automatic gameplay testing with screenshots
+- [x] **HUD Localization**: Level/Wave/Kills labels translated with real-time refresh
 
 **Phase 5 Features Remaining:**
 - [ ] Achievement System
@@ -247,6 +248,14 @@ All development follows Red→Green→Refactor:
 
 - Translation system requires manual CSV import configuration in Godot
 - Visual tests use direct label text setting (workaround for translation timing)
+
+## Recent Updates
+
+### HUD Localization (Latest)
+- HUD labels (Level, Wave, Kills) now fully localized
+- Real-time language switching: Changing language in pause menu immediately updates all UI
+- HUD connects to `LocalizationManager.language_changed` signal for automatic refresh
+- Translation keys: `HUD_LEVEL`, `HUD_WAVE`, `HUD_KILLS`, `ALL_MAXED`
 
 ---
 
