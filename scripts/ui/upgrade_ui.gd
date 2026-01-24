@@ -18,6 +18,8 @@ signal upgrade_selected(upgrade)
 
 ## Selection timeout in seconds
 @export var selection_timeout: float = 5.0
+## Whether to use auto-select timer (can be set via settings in future)
+@export var use_timer: bool = false
 
 ## Weapon upgrade IDs
 const WEAPON_UPGRADES = ["sword", "bow"]
@@ -32,6 +34,7 @@ var _weapon_section_available: bool = true
 var _timer: float = 0.0
 var _is_active: bool = false
 var _upgrade_manager: Node = null
+var _evolution_cards: Array[bool] = []  # Track which weapon cards are evolution upgrades
 
 ## Normal, selected, and disabled styles
 var _normal_style: StyleBoxFlat
@@ -39,6 +42,8 @@ var _selected_style: StyleBoxFlat
 var _disabled_style: StyleBoxFlat
 var _weapon_style: StyleBoxFlat
 var _weapon_selected_style: StyleBoxFlat
+var _evolution_style: StyleBoxFlat
+var _evolution_selected_style: StyleBoxFlat
 
 func _ready() -> void:
 	visible = false
@@ -82,19 +87,39 @@ func _create_styles() -> void:
 	_weapon_selected_style.set_border_width_all(4)
 	_weapon_selected_style.set_corner_radius_all(8)
 
+	# Evolution style (purple/gold glow for tier upgrades)
+	_evolution_style = StyleBoxFlat.new()
+	_evolution_style.bg_color = Color(0.2, 0.1, 0.3, 0.95)
+	_evolution_style.border_color = Color(0.8, 0.5, 1.0)  # Purple
+	_evolution_style.set_border_width_all(4)
+	_evolution_style.set_corner_radius_all(12)
+
+	# Evolution selected style (bright purple/gold)
+	_evolution_selected_style = StyleBoxFlat.new()
+	_evolution_selected_style.bg_color = Color(0.25, 0.15, 0.35, 0.98)
+	_evolution_selected_style.border_color = Color(1.0, 0.8, 0.2)  # Gold
+	_evolution_selected_style.set_border_width_all(6)
+	_evolution_selected_style.set_corner_radius_all(12)
+
 func _process(delta: float) -> void:
 	if not _is_active:
 		return
 
-	# Update timer
-	_timer -= delta
-	if _timer <= 0:
-		_confirm_selection()
-		return
+	# Only use timer if enabled
+	if use_timer:
+		_timer -= delta
+		if _timer <= 0:
+			_confirm_selection()
+			return
 
-	# Update timer display
-	if timer_label:
-		timer_label.text = "%0.1f" % _timer
+		# Update timer display
+		if timer_label:
+			timer_label.text = "%0.1f" % _timer
+			timer_label.visible = true
+	else:
+		# Hide timer when not using auto-select
+		if timer_label:
+			timer_label.visible = false
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not _is_active:
@@ -117,23 +142,27 @@ func _move_selection(direction: int) -> void:
 		var new_index = _selected_index + direction
 		if new_index >= 0 and new_index < _weapon_card_buttons.size():
 			_selected_index = new_index
-			_timer = selection_timeout
+			if use_timer:
+				_timer = selection_timeout
 		elif new_index < 0 and _card_buttons.size() > 0:
 			# Move to enchantment section
 			_in_weapon_section = false
 			_selected_index = _card_buttons.size() - 1
-			_timer = selection_timeout
+			if use_timer:
+				_timer = selection_timeout
 	else:
 		# In enchantment section
 		var new_index = _selected_index + direction
 		if new_index >= 0 and new_index < _card_buttons.size():
 			_selected_index = new_index
-			_timer = selection_timeout
+			if use_timer:
+				_timer = selection_timeout
 		elif new_index >= _card_buttons.size() and _weapon_section_available and _weapon_card_buttons.size() > 0:
 			# Move to weapon section
 			_in_weapon_section = true
 			_selected_index = 0
-			_timer = selection_timeout
+			if use_timer:
+				_timer = selection_timeout
 
 	_update_selection_visuals()
 
@@ -153,18 +182,30 @@ func _update_selection_visuals() -> void:
 	# Update weapon cards
 	for i in range(_weapon_card_buttons.size()):
 		var card = _weapon_card_buttons[i]
+		var is_evolution = i < _evolution_cards.size() and _evolution_cards[i]
+
 		if not _weapon_section_available:
 			card.add_theme_stylebox_override("normal", _disabled_style)
 			card.add_theme_stylebox_override("hover", _disabled_style)
 			card.add_theme_stylebox_override("pressed", _disabled_style)
 		elif _in_weapon_section and i == _selected_index:
-			card.add_theme_stylebox_override("normal", _weapon_selected_style)
-			card.add_theme_stylebox_override("hover", _weapon_selected_style)
-			card.add_theme_stylebox_override("pressed", _weapon_selected_style)
+			if is_evolution:
+				card.add_theme_stylebox_override("normal", _evolution_selected_style)
+				card.add_theme_stylebox_override("hover", _evolution_selected_style)
+				card.add_theme_stylebox_override("pressed", _evolution_selected_style)
+			else:
+				card.add_theme_stylebox_override("normal", _weapon_selected_style)
+				card.add_theme_stylebox_override("hover", _weapon_selected_style)
+				card.add_theme_stylebox_override("pressed", _weapon_selected_style)
 		else:
-			card.add_theme_stylebox_override("normal", _weapon_style)
-			card.add_theme_stylebox_override("hover", _weapon_style)
-			card.add_theme_stylebox_override("pressed", _weapon_style)
+			if is_evolution:
+				card.add_theme_stylebox_override("normal", _evolution_style)
+				card.add_theme_stylebox_override("hover", _evolution_style)
+				card.add_theme_stylebox_override("pressed", _evolution_style)
+			else:
+				card.add_theme_stylebox_override("normal", _weapon_style)
+				card.add_theme_stylebox_override("hover", _weapon_style)
+				card.add_theme_stylebox_override("pressed", _weapon_style)
 
 func _confirm_selection() -> void:
 	var selected = null
@@ -198,14 +239,15 @@ func show_upgrades(upgrades: Array, weapon_upgrades: Array = []) -> void:
 	# Update weapon section label if disabled
 	if weapon_label:
 		if _weapon_section_available:
-			weapon_label.text = "Weapons"
+			weapon_label.text = tr("WEAPONS")
 			weapon_label.modulate = Color(1, 1, 1, 1)
 		else:
-			weapon_label.text = "Weapons (MAX)"
+			weapon_label.text = tr("WEAPONS_MAX")
 			weapon_label.modulate = Color(0.5, 0.5, 0.5, 0.7)
 
-	# Start timer
-	_timer = selection_timeout
+	# Start timer only if enabled
+	if use_timer:
+		_timer = selection_timeout
 	_is_active = true
 
 	visible = true
@@ -230,7 +272,7 @@ func _create_cards() -> void:
 	# Create card for each upgrade
 	for i in range(_upgrades.size()):
 		var upgrade = _upgrades[i]
-		var card = _create_card(upgrade, i, false)
+		var card = _create_card(upgrade, i, false, false)
 		if cards_container:
 			cards_container.add_child(card)
 		_card_buttons.append(card)
@@ -241,11 +283,18 @@ func _create_weapon_cards() -> void:
 		for child in weapon_cards_container.get_children():
 			child.queue_free()
 	_weapon_card_buttons.clear()
+	_evolution_cards.clear()
 
 	# Create card for each weapon upgrade
 	for i in range(_weapon_upgrades.size()):
 		var upgrade = _weapon_upgrades[i]
-		var card = _create_card(upgrade, i, true)
+		# Check if this is an evolution upgrade
+		var is_evolution = false
+		if _upgrade_manager and _upgrade_manager.has_method("will_evolve_tier"):
+			is_evolution = _upgrade_manager.will_evolve_tier(upgrade.id)
+		_evolution_cards.append(is_evolution)
+
+		var card = _create_card(upgrade, i, true, is_evolution)
 		if weapon_cards_container:
 			weapon_cards_container.add_child(card)
 		_weapon_card_buttons.append(card)
@@ -280,20 +329,50 @@ func _create_disabled_placeholder() -> Control:
 
 	return card
 
-func _create_card(upgrade, index: int, is_weapon: bool) -> Button:
+func _create_card(upgrade, index: int, is_weapon: bool, is_evolution: bool = false) -> Button:
 	var card = Button.new()
-	card.custom_minimum_size = Vector2(160, 220) if is_weapon else Vector2(180, 250)
+	card.clip_contents = true  # Clip any overflow
+
+	# HUGE card for evolution upgrades
+	if is_evolution:
+		card.custom_minimum_size = Vector2(280, 350)
+	elif is_weapon:
+		card.custom_minimum_size = Vector2(160, 220)
+	else:
+		card.custom_minimum_size = Vector2(180, 250)
+
+	# Margin container to add padding inside card
+	var margin = MarginContainer.new()
+	margin.set_anchors_preset(Control.PRESET_FULL_RECT)
+	margin.add_theme_constant_override("margin_left", 10)
+	margin.add_theme_constant_override("margin_right", 10)
+	margin.add_theme_constant_override("margin_top", 8)
+	margin.add_theme_constant_override("margin_bottom", 8)
 
 	# Card content
 	var vbox = VBoxContainer.new()
-	vbox.set_anchors_preset(Control.PRESET_FULL_RECT)
-	vbox.add_theme_constant_override("separation", 8)
+	vbox.add_theme_constant_override("separation", 4 if not is_evolution else 8)
 	vbox.alignment = BoxContainer.ALIGNMENT_CENTER
 
-	# Icon - use dynamic icon for weapons
+	# Evolution banner at top
+	if is_evolution:
+		var evolution_label = Label.new()
+		evolution_label.text = tr("EVOLUTION")
+		evolution_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		evolution_label.add_theme_font_size_override("font_size", 18)
+		evolution_label.add_theme_color_override("font_color", Color(1.0, 0.8, 0.2))  # Gold
+		vbox.add_child(evolution_label)
+
+	# Icon - use NEXT tier icon for evolution, current for regular
 	var icon_path = upgrade.icon_path
-	if is_weapon and _upgrade_manager and _upgrade_manager.has_method("get_weapon_icon"):
-		icon_path = _upgrade_manager.get_weapon_icon(upgrade.id)
+	if is_weapon and _upgrade_manager:
+		if is_evolution and _upgrade_manager.has_method("get_next_evolution_icon"):
+			# Show the NEXT tier icon for evolution (works for both sword and bow)
+			var next_icon = _upgrade_manager.get_next_evolution_icon(upgrade.id)
+			if next_icon != "":
+				icon_path = next_icon
+		elif _upgrade_manager.has_method("get_weapon_icon"):
+			icon_path = _upgrade_manager.get_weapon_icon(upgrade.id)
 
 	if icon_path and icon_path != "":
 		var icon_texture = load(icon_path)
@@ -301,33 +380,41 @@ func _create_card(upgrade, index: int, is_weapon: bool) -> Button:
 			var icon_container = CenterContainer.new()
 			var icon = TextureRect.new()
 			icon.texture = icon_texture
-			icon.custom_minimum_size = Vector2(48, 48) if is_weapon else Vector2(64, 64)
+			# Icon sizes
+			if is_evolution:
+				icon.custom_minimum_size = Vector2(72, 72)
+			elif is_weapon:
+				icon.custom_minimum_size = Vector2(40, 40)
+			else:
+				icon.custom_minimum_size = Vector2(48, 48)
 			icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 			icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 			icon_container.add_child(icon)
 			vbox.add_child(icon_container)
 
-	# Spacer
-	var spacer = Control.new()
-	spacer.custom_minimum_size = Vector2(0, 6)
-	vbox.add_child(spacer)
-
-	# Name label
+	# Name label - show NEXT tier name for evolution
 	var name_label = Label.new()
-	name_label.text = upgrade.display_name
+	if is_evolution and _upgrade_manager and _upgrade_manager.has_method("get_next_tier_name"):
+		name_label.text = _upgrade_manager.get_next_tier_name(upgrade.id)
+	else:
+		name_label.text = upgrade.display_name
 	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	name_label.add_theme_font_size_override("font_size", 18 if is_weapon else 20)
-	if is_weapon:
+	if is_evolution:
+		name_label.add_theme_font_size_override("font_size", 22)
+		name_label.add_theme_color_override("font_color", Color(1.0, 0.9, 0.3))  # Bright gold
+	elif is_weapon:
+		name_label.add_theme_font_size_override("font_size", 16)
 		name_label.add_theme_color_override("font_color", Color(0.3, 0.8, 1.0))  # Cyan for weapons
 	else:
+		name_label.add_theme_font_size_override("font_size", 16)
 		name_label.add_theme_color_override("font_color", Color(1, 0.84, 0))  # Gold for enchantments
 	vbox.add_child(name_label)
 
 	# Level label
 	var level_label = Label.new()
-	level_label.text = "Level " + str(upgrade.current_level + 1) + "/" + str(upgrade.max_level)
+	level_label.text = "Lv " + str(upgrade.current_level + 1) + "/" + str(upgrade.max_level)
 	level_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	level_label.add_theme_font_size_override("font_size", 12 if is_weapon else 14)
+	level_label.add_theme_font_size_override("font_size", 11 if not is_evolution else 14)
 	level_label.add_theme_color_override("font_color", Color(0.7, 0.7, 0.7))
 	vbox.add_child(level_label)
 
@@ -336,11 +423,32 @@ func _create_card(upgrade, index: int, is_weapon: bool) -> Button:
 	desc_label.text = upgrade.get_description_with_values()
 	desc_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	desc_label.add_theme_font_size_override("font_size", 14 if is_weapon else 16)
+	desc_label.add_theme_font_size_override("font_size", 12 if not is_evolution else 14)
 	desc_label.add_theme_color_override("font_color", Color(0.9, 0.9, 0.9))
+	desc_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	vbox.add_child(desc_label)
 
-	card.add_child(vbox)
+	# Evolution bonus label (only for evolution upgrades)
+	if is_evolution and _upgrade_manager and _upgrade_manager.has_method("get_evolution_bonus_description"):
+		var bonus_text = _upgrade_manager.get_evolution_bonus_description(upgrade.id)
+		if bonus_text != "":
+			var bonus_label = Label.new()
+			bonus_label.text = tr("BONUS") + ": " + bonus_text
+			bonus_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			bonus_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+			bonus_label.add_theme_font_size_override("font_size", 12)
+			bonus_label.add_theme_color_override("font_color", Color(0.3, 1.0, 0.5))  # Green for bonus
+			bonus_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			vbox.add_child(bonus_label)
+
+	margin.add_child(vbox)
+	card.add_child(margin)
+
+	# Apply evolution style
+	if is_evolution:
+		card.add_theme_stylebox_override("normal", _evolution_style)
+		card.add_theme_stylebox_override("hover", _evolution_style)
+		card.add_theme_stylebox_override("pressed", _evolution_style)
 
 	# Connect button
 	if is_weapon:
@@ -376,3 +484,11 @@ func is_active() -> bool:
 ## Check if in weapon section (for testing)
 func is_in_weapon_section() -> bool:
 	return _in_weapon_section
+
+## Set whether to use auto-select timer (for settings menu)
+func set_use_timer(enabled: bool) -> void:
+	use_timer = enabled
+
+## Get whether auto-select timer is enabled
+func get_use_timer() -> bool:
+	return use_timer

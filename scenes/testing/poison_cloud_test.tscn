@@ -1,0 +1,19 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" uid="uid://poisoncloud001" path="res://scenes/effects/poison_cloud.tscn" id="1_cloud"]
+
+[node name="PoisonCloudTest" type="Node2D"]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(2, 2)
+
+[node name="Background" type="ColorRect" parent="."]
+offset_left = -400.0
+offset_top = -300.0
+offset_right = 400.0
+offset_bottom = 300.0
+color = Color(0.15, 0.15, 0.2, 1)
+
+[node name="PoisonCloud" parent="." instance=ExtResource("1_cloud")]
+duration = 999.0
+size = 100.0

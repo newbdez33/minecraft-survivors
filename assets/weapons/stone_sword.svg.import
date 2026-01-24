@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://2q41aexp0g06"
-path="res://.godot/imported/arrow.svg-9dbf670183500a771670cab6ec6e1787.ctex"
+uid="uid://bq1ul54t3jnms"
+path="res://.godot/imported/stone_sword.svg-fa1fdabb6dcf69105162a06f2049a55e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/weapons/arrow.svg"
-dest_files=["res://.godot/imported/arrow.svg-9dbf670183500a771670cab6ec6e1787.ctex"]
+source_file="res://assets/weapons/stone_sword.svg"
+dest_files=["res://.godot/imported/stone_sword.svg-fa1fdabb6dcf69105162a06f2049a55e.ctex"]
 
 [params]
 

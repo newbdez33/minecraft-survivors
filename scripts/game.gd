@@ -15,10 +15,16 @@ extends Node2D
 @onready var wave_manager: Node = $WaveManager
 @onready var game_stats: Node = $GameStats
 @onready var day_night_overlay: CanvasModulate = $DayNightOverlay
+@onready var pause_menu: CanvasLayer = $PauseMenu
 
 var _sword: Node = null
+var _total_time: float = 0.0
+var _is_paused: bool = false
 
 func _ready() -> void:
+	# Load language setting
+	_load_language_setting()
+
 	# Check for test mode
 	_check_test_mode()
 
@@ -47,6 +53,8 @@ func _ready() -> void:
 		hud.update_health(player.current_health, player.max_health)
 		hud.update_xp(player.current_xp, player.xp_to_next_level)
 		hud.set_level(player.current_level)
+		hud.set_wave(1)
+		hud.set_kills(0)
 
 	# Setup upgrade manager
 	if upgrade_manager and player:
@@ -72,6 +80,33 @@ func _ready() -> void:
 		_sword = player.get_node_or_null("Sword")
 		if _sword and _sword.has_signal("evolved"):
 			_sword.evolved.connect(_on_sword_evolved)
+
+	# Connect pause menu
+	if pause_menu:
+		pause_menu.resume_pressed.connect(_on_resume_pressed)
+		pause_menu.hide_menu()
+
+func _process(delta: float) -> void:
+	if not _is_paused:
+		_total_time += delta
+		if hud:
+			hud.set_time(_total_time)
+
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("ui_cancel"):  # ESC key
+		_toggle_pause()
+
+func _toggle_pause() -> void:
+	_is_paused = !_is_paused
+	get_tree().paused = _is_paused
+	if pause_menu:
+		if _is_paused:
+			pause_menu.show_menu()
+		else:
+			pause_menu.hide_menu()
+
+func _on_resume_pressed() -> void:
+	_toggle_pause()
 
 func _on_player_health_changed(current: int, maximum: int) -> void:
 	if hud:
@@ -154,18 +189,30 @@ func _on_wave_started(wave_number: int) -> void:
 	if game_stats:
 		game_stats.set_wave(wave_number)
 
-func _on_time_changed(time: float, is_night: bool) -> void:
-	if hud:
-		hud.set_time(time)
-		# Update time icon with 8-phase granularity
-		if day_night_cycle:
-			hud.set_time_icon(time, day_night_cycle.day_duration, day_night_cycle.night_duration)
-	# Update game stats survival time
+func _on_time_changed(time: float, _is_night: bool) -> void:
+	# Update time icon with 8-phase granularity (uses cycling time for day/night phases)
+	if hud and day_night_cycle:
+		hud.set_time_icon(time, day_night_cycle.day_duration, day_night_cycle.night_duration)
+	# Update game stats survival time (use total time, not cycling time)
 	if game_stats:
-		game_stats.survival_time = time
+		game_stats.survival_time = _total_time
 	# Apply visual day/night tint
 	if day_night_cycle and day_night_overlay:
 		day_night_overlay.color = day_night_cycle.get_current_tint()
+
+## Load language setting from saved settings
+func _load_language_setting() -> void:
+	var save_path = "user://settings.json"
+	if FileAccess.file_exists(save_path):
+		var file = FileAccess.open(save_path, FileAccess.READ)
+		if file:
+			var json = JSON.new()
+			var error = json.parse(file.get_as_text())
+			file.close()
+			if error == OK and json.data is Dictionary:
+				if json.data.has("language"):
+					TranslationServer.set_locale(json.data.language)
+					print("[GAME] Language set to: " + json.data.language)
 
 ## Test Mode Support
 func _check_test_mode() -> void:

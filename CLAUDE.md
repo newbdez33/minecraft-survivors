@@ -1,0 +1,360 @@
+# CLAUDE.md - AI Assistant Guide for Minecraft Survivors
+
+This document provides essential context for AI assistants working on the Minecraft Survivors codebase.
+
+## Project Overview
+
+**Minecraft Survivors** is a Vampire Survivors-like roguelike game built with **Godot 4.5** featuring Minecraft-themed characters and enemies. Players control Steve, survive waves of mobs using auto-attack combat, collect XP, and select upgrades to become stronger.
+
+- **Engine:** Godot 4.5
+- **Language:** GDScript
+- **Main Scene:** `res://scenes/main.tscn`
+- **Resolution:** 1280x720
+
+## Directory Structure
+
+```
+minecraft-survivors/
+├── assets/              # SVG pixel art assets
+│   ├── characters/      # Player and enemy sprites
+│   ├── effects/         # Visual effect sprites
+│   ├── items/           # Collectibles (xp_orb, heart, meat, golden_apple)
+│   ├── tiles/           # Ground tiles (grass, dirt)
+│   ├── ui/              # UI icons (upgrades, day/night)
+│   └── weapons/         # Weapon sprites (wood/stone/iron/diamond swords, bow, crossbow)
+├── docs/                # Comprehensive documentation
+│   ├── tutorials/       # Beginner learning guides
+│   └── screenshots/     # Test verification images
+├── localization/        # Translation files (CSV)
+├── scenes/              # Godot scene files (.tscn)
+│   ├── enemies/         # Enemy scenes
+│   ├── effects/         # Effect scenes
+│   ├── pickups/         # Collectible scenes
+│   ├── projectiles/     # Arrow, potion scenes
+│   ├── ui/              # UI scenes (HUD, upgrade, game over)
+│   └── weapons/         # Weapon scenes
+├── scripts/             # GDScript source files
+│   ├── components/      # Reusable components (health, status effects, weapon slots)
+│   ├── effects/         # Effect scripts
+│   ├── enemies/         # Enemy AI scripts
+│   ├── pickups/         # Pickup scripts
+│   ├── projectiles/     # Projectile scripts
+│   ├── systems/         # Global systems (upgrades, day/night, waves, localization)
+│   ├── ui/              # UI scripts
+│   └── weapons/         # Weapon scripts
+├── tests/               # Test suite
+│   ├── unit/            # Unit tests
+│   └── visual/          # Visual verification tests
+├── .github/workflows/   # CI/CD pipelines
+└── .claude/             # Claude Code settings
+```
+
+## Key Files
+
+| File | Purpose |
+|------|---------|
+| `project.godot` | Godot project configuration, physics layers, input map |
+| `export_presets.cfg` | Build presets for Windows/macOS/Linux |
+| `run_tests.sh` | Test runner script |
+| `scripts/game.gd` | Main game controller, signal hub |
+| `scripts/player.gd` | Player movement, health, XP/level system |
+| `scripts/spawner.gd` | Enemy spawning with wave scaling |
+| `scripts/systems/upgrade_manager.gd` | Upgrade system (9 upgrades) |
+| `scripts/systems/wave_manager.gd` | Wave-based difficulty scaling |
+| `scripts/systems/day_night_cycle.gd` | 8-phase day/night visual system |
+| `scripts/systems/health_pickup_spawner.gd` | Periodic health pickup spawning |
+| `scripts/components/health.gd` | Reusable health component |
+| `scripts/components/status_effect_manager.gd` | Poison/buff stacking system |
+| `scripts/components/weapon_slots.gd` | 4-slot weapon system |
+| `scripts/weapons/sword_base.gd` | Sword evolution system (4 tiers) |
+| `scripts/pickups/health_pickup.gd` | Golden Apple healing pickup |
+| `scripts/pickups/meat_pickup.gd` | Meat drop from enemies |
+| `tests/test_runner.gd` | Central test orchestrator (389 tests) |
+| `docs/GAME_DATA.md` | Comprehensive game data reference (bilingual) |
+
+## Development Commands
+
+### Running the Game
+```bash
+# Run from command line
+godot --path . scenes/main.tscn
+
+# Or open project.godot in Godot editor and press F5
+```
+
+### Running Tests
+```bash
+# Run all tests (headless)
+./run_tests.sh
+
+# Or directly
+godot --headless --script tests/test_runner.gd
+```
+
+Exit code 0 = all tests pass, 1 = failures.
+
+### Creating a Release
+Releases are triggered by pushing version tags:
+```bash
+git tag v1.0.0
+git push origin v1.0.0
+```
+GitHub Actions automatically builds Windows/macOS executables.
+
+## Code Conventions
+
+### Naming
+- **Classes:** PascalCase (`class_name Zombie`, `class_name UpgradeManager`)
+- **Variables/Functions:** snake_case (`var move_speed`, `func take_damage()`)
+- **Constants:** UPPER_SNAKE_CASE (`const MAX_HEALTH`, `const UPGRADE_DEFS`)
+- **Signals:** snake_case (`signal health_changed`, `signal leveled_up`)
+- **Private methods:** Prefix with underscore (`func _on_health_changed()`)
+
+### Export Variables
+```gdscript
+@export var speed: float = 200.0
+@export var max_health: int = 100
+@export_group("Combat")
+@export var damage: int = 10
+```
+
+### Signal Declarations
+```gdscript
+signal health_changed(current: int, maximum: int)
+signal died()
+signal xp_changed(current: int, required: int)
+```
+
+## Architecture Patterns
+
+### Signal-Driven Architecture
+The game uses signals for loose coupling:
+- **Player** emits: `health_changed`, `died`, `xp_changed`, `leveled_up`, `facing_changed`
+- **Game.gd** acts as central hub connecting signals
+- **UI** responds to signals rather than polling
+
+### Component-Based Design
+Reusable components in `scripts/components/`:
+- `health.gd` - Health management for any entity
+- `status_effect_manager.gd` - Handles poison, buffs with stacking
+- `weapon_slots.gd` - 4-position weapon system around player
+
+### Physics Layers
+Defined in `project.godot`:
+- Layer 1: `player`
+- Layer 2: `enemies`
+- Layer 3: `pickups`
+- Layer 4: `projectiles`
+
+## Testing
+
+### Test Structure
+Tests are organized by development phase:
+- **Phase 1:** Core Foundation (37 tests)
+- **Phase 2:** Combat Basics (32 tests)
+- **Phase 3:** Progression Loop (63 tests)
+- **Phase 4:** Game Feel (145 tests)
+- **Phase 5:** Game Enhancements (112 tests)
+
+**Total: 389 tests**
+
+### Test Types
+- **Unit tests** (`tests/unit/`) - Logic verification
+- **Visual tests** (`tests/visual/`) - Screenshot-based verification
+
+### Writing Tests
+Tests follow this pattern in `test_runner.gd`:
+```gdscript
+func test_player_takes_damage() -> void:
+    var player = create_test_player()
+    player.take_damage(10)
+    assert_eq(player.health, 90, "Player should have 90 health after 10 damage")
+```
+
+## Localization
+
+### Supported Languages
+- `en` - English
+- `ja` - Japanese (日本語)
+- `zh` - Simplified Chinese (简体中文)
+
+### Translation File
+Located at `localization/translations.csv`:
+```csv
+keys,en,ja,zh
+GAME_TITLE,Minecraft Survivors,マインクラフト サバイバーズ,我的世界 幸存者
+YOU_DIED,You Died!,死亡した！,你死了！
+```
+
+### Using Translations
+```gdscript
+# In scripts
+var text = tr("GAME_TITLE")
+
+# Change language
+LocalizationManager.set_language("ja")
+```
+
+### Real-time Language Switching
+All UI components connect to `LocalizationManager.language_changed` signal to refresh when language changes:
+- HUD (Level, Wave, Kills labels)
+- Pause Menu
+- Settings Panel
+- Game Over UI
+
+Key translation keys:
+- `HUD_LEVEL`, `HUD_WAVE`, `HUD_KILLS` - Gameplay HUD
+- `YOU_DIED`, `SURVIVAL_TIME`, `RESPAWN` - Game Over screen
+- `PAUSED`, `RESUME`, `SETTINGS` - Pause Menu
+- `ALL_MAXED` - Upgrade UI when weapons maxed
+
+## CI/CD
+
+### Release Workflow
+Located at `.github/workflows/release.yml`:
+
+1. **Trigger:** Git tags matching `v*` (e.g., `v1.0.0`)
+2. **verify-main-branch:** Ensures tag is on main branch
+3. **build-windows:** Builds Windows executable
+4. **build-macos:** Builds macOS app bundle
+5. **create-release:** Creates GitHub Release with artifacts
+
+### Prerelease Detection
+Tags containing "alpha", "beta", or "rc" are marked as prereleases.
+
+### GitHub Pages Deployment
+Located at `.github/workflows/deploy-web.yml`:
+
+1. **Trigger:** Push to `main` branch (when develop is merged)
+2. **build-web:** Builds Web/HTML5 version using Godot
+3. **deploy:** Deploys to GitHub Pages with COOP/COEP headers
+
+Play the game at: `https://<username>.github.io/<repo-name>/`
+
+## Important Systems
+
+### Weapon Evolution System
+Swords use a 4-tier evolution system (`scripts/weapons/sword_base.gd`):
+
+| Tier | Name | Damage | Range | Cooldown | Kills to Evolve |
+|------|------|--------|-------|----------|-----------------|
+| 1 | Wood Sword | 5 | 60 | 1.2s | 50 |
+| 2 | Stone Sword | 8 | 70 | 1.0s | 150 |
+| 3 | Iron Sword | 12 | 80 | 0.9s | 400 |
+| 4 | Diamond Sword | 15 | 90 | 0.8s | Max tier |
+
+**Per-level upgrades:** +2 damage, +5 range, -5% cooldown
+**Evolution bonuses:** Extra stats when evolving to next tier
+
+### Upgrade System
+9 upgrades managed by `UpgradeManager`:
+- Sharpness (+5 damage per level)
+- Protection (-10% damage taken)
+- Swiftness (+15% movement speed)
+- Knockback (+30 knockback force)
+- Looting (+20% XP gain)
+- Sweeping Edge (+20 attack range)
+- Haste (-10% attack cooldown)
+
+### Health Pickup System
+Two types of health pickups:
+- **Meat** - Drops from enemies (10-25% chance), heals 10 HP
+- **Golden Apple** - Spawns every 20s, heals 50% max HP
+
+`HealthPickupSpawner` adjusts spawn rate based on player health:
+- Health < 30%: Spawns at minimum interval (15s)
+- Health < 50%: Spawns at half interval
+
+### Wave System
+`WaveManager` handles exponential difficulty scaling:
+```gdscript
+base_count = base_enemies_per_wave * pow(wave_scaling, wave - 1)
+# Wave 1: 5 enemies → Wave 10: ~28 enemies
+```
+
+### Day/Night Cycle
+8 visual phases with CanvasModulate tint overlay:
+- Dawn → Morning → Midday → Afternoon → Dusk → Night → Midnight → Late Night
+
+### Enemy Data
+6 enemy types with unique behaviors:
+
+| Enemy | HP | Damage | Speed | XP | Special |
+|-------|-----|--------|-------|-----|---------|
+| Zombie | 20 | 10 | 60 | 5 | Basic chaser |
+| Skeleton | 15 | 8 | 40 | 8 | Ranged arrows |
+| Spider | 12 | 8 | 100 | 6 | Jump attack |
+| Creeper | 25 | 30 | 50 | 10 | Explodes |
+| Enderman | 40 | 15 | 70 | 15 | Teleports when hit |
+| Witch | 20 | 12 | 35 | 12 | Throws poison potions |
+
+**Anti-sticking:** All enemies have push-back when < 30px from player.
+
+For complete game data, see `docs/GAME_DATA.md` (bilingual EN/ZH).
+
+## Common Tasks
+
+### Adding a New Enemy
+1. Create sprite in `assets/characters/`
+2. Create script in `scripts/enemies/` extending `CharacterBody2D`
+3. Create scene in `scenes/enemies/` with sprite, collision, health component
+4. Add to spawner's enemy pool
+
+### Adding a New Upgrade
+1. Add upgrade definition in `scripts/systems/upgrade_manager.gd`
+2. Create icon in `assets/ui/`
+3. Add localization keys to `localization/translations.csv`
+4. Connect upgrade effects in relevant systems
+
+### Adding a New Weapon
+1. Create sprite in `assets/weapons/`
+2. Create script in `scripts/weapons/` (extend `SwordBase` for melee weapons with evolution)
+3. Create scene in `scenes/weapons/`
+4. Integrate with `weapon_slots.gd` component
+
+### Adding a New Pickup
+1. Create sprite in `assets/items/`
+2. Create script in `scripts/pickups/` with `collected` signal
+3. Create scene in `scenes/pickups/`
+4. For enemy drops: add drop logic to enemy scripts
+5. For map spawns: integrate with `HealthPickupSpawner`
+
+## Documentation
+
+Detailed documentation is in `docs/`:
+- `README.md` - Project overview
+- `HANDOFF.md` - Current development status
+- `TESTING.md` - Manual testing guide
+- `GAME_DATA.md` - Complete game data reference (bilingual EN/ZH)
+- `phase1-5_*.md` - Development phase guides
+- `upgrade_system.md` - Upgrade mechanics
+- `tutorials/` - Beginner learning guides
+
+## Development Status
+
+**Phase 4 (Game Feel):** Complete
+**Phase 5 (Enhancements):** In Progress
+- ✅ Poison stacking with visual effects
+- ✅ Weapon slots system (4 positions)
+- ✅ Score/combo systems
+- ✅ Main menu and settings
+- ✅ Sword evolution system (Wood → Stone → Iron → Diamond)
+- ✅ Health pickups (Meat drops, Golden Apple spawns)
+- ✅ Enemy anti-sticking mechanism
+- ✅ Bow weapon with Crossbow evolution
+- [ ] Achievement system (pending)
+- [ ] Boss enemies (pending)
+
+## Git Workflow
+
+- Main development on `main` branch
+- Feature branches: `claude/*` or `feature/*`
+- Releases triggered by version tags (`v*`)
+- All pushes verified by CI before release
+
+## Performance Notes
+
+- Use `godot --headless` for CI/testing (no rendering)
+- Texture compression (ETC2/ASTC) enabled for mobile
+- Knockback uses lerp decay for smooth physics
+- Single CanvasModulate for day/night tint (efficient)

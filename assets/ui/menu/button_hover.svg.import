@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://2q41aexp0g06"
-path="res://.godot/imported/arrow.svg-9dbf670183500a771670cab6ec6e1787.ctex"
+uid="uid://defuxq80yobgi"
+path="res://.godot/imported/button_hover.svg-909954307dcf5cca57900d7a7d854c8c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/weapons/arrow.svg"
-dest_files=["res://.godot/imported/arrow.svg-9dbf670183500a771670cab6ec6e1787.ctex"]
+source_file="res://assets/ui/menu/button_hover.svg"
+dest_files=["res://.godot/imported/button_hover.svg-909954307dcf5cca57900d7a7d854c8c.ctex"]
 
 [params]
 

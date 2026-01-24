@@ -6,8 +6,9 @@ signal died(xp_value: int)
 
 @export var speed: float = 70.0
 @export var damage: int = 15
-@export var health: int = 40
+@export var health: int = 20
 @export var xp_value: int = 15
+@export var meat_drop_chance: float = 0.25  # 25% chance (boss-tier)
 @export var teleport_cooldown: float = 3.0
 @export var teleport_range: float = 200.0
 @export var teleport_on_hit: bool = true
@@ -54,6 +55,14 @@ func _physics_process(delta: float) -> void:
 	# Move toward player
 	var direction = (target.global_position - global_position).normalized()
 	velocity = direction * speed
+
+	# Prevent sticking to player - add separation when too close
+	var distance_to_player = global_position.distance_to(target.global_position)
+	var min_distance = 30.0
+	if distance_to_player < min_distance and distance_to_player > 0:
+		var push_direction = (global_position - target.global_position).normalized()
+		velocity += push_direction * (min_distance - distance_to_player) * 5.0
+
 	move_and_slide()
 
 func _on_hitbox_body_entered(body: Node2D) -> void:
@@ -111,12 +120,14 @@ func apply_knockback(force: Vector2) -> void:
 
 func _spawn_hit_effect() -> void:
 	var hit_scene = load("res://scenes/effects/hit_effect.tscn")
-	if hit_scene:
+	if hit_scene and get_tree() and get_tree().current_scene:
 		var hit = hit_scene.instantiate()
 		hit.global_position = global_position
 		get_tree().current_scene.add_child(hit)
 
 func _spawn_teleport_effect(pos: Vector2) -> void:
+	if not get_tree() or not get_tree().current_scene:
+		return
 	# Use death poof as teleport effect for now
 	var effect_scene = load("res://scenes/effects/death_poof.tscn")
 	if effect_scene:
@@ -129,11 +140,20 @@ func _on_died() -> void:
 	died.emit(xp_value)
 	_spawn_death_effect()
 	_spawn_xp_orb()
+	_try_spawn_meat()
 	queue_free()
+
+func _try_spawn_meat() -> void:
+	if randf() <= meat_drop_chance:
+		var meat_scene = load("res://scenes/pickups/meat_pickup.tscn")
+		if meat_scene and get_tree() and get_tree().current_scene:
+			var meat = meat_scene.instantiate()
+			meat.global_position = global_position
+			get_tree().current_scene.call_deferred("add_child", meat)
 
 func _spawn_death_effect() -> void:
 	var death_scene = load("res://scenes/effects/death_poof.tscn")
-	if death_scene:
+	if death_scene and get_tree() and get_tree().current_scene:
 		var poof = death_scene.instantiate()
 		poof.global_position = global_position
 		poof.modulate = Color(0.5, 0.0, 0.5)  # Purple tint
@@ -141,7 +161,7 @@ func _spawn_death_effect() -> void:
 
 func _spawn_xp_orb() -> void:
 	var xp_scene = load("res://scenes/pickups/xp_orb.tscn")
-	if xp_scene:
+	if xp_scene and get_tree() and get_tree().current_scene:
 		var orb = xp_scene.instantiate()
 		orb.global_position = global_position
 		orb.xp_value = xp_value

@@ -8,7 +8,7 @@ class_name Potion
 
 # Poison cloud properties
 @export var cloud_duration: float = 5.0
-@export var cloud_size: float = 80.0  # Square size
+@export var cloud_size: float = 80.0  # Circle diameter
 @export var poison_duration: float = 3.0
 @export var poison_damage_per_tick: int = 2
 @export var poison_tick_interval: float = 0.5
