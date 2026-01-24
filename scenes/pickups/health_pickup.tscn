@@ -1,0 +1,28 @@
+[gd_scene load_steps=3 format=3 uid="uid://healthpickup001"]
+
+[ext_resource type="Script" path="res://scripts/pickups/health_pickup.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/items/golden_apple.svg" id="2_texture"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_pickup"]
+radius = 30.0
+
+[node name="HealthPickup" type="Area2D"]
+collision_layer = 4
+collision_mask = 1
+script = ExtResource("1_script")
+heal_percent = 0.5
+pickup_radius = 30.0
+attract_radius = 120.0
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(1.2, 1.2)
+texture = ExtResource("2_texture")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_pickup")
+
+[node name="GlowSprite" type="Sprite2D" parent="."]
+modulate = Color(1, 0.843137, 0, 0.3)
+z_index = -1
+scale = Vector2(1.8, 1.8)
+texture = ExtResource("2_texture")

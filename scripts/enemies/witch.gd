@@ -5,8 +5,9 @@ class_name Witch
 signal died(xp_value: int)
 
 @export var speed: float = 35.0
-@export var health: int = 20
+@export var health: int = 10
 @export var xp_value: int = 12
+@export var meat_drop_chance: float = 0.20  # 20% chance (harder enemy)
 @export var potion_damage: int = 12
 @export var attack_range: float = 250.0
 @export var attack_cooldown: float = 3.0
@@ -65,6 +66,12 @@ func _physics_process(delta: float) -> void:
 		# Stay still and attack
 		velocity = Vector2.ZERO
 
+	# Prevent sticking to player - add separation when too close
+	var min_distance = 30.0
+	if distance < min_distance and distance > 0:
+		var push_direction = (global_position - target.global_position).normalized()
+		velocity += push_direction * (min_distance - distance) * 5.0
+
 	move_and_slide()
 
 	# Throw potion if in range and can attack
@@ -89,12 +96,18 @@ func throw_potion() -> void:
 		else:
 			potion.global_position = global_position
 
-		# Set potion direction toward player
-		var direction = (target.global_position - global_position).normalized()
+		# Set target position near the player (with small random offset)
+		var offset = Vector2(randf_range(-30, 30), randf_range(-30, 30))
+		var target_pos = target.global_position + offset
+		potion.set_target(target_pos)
+
+		# Set potion direction toward target
+		var direction = (target_pos - potion.global_position).normalized()
 		potion.set_direction(direction)
 		potion.damage = potion_damage
 
-		get_tree().current_scene.add_child(potion)
+		if get_tree() and get_tree().current_scene:
+			get_tree().current_scene.add_child(potion)
 
 	# Start cooldown
 	var timer = get_node_or_null("AttackTimer")
@@ -124,7 +137,7 @@ func apply_knockback(force: Vector2) -> void:
 
 func _spawn_hit_effect() -> void:
 	var hit_scene = load("res://scenes/effects/hit_effect.tscn")
-	if hit_scene:
+	if hit_scene and get_tree() and get_tree().current_scene:
 		var hit = hit_scene.instantiate()
 		hit.global_position = global_position
 		get_tree().current_scene.add_child(hit)
@@ -133,11 +146,20 @@ func _on_died() -> void:
 	died.emit(xp_value)
 	_spawn_death_effect()
 	_spawn_xp_orb()
+	_try_spawn_meat()
 	queue_free()
+
+func _try_spawn_meat() -> void:
+	if randf() <= meat_drop_chance:
+		var meat_scene = load("res://scenes/pickups/meat_pickup.tscn")
+		if meat_scene and get_tree() and get_tree().current_scene:
+			var meat = meat_scene.instantiate()
+			meat.global_position = global_position
+			get_tree().current_scene.call_deferred("add_child", meat)
 
 func _spawn_death_effect() -> void:
 	var death_scene = load("res://scenes/effects/death_poof.tscn")
-	if death_scene:
+	if death_scene and get_tree() and get_tree().current_scene:
 		var poof = death_scene.instantiate()
 		poof.global_position = global_position
 		poof.modulate = Color(0.3, 0.6, 0.3)  # Green tint for Witch
@@ -145,7 +167,7 @@ func _spawn_death_effect() -> void:
 
 func _spawn_xp_orb() -> void:
 	var xp_scene = load("res://scenes/pickups/xp_orb.tscn")
-	if xp_scene:
+	if xp_scene and get_tree() and get_tree().current_scene:
 		var orb = xp_scene.instantiate()
 		orb.global_position = global_position
 		orb.xp_value = xp_value

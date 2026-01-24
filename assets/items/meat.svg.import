@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://2q41aexp0g06"
-path="res://.godot/imported/arrow.svg-9dbf670183500a771670cab6ec6e1787.ctex"
+uid="uid://nrp64awjevi4"
+path="res://.godot/imported/meat.svg-60a68aa5a8cd6de0985d6b5da77a5d45.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/weapons/arrow.svg"
-dest_files=["res://.godot/imported/arrow.svg-9dbf670183500a771670cab6ec6e1787.ctex"]
+source_file="res://assets/items/meat.svg"
+dest_files=["res://.godot/imported/meat.svg-60a68aa5a8cd6de0985d6b5da77a5d45.ctex"]
 
 [params]
 
