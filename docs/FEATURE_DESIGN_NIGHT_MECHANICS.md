@@ -7,8 +7,16 @@
 ## Feature 1: 夜间刷怪机制 + 火把系统
 
 ### 1.1 需求概述
-- 夜晚时刷怪**频率**和**数量**翻倍
+- 夜晚时刷怪**频率**和**数量**都翻倍
 - 玩家可以购买**火把**来照亮夜晚（减轻夜间debuff）
+
+**夜间效果总览:**
+| 效果 | 白天 | 夜晚 | 实现方式 |
+|------|------|------|----------|
+| 每波怪物数量 | 基础值 | **2倍** | WaveManager.night_multiplier |
+| 刷怪间隔 | 2.0秒 | **1.0秒 (频率2倍)** | Spawner.night_spawn_multiplier |
+| 最大怪物数 | 30-60 | **60-120 (2倍)** | Spawner.night_max_enemy_multiplier |
+| 屏幕亮度 | 100% | 20% (变暗) | DayNightCycle.night_tint |
 
 ### 1.2 现有系统分析
 
@@ -36,8 +44,10 @@
 **Spawner 新增属性:**
 ```gdscript
 @export var night_spawn_multiplier: float = 0.5  # 夜间间隔减半 = 频率翻倍
+@export var night_max_enemy_multiplier: float = 2.0  # 夜间最大怪物数翻倍
 var day_night_cycle: Node = null
 var _base_spawn_interval: float = 2.0
+var _base_max_enemies: int = 30
 var _is_night: bool = false
 ```
 
@@ -52,11 +62,24 @@ func _on_day_started() -> void:
     _remove_night_modifier()
 
 func _apply_night_modifier() -> void:
+    # 频率翻倍（间隔减半）
     var night_interval = _base_spawn_interval * night_spawn_multiplier
     set_spawn_rate(night_interval)
+    # 最大怪物数翻倍
+    max_enemies = int(_base_max_enemies * night_max_enemy_multiplier)
 
 func _remove_night_modifier() -> void:
     set_spawn_rate(_base_spawn_interval)
+    max_enemies = _base_max_enemies
+
+# 修改 set_wave 方法，保存基础值
+func set_wave(wave: int) -> void:
+    # ... 原有逻辑 ...
+    _base_spawn_interval = new_interval
+    _base_max_enemies = new_max_enemies
+    # 如果当前是夜晚，重新应用夜间加成
+    if _is_night:
+        _apply_night_modifier()
 ```
 
 **Game.gd 连接:**
@@ -424,9 +447,10 @@ func _stop_poison_pulse() -> void:
 ## Implementation Order (实施顺序)
 
 ### Phase 1: 基础夜间机制
-1. 连接 `day_night_cycle` 到 `wave_manager`（激活已有数量翻倍）
-2. 修改 `spawner.gd` 添加夜间频率翻倍
-3. 在 `game.gd` 中连接信号
+1. 连接 `day_night_cycle` 到 `wave_manager`（激活已有每波数量翻倍）
+2. 修改 `spawner.gd` 添加夜间频率翻倍（间隔减半）
+3. 修改 `spawner.gd` 添加夜间最大怪物数翻倍
+4. 在 `game.gd` 中连接 `night_started`/`day_started` 信号
 
 ### Phase 2: 火把系统
 1. 创建 `TorchManager` 系统
@@ -450,9 +474,11 @@ func _stop_poison_pulse() -> void:
 ## Testing Checklist (测试清单)
 
 ### 夜间机制
-- [ ] 夜晚刷怪数量是白天的2倍
-- [ ] 夜晚刷怪频率是白天的2倍
-- [ ] 白天恢复正常刷怪
+- [ ] 夜晚每波刷怪数量是白天的2倍
+- [ ] 夜晚刷怪频率是白天的2倍（间隔减半）
+- [ ] 夜晚最大怪物数上限是白天的2倍
+- [ ] 白天恢复正常刷怪（数量、频率、上限都恢复）
+- [ ] 波次切换时正确保持夜间加成
 
 ### 火把系统
 - [ ] 火把升级正常出现在选项中
