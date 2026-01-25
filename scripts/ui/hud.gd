@@ -30,6 +30,7 @@ var heart_nodes: Array[TextureRect] = []
 var _current_level: int = 1
 var _is_poisoned: bool = false
 var _poison_tween: Tween = null
+var _heart_pulse_tweens: Array = []  # Track individual heart tweens for cleanup
 
 ## Heart color constants
 const NORMAL_HEART_COLOR = Color.WHITE
@@ -237,9 +238,15 @@ func set_poisoned(poisoned: bool) -> void:
 
 ## Update heart colors based on poison state
 func _update_heart_colors() -> void:
-	# Kill any existing tween
+	# Kill any existing tweens
 	if _poison_tween and _poison_tween.is_valid():
 		_poison_tween.kill()
+
+	# Kill all heart pulse tweens
+	for tween in _heart_pulse_tweens:
+		if tween and tween.is_valid():
+			tween.kill()
+	_heart_pulse_tweens.clear()
 
 	var target_color = POISON_HEART_COLOR if _is_poisoned else NORMAL_HEART_COLOR
 
@@ -259,12 +266,11 @@ func _start_poison_pulse() -> void:
 	if not _is_poisoned:
 		return
 
-	if _poison_tween and _poison_tween.is_valid():
-		_poison_tween.kill()
-
-	_poison_tween = create_tween()
-	_poison_tween.set_loops()  # Loop forever
-	_poison_tween.set_parallel(true)
+	# Kill existing pulse tweens before creating new ones
+	for tween in _heart_pulse_tweens:
+		if tween and tween.is_valid():
+			tween.kill()
+	_heart_pulse_tweens.clear()
 
 	var bright_green = Color(0.4, 1.0, 0.4)
 	var dark_green = Color(0.2, 0.6, 0.2)
@@ -274,3 +280,4 @@ func _start_poison_pulse() -> void:
 		heart_tween.set_loops()
 		heart_tween.tween_property(heart, "modulate", bright_green, 0.5)
 		heart_tween.tween_property(heart, "modulate", dark_green, 0.5)
+		_heart_pulse_tweens.append(heart_tween)  # Track for cleanup
