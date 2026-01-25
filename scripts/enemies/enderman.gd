@@ -13,7 +13,13 @@ signal died(xp_value: int)
 @export var teleport_range: float = 200.0
 @export var teleport_on_hit: bool = true
 
+## Arrow dodge settings
+@export var arrow_dodge_enabled: bool = true
+@export var arrow_detection_radius: float = 120.0  # Detection range for incoming arrows
+@export var dodge_chance: float = 0.8  # 80% chance to dodge
+
 var target: Node2D = null
+var _arrow_detection_area: Area2D = null
 var can_teleport: bool = true
 var knockback_velocity: Vector2 = Vector2.ZERO
 var knockback_decay: float = 10.0
@@ -32,8 +38,28 @@ func _ready() -> void:
 		timer.timeout.connect(_on_teleport_timer_timeout)
 		timer.wait_time = teleport_cooldown
 
+	# Setup arrow detection area for dodging
+	if arrow_dodge_enabled:
+		_setup_arrow_detection()
+
 	# Find player as target
 	_find_target()
+
+## Create detection area for sensing incoming arrows
+func _setup_arrow_detection() -> void:
+	_arrow_detection_area = Area2D.new()
+	_arrow_detection_area.name = "ArrowDetectionArea"
+	_arrow_detection_area.collision_layer = 0  # Don't be detected by others
+	_arrow_detection_area.collision_mask = 8   # Detect player projectiles (layer 8)
+
+	var shape = CollisionShape2D.new()
+	var circle = CircleShape2D.new()
+	circle.radius = arrow_detection_radius
+	shape.shape = circle
+	_arrow_detection_area.add_child(shape)
+
+	add_child(_arrow_detection_area)
+	_arrow_detection_area.area_entered.connect(_on_arrow_detected)
 
 func _find_target() -> void:
 	await get_tree().process_frame
@@ -114,6 +140,85 @@ func teleport() -> void:
 
 func _on_teleport_timer_timeout() -> void:
 	can_teleport = true
+
+## Called when an arrow enters detection range
+func _on_arrow_detected(area: Area2D) -> void:
+	if not arrow_dodge_enabled or not can_teleport:
+		return
+
+	# Check if it's a player projectile
+	if not area.is_in_group("player_projectiles"):
+		return
+
+	# Random chance to dodge
+	if randf() > dodge_chance:
+		return
+
+	# Check if arrow is heading towards us
+	if _will_arrow_hit(area):
+		_dodge_arrow(area)
+
+## Predict if arrow trajectory will hit us
+func _will_arrow_hit(arrow: Area2D) -> bool:
+	var arrow_pos = arrow.global_position
+	var arrow_dir = Vector2.ZERO
+
+	# Get arrow direction from its movement
+	if "direction" in arrow:
+		arrow_dir = arrow.direction
+	elif "_direction" in arrow:
+		arrow_dir = arrow._direction
+	else:
+		# Fallback: assume arrow is moving towards us
+		arrow_dir = (global_position - arrow_pos).normalized()
+
+	if arrow_dir == Vector2.ZERO:
+		return false
+
+	# Calculate perpendicular distance from arrow trajectory to our position
+	var to_me = global_position - arrow_pos
+	var perpendicular_dist = abs(to_me.cross(arrow_dir))
+
+	# Hit if trajectory passes within our collision radius (plus arrow size)
+	var hit_threshold = 40.0  # Enderman width + arrow size
+	return perpendicular_dist < hit_threshold
+
+## Teleport perpendicular to arrow direction to dodge
+func _dodge_arrow(arrow: Area2D) -> void:
+	var arrow_dir = Vector2.ZERO
+
+	if "direction" in arrow:
+		arrow_dir = arrow.direction
+	elif "_direction" in arrow:
+		arrow_dir = arrow._direction
+	else:
+		arrow_dir = (global_position - arrow.global_position).normalized()
+
+	# Dodge perpendicular to arrow direction
+	var dodge_dir = arrow_dir.rotated(PI / 2)
+	if randf() > 0.5:
+		dodge_dir = -dodge_dir
+
+	# Calculate dodge position
+	var dodge_distance = randf_range(80, 150)
+	var new_pos = global_position + dodge_dir * dodge_distance
+
+	# Perform teleport
+	can_teleport = false
+
+	# Spawn teleport effect at old position
+	_spawn_teleport_effect(global_position)
+
+	# Move to new position
+	global_position = new_pos
+
+	# Spawn teleport effect at new position
+	_spawn_teleport_effect(global_position)
+
+	# Start cooldown timer
+	var timer = get_node_or_null("TeleportTimer")
+	if timer:
+		timer.start()
 
 func apply_knockback(force: Vector2) -> void:
 	knockback_velocity = force

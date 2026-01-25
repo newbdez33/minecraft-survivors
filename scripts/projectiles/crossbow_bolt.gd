@@ -14,6 +14,7 @@ var _lifetime_timer: float = 0.0
 var _hit_enemies: Array = []  # Track which enemies we've already hit
 
 func _ready() -> void:
+	add_to_group("player_projectiles")
 	body_entered.connect(_on_body_entered)
 	area_entered.connect(_on_area_entered)
 
