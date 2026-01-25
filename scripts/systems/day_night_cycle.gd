@@ -28,9 +28,6 @@ var current_time: float = 0.0
 ## Current day number
 var current_day: int = 1
 
-## Reference to torch manager (optional, for night brightness bonus)
-var torch_manager: Node = null
-
 ## Is the cycle running
 var _is_running: bool = false
 
@@ -150,12 +147,6 @@ func get_current_tint() -> Color:
 			base_tint = night_tint
 		_:
 			base_tint = Color.WHITE
-
-	# Apply torch brightness bonus during night
-	if is_night() and torch_manager and torch_manager.has_method("get_night_brightness_bonus"):
-		var brightness_bonus = torch_manager.get_night_brightness_bonus()
-		if brightness_bonus > 0:
-			base_tint = base_tint.lerp(Color.WHITE, brightness_bonus)
 
 	return base_tint
 

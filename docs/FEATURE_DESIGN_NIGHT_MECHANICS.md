@@ -129,38 +129,29 @@ func _ready():
     day_night_cycle.day_started.connect(spawner._on_day_started)
 ```
 
-#### 1.3.2 火把系统
+#### 1.3.2 火把系统 (已实现 - 迷雾圈方案)
 
-**设计方案: 火把作为可购买升级**
+**实际实现方案: 火把作为武器 + 迷雾圈可见范围**
 
-**新增资源:**
-- `assets/ui/upgrade_torch.svg` - 火把图标
-- `assets/effects/torch_light.svg` - 火把光效
+**资源文件:**
+- `assets/weapons/torch.svg` - 火把武器精灵
+- `assets/ui/upgrades/torch.svg` - 火把升级图标
+- `assets/shaders/fog_of_war.gdshader` - 迷雾shader
 
-**Upgrade定义 (upgrade_manager.gd):**
-```gdscript
-const UPGRADE_DEFS = {
-    # ... existing upgrades ...
-    "torch": {
-        "name": "UPGRADE_TORCH",
-        "description": "UPGRADE_TORCH_DESC",
-        "icon": "res://assets/ui/upgrade_torch.svg",
-        "max_level": 3,
-        "type": "torch"
-    }
-}
-```
+**实现架构:**
+1. **FogOfWar Shader** - 圆形可见区域，90%黑暗
+2. **TorchManager** - 控制可见范围半径
+3. **Torch武器** - 玩家左侧位置显示
 
-**火把效果等级:**
-| 等级 | 效果 |
-|------|------|
-| 1 | 夜间亮度+25%，刷怪频率减少25% |
-| 2 | 夜间亮度+50%，刷怪频率减少50% |
-| 3 | 夜间亮度+75%，刷怪频率恢复正常 |
+**火把效果等级 (实际值):**
+| 等级 | 可见半径 | 特殊效果 |
+|------|----------|----------|
+| 0 (无火把) | 0.25 | 渐变黑暗，小范围清晰中心 |
+| 1 | 0.40 | 圈内完全清晰，夜间tint禁用 |
+| 2 | 0.55 | 圈内完全清晰，夜间tint禁用 |
+| 3 | 0.85 | 接近全屏可见 |
 
-**实现逻辑:**
-
-**新增: TorchManager (`scripts/systems/torch_manager.gd`)**
+**TorchManager (`scripts/systems/torch_manager.gd`):**
 ```gdscript
 class_name TorchManager
 extends Node
@@ -168,56 +159,49 @@ extends Node
 signal torch_level_changed(level: int)
 
 var torch_level: int = 0
-var day_night_cycle: Node = null
+const MAX_LEVEL: int = 3
+const BASE_VISIBILITY_RADIUS: float = 0.25
+const TORCH_RADIUS_BONUS = [0.0, 0.15, 0.30, 0.60]
 
-# 火把对夜间效果的减免比例
-const TORCH_REDUCTION = [0.0, 0.25, 0.5, 0.75]  # 等级0-3
-
-func get_night_brightness_bonus() -> float:
-    return TORCH_REDUCTION[torch_level]
-
-func get_spawn_rate_reduction() -> float:
-    # 火把等级3时，夜间刷怪频率恢复正常
-    return TORCH_REDUCTION[torch_level]
-
-func upgrade_torch() -> void:
-    if torch_level < 3:
-        torch_level += 1
-        torch_level_changed.emit(torch_level)
+func get_visibility_radius() -> float:
+    var bonus = 0.0
+    if torch_level > 0 and torch_level <= MAX_LEVEL:
+        bonus = TORCH_RADIUS_BONUS[torch_level]
+    return BASE_VISIBILITY_RADIUS + bonus
 ```
 
-**DayNightCycle 修改:**
+**Fog of War Shader (`assets/shaders/fog_of_war.gdshader`):**
+```glsl
+uniform bool has_torch = false;
+uniform vec2 screen_size = vec2(1280.0, 720.0);
+
+void fragment() {
+    if (has_torch) {
+        // 有火把: 圈内完全清晰
+        alpha = smoothstep(visibility_radius - soft_edge, visibility_radius + soft_edge, dist);
+    } else {
+        // 无火把: 渐变黑暗，小范围清晰中心
+        float inner_radius = visibility_radius * 0.3;
+        // ...
+    }
+}
+```
+
+**Game.gd 核心逻辑:**
 ```gdscript
-var torch_manager: Node = null
+func _update_fog_of_war() -> void:
+    var has_torch = torch_manager and torch_manager.torch_level > 0
+    _fog_material.set_shader_parameter("has_torch", has_torch)
 
-func _get_night_tint() -> Color:
-    var base_tint = Color(0.2, 0.2, 0.4)  # 原夜间颜色
-    if torch_manager:
-        var brightness_bonus = torch_manager.get_night_brightness_bonus()
-        # 插值到白色（更亮）
-        return base_tint.lerp(Color.WHITE, brightness_bonus)
-    return base_tint
+func _on_time_changed(time: float, _is_night: bool) -> void:
+    # 有火把时禁用夜间整体变暗
+    if has_torch:
+        day_night_overlay.color = Color.WHITE
+    else:
+        day_night_overlay.color = day_night_cycle.get_current_tint()
 ```
 
-**Spawner 修改:**
-```gdscript
-var torch_manager: Node = null
-
-func _apply_night_modifier() -> void:
-    var base_night_interval = _base_spawn_interval * night_spawn_multiplier
-    if torch_manager:
-        var reduction = torch_manager.get_spawn_rate_reduction()
-        # 火把减少夜间加速效果
-        var adjusted_multiplier = lerp(night_spawn_multiplier, 1.0, reduction)
-        base_night_interval = _base_spawn_interval * adjusted_multiplier
-    set_spawn_rate(base_night_interval)
-```
-
-**本地化键 (translations.csv):**
-```csv
-UPGRADE_TORCH,Torch,松明,火把
-UPGRADE_TORCH_DESC,Illuminate the night,夜を照らす,照亮夜晚
-```
+**注意: 火把不再影响刷怪频率** - 夜间刷怪翻倍不受火把影响
 
 ---
 
@@ -322,25 +306,21 @@ func _will_arrow_hit(arrow: Area2D) -> bool:
     # 如果箭矢轨迹会穿过 Enderman 范围内
     return perpendicular_dist < my_radius + 16  # 16 = 箭矢半宽
 
-func _dodge_teleport(arrow: Area2D) -> void:
-    # 计算躲避方向（垂直于箭矢方向）
-    var arrow_dir = Vector2.ZERO
-    if arrow.has_method("get_direction"):
-        arrow_dir = arrow.get_direction()
-    else:
-        arrow_dir = (global_position - arrow.global_position).normalized()
+func _dodge_arrow(_arrow: Area2D) -> void:
+    # 随机方向传送 (不再是向玩家方向)
+    var random_angle = randf() * TAU
+    var dodge_direction = Vector2.from_angle(random_angle)
 
-    # 垂直方向传送
-    var dodge_dir = arrow_dir.rotated(PI / 2)
-    if randf() > 0.5:
-        dodge_dir = -dodge_dir
-
-    # 传送到躲避位置
+    # 随机距离
     var dodge_distance = randf_range(80, 150)
-    var new_pos = global_position + dodge_dir * dodge_distance
+    var new_pos = global_position + dodge_direction * dodge_distance
 
     # 执行传送
-    _teleport_to(new_pos)
+    can_teleport = false
+    _spawn_teleport_effect(global_position)
+    global_position = new_pos
+    _spawn_teleport_effect(global_position)
+    # 开始冷却计时器
 ```
 
 **PlayerArrow 新增组:**
@@ -515,22 +495,24 @@ func _stop_poison_pulse() -> void:
 - [ ] 白天恢复正常刷怪（数量、频率、上限都恢复）
 - [ ] 波次切换时正确保持夜间加成
 
-### 火把系统
-- [ ] 火把升级正常出现在选项中
-- [ ] 等级1: 夜间稍微变亮，刷怪减少25%
-- [ ] 等级2: 夜间更亮，刷怪减少50%
-- [ ] 等级3: 夜间接近白天亮度，刷怪恢复正常
-- [ ] 本地化文本正确显示
+### 火把系统 (迷雾圈方案)
+- [x] 火把升级在第一个夜晚后出现
+- [x] 火把作为武器显示在玩家左侧
+- [x] 等级0: 小范围可见，渐变黑暗
+- [x] 等级1-3: 圈内完全清晰，无夜间tint
+- [x] 等级3: 接近全屏可见 (0.85)
+- [x] 本地化文本正确显示
+- [x] 火把不影响刷怪频率
 
 ### Enderman 躲箭
-- [ ] Enderman 能感知接近的箭矢
-- [ ] 躲避成功率约80%
-- [ ] 躲避后消耗传送冷却
-- [ ] 弩箭更难躲避（速度快）
-- [ ] 近距离射击更难躲避
+- [x] Enderman 能感知接近的箭矢 (120像素范围)
+- [x] 躲避成功率约80%
+- [x] 躲避方向为随机方向 (不再向玩家)
+- [x] 躲避后消耗传送冷却
+- [x] 弩箭更难躲避（速度快）
 
 ### 中毒绿心
-- [ ] 中毒时心形变绿
-- [ ] 颜色过渡平滑
-- [ ] 中毒结束后恢复红色
-- [ ] 多次中毒不会导致显示异常
+- [x] 中毒时**剩余红心**变绿 (空心不变)
+- [x] 颜色过渡平滑
+- [x] 中毒结束后恢复红色
+- [x] 多次中毒不会导致显示异常

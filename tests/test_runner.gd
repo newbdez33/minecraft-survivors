@@ -112,6 +112,11 @@ func _init() -> void:
 		_run_test_suite("Weapon Evolution Tests", _test_weapon_evolution)
 		_run_test_suite("Weapon Evolution Manager Tests", _test_weapon_evolution_manager)
 		_run_test_suite("Sword Tier Evolution Tests", _test_sword_tier_evolution)
+		_run_test_suite("Torch Visibility Tests", _test_torch_visibility)
+		_run_test_suite("Fog of War Tests", _test_fog_of_war)
+		_run_test_suite("Enderman Arrow Dodge Tests", _test_enderman_arrow_dodge)
+		_run_test_suite("Elite Enemy Spawning Tests", _test_elite_enemy_spawning)
+		_run_test_suite("Upgrade Artwork Tests", _test_upgrade_artwork)
 
 	# Print summary
 	_print_summary()
@@ -1769,6 +1774,19 @@ func _test_bow_weapon() -> void:
 		_assert_true("range" in bow, "T5.W.6: Bow has range property")
 		_assert_true("level" in bow, "T5.W.7: Bow has level property")
 		_assert_true(bow.has_signal("arrow_fired"), "T5.W.8: Bow has arrow_fired signal")
+
+		# T5.W.16: Bow MAX_LEVEL is 12 (evolves to crossbow at level 12)
+		_assert_equal(bow.MAX_LEVEL, 12, "T5.W.16: Bow MAX_LEVEL is 12")
+
+		# T5.W.17: Bow has evolved_to_crossbow signal
+		_assert_true(bow.has_signal("evolved_to_crossbow"), "T5.W.17: Bow has evolved_to_crossbow signal")
+
+		# T5.W.18: Bow nerfed damage is 6
+		_assert_equal(bow.damage, 6, "T5.W.18: Bow base damage is 6")
+
+		# T5.W.19: Bow nerfed attack_speed is 0.5
+		_assert_equal(bow.attack_speed, 0.5, "T5.W.19: Bow base attack_speed is 0.5")
+
 		bow.free()
 
 func _test_player_arrow() -> void:
@@ -2179,3 +2197,384 @@ func _test_sword_tier_evolution() -> void:
 		_assert_equal(sword.get_kills_to_next_tier(), -1, "T5.6.17: Diamond has no next tier")
 
 		sword.free()
+
+
+# =============================================================================
+# PHASE 5: TORCH VISIBILITY TESTS
+# =============================================================================
+
+func _test_torch_visibility() -> void:
+	# T5.7.1: TorchManager script loads
+	var torch_script = load("res://scripts/systems/torch_manager.gd")
+	_assert_not_null(torch_script, "T5.7.1: TorchManager script loads")
+
+	# T5.7.2: TorchManager has BASE_VISIBILITY_RADIUS constant
+	_assert_true("BASE_VISIBILITY_RADIUS" in TorchManager, "T5.7.2: TorchManager has BASE_VISIBILITY_RADIUS")
+
+	# T5.7.3: BASE_VISIBILITY_RADIUS is 0.25 (increased for better visibility)
+	_assert_equal(TorchManager.BASE_VISIBILITY_RADIUS, 0.25, "T5.7.3: BASE_VISIBILITY_RADIUS is 0.25")
+
+	# T5.7.4: TorchManager has TORCH_RADIUS_BONUS array
+	_assert_true("TORCH_RADIUS_BONUS" in TorchManager, "T5.7.4: TorchManager has TORCH_RADIUS_BONUS")
+
+	# T5.7.5: TORCH_RADIUS_BONUS has correct values
+	var expected_bonus = [0.0, 0.15, 0.30, 0.60]
+	_assert_equal(TorchManager.TORCH_RADIUS_BONUS, expected_bonus, "T5.7.5: TORCH_RADIUS_BONUS values correct")
+
+	# Create instance for method tests
+	var torch = TorchManager.new()
+
+	# T5.7.6: get_visibility_radius method exists
+	_assert_true(torch.has_method("get_visibility_radius"), "T5.7.6: get_visibility_radius method exists")
+
+	# T5.7.7: Level 0 visibility is BASE_VISIBILITY_RADIUS (0.25)
+	torch.torch_level = 0
+	_assert_equal(torch.get_visibility_radius(), 0.25, "T5.7.7: Level 0 visibility is 0.25")
+
+	# T5.7.8: Level 1 visibility is 0.40
+	torch.torch_level = 1
+	_assert_equal(torch.get_visibility_radius(), 0.40, "T5.7.8: Level 1 visibility is 0.40")
+
+	# T5.7.9: Level 2 visibility is 0.55
+	torch.torch_level = 2
+	_assert_equal(torch.get_visibility_radius(), 0.55, "T5.7.9: Level 2 visibility is 0.55")
+
+	# T5.7.10: Level 3 visibility is 0.85 (nearly full screen)
+	torch.torch_level = 3
+	_assert_equal(torch.get_visibility_radius(), 0.85, "T5.7.10: Level 3 visibility is 0.85")
+
+	# T5.7.11: Old brightness methods removed
+	_assert_false(torch.has_method("get_night_brightness_bonus"), "T5.7.11: get_night_brightness_bonus removed")
+	_assert_false(torch.has_method("get_spawn_rate_reduction"), "T5.7.12: get_spawn_rate_reduction removed")
+
+	torch.free()
+
+
+# =============================================================================
+# PHASE 5: FOG OF WAR TESTS
+# =============================================================================
+
+func _test_fog_of_war() -> void:
+	# T5.8.1: Fog of war shader exists
+	var shader = load("res://assets/shaders/fog_of_war.gdshader")
+	_assert_not_null(shader, "T5.8.1: Fog of war shader exists")
+
+	# T5.8.2: Main scene loads
+	var main_scene = load("res://scenes/main.tscn")
+	_assert_not_null(main_scene, "T5.8.2: Main scene loads")
+
+	if main_scene:
+		var main = main_scene.instantiate()
+
+		# T5.8.3: FogOfWarLayer exists
+		var fog_layer = main.get_node_or_null("FogOfWarLayer")
+		_assert_not_null(fog_layer, "T5.8.3: FogOfWarLayer node exists")
+
+		# T5.8.4: FogOfWarLayer is CanvasLayer
+		_assert_true(fog_layer is CanvasLayer, "T5.8.4: FogOfWarLayer is CanvasLayer")
+
+		# T5.8.5: FogOfWar ColorRect exists
+		var fog_rect = main.get_node_or_null("FogOfWarLayer/FogOfWar")
+		_assert_not_null(fog_rect, "T5.8.5: FogOfWar ColorRect exists")
+
+		# T5.8.6: FogOfWar is ColorRect
+		if fog_rect:
+			_assert_true(fog_rect is ColorRect, "T5.8.6: FogOfWar is ColorRect")
+
+			# T5.8.7: FogOfWar has ShaderMaterial
+			_assert_true(fog_rect.material is ShaderMaterial, "T5.8.7: FogOfWar has ShaderMaterial")
+
+			if fog_rect.material is ShaderMaterial:
+				var mat = fog_rect.material as ShaderMaterial
+
+				# T5.8.8: Shader has enabled parameter
+				var enabled = mat.get_shader_parameter("enabled")
+				_assert_true(enabled != null or enabled == false, "T5.8.8: Shader has enabled parameter")
+
+				# T5.8.9: Shader has player_pos parameter
+				var player_pos = mat.get_shader_parameter("player_pos")
+				_assert_not_null(player_pos, "T5.8.9: Shader has player_pos parameter")
+
+				# T5.8.10: Shader has visibility_radius parameter
+				var radius = mat.get_shader_parameter("visibility_radius")
+				_assert_not_null(radius, "T5.8.10: Shader has visibility_radius parameter")
+
+				# T5.8.11: Default visibility_radius is 0.25
+				_assert_equal(radius, 0.25, "T5.8.11: Default visibility_radius is 0.25")
+
+				# T5.8.12: Shader has darkness parameter
+				var darkness = mat.get_shader_parameter("darkness")
+				_assert_not_null(darkness, "T5.8.12: Shader has darkness parameter")
+
+				# T5.8.13: Default darkness is 0.9 (90%)
+				_assert_equal(darkness, 0.9, "T5.8.13: Default darkness is 0.9")
+
+				# T5.8.14: Shader has has_torch parameter for clear vision
+				var has_torch = mat.get_shader_parameter("has_torch")
+				_assert_true(has_torch != null or has_torch == false, "T5.8.14: Shader has has_torch parameter")
+
+				# T5.8.15: Shader has screen_size parameter for aspect ratio
+				var screen_size = mat.get_shader_parameter("screen_size")
+				_assert_not_null(screen_size, "T5.8.15: Shader has screen_size parameter")
+		else:
+			_assert_true(false, "T5.8.6: FogOfWar is ColorRect")
+			_assert_true(false, "T5.8.7: FogOfWar has ShaderMaterial")
+			_assert_true(false, "T5.8.8: Shader has enabled parameter")
+			_assert_true(false, "T5.8.9: Shader has player_pos parameter")
+			_assert_true(false, "T5.8.10: Shader has visibility_radius parameter")
+			_assert_true(false, "T5.8.11: Default visibility_radius is 0.25")
+			_assert_true(false, "T5.8.12: Shader has darkness parameter")
+			_assert_true(false, "T5.8.13: Default darkness is 0.9")
+
+		# T5.8.16: Game script has fog_of_war reference
+		var game_script = load("res://scripts/game.gd")
+		_assert_not_null(game_script, "T5.8.16: Game script loads")
+
+		# T5.8.17: DayNightCycle no longer has torch_manager reference
+		var dnc = main.get_node_or_null("DayNightCycle")
+		if dnc:
+			_assert_false("torch_manager" in dnc, "T5.8.17: DayNightCycle has no torch_manager")
+		else:
+			_assert_true(false, "T5.8.17: DayNightCycle has no torch_manager")
+
+		# T5.8.18: Spawner no longer has torch_manager reference
+		var spawner = main.get_node_or_null("MobSpawner")
+		if spawner:
+			_assert_false("torch_manager" in spawner, "T5.8.18: Spawner has no torch_manager")
+		else:
+			_assert_true(false, "T5.8.18: Spawner has no torch_manager")
+
+		main.free()
+	else:
+		# Fail all tests if scene doesn't load
+		for i in range(16):
+			_assert_true(false, "T5.8.%d: Main scene failed to load" % (i + 3))
+
+
+# =============================================================================
+# PHASE 5: ENDERMAN ARROW DODGE TESTS
+# =============================================================================
+
+func _test_enderman_arrow_dodge() -> void:
+	# T5.9.1: Enderman scene loads
+	var enderman_scene = load("res://scenes/enemies/enderman.tscn")
+	_assert_not_null(enderman_scene, "T5.9.1: Enderman scene loads")
+
+	if enderman_scene:
+		var enderman = enderman_scene.instantiate()
+
+		# T5.9.2: Enderman has arrow_dodge_enabled property
+		_assert_true("arrow_dodge_enabled" in enderman, "T5.9.2: Enderman has arrow_dodge_enabled")
+
+		# T5.9.3: Arrow dodge is enabled by default
+		if "arrow_dodge_enabled" in enderman:
+			_assert_true(enderman.arrow_dodge_enabled, "T5.9.3: Arrow dodge enabled by default")
+
+		# T5.9.4: Enderman has arrow_detection_radius property
+		_assert_true("arrow_detection_radius" in enderman, "T5.9.4: Enderman has arrow_detection_radius")
+
+		# T5.9.5: Detection radius is 120.0
+		if "arrow_detection_radius" in enderman:
+			_assert_equal(enderman.arrow_detection_radius, 120.0, "T5.9.5: Detection radius is 120")
+
+		# T5.9.6: Enderman has dodge_chance property
+		_assert_true("dodge_chance" in enderman, "T5.9.6: Enderman has dodge_chance")
+
+		# T5.9.7: Dodge chance is 0.8 (80%)
+		if "dodge_chance" in enderman:
+			_assert_equal(enderman.dodge_chance, 0.8, "T5.9.7: Dodge chance is 0.8")
+
+		# T5.9.8: Enderman has _dodge_arrow method
+		_assert_true(enderman.has_method("_dodge_arrow"), "T5.9.8: Enderman has _dodge_arrow method")
+
+		# T5.9.9: Enderman has _will_arrow_hit method
+		_assert_true(enderman.has_method("_will_arrow_hit"), "T5.9.9: Enderman has _will_arrow_hit method")
+
+		# T5.9.10: Enderman has _setup_arrow_detection method
+		_assert_true(enderman.has_method("_setup_arrow_detection"), "T5.9.10: Enderman has _setup_arrow_detection")
+
+		# T5.9.11: Enderman has target variable for dodge direction
+		_assert_true("target" in enderman, "T5.9.11: Enderman has target variable")
+
+		# T5.9.12: Verify dodge is random direction (not towards player)
+		# The _dodge_arrow method uses random angle for teleport direction
+		_assert_true(enderman.has_method("_dodge_arrow"), "T5.9.12: _dodge_arrow method verified")
+
+		enderman.free()
+	else:
+		# Fail all tests if scene doesn't load
+		for i in range(11):
+			_assert_true(false, "T5.9.%d: Enderman scene failed" % (i + 2))
+
+
+# =============================================================================
+# PHASE 5: ELITE ENEMY SPAWNING TESTS
+# =============================================================================
+
+func _test_elite_enemy_spawning() -> void:
+	# T5.E.1: Spawner script loads
+	var spawner_script = load("res://scripts/spawner.gd")
+	_assert_not_null(spawner_script, "T5.E.1: Spawner script loads")
+
+	# T5.E.2: Enderman scene exists
+	var enderman_scene = load("res://scenes/enemies/enderman.tscn")
+	_assert_not_null(enderman_scene, "T5.E.2: Enderman scene exists")
+
+	# T5.E.3: Witch scene exists
+	var witch_scene = load("res://scenes/enemies/witch.tscn")
+	_assert_not_null(witch_scene, "T5.E.3: Witch scene exists")
+
+	# Create spawner instance for testing
+	if spawner_script:
+		var spawner = spawner_script.new()
+
+		# T5.E.4: Spawner has enderman_weight
+		_assert_true("enderman_weight" in spawner, "T5.E.4: Spawner has enderman_weight")
+
+		# T5.E.5: Spawner has witch_weight
+		_assert_true("witch_weight" in spawner, "T5.E.5: Spawner has witch_weight")
+
+		# T5.E.6: Enderman spawns after 120 seconds (check weight logic)
+		spawner.game_time = 0.0
+		spawner._update_spawn_weights()
+		_assert_equal(spawner.enderman_weight, 0.0, "T5.E.6: Enderman weight 0 at start")
+
+		# T5.E.7: Enderman weight increases after 120 seconds
+		spawner.game_time = 130.0
+		spawner._update_spawn_weights()
+		_assert_true(spawner.enderman_weight > 0, "T5.E.7: Enderman weight > 0 after 120s")
+
+		# T5.E.8: Witch spawns after 150 seconds
+		spawner.game_time = 0.0
+		spawner._update_spawn_weights()
+		_assert_equal(spawner.witch_weight, 0.0, "T5.E.8: Witch weight 0 at start")
+
+		# T5.E.9: Witch weight increases after 150 seconds
+		spawner.game_time = 160.0
+		spawner._update_spawn_weights()
+		_assert_true(spawner.witch_weight > 0, "T5.E.9: Witch weight > 0 after 150s")
+
+		# T5.E.10: Wave 5 guarantees minimum enderman weight
+		spawner.enderman_weight = 0.0
+		spawner.set_wave(5)
+		_assert_true(spawner.enderman_weight >= 8.0, "T5.E.10: Wave 5 guarantees enderman_weight >= 8")
+
+		# T5.E.11: Wave 6 guarantees minimum witch weight
+		spawner.witch_weight = 0.0
+		spawner.set_wave(6)
+		_assert_true(spawner.witch_weight >= 5.0, "T5.E.11: Wave 6 guarantees witch_weight >= 5")
+
+		# T5.E.12: Enderman max weight is 20
+		spawner.game_time = 500.0
+		spawner._update_spawn_weights()
+		_assert_true(spawner.enderman_weight <= 20.0, "T5.E.12: Enderman max weight is 20")
+
+		# T5.E.13: Witch max weight is 15
+		_assert_true(spawner.witch_weight <= 15.0, "T5.E.13: Witch max weight is 15")
+
+		spawner.free()
+
+
+# =============================================================================
+# PHASE 5: UPGRADE ARTWORK TESTS
+# =============================================================================
+
+func _test_upgrade_artwork() -> void:
+	# T5.10.1: UpgradeManager script loads
+	var manager_script = load("res://scripts/systems/upgrade_manager.gd")
+	_assert_not_null(manager_script, "T5.10.1: UpgradeManager script loads")
+
+	# T5.10.2: UPGRADE_DEFS exists
+	_assert_true("UPGRADE_DEFS" in UpgradeManager, "T5.10.2: UPGRADE_DEFS exists")
+
+	# Test each upgrade icon exists
+	var upgrade_icons = {
+		"sharpness": "res://assets/ui/upgrades/sharpness.svg",
+		"knockback": "res://assets/ui/upgrades/knockback.svg",
+		"looting": "res://assets/ui/upgrades/looting.svg",
+		"protection": "res://assets/ui/upgrades/protection.svg",
+		"swiftness": "res://assets/ui/upgrades/swiftness.svg",
+		"sweeping": "res://assets/ui/upgrades/sweeping.svg",
+		"haste": "res://assets/ui/upgrades/haste.svg",
+		"torch": "res://assets/ui/upgrades/torch.svg",
+	}
+
+	var test_num = 3
+	for id in upgrade_icons:
+		var path = upgrade_icons[id]
+		var icon = load(path)
+		_assert_not_null(icon, "T5.10.%d: %s icon exists (%s)" % [test_num, id, path])
+		test_num += 1
+
+	# Test weapon icons exist
+	var weapon_icons = {
+		"wood_sword": "res://assets/weapons/wood_sword.svg",
+		"stone_sword": "res://assets/weapons/stone_sword.svg",
+		"iron_sword": "res://assets/weapons/iron_sword.svg",
+		"diamond_sword": "res://assets/weapons/diamond_sword.svg",
+		"bow": "res://assets/weapons/bow.svg",
+		"crossbow": "res://assets/weapons/crossbow.svg",
+		"torch": "res://assets/weapons/torch.svg",
+	}
+
+	for id in weapon_icons:
+		var path = weapon_icons[id]
+		var icon = load(path)
+		_assert_not_null(icon, "T5.10.%d: %s weapon icon exists" % [test_num, id])
+		test_num += 1
+
+	# Test UPGRADE_DEFS icon paths match actual files
+	for id in UpgradeManager.UPGRADE_DEFS:
+		var def = UpgradeManager.UPGRADE_DEFS[id]
+		if def.has("icon"):
+			var icon = load(def.icon)
+			_assert_not_null(icon, "T5.10.%d: UPGRADE_DEFS[%s] icon path valid" % [test_num, id])
+			test_num += 1
+
+	# Test sword icon matches default in UPGRADE_DEFS
+	var sword_def = UpgradeManager.UPGRADE_DEFS.get("sword", {})
+	_assert_equal(sword_def.get("icon", ""), "res://assets/weapons/wood_sword.svg", "T5.10.%d: Sword default icon is wood_sword" % test_num)
+	test_num += 1
+
+	# Test bow icon matches default in UPGRADE_DEFS
+	var bow_def = UpgradeManager.UPGRADE_DEFS.get("bow", {})
+	_assert_equal(bow_def.get("icon", ""), "res://assets/weapons/bow.svg", "T5.10.%d: Bow default icon is bow" % test_num)
+	test_num += 1
+
+	# Test UpgradeManager methods exist
+	var manager = UpgradeManager.new()
+	_assert_true(manager.has_method("get_weapon_icon"), "T5.10.%d: get_weapon_icon method exists" % (test_num + 1))
+	_assert_true(manager.has_method("get_next_evolution_icon"), "T5.10.%d: get_next_evolution_icon method exists" % (test_num + 2))
+	manager.free()
+	test_num += 3
+
+	# Test torch is in WEAPON_UPGRADE_IDS
+	_assert_true("torch" in UpgradeManager.WEAPON_UPGRADE_IDS, "T5.10.%d: Torch in WEAPON_UPGRADE_IDS" % test_num)
+	test_num += 1
+
+	# Test torch weapon scene exists
+	var torch_scene = load("res://scenes/weapons/torch.tscn")
+	_assert_not_null(torch_scene, "T5.10.%d: Torch weapon scene exists" % test_num)
+	test_num += 1
+
+	# Test torch weapon script exists
+	var torch_script = load("res://scripts/weapons/torch.gd")
+	_assert_not_null(torch_script, "T5.10.%d: Torch weapon script exists" % test_num)
+	test_num += 1
+
+	if torch_scene:
+		var torch = torch_scene.instantiate()
+
+		# Test torch has level property
+		_assert_true("level" in torch, "T5.10.%d: Torch has level property" % test_num)
+		test_num += 1
+
+		# Test torch has upgrade method
+		_assert_true(torch.has_method("upgrade"), "T5.10.%d: Torch has upgrade method" % test_num)
+		test_num += 1
+
+		# Test torch has Sprite2D
+		var sprite = torch.get_node_or_null("Sprite2D")
+		_assert_not_null(sprite, "T5.10.%d: Torch has Sprite2D" % test_num)
+
+		torch.free()

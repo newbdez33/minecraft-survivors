@@ -17,10 +17,12 @@ extends Node2D
 @onready var day_night_overlay: CanvasModulate = $DayNightOverlay
 @onready var pause_menu: CanvasLayer = $PauseMenu
 @onready var torch_manager: Node = $TorchManager
+@onready var fog_of_war: ColorRect = $FogOfWarLayer/FogOfWar
 
 var _sword: Node = null
 var _total_time: float = 0.0
 var _is_paused: bool = false
+var _fog_material: ShaderMaterial = null
 
 func _ready() -> void:
 	# Load language setting
@@ -49,6 +51,8 @@ func _ready() -> void:
 			spawner.day_night_cycle = day_night_cycle
 			day_night_cycle.night_started.connect(spawner._on_night_started)
 			day_night_cycle.day_started.connect(spawner._on_day_started)
+		# Connect first night to enable torch upgrade
+		day_night_cycle.night_started.connect(_on_first_night)
 		day_night_cycle.start()
 
 	# Connect player health to HUD
@@ -71,16 +75,12 @@ func _ready() -> void:
 		hud.set_wave(1)
 		hud.set_kills(0)
 
-	# Setup torch manager connections
+	# Setup torch manager connections for fog of war
 	if torch_manager:
-		# Connect to day/night cycle for brightness
-		if day_night_cycle:
-			day_night_cycle.torch_manager = torch_manager
-		# Connect to spawner for spawn rate reduction
-		if spawner:
-			spawner.torch_manager = torch_manager
-			# Re-apply night modifiers when torch level changes
-			torch_manager.torch_level_changed.connect(_on_torch_level_changed)
+		torch_manager.torch_level_changed.connect(_on_torch_level_changed)
+
+	# Setup fog of war system
+	_setup_fog_of_war()
 
 	# Setup upgrade manager
 	if upgrade_manager and player:
@@ -219,9 +219,13 @@ func _on_wave_started(wave_number: int) -> void:
 		game_stats.set_wave(wave_number)
 
 func _on_torch_level_changed(_level: int) -> void:
-	# Re-apply night modifiers when torch is upgraded
-	if spawner and spawner._is_night:
-		spawner._apply_night_modifier()
+	# Update fog visibility radius when torch is upgraded
+	_update_fog_of_war()
+
+func _on_first_night() -> void:
+	# Enable torch upgrade after first night
+	if upgrade_manager and upgrade_manager.has_method("on_first_night"):
+		upgrade_manager.on_first_night()
 
 ## Called when a status effect is applied to player
 func _on_player_effect_applied(effect) -> void:
@@ -244,9 +248,49 @@ func _on_time_changed(time: float, _is_night: bool) -> void:
 	# Update game stats survival time (use total time, not cycling time)
 	if game_stats:
 		game_stats.survival_time = _total_time
-	# Apply visual day/night tint
+	# Apply visual day/night tint (disabled when player has torch)
 	if day_night_cycle and day_night_overlay:
-		day_night_overlay.color = day_night_cycle.get_current_tint()
+		var has_torch = torch_manager and torch_manager.torch_level > 0
+		if has_torch:
+			# With torch: no overall tint, only fog circle effect
+			day_night_overlay.color = Color.WHITE
+		else:
+			day_night_overlay.color = day_night_cycle.get_current_tint()
+	# Update fog of war
+	_update_fog_of_war()
+
+## Setup fog of war shader material
+func _setup_fog_of_war() -> void:
+	if fog_of_war and fog_of_war.material is ShaderMaterial:
+		_fog_material = fog_of_war.material as ShaderMaterial
+		# Initial update
+		_update_fog_of_war()
+
+## Update fog of war based on time and torch level
+func _update_fog_of_war() -> void:
+	if not _fog_material:
+		return
+
+	var is_night = day_night_cycle and day_night_cycle.is_night()
+	_fog_material.set_shader_parameter("enabled", is_night)
+
+	if is_night:
+		# Player is always at center since camera follows them
+		_fog_material.set_shader_parameter("player_pos", Vector2(0.5, 0.5))
+
+		# Pass screen size for aspect ratio correction (perfect circle)
+		var viewport_size = get_viewport_rect().size
+		_fog_material.set_shader_parameter("screen_size", viewport_size)
+
+		# Get visibility radius from torch manager
+		var radius = TorchManager.BASE_VISIBILITY_RADIUS  # Default
+		if torch_manager and torch_manager.has_method("get_visibility_radius"):
+			radius = torch_manager.get_visibility_radius()
+		_fog_material.set_shader_parameter("visibility_radius", radius)
+
+		# Check if player has torch (torch_level > 0 means player owns torch)
+		var has_torch = torch_manager and torch_manager.torch_level > 0
+		_fog_material.set_shader_parameter("has_torch", has_torch)
 
 ## Load language setting from saved settings
 func _load_language_setting() -> void:

@@ -121,6 +121,10 @@ func update_health(current_health: int, maximum_health: int = 100) -> void:
 		else:
 			heart.texture = heart_empty_texture
 
+	# Update poison colors (only remaining hearts should be green)
+	if _is_poisoned:
+		_update_heart_colors()
+
 func set_max_hearts(count: int) -> void:
 	max_hearts = count
 	_create_hearts()
@@ -237,6 +241,7 @@ func set_poisoned(poisoned: bool) -> void:
 	_update_heart_colors()
 
 ## Update heart colors based on poison state
+## Only remaining hearts (full/half) turn green, empty hearts stay normal
 func _update_heart_colors() -> void:
 	# Kill any existing tweens
 	if _poison_tween and _poison_tween.is_valid():
@@ -248,20 +253,28 @@ func _update_heart_colors() -> void:
 			tween.kill()
 	_heart_pulse_tweens.clear()
 
-	var target_color = POISON_HEART_COLOR if _is_poisoned else NORMAL_HEART_COLOR
-
 	# Create smooth transition tween
 	_poison_tween = create_tween()
 	_poison_tween.set_parallel(true)
 
 	for heart in heart_nodes:
+		var is_empty = (heart.texture == heart_empty_texture)
+		var target_color: Color
+
+		if _is_poisoned and not is_empty:
+			# Only non-empty hearts turn green
+			target_color = POISON_HEART_COLOR
+		else:
+			# Empty hearts or not poisoned = normal color
+			target_color = NORMAL_HEART_COLOR
+
 		_poison_tween.tween_property(heart, "modulate", target_color, 0.3)
 
 	# Start pulse effect if poisoned
 	if _is_poisoned:
 		_poison_tween.chain().tween_callback(_start_poison_pulse)
 
-## Start pulsing green effect for poisoned hearts
+## Start pulsing green effect for poisoned hearts (only non-empty hearts)
 func _start_poison_pulse() -> void:
 	if not _is_poisoned:
 		return
@@ -276,6 +289,12 @@ func _start_poison_pulse() -> void:
 	var dark_green = Color(0.2, 0.6, 0.2)
 
 	for heart in heart_nodes:
+		var is_empty = (heart.texture == heart_empty_texture)
+		if is_empty:
+			# Don't pulse empty hearts, keep them normal
+			heart.modulate = NORMAL_HEART_COLOR
+			continue
+
 		var heart_tween = create_tween()
 		heart_tween.set_loops()
 		heart_tween.tween_property(heart, "modulate", bright_green, 0.5)

@@ -183,25 +183,16 @@ func _will_arrow_hit(arrow: Area2D) -> bool:
 	var hit_threshold = 40.0  # Enderman width + arrow size
 	return perpendicular_dist < hit_threshold
 
-## Teleport perpendicular to arrow direction to dodge
-func _dodge_arrow(arrow: Area2D) -> void:
-	var arrow_dir = Vector2.ZERO
+## Teleport in random direction to dodge arrow
+func _dodge_arrow(_arrow: Area2D) -> void:
+	# Random direction
+	var random_angle = randf() * TAU
+	var dodge_direction = Vector2.from_angle(random_angle)
 
-	if "direction" in arrow:
-		arrow_dir = arrow.direction
-	elif "_direction" in arrow:
-		arrow_dir = arrow._direction
-	else:
-		arrow_dir = (global_position - arrow.global_position).normalized()
-
-	# Dodge perpendicular to arrow direction
-	var dodge_dir = arrow_dir.rotated(PI / 2)
-	if randf() > 0.5:
-		dodge_dir = -dodge_dir
-
-	# Calculate dodge position
+	# Random distance
 	var dodge_distance = randf_range(80, 150)
-	var new_pos = global_position + dodge_dir * dodge_distance
+
+	var new_pos = global_position + dodge_direction * dodge_distance
 
 	# Perform teleport
 	can_teleport = false
