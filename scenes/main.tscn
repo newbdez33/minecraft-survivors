@@ -74,7 +74,7 @@ script = ExtResource("15_torch_manager")
 [node name="DayNightOverlay" type="CanvasModulate" parent="."]
 
 [node name="FogOfWarLayer" type="CanvasLayer" parent="."]
-layer = 10
+layer = 5
 
 [node name="FogOfWar" type="ColorRect" parent="FogOfWarLayer"]
 material = SubResource("ShaderMaterial_fog")
