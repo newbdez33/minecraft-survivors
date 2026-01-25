@@ -27,7 +27,7 @@ const ENEMY_CACHE_INTERVAL: float = 0.1  # Refresh every 100ms
 
 # Level scaling
 const DAMAGE_PER_LEVEL: int = 2
-const SPEED_PER_LEVEL: float = 0.1
+const SPEED_PER_LEVEL: float = 1.0
 const RANGE_PER_LEVEL: float = 20.0
 
 func _ready() -> void:
@@ -130,7 +130,7 @@ func upgrade() -> void:
 	range = get_total_range()
 	attack_speed = get_total_attack_speed()
 
-	# Evolution at level 4 -> Crossbow
+	# Evolution at level 12 -> Crossbow
 	if level >= MAX_LEVEL:
 		evolved_to_crossbow.emit()
 
