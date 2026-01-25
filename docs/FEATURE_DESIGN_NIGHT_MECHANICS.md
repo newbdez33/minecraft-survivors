@@ -10,13 +10,17 @@
 - 夜晚时刷怪**频率**和**数量**都翻倍
 - 玩家可以购买**火把**来照亮夜晚（减轻夜间debuff）
 
+**刷怪数值调整:**
+- 白天基础刷怪增加60%（当前太少）
+- 夜晚在白天基础上再翻倍
+
 **夜间效果总览:**
-| 效果 | 白天 | 夜晚 | 实现方式 |
-|------|------|------|----------|
-| 每波怪物数量 | 基础值 | **2倍** | WaveManager.night_multiplier |
-| 刷怪间隔 | 2.0秒 | **1.0秒 (频率2倍)** | Spawner.night_spawn_multiplier |
-| 最大怪物数 | 30-60 | **60-120 (2倍)** | Spawner.night_max_enemy_multiplier |
-| 屏幕亮度 | 100% | 20% (变暗) | DayNightCycle.night_tint |
+| 效果 | 原始值 | 白天(+60%) | 夜晚(白天×2) | 实现方式 |
+|------|--------|------------|--------------|----------|
+| 每波怪物数量 | 5基础 | 8基础 | **16基础** | WaveManager.base_enemies_per_wave |
+| 刷怪间隔 | 2.0秒 | **1.25秒** | **0.625秒** | Spawner.spawn_interval |
+| 最大怪物数 | 30起 | **48起** | **96起** | Spawner.max_enemies |
+| 屏幕亮度 | 100% | 100% | 20% (变暗) | DayNightCycle.night_tint |
 
 ### 1.2 现有系统分析
 
@@ -28,26 +32,45 @@
 **Wave Manager (`scripts/systems/wave_manager.gd`)**
 - 已有 `night_multiplier: 2.0` 变量（数量翻倍逻辑已存在）
 - 但需要连接 `day_night_cycle` 引用才能生效
+- `base_enemies_per_wave: 5` → 需调整为 **8** (+60%)
+- **需要调整**: 白天基础值增加60%，夜间自动翻倍
 
 **Spawner (`scripts/spawner.gd`)**
-- 控制刷怪频率（`spawn_interval`）
+- 控制刷怪频率（`spawn_interval`，当前2.0秒）
+- 控制最大怪物数（`max_enemies`，当前30起）
 - 目前无夜间逻辑
+- **需要调整**: 白天基础值增加60%，夜间再翻倍
 
 ### 1.3 详细设计
 
 #### 1.3.1 夜间刷怪翻倍
 
 **修改文件:**
-- `scripts/spawner.gd`
-- `scripts/game.gd`
+- `scripts/spawner.gd` - 刷怪频率和上限
+- `scripts/systems/wave_manager.gd` - 每波怪物数量
+- `scripts/game.gd` - 信号连接
 
-**Spawner 新增属性:**
+**WaveManager 修改 (每波数量+60%):**
+```gdscript
+# 原: base_enemies_per_wave = 5
+@export var base_enemies_per_wave: int = 8  # 5 * 1.6 = 8
+# night_multiplier: 2.0 保持不变，夜间自动 8 * 2 = 16
+```
+
+**Spawner 修改基础值 (白天+60%):**
+```gdscript
+# 原始值调整为白天值（+60%）
+@export var spawn_interval: float = 1.25  # 原2.0秒，现1.25秒 (60%更多刷怪)
+@export var max_enemies: int = 48         # 原30，现48 (60%更多上限)
+```
+
+**Spawner 新增夜间属性:**
 ```gdscript
 @export var night_spawn_multiplier: float = 0.5  # 夜间间隔减半 = 频率翻倍
 @export var night_max_enemy_multiplier: float = 2.0  # 夜间最大怪物数翻倍
 var day_night_cycle: Node = null
-var _base_spawn_interval: float = 2.0
-var _base_max_enemies: int = 30
+var _base_spawn_interval: float = 1.25  # 白天基础值
+var _base_max_enemies: int = 48         # 白天基础值
 var _is_night: bool = false
 ```
 
@@ -74,12 +97,24 @@ func _remove_night_modifier() -> void:
 
 # 修改 set_wave 方法，保存基础值
 func set_wave(wave: int) -> void:
-    # ... 原有逻辑 ...
+    # 更新后的白天基础值（原有值×1.6）
+    # 间隔: max(0.5, 1.25 - (wave-1) * 0.1)
+    # 原: max(0.8, 2.0 - (wave-1) * 0.15)
+    var new_interval = max(0.5, 1.25 - (wave - 1) * 0.1)
+
+    # 最大怪物数: 48 + (wave-1) * 8
+    # 原: 30 + (wave-1) * 5
+    var new_max_enemies = 48 + (wave - 1) * 8
+
     _base_spawn_interval = new_interval
     _base_max_enemies = new_max_enemies
-    # 如果当前是夜晚，重新应用夜间加成
+
+    # 如果当前是夜晚，应用夜间加成
     if _is_night:
         _apply_night_modifier()
+    else:
+        set_spawn_rate(_base_spawn_interval)
+        max_enemies = _base_max_enemies
 ```
 
 **Game.gd 连接:**
