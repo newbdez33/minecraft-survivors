@@ -35,11 +35,19 @@ func _ready() -> void:
 	# Connect wave manager signals and start it
 	if wave_manager:
 		wave_manager.wave_started.connect(_on_wave_started)
+		# Connect day/night cycle to wave manager for night multiplier
+		if day_night_cycle:
+			wave_manager.day_night_cycle = day_night_cycle
 		wave_manager.start()
 
 	# Connect day/night cycle signals and start it
 	if day_night_cycle:
 		day_night_cycle.time_changed.connect(_on_time_changed)
+		# Connect night/day signals to spawner for spawn rate changes
+		if spawner:
+			spawner.day_night_cycle = day_night_cycle
+			day_night_cycle.night_started.connect(spawner._on_night_started)
+			day_night_cycle.day_started.connect(spawner._on_day_started)
 		day_night_cycle.start()
 
 	# Connect player health to HUD
