@@ -58,6 +58,12 @@ func _ready() -> void:
 		player.xp_changed.connect(_on_player_xp_changed)
 		player.leveled_up.connect(_on_player_leveled_up)
 
+		# Connect status effects to HUD for poison heart color
+		var status_manager = player.get_node_or_null("StatusEffectManager")
+		if status_manager:
+			status_manager.effect_applied.connect(_on_player_effect_applied)
+			status_manager.effect_removed.connect(_on_player_effect_removed)
+
 		# Initialize HUD with player's starting values
 		hud.update_health(player.current_health, player.max_health)
 		hud.update_xp(player.current_xp, player.xp_to_next_level)
@@ -216,6 +222,20 @@ func _on_torch_level_changed(_level: int) -> void:
 	# Re-apply night modifiers when torch is upgraded
 	if spawner and spawner._is_night:
 		spawner._apply_night_modifier()
+
+## Called when a status effect is applied to player
+func _on_player_effect_applied(effect) -> void:
+	var StatusEffectClass = load("res://scripts/components/status_effect.gd")
+	if StatusEffectClass and effect.type == StatusEffectClass.Type.POISON:
+		if hud and hud.has_method("set_poisoned"):
+			hud.set_poisoned(true)
+
+## Called when a status effect is removed from player
+func _on_player_effect_removed(effect) -> void:
+	var StatusEffectClass = load("res://scripts/components/status_effect.gd")
+	if StatusEffectClass and effect.type == StatusEffectClass.Type.POISON:
+		if hud and hud.has_method("set_poisoned"):
+			hud.set_poisoned(false)
 
 func _on_time_changed(time: float, _is_night: bool) -> void:
 	# Update time icon with 8-phase granularity (uses cycling time for day/night phases)

@@ -28,6 +28,12 @@ var moon_set_texture: Texture2D      # 115-120s: Moon setting
 var max_hearts: int = 10
 var heart_nodes: Array[TextureRect] = []
 var _current_level: int = 1
+var _is_poisoned: bool = false
+var _poison_tween: Tween = null
+
+## Heart color constants
+const NORMAL_HEART_COLOR = Color.WHITE
+const POISON_HEART_COLOR = Color(0.3, 0.8, 0.3)  # Green tint
 
 func _ready() -> void:
 	# Connect to language changes
@@ -220,3 +226,51 @@ func show_notification(message: String, duration: float = 3.0) -> void:
 	tween.tween_interval(duration - 0.5)
 	tween.tween_property(notification_label, "modulate:a", 0.0, 0.5)
 	tween.tween_callback(func(): notification_label.text = "")
+
+## Set poisoned state - hearts turn green when poisoned
+func set_poisoned(poisoned: bool) -> void:
+	if _is_poisoned == poisoned:
+		return
+
+	_is_poisoned = poisoned
+	_update_heart_colors()
+
+## Update heart colors based on poison state
+func _update_heart_colors() -> void:
+	# Kill any existing tween
+	if _poison_tween and _poison_tween.is_valid():
+		_poison_tween.kill()
+
+	var target_color = POISON_HEART_COLOR if _is_poisoned else NORMAL_HEART_COLOR
+
+	# Create smooth transition tween
+	_poison_tween = create_tween()
+	_poison_tween.set_parallel(true)
+
+	for heart in heart_nodes:
+		_poison_tween.tween_property(heart, "modulate", target_color, 0.3)
+
+	# Start pulse effect if poisoned
+	if _is_poisoned:
+		_poison_tween.chain().tween_callback(_start_poison_pulse)
+
+## Start pulsing green effect for poisoned hearts
+func _start_poison_pulse() -> void:
+	if not _is_poisoned:
+		return
+
+	if _poison_tween and _poison_tween.is_valid():
+		_poison_tween.kill()
+
+	_poison_tween = create_tween()
+	_poison_tween.set_loops()  # Loop forever
+	_poison_tween.set_parallel(true)
+
+	var bright_green = Color(0.4, 1.0, 0.4)
+	var dark_green = Color(0.2, 0.6, 0.2)
+
+	for heart in heart_nodes:
+		var heart_tween = create_tween()
+		heart_tween.set_loops()
+		heart_tween.tween_property(heart, "modulate", bright_green, 0.5)
+		heart_tween.tween_property(heart, "modulate", dark_green, 0.5)
