@@ -18,6 +18,11 @@ var _bolt_scene: PackedScene
 var _current_facing: Vector2 = Vector2.RIGHT
 var _managed_by_slots: bool = false
 
+# Enemy caching to avoid expensive group queries every frame
+var _cached_enemies: Array = []
+var _enemy_cache_timer: float = 0.0
+const ENEMY_CACHE_INTERVAL: float = 0.1  # Refresh every 100ms
+
 # Level scaling
 const DAMAGE_PER_LEVEL: int = 5
 const PIERCE_PER_LEVEL: int = 1
@@ -33,6 +38,12 @@ func _process(delta: float) -> void:
 		if _cooldown_timer >= 1.0 / attack_speed:
 			_can_attack = true
 			_cooldown_timer = 0.0
+
+	# Update enemy cache periodically instead of every frame
+	_enemy_cache_timer += delta
+	if _enemy_cache_timer >= ENEMY_CACHE_INTERVAL:
+		_enemy_cache_timer = 0.0
+		_cached_enemies = get_tree().get_nodes_in_group("enemies")
 
 	# Check if managed by weapon slots
 	if not _managed_by_slots:
@@ -66,11 +77,10 @@ func _process(delta: float) -> void:
 			_fire_at(target)
 
 func _find_nearest_enemy() -> Node2D:
-	var enemies = get_tree().get_nodes_in_group("enemies")
 	var nearest: Node2D = null
 	var min_dist: float = range
 
-	for enemy in enemies:
+	for enemy in _cached_enemies:
 		if not is_instance_valid(enemy):
 			continue
 		var dist = global_position.distance_to(enemy.global_position)

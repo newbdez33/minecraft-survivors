@@ -224,6 +224,7 @@ func _on_status_effect_removed(effect) -> void:
 
 var _poison_tween: Tween = null
 var _poison_particles: Array = []
+var _poison_particle_tweens: Array = []  # Track particle tweens to kill them on cleanup
 
 func _start_poison_visual() -> void:
 	var sprite = get_node_or_null("Sprite2D")
@@ -233,6 +234,12 @@ func _start_poison_visual() -> void:
 	# Stop existing tween
 	if _poison_tween and _poison_tween.is_valid():
 		_poison_tween.kill()
+
+	# Clean up any existing particle tweens
+	for tween in _poison_particle_tweens:
+		if tween and tween.is_valid():
+			tween.kill()
+	_poison_particle_tweens.clear()
 
 	# Start pulsing green tint
 	_poison_tween = create_tween()
@@ -252,6 +259,12 @@ func _stop_poison_visual() -> void:
 	if _poison_tween and _poison_tween.is_valid():
 		_poison_tween.kill()
 		_poison_tween = null
+
+	# Kill all particle tweens BEFORE freeing particles
+	for tween in _poison_particle_tweens:
+		if tween and tween.is_valid():
+			tween.kill()
+	_poison_particle_tweens.clear()
 
 	# Remove particles
 	for particle in _poison_particles:
@@ -280,12 +293,14 @@ func _animate_poison_particle(particle: ColorRect, index: int) -> void:
 
 	var tween = create_tween()
 	tween.set_loops()
+	_poison_particle_tweens.append(tween)  # Track tween for cleanup
 
 	# Float up and fade, then reset
 	var end_y = start_y - 20
 	tween.tween_property(particle, "position:y", end_y, 0.8 + index * 0.2)
 	tween.parallel().tween_property(particle, "modulate:a", 0.0, 0.8 + index * 0.2)
 	tween.tween_callback(func():
-		particle.position = Vector2(randf_range(-12, 12), randf_range(-8, 8))
-		particle.modulate.a = 0.8
+		if is_instance_valid(particle):
+			particle.position = Vector2(randf_range(-12, 12), randf_range(-8, 8))
+			particle.modulate.a = 0.8
 	)
