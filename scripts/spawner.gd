@@ -18,6 +18,8 @@ signal enemy_killed(xp_value: int)
 
 ## Day/night cycle reference
 var day_night_cycle: Node = null
+## Torch manager reference (for night spawn reduction)
+var torch_manager: Node = null
 var _base_spawn_interval: float = 1.25
 var _base_max_enemies: int = 48
 var _is_night: bool = false
@@ -209,12 +211,23 @@ func _on_day_started() -> void:
 	_remove_night_modifier()
 
 ## Apply night spawn modifiers (double frequency and max enemies)
+## Torch reduces the night penalty
 func _apply_night_modifier() -> void:
-	# Halve interval = double spawn frequency
-	var night_interval = _base_spawn_interval * night_spawn_multiplier
+	# Calculate effective night multipliers (reduced by torch)
+	var effective_spawn_mult = night_spawn_multiplier
+	var effective_enemy_mult = night_max_enemy_multiplier
+
+	if torch_manager and torch_manager.has_method("get_spawn_rate_reduction"):
+		var torch_reduction = torch_manager.get_spawn_rate_reduction()
+		# Lerp multipliers towards 1.0 (daytime values) based on torch level
+		effective_spawn_mult = lerp(night_spawn_multiplier, 1.0, torch_reduction)
+		effective_enemy_mult = lerp(night_max_enemy_multiplier, 1.0, torch_reduction)
+
+	# Apply adjusted night interval
+	var night_interval = _base_spawn_interval * effective_spawn_mult
 	set_spawn_rate(night_interval)
-	# Double max enemies
-	max_enemies = int(_base_max_enemies * night_max_enemy_multiplier)
+	# Apply adjusted max enemies
+	max_enemies = int(_base_max_enemies * effective_enemy_mult)
 
 ## Remove night modifiers (restore daytime values)
 func _remove_night_modifier() -> void:

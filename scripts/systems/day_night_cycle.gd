@@ -28,6 +28,9 @@ var current_time: float = 0.0
 ## Current day number
 var current_day: int = 1
 
+## Reference to torch manager (optional, for night brightness bonus)
+var torch_manager: Node = null
+
 ## Is the cycle running
 var _is_running: bool = false
 
@@ -129,23 +132,32 @@ func get_period_progress() -> float:
 ## Get the current tint color based on time
 func get_current_tint() -> Color:
 	var time_of_day = get_time_of_day()
+	var base_tint: Color
 
 	match time_of_day:
 		TimeOfDay.DAWN:
 			# Transition from night to day
 			var progress = current_time / transition_time
-			return night_tint.lerp(Color.WHITE, progress)
+			base_tint = night_tint.lerp(Color.WHITE, progress)
 		TimeOfDay.DAY:
-			return Color.WHITE
+			base_tint = Color.WHITE
 		TimeOfDay.DUSK:
 			# Transition from day to night
 			var dusk_start = day_duration - transition_time
 			var progress = (current_time - dusk_start) / transition_time
-			return Color.WHITE.lerp(night_tint, progress)
+			base_tint = Color.WHITE.lerp(night_tint, progress)
 		TimeOfDay.NIGHT:
-			return night_tint
+			base_tint = night_tint
+		_:
+			base_tint = Color.WHITE
 
-	return Color.WHITE
+	# Apply torch brightness bonus during night
+	if is_night() and torch_manager and torch_manager.has_method("get_night_brightness_bonus"):
+		var brightness_bonus = torch_manager.get_night_brightness_bonus()
+		if brightness_bonus > 0:
+			base_tint = base_tint.lerp(Color.WHITE, brightness_bonus)
+
+	return base_tint
 
 
 ## Get formatted time string (Day X - HH:MM style)

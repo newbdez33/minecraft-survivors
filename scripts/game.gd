@@ -16,6 +16,7 @@ extends Node2D
 @onready var game_stats: Node = $GameStats
 @onready var day_night_overlay: CanvasModulate = $DayNightOverlay
 @onready var pause_menu: CanvasLayer = $PauseMenu
+@onready var torch_manager: Node = $TorchManager
 
 var _sword: Node = null
 var _total_time: float = 0.0
@@ -64,9 +65,23 @@ func _ready() -> void:
 		hud.set_wave(1)
 		hud.set_kills(0)
 
+	# Setup torch manager connections
+	if torch_manager:
+		# Connect to day/night cycle for brightness
+		if day_night_cycle:
+			day_night_cycle.torch_manager = torch_manager
+		# Connect to spawner for spawn rate reduction
+		if spawner:
+			spawner.torch_manager = torch_manager
+			# Re-apply night modifiers when torch level changes
+			torch_manager.torch_level_changed.connect(_on_torch_level_changed)
+
 	# Setup upgrade manager
 	if upgrade_manager and player:
 		upgrade_manager.set_player(player)
+		# Connect torch manager to upgrade manager
+		if torch_manager:
+			upgrade_manager.torch_manager = torch_manager
 
 	# Connect upgrade UI
 	if upgrade_ui:
@@ -196,6 +211,11 @@ func _on_wave_started(wave_number: int) -> void:
 	# Track highest wave in game stats
 	if game_stats:
 		game_stats.set_wave(wave_number)
+
+func _on_torch_level_changed(_level: int) -> void:
+	# Re-apply night modifiers when torch is upgraded
+	if spawner and spawner._is_night:
+		spawner._apply_night_modifier()
 
 func _on_time_changed(time: float, _is_night: bool) -> void:
 	# Update time icon with 8-phase granularity (uses cycling time for day/night phases)
