@@ -53,8 +53,10 @@ func _ready() -> void:
 	queue_redraw()
 
 func _physics_process(_delta: float) -> void:
-	# Clean up invalid enemies
-	enemies_in_range = enemies_in_range.filter(func(e): return is_instance_valid(e))
+	# Remove invalid enemies in-place (iterate backwards to avoid index issues)
+	for i in range(enemies_in_range.size() - 1, -1, -1):
+		if not is_instance_valid(enemies_in_range[i]):
+			enemies_in_range.remove_at(i)
 
 	# Auto attack when enemies in range
 	if can_attack and enemies_in_range.size() > 0:

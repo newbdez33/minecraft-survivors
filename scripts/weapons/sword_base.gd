@@ -128,7 +128,10 @@ func _update_collision_shape() -> void:
 		shape.shape.radius = attack_range
 
 func _physics_process(_delta: float) -> void:
-	enemies_in_range = enemies_in_range.filter(func(e): return is_instance_valid(e))
+	# Remove invalid enemies in-place (iterate backwards to avoid index issues)
+	for i in range(enemies_in_range.size() - 1, -1, -1):
+		if not is_instance_valid(enemies_in_range[i]):
+			enemies_in_range.remove_at(i)
 
 	if can_attack and enemies_in_range.size() > 0:
 		_perform_attack()
