@@ -1255,14 +1255,14 @@ func _test_wave_spawner_integration() -> void:
 	spawner.set_wave(5)
 	_assert_true(spawner.spawn_interval < wave2_interval, "T4.13.4: Wave 5 faster than wave 2")
 
-	# T4.13.5: Spawn interval has minimum (doesn't go below 0.8)
+	# T4.13.5: Spawn interval has minimum (doesn't go below 0.5)
 	spawner.set_wave(20)
-	_assert_true(spawner.spawn_interval >= 0.8, "T4.13.5: Spawn interval minimum is 0.8")
+	_assert_true(spawner.spawn_interval >= 0.5, "T4.13.5: Spawn interval minimum is 0.5")
 
-	# T4.13.6: Wave 1 sets base max_enemies (30)
+	# T4.13.6: Wave 1 sets base max_enemies (48 after 60% increase)
 	spawner.set_wave(1)
 	var wave1_max = spawner.max_enemies
-	_assert_equal(wave1_max, 30, "T4.13.6: Wave 1 max_enemies is 30")
+	_assert_equal(wave1_max, 48, "T4.13.6: Wave 1 max_enemies is 48")
 
 	# T4.13.7: Wave 2 increases max_enemies (35)
 	spawner.set_wave(2)

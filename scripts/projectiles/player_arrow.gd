@@ -14,6 +14,8 @@ var _pierce_count: int = 0
 var _hit_enemies: Array = []
 
 func _ready() -> void:
+	add_to_group("player_projectiles")
+
 	# Setup collision - targets enemies
 	collision_layer = 8  # Player projectiles
 	collision_mask = 2   # Enemies

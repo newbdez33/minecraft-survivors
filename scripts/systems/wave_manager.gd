@@ -14,8 +14,8 @@ var current_wave: int = 0
 ## Time between waves in seconds
 @export var wave_interval: float = 30.0
 
-## Base number of enemies per wave
-@export var base_enemies_per_wave: int = 5
+## Base number of enemies per wave (increased 60% from original 5)
+@export var base_enemies_per_wave: int = 8
 
 ## Enemy count multiplier per wave (exponential scaling)
 @export var wave_scaling: float = 1.2

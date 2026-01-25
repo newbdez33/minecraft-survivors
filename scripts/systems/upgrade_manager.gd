@@ -8,6 +8,7 @@ signal upgrade_applied(upgrade)
 
 var available_upgrades: Array = []
 var player: Node = null
+var torch_manager: Node = null  # Reference to TorchManager for torch upgrade
 
 ## For testing: always include these upgrades in the random selection if available
 var prioritized_upgrades: Array[String] = []
@@ -27,6 +28,7 @@ const UPGRADE_DEFS = {
 	"swiftness": {"name_key": "UPGRADE_SWIFTNESS", "desc_key": "DESC_SWIFTNESS", "max": 3, "effect": 15.0, "icon": "res://assets/ui/upgrades/swiftness.svg"},
 	"sweeping": {"name_key": "UPGRADE_SWEEPING", "desc_key": "DESC_SWEEPING", "max": 3, "effect": 20.0, "icon": "res://assets/ui/upgrades/sweeping.svg"},
 	"haste": {"name_key": "UPGRADE_HASTE", "desc_key": "DESC_HASTE", "max": 3, "effect": 10.0, "icon": "res://assets/ui/upgrades/haste.svg"},
+	"torch": {"name_key": "UPGRADE_TORCH", "desc_key": "DESC_TORCH", "max": 3, "effect": 1.0, "icon": "res://assets/ui/upgrades/torch.svg"},
 }
 
 func _ready() -> void:
@@ -275,6 +277,8 @@ func _apply_effect(upgrade) -> void:
 			_apply_sweeping(upgrade)
 		"haste":
 			_apply_haste(upgrade)
+		"torch":
+			_apply_torch(upgrade)
 
 func _apply_sword(_upgrade) -> void:
 	var sword = player.get_node_or_null("Sword")
@@ -327,6 +331,10 @@ func _apply_haste(upgrade) -> void:
 	elif sword and "cooldown" in sword:
 		var reduction = upgrade.effect_per_level / 100.0
 		sword.cooldown *= (1.0 - reduction)
+
+func _apply_torch(_upgrade) -> void:
+	if torch_manager and torch_manager.has_method("upgrade_torch"):
+		torch_manager.upgrade_torch()
 
 func _apply_bow(upgrade) -> void:
 	var bow = player.get_node_or_null("Bow")
