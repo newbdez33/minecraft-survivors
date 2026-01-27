@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" shape-rendering="crispEdges">
+  <!-- Torch: Minecraft-style torch with flame -->
+
+  <!-- Light glow background -->
+  <rect x="10" y="2" width="12" height="12" fill="#ffdd44" opacity="0.2"/>
+  <rect x="12" y="4" width="8" height="8" fill="#ffaa00" opacity="0.3"/>
+
+  <!-- Flame (orange-yellow) -->
+  <rect x="15" y="2" width="2" height="2" fill="#ffff00"/>
+  <rect x="14" y="4" width="4" height="2" fill="#ffdd00"/>
+  <rect x="13" y="6" width="6" height="2" fill="#ffaa00"/>
+  <rect x="14" y="8" width="4" height="2" fill="#ff8800"/>
+  <rect x="15" y="10" width="2" height="2" fill="#ff6600"/>
+
+  <!-- Flame highlight -->
+  <rect x="16" y="3" width="1" height="1" fill="#ffffff"/>
+  <rect x="15" y="5" width="1" height="1" fill="#ffffaa"/>
+
+  <!-- Torch stick (brown wood) -->
+  <rect x="15" y="12" width="2" height="12" fill="#8b4513"/>
+  <rect x="14" y="13" width="1" height="10" fill="#654321"/>
+  <rect x="17" y="13" width="1" height="10" fill="#a0522d"/>
+
+  <!-- Torch top (darker wood holder) -->
+  <rect x="14" y="11" width="4" height="2" fill="#5c3317"/>
+
+  <!-- Light particles -->
+  <rect x="8" y="4" width="2" height="2" fill="#ffdd00" opacity="0.6"/>
+  <rect x="22" y="6" width="2" height="2" fill="#ffdd00" opacity="0.6"/>
+  <rect x="6" y="10" width="2" height="2" fill="#ffaa00" opacity="0.4"/>
+  <rect x="24" y="8" width="2" height="2" fill="#ffaa00" opacity="0.4"/>
+</svg>

@@ -59,3 +59,5 @@ HUD_LEVEL,Lv.,等级,Lv.
 HUD_WAVE,Wave,波次,ウェーブ
 HUD_KILLS,Kills,击杀,キル
 ALL_MAXED,All Weapons Maxed Out!,所有武器已满级!,全武器MAX!
+UPGRADE_TORCH,Torch,火把,松明
+DESC_TORCH,Illuminate the night,照亮夜晚,夜を照らす

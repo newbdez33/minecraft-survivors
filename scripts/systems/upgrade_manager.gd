@@ -8,13 +8,15 @@ signal upgrade_applied(upgrade)
 
 var available_upgrades: Array = []
 var player: Node = null
+var torch_manager: Node = null  # Reference to TorchManager for torch upgrade
+var first_night_occurred: bool = false  # Torch only available after first night
 
 ## For testing: always include these upgrades in the random selection if available
 var prioritized_upgrades: Array[String] = []
 
 # Upgrade definitions
 ## Weapon upgrade IDs (shown in separate section)
-const WEAPON_UPGRADE_IDS = ["sword", "bow"]
+const WEAPON_UPGRADE_IDS = ["sword", "bow", "torch"]
 
 ## Upgrade definitions with translation keys
 const UPGRADE_DEFS = {
@@ -27,6 +29,7 @@ const UPGRADE_DEFS = {
 	"swiftness": {"name_key": "UPGRADE_SWIFTNESS", "desc_key": "DESC_SWIFTNESS", "max": 3, "effect": 15.0, "icon": "res://assets/ui/upgrades/swiftness.svg"},
 	"sweeping": {"name_key": "UPGRADE_SWEEPING", "desc_key": "DESC_SWEEPING", "max": 3, "effect": 20.0, "icon": "res://assets/ui/upgrades/sweeping.svg"},
 	"haste": {"name_key": "UPGRADE_HASTE", "desc_key": "DESC_HASTE", "max": 3, "effect": 10.0, "icon": "res://assets/ui/upgrades/haste.svg"},
+	"torch": {"name_key": "UPGRADE_TORCH", "desc_key": "DESC_TORCH", "max": 3, "effect": 1.0, "icon": "res://assets/weapons/torch.svg"},
 }
 
 func _ready() -> void:
@@ -76,6 +79,7 @@ func get_random_upgrades(count: int = 3) -> Array:
 
 ## Get available weapon upgrades (for right side of upgrade menu)
 ## Returns only 1 random weapon - either owned (for upgrade) or new (to acquire)
+## Torch only appears after first night
 func get_weapon_upgrades() -> Array:
 	if not player:
 		return []
@@ -83,6 +87,9 @@ func get_weapon_upgrades() -> Array:
 	var available_weapons: Array = []
 	for upgrade in available_upgrades:
 		if upgrade.id in WEAPON_UPGRADE_IDS and upgrade.can_upgrade():
+			# Torch only available after first night
+			if upgrade.id == "torch" and not first_night_occurred:
+				continue
 			available_weapons.append(upgrade)
 
 	# Return 1 random weapon upgrade
@@ -90,6 +97,10 @@ func get_weapon_upgrades() -> Array:
 		available_weapons.shuffle()
 		return [available_weapons[0]]
 	return []
+
+## Called when first night starts - enables torch upgrade
+func on_first_night() -> void:
+	first_night_occurred = true
 
 ## Map upgrade ID to weapon node name
 func _get_weapon_node_name(upgrade_id: String) -> String:
@@ -104,7 +115,7 @@ func _get_weapon_node_name(upgrade_id: String) -> String:
 ## Get the current icon path for a weapon based on its level/tier
 func get_weapon_icon(upgrade_id: String) -> String:
 	if not player:
-		return UPGRADE_DEFS[upgrade_id].icon
+		return UPGRADE_DEFS[upgrade_id].icon if upgrade_id in UPGRADE_DEFS else ""
 
 	match upgrade_id:
 		"sword":
@@ -126,6 +137,8 @@ func get_weapon_icon(upgrade_id: String) -> String:
 			if crossbow:
 				return "res://assets/weapons/crossbow.svg"
 			return "res://assets/weapons/bow.svg"
+		"torch":
+			return "res://assets/weapons/torch.svg"
 		_:
 			return UPGRADE_DEFS[upgrade_id].icon if upgrade_id in UPGRADE_DEFS else ""
 
@@ -275,6 +288,8 @@ func _apply_effect(upgrade) -> void:
 			_apply_sweeping(upgrade)
 		"haste":
 			_apply_haste(upgrade)
+		"torch":
+			_apply_torch(upgrade)
 
 func _apply_sword(_upgrade) -> void:
 	var sword = player.get_node_or_null("Sword")
@@ -327,6 +342,29 @@ func _apply_haste(upgrade) -> void:
 	elif sword and "cooldown" in sword:
 		var reduction = upgrade.effect_per_level / 100.0
 		sword.cooldown *= (1.0 - reduction)
+
+func _apply_torch(_upgrade) -> void:
+	var torch = player.get_node_or_null("Torch") if player else null
+
+	if not torch:
+		# First time - add torch weapon to player
+		var torch_scene = load("res://scenes/weapons/torch.tscn")
+		if torch_scene:
+			torch = torch_scene.instantiate()
+			torch.name = "Torch"
+			player.add_child(torch)
+			# Register with weapon slots at LEFT position (slot 2)
+			var weapon_slots = player.get_node_or_null("WeaponSlots")
+			if weapon_slots:
+				weapon_slots.register_weapon(torch, 2)  # Slot 2 = left
+	else:
+		# Upgrade existing torch
+		if torch.has_method("upgrade"):
+			torch.upgrade()
+
+	# Also update TorchManager for fog of war visibility
+	if torch_manager and torch_manager.has_method("upgrade_torch"):
+		torch_manager.upgrade_torch()
 
 func _apply_bow(upgrade) -> void:
 	var bow = player.get_node_or_null("Bow")

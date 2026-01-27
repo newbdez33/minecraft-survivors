@@ -5,14 +5,14 @@ class_name Bow
 signal arrow_fired(arrow: Node2D)
 signal evolved_to_crossbow
 
-@export var damage: int = 8
-@export var attack_speed: float = 1.0  # Arrows per second
-@export var range: float = 300.0
-@export var arrow_speed: float = 400.0
+@export var damage: int = 6
+@export var attack_speed: float = 0.5  # Arrows per second (1 every 2 sec)
+@export var range: float = 250.0
+@export var arrow_speed: float = 350.0
 @export var level: int = 1
 @export var hand_offset: float = 24.0  # Distance from player center
 
-const MAX_LEVEL: int = 4  # Level 4 = evolve to Crossbow
+const MAX_LEVEL: int = 12  # Level 12 = evolve to Crossbow
 
 var _cooldown_timer: float = 0.0
 var _can_attack: bool = true
@@ -26,9 +26,9 @@ var _enemy_cache_timer: float = 0.0
 const ENEMY_CACHE_INTERVAL: float = 0.1  # Refresh every 100ms
 
 # Level scaling
-const DAMAGE_PER_LEVEL: int = 3
-const SPEED_PER_LEVEL: float = 0.15
-const RANGE_PER_LEVEL: float = 25.0
+const DAMAGE_PER_LEVEL: int = 2
+const SPEED_PER_LEVEL: float = 1.0
+const RANGE_PER_LEVEL: float = 20.0
 
 func _ready() -> void:
 	_arrow_scene = load("res://scenes/projectiles/player_arrow.tscn")
@@ -130,7 +130,7 @@ func upgrade() -> void:
 	range = get_total_range()
 	attack_speed = get_total_attack_speed()
 
-	# Evolution at level 4 -> Crossbow
+	# Evolution at level 12 -> Crossbow
 	if level >= MAX_LEVEL:
 		evolved_to_crossbow.emit()
 

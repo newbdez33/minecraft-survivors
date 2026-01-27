@@ -20,9 +20,22 @@ A Vampire Survivors-like roguelike game with Minecraft theme. Play as Steve and 
 - XP and level-up progression
 - Upgrade system with enchantments (Sharpness, Protection, Swiftness, etc.)
 - Weapon evolution (Wood Sword → Stone → Iron → Diamond, Bow → Crossbow)
-- Day/night cycle
+- Torch weapon with night fog visibility system
+- Day/night cycle with spawn modifiers
 - Multiple enemy types (Zombie, Skeleton, Spider, Creeper, Enderman, Witch)
 - Multi-language support (English, Japanese, Chinese)
+
+## Documentation
+
+📋 **[Development Roadmap](docs/ROADMAP.md)** - Complete development plan and progress
+
+| Document | Description |
+|----------|-------------|
+| [ROADMAP.md](docs/ROADMAP.md) | Development phases and future plans |
+| [GAME_DATA.md](docs/GAME_DATA.md) | Complete game data reference |
+| [BOSS_LIST.md](docs/BOSS_LIST.md) | Boss enemies (planned) |
+| [ELITE_MONSTER_DESIGN.md](docs/ELITE_MONSTER_DESIGN.md) | Elite monster system (planned) |
+| [CLAUDE.md](CLAUDE.md) | AI assistant development guide |
 
 ## Development
 
@@ -39,6 +52,13 @@ godot --path . scenes/main.tscn
 ```bash
 ./run_tests.sh
 ```
+
+### Current Status
+
+- **Phase 5**: Game Enhancements (90% complete)
+- **Phase 6**: Bosses & Elites (Design complete, implementation pending)
+
+See [ROADMAP.md](docs/ROADMAP.md) for detailed progress.
 
 ## License
 

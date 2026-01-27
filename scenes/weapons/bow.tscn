@@ -6,10 +6,10 @@
 [node name="Bow" type="Node2D"]
 z_index = 5
 script = ExtResource("1_bow")
-damage = 8
-attack_speed = 1.0
-range = 300.0
-arrow_speed = 400.0
+damage = 6
+attack_speed = 0.5
+range = 250.0
+arrow_speed = 350.0
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 scale = Vector2(3, 3)

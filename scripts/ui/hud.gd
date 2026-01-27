@@ -28,6 +28,13 @@ var moon_set_texture: Texture2D      # 115-120s: Moon setting
 var max_hearts: int = 10
 var heart_nodes: Array[TextureRect] = []
 var _current_level: int = 1
+var _is_poisoned: bool = false
+var _poison_tween: Tween = null
+var _heart_pulse_tweens: Array = []  # Track individual heart tweens for cleanup
+
+## Heart color constants
+const NORMAL_HEART_COLOR = Color.WHITE
+const POISON_HEART_COLOR = Color(0.3, 0.8, 0.3)  # Green tint
 
 func _ready() -> void:
 	# Connect to language changes
@@ -113,6 +120,10 @@ func update_health(current_health: int, maximum_health: int = 100) -> void:
 			heart.texture = heart_half_texture
 		else:
 			heart.texture = heart_empty_texture
+
+	# Update poison colors (only remaining hearts should be green)
+	if _is_poisoned:
+		_update_heart_colors()
 
 func set_max_hearts(count: int) -> void:
 	max_hearts = count
@@ -220,3 +231,72 @@ func show_notification(message: String, duration: float = 3.0) -> void:
 	tween.tween_interval(duration - 0.5)
 	tween.tween_property(notification_label, "modulate:a", 0.0, 0.5)
 	tween.tween_callback(func(): notification_label.text = "")
+
+## Set poisoned state - hearts turn green when poisoned
+func set_poisoned(poisoned: bool) -> void:
+	if _is_poisoned == poisoned:
+		return
+
+	_is_poisoned = poisoned
+	_update_heart_colors()
+
+## Update heart colors based on poison state
+## Only remaining hearts (full/half) turn green, empty hearts stay normal
+func _update_heart_colors() -> void:
+	# Kill any existing tweens
+	if _poison_tween and _poison_tween.is_valid():
+		_poison_tween.kill()
+
+	# Kill all heart pulse tweens
+	for tween in _heart_pulse_tweens:
+		if tween and tween.is_valid():
+			tween.kill()
+	_heart_pulse_tweens.clear()
+
+	# Create smooth transition tween
+	_poison_tween = create_tween()
+	_poison_tween.set_parallel(true)
+
+	for heart in heart_nodes:
+		var is_empty = (heart.texture == heart_empty_texture)
+		var target_color: Color
+
+		if _is_poisoned and not is_empty:
+			# Only non-empty hearts turn green
+			target_color = POISON_HEART_COLOR
+		else:
+			# Empty hearts or not poisoned = normal color
+			target_color = NORMAL_HEART_COLOR
+
+		_poison_tween.tween_property(heart, "modulate", target_color, 0.3)
+
+	# Start pulse effect if poisoned
+	if _is_poisoned:
+		_poison_tween.chain().tween_callback(_start_poison_pulse)
+
+## Start pulsing green effect for poisoned hearts (only non-empty hearts)
+func _start_poison_pulse() -> void:
+	if not _is_poisoned:
+		return
+
+	# Kill existing pulse tweens before creating new ones
+	for tween in _heart_pulse_tweens:
+		if tween and tween.is_valid():
+			tween.kill()
+	_heart_pulse_tweens.clear()
+
+	var bright_green = Color(0.4, 1.0, 0.4)
+	var dark_green = Color(0.2, 0.6, 0.2)
+
+	for heart in heart_nodes:
+		var is_empty = (heart.texture == heart_empty_texture)
+		if is_empty:
+			# Don't pulse empty hearts, keep them normal
+			heart.modulate = NORMAL_HEART_COLOR
+			continue
+
+		var heart_tween = create_tween()
+		heart_tween.set_loops()
+		heart_tween.tween_property(heart, "modulate", bright_green, 0.5)
+		heart_tween.tween_property(heart, "modulate", dark_green, 0.5)
+		_heart_pulse_tweens.append(heart_tween)  # Track for cleanup

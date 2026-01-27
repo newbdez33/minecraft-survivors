@@ -1,0 +1,518 @@
+# Feature Design: Night Mechanics, Enderman Dodge & Poison Hearts
+
+本文档详细描述三个新功能的设计方案。
+
+---
+
+## Feature 1: 夜间刷怪机制 + 火把系统
+
+### 1.1 需求概述
+- 夜晚时刷怪**频率**和**数量**都翻倍
+- 玩家可以购买**火把**来照亮夜晚（减轻夜间debuff）
+
+**刷怪数值调整:**
+- 白天基础刷怪增加60%（当前太少）
+- 夜晚在白天基础上再翻倍
+
+**夜间效果总览:**
+| 效果 | 原始值 | 白天(+60%) | 夜晚(白天×2) | 实现方式 |
+|------|--------|------------|--------------|----------|
+| 每波怪物数量 | 5基础 | 8基础 | **16基础** | WaveManager.base_enemies_per_wave |
+| 刷怪间隔 | 2.0秒 | **1.25秒** | **0.625秒** | Spawner.spawn_interval |
+| 最大怪物数 | 30起 | **48起** | **96起** | Spawner.max_enemies |
+| 屏幕亮度 | 100% | 100% | 20% (变暗) | DayNightCycle.night_tint |
+
+### 1.2 现有系统分析
+
+**Day/Night Cycle (`scripts/systems/day_night_cycle.gd`)**
+- 白天60秒 + 夜晚60秒循环
+- 信号: `night_started()`, `day_started()`, `time_changed()`
+- `is_night()` 方法返回当前是否为夜晚
+
+**Wave Manager (`scripts/systems/wave_manager.gd`)**
+- 已有 `night_multiplier: 2.0` 变量（数量翻倍逻辑已存在）
+- 但需要连接 `day_night_cycle` 引用才能生效
+- `base_enemies_per_wave: 5` → 需调整为 **8** (+60%)
+- **需要调整**: 白天基础值增加60%，夜间自动翻倍
+
+**Spawner (`scripts/spawner.gd`)**
+- 控制刷怪频率（`spawn_interval`，当前2.0秒）
+- 控制最大怪物数（`max_enemies`，当前30起）
+- 目前无夜间逻辑
+- **需要调整**: 白天基础值增加60%，夜间再翻倍
+
+### 1.3 详细设计
+
+#### 1.3.1 夜间刷怪翻倍
+
+**修改文件:**
+- `scripts/spawner.gd` - 刷怪频率和上限
+- `scripts/systems/wave_manager.gd` - 每波怪物数量
+- `scripts/game.gd` - 信号连接
+
+**WaveManager 修改 (每波数量+60%):**
+```gdscript
+# 原: base_enemies_per_wave = 5
+@export var base_enemies_per_wave: int = 8  # 5 * 1.6 = 8
+# night_multiplier: 2.0 保持不变，夜间自动 8 * 2 = 16
+```
+
+**Spawner 修改基础值 (白天+60%):**
+```gdscript
+# 原始值调整为白天值（+60%）
+@export var spawn_interval: float = 1.25  # 原2.0秒，现1.25秒 (60%更多刷怪)
+@export var max_enemies: int = 48         # 原30，现48 (60%更多上限)
+```
+
+**Spawner 新增夜间属性:**
+```gdscript
+@export var night_spawn_multiplier: float = 0.5  # 夜间间隔减半 = 频率翻倍
+@export var night_max_enemy_multiplier: float = 2.0  # 夜间最大怪物数翻倍
+var day_night_cycle: Node = null
+var _base_spawn_interval: float = 1.25  # 白天基础值
+var _base_max_enemies: int = 48         # 白天基础值
+var _is_night: bool = false
+```
+
+**Spawner 新增方法:**
+```gdscript
+func _on_night_started() -> void:
+    _is_night = true
+    _apply_night_modifier()
+
+func _on_day_started() -> void:
+    _is_night = false
+    _remove_night_modifier()
+
+func _apply_night_modifier() -> void:
+    # 频率翻倍（间隔减半）
+    var night_interval = _base_spawn_interval * night_spawn_multiplier
+    set_spawn_rate(night_interval)
+    # 最大怪物数翻倍
+    max_enemies = int(_base_max_enemies * night_max_enemy_multiplier)
+
+func _remove_night_modifier() -> void:
+    set_spawn_rate(_base_spawn_interval)
+    max_enemies = _base_max_enemies
+
+# 修改 set_wave 方法，保存基础值
+func set_wave(wave: int) -> void:
+    # 更新后的白天基础值（原有值×1.6）
+    # 间隔: max(0.5, 1.25 - (wave-1) * 0.1)
+    # 原: max(0.8, 2.0 - (wave-1) * 0.15)
+    var new_interval = max(0.5, 1.25 - (wave - 1) * 0.1)
+
+    # 最大怪物数: 48 + (wave-1) * 8
+    # 原: 30 + (wave-1) * 5
+    var new_max_enemies = 48 + (wave - 1) * 8
+
+    _base_spawn_interval = new_interval
+    _base_max_enemies = new_max_enemies
+
+    # 如果当前是夜晚，应用夜间加成
+    if _is_night:
+        _apply_night_modifier()
+    else:
+        set_spawn_rate(_base_spawn_interval)
+        max_enemies = _base_max_enemies
+```
+
+**Game.gd 连接:**
+```gdscript
+func _ready():
+    # 连接 day_night_cycle 到 wave_manager（激活已有数量翻倍）
+    wave_manager.day_night_cycle = day_night_cycle
+
+    # 连接 day_night_cycle 到 spawner（新增频率翻倍）
+    spawner.day_night_cycle = day_night_cycle
+    day_night_cycle.night_started.connect(spawner._on_night_started)
+    day_night_cycle.day_started.connect(spawner._on_day_started)
+```
+
+#### 1.3.2 火把系统 (已实现 - 迷雾圈方案)
+
+**实际实现方案: 火把作为武器 + 迷雾圈可见范围**
+
+**资源文件:**
+- `assets/weapons/torch.svg` - 火把武器精灵
+- `assets/ui/upgrades/torch.svg` - 火把升级图标
+- `assets/shaders/fog_of_war.gdshader` - 迷雾shader
+
+**实现架构:**
+1. **FogOfWar Shader** - 圆形可见区域，90%黑暗
+2. **TorchManager** - 控制可见范围半径
+3. **Torch武器** - 玩家左侧位置显示
+
+**火把效果等级 (实际值):**
+| 等级 | 可见半径 | 特殊效果 |
+|------|----------|----------|
+| 0 (无火把) | 0.25 | 渐变黑暗，小范围清晰中心 |
+| 1 | 0.40 | 圈内完全清晰，夜间tint禁用 |
+| 2 | 0.55 | 圈内完全清晰，夜间tint禁用 |
+| 3 | 0.85 | 接近全屏可见 |
+
+**TorchManager (`scripts/systems/torch_manager.gd`):**
+```gdscript
+class_name TorchManager
+extends Node
+
+signal torch_level_changed(level: int)
+
+var torch_level: int = 0
+const MAX_LEVEL: int = 3
+const BASE_VISIBILITY_RADIUS: float = 0.25
+const TORCH_RADIUS_BONUS = [0.0, 0.15, 0.30, 0.60]
+
+func get_visibility_radius() -> float:
+    var bonus = 0.0
+    if torch_level > 0 and torch_level <= MAX_LEVEL:
+        bonus = TORCH_RADIUS_BONUS[torch_level]
+    return BASE_VISIBILITY_RADIUS + bonus
+```
+
+**Fog of War Shader (`assets/shaders/fog_of_war.gdshader`):**
+```glsl
+uniform bool has_torch = false;
+uniform vec2 screen_size = vec2(1280.0, 720.0);
+
+void fragment() {
+    if (has_torch) {
+        // 有火把: 圈内完全清晰
+        alpha = smoothstep(visibility_radius - soft_edge, visibility_radius + soft_edge, dist);
+    } else {
+        // 无火把: 渐变黑暗，小范围清晰中心
+        float inner_radius = visibility_radius * 0.3;
+        // ...
+    }
+}
+```
+
+**Game.gd 核心逻辑:**
+```gdscript
+func _update_fog_of_war() -> void:
+    var has_torch = torch_manager and torch_manager.torch_level > 0
+    _fog_material.set_shader_parameter("has_torch", has_torch)
+
+func _on_time_changed(time: float, _is_night: bool) -> void:
+    # 有火把时禁用夜间整体变暗
+    if has_torch:
+        day_night_overlay.color = Color.WHITE
+    else:
+        day_night_overlay.color = day_night_cycle.get_current_tint()
+```
+
+**注意: 火把不再影响刷怪频率** - 夜间刷怪翻倍不受火把影响
+
+---
+
+## Feature 2: Enderman 躲避弓箭
+
+### 2.1 需求概述
+- Enderman 可以感知接近的弓箭
+- 在弓箭命中前主动传送躲避
+
+### 2.2 现有系统分析
+
+**Enderman (`scripts/enemies/enderman.gd`)**
+- 当前: 只在受到伤害后传送（被动）
+- `teleport_cooldown: 3.0` 秒冷却
+- `teleport_range: 200` 像素传送距离
+
+**箭矢 (`scripts/projectiles/player_arrow.gd`)**
+- 速度: 400 像素/秒（弓）/ 600 像素/秒（弩）
+- 碰撞层: 8（玩家投射物）
+- Enderman 当前碰撞掩码不包含此层
+
+### 2.3 详细设计
+
+**设计思路:**
+1. 给 Enderman 添加"箭矢感知区域"（Area2D）
+2. 检测进入感知范围的箭矢
+3. 预判箭矢轨迹，判断是否会命中
+4. 在命中前触发传送
+
+**修改文件:**
+- `scripts/enemies/enderman.gd`
+- `scenes/enemies/enderman.tscn`
+
+**新增场景结构:**
+```
+Enderman (CharacterBody2D)
+├── ... (existing nodes)
+├── ArrowDetectionArea (Area2D)  # 新增
+│   └── DetectionShape (CircleShape2D, radius=120)
+```
+
+**ArrowDetectionArea 配置:**
+```gdscript
+collision_layer = 0  # 不被检测
+collision_mask = 8   # 检测玩家投射物（PlayerArrow层）
+```
+
+**Enderman 新增属性:**
+```gdscript
+@export var arrow_dodge_enabled: bool = true
+@export var arrow_detection_radius: float = 120.0  # 感知范围
+@export var dodge_reaction_time: float = 0.15      # 反应时间（秒）
+@export var dodge_chance: float = 0.8              # 躲避成功率 80%
+```
+
+**Enderman 新增方法:**
+```gdscript
+var _arrow_detection_area: Area2D = null
+
+func _ready():
+    # ... existing code ...
+    _setup_arrow_detection()
+
+func _setup_arrow_detection() -> void:
+    _arrow_detection_area = $ArrowDetectionArea
+    if _arrow_detection_area:
+        _arrow_detection_area.area_entered.connect(_on_arrow_entered)
+
+func _on_arrow_entered(area: Area2D) -> void:
+    if not arrow_dodge_enabled or not can_teleport:
+        return
+
+    # 检查是否为玩家箭矢
+    if not area.is_in_group("player_projectiles"):
+        return
+
+    # 随机判定是否躲避
+    if randf() > dodge_chance:
+        return
+
+    # 预判箭矢是否会命中
+    if _will_arrow_hit(area):
+        _dodge_teleport(area)
+
+func _will_arrow_hit(arrow: Area2D) -> bool:
+    # 获取箭矢方向和速度
+    var arrow_pos = arrow.global_position
+    var arrow_velocity = arrow.direction * arrow.speed if arrow.has_method("get_velocity") else arrow.get("velocity")
+
+    if arrow_velocity == null or arrow_velocity == Vector2.ZERO:
+        # 如果无法获取速度，根据位置判断
+        arrow_velocity = (global_position - arrow_pos).normalized() * 400
+
+    # 预测箭矢轨迹
+    var my_radius = 28.0  # Enderman碰撞半径
+    var to_me = global_position - arrow_pos
+    var arrow_dir = arrow_velocity.normalized()
+
+    # 点到直线距离
+    var perpendicular_dist = abs(to_me.cross(arrow_dir))
+
+    # 如果箭矢轨迹会穿过 Enderman 范围内
+    return perpendicular_dist < my_radius + 16  # 16 = 箭矢半宽
+
+func _dodge_arrow(_arrow: Area2D) -> void:
+    # 随机方向传送 (不再是向玩家方向)
+    var random_angle = randf() * TAU
+    var dodge_direction = Vector2.from_angle(random_angle)
+
+    # 随机距离
+    var dodge_distance = randf_range(80, 150)
+    var new_pos = global_position + dodge_direction * dodge_distance
+
+    # 执行传送
+    can_teleport = false
+    _spawn_teleport_effect(global_position)
+    global_position = new_pos
+    _spawn_teleport_effect(global_position)
+    # 开始冷却计时器
+```
+
+**PlayerArrow 新增组:**
+```gdscript
+func _ready():
+    add_to_group("player_projectiles")
+```
+
+**CrossbowBolt 新增组:**
+```gdscript
+func _ready():
+    add_to_group("player_projectiles")
+```
+
+**平衡性考虑:**
+- 躲避成功率 80%（不是100%，保持可击杀性）
+- 传送冷却 3 秒（躲避后也消耗冷却）
+- 感知范围 120 像素（给玩家瞄准调整的机会）
+- 弩箭速度快(600)，更难躲避
+
+---
+
+## Feature 3: 中毒状态 HUD 红心变绿
+
+### 3.1 需求概述
+- 当玩家处于中毒状态时，HUD 上的红心变为绿色
+- 中毒结束后恢复红色
+
+### 3.2 现有系统分析
+
+**HUD (`scripts/ui/hud.gd`)**
+- `heart_nodes: Array` 存储所有心形图标
+- `update_health()` 方法更新心形显示
+- 使用纹理切换（full/half/empty）
+
+**StatusEffectManager**
+- `effect_applied` 信号 - 效果应用时触发
+- `effect_removed` 信号 - 效果移除时触发
+- `has_effect(type)` 方法 - 检查是否有特定效果
+
+**Player**
+- 已连接 StatusEffectManager 信号
+- `_on_status_effect_applied/removed` 处理视觉效果
+
+### 3.3 详细设计
+
+**修改文件:**
+- `scripts/ui/hud.gd`
+- `scripts/game.gd`
+
+**HUD 新增属性:**
+```gdscript
+var _is_poisoned: bool = false
+const POISON_HEART_COLOR = Color(0.3, 0.8, 0.3)  # 绿色
+const NORMAL_HEART_COLOR = Color.WHITE           # 正常（无调色）
+```
+
+**HUD 新增方法:**
+```gdscript
+func set_poisoned(poisoned: bool) -> void:
+    if _is_poisoned == poisoned:
+        return
+
+    _is_poisoned = poisoned
+    _update_heart_colors()
+
+func _update_heart_colors() -> void:
+    var target_color = POISON_HEART_COLOR if _is_poisoned else NORMAL_HEART_COLOR
+
+    for heart in heart_nodes:
+        # 使用 tween 平滑过渡颜色
+        var tween = create_tween()
+        tween.tween_property(heart, "modulate", target_color, 0.3)
+```
+
+**Game.gd 修改:**
+```gdscript
+func _ready():
+    # ... existing code ...
+
+    # 连接玩家状态效果信号到 HUD
+    if player and hud:
+        var status_manager = player.get_node_or_null("StatusEffectManager")
+        if status_manager:
+            status_manager.effect_applied.connect(_on_player_effect_applied)
+            status_manager.effect_removed.connect(_on_player_effect_removed)
+
+func _on_player_effect_applied(effect) -> void:
+    var StatusEffectClass = load("res://scripts/components/status_effect.gd")
+    if effect.type == StatusEffectClass.Type.POISON:
+        if hud:
+            hud.set_poisoned(true)
+
+func _on_player_effect_removed(effect) -> void:
+    var StatusEffectClass = load("res://scripts/components/status_effect.gd")
+    if effect.type == StatusEffectClass.Type.POISON:
+        if hud:
+            hud.set_poisoned(false)
+```
+
+**可选增强: 脉动效果**
+```gdscript
+func _update_heart_colors() -> void:
+    var target_color = POISON_HEART_COLOR if _is_poisoned else NORMAL_HEART_COLOR
+
+    for heart in heart_nodes:
+        var tween = create_tween()
+        tween.tween_property(heart, "modulate", target_color, 0.3)
+
+    if _is_poisoned:
+        _start_poison_pulse()
+    else:
+        _stop_poison_pulse()
+
+var _poison_pulse_tween: Tween = null
+
+func _start_poison_pulse() -> void:
+    if _poison_pulse_tween:
+        _poison_pulse_tween.kill()
+
+    _poison_pulse_tween = create_tween()
+    _poison_pulse_tween.set_loops()  # 无限循环
+
+    var bright_green = Color(0.4, 1.0, 0.4)
+    var dark_green = Color(0.2, 0.6, 0.2)
+
+    for heart in heart_nodes:
+        _poison_pulse_tween.tween_property(heart, "modulate", bright_green, 0.5)
+        _poison_pulse_tween.tween_property(heart, "modulate", dark_green, 0.5)
+
+func _stop_poison_pulse() -> void:
+    if _poison_pulse_tween:
+        _poison_pulse_tween.kill()
+        _poison_pulse_tween = null
+```
+
+---
+
+## Implementation Order (实施顺序)
+
+### Phase 1: 基础夜间机制
+1. 连接 `day_night_cycle` 到 `wave_manager`（激活已有每波数量翻倍）
+2. 修改 `spawner.gd` 添加夜间频率翻倍（间隔减半）
+3. 修改 `spawner.gd` 添加夜间最大怪物数翻倍
+4. 在 `game.gd` 中连接 `night_started`/`day_started` 信号
+
+### Phase 2: 火把系统
+1. 创建 `TorchManager` 系统
+2. 添加火把升级定义
+3. 创建火把图标资源
+4. 修改 `DayNightCycle` 支持火把亮度
+5. 修改 `Spawner` 支持火把减速
+6. 添加本地化文本
+
+### Phase 3: Enderman 躲箭
+1. 给 `PlayerArrow` 和 `CrossbowBolt` 添加 group
+2. 修改 `enderman.tscn` 添加感知区域
+3. 修改 `enderman.gd` 添加躲避逻辑
+
+### Phase 4: 中毒绿心
+1. 修改 `hud.gd` 添加心形变色逻辑
+2. 修改 `game.gd` 连接状态效果信号
+
+---
+
+## Testing Checklist (测试清单)
+
+### 夜间机制
+- [ ] 夜晚每波刷怪数量是白天的2倍
+- [ ] 夜晚刷怪频率是白天的2倍（间隔减半）
+- [ ] 夜晚最大怪物数上限是白天的2倍
+- [ ] 白天恢复正常刷怪（数量、频率、上限都恢复）
+- [ ] 波次切换时正确保持夜间加成
+
+### 火把系统 (迷雾圈方案)
+- [x] 火把升级在第一个夜晚后出现
+- [x] 火把作为武器显示在玩家左侧
+- [x] 等级0: 小范围可见，渐变黑暗
+- [x] 等级1-3: 圈内完全清晰，无夜间tint
+- [x] 等级3: 接近全屏可见 (0.85)
+- [x] 本地化文本正确显示
+- [x] 火把不影响刷怪频率
+
+### Enderman 躲箭
+- [x] Enderman 能感知接近的箭矢 (120像素范围)
+- [x] 躲避成功率约80%
+- [x] 躲避方向为随机方向 (不再向玩家)
+- [x] 躲避后消耗传送冷却
+- [x] 弩箭更难躲避（速度快）
+
+### 中毒绿心
+- [x] 中毒时**剩余红心**变绿 (空心不变)
+- [x] 颜色过渡平滑
+- [x] 中毒结束后恢复红色
+- [x] 多次中毒不会导致显示异常

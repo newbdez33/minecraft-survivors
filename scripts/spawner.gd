@@ -5,10 +5,22 @@ class_name MobSpawner
 signal enemy_spawned(enemy: Node2D)
 signal enemy_killed(xp_value: int)
 
-@export var spawn_interval: float = 2.0
-@export var max_enemies: int = 50
+## Base spawn interval (reduced from 2.0 for 60% more spawns)
+@export var spawn_interval: float = 1.25
+## Base max enemies (increased from 30 for 60% more capacity)
+@export var max_enemies: int = 48
 @export var spawn_radius_min: float = 400.0
 @export var spawn_radius_max: float = 600.0
+
+## Night modifiers
+@export var night_spawn_multiplier: float = 0.5  # Halve interval = double frequency
+@export var night_max_enemy_multiplier: float = 2.0  # Double max enemies at night
+
+## Day/night cycle reference
+var day_night_cycle: Node = null
+var _base_spawn_interval: float = 1.25
+var _base_max_enemies: int = 48
+var _is_night: bool = false
 
 # Enemy scenes
 var zombie_scene: PackedScene
@@ -158,13 +170,21 @@ func set_spawn_rate(interval: float) -> void:
 		spawn_timer.wait_time = interval
 
 func set_wave(wave: int) -> void:
-	# Increase difficulty based on wave
-	# Faster spawns: 2.0s → 1.5s → 1.0s → 0.8s
-	var new_interval = max(0.8, 2.0 - (wave - 1) * 0.15)
-	set_spawn_rate(new_interval)
+	# Increase difficulty based on wave (adjusted for 60% base increase)
+	# Faster spawns: 1.25s → 1.0s → 0.75s → 0.5s
+	var new_interval = max(0.5, 1.25 - (wave - 1) * 0.1)
+	_base_spawn_interval = new_interval
 
-	# More max enemies: 30 → 40 → 50 → 60...
-	max_enemies = 30 + (wave - 1) * 5
+	# More max enemies: 48 → 56 → 64 → 72... (increased from 30 + 5 per wave)
+	var new_max = 48 + (wave - 1) * 8
+	_base_max_enemies = new_max
+
+	# Apply values (with night modifier if applicable)
+	if _is_night:
+		_apply_night_modifier()
+	else:
+		set_spawn_rate(_base_spawn_interval)
+		max_enemies = _base_max_enemies
 
 	# Boost weights based on wave (in addition to time-based)
 	if wave >= 2:
@@ -177,3 +197,24 @@ func set_wave(wave: int) -> void:
 		enderman_weight = max(enderman_weight, 8.0)
 	if wave >= 6:
 		witch_weight = max(witch_weight, 5.0)
+
+## Called when night starts
+func _on_night_started() -> void:
+	_is_night = true
+	_apply_night_modifier()
+
+## Called when day starts
+func _on_day_started() -> void:
+	_is_night = false
+	_remove_night_modifier()
+
+## Apply night spawn modifiers (double frequency and max enemies)
+func _apply_night_modifier() -> void:
+	var night_interval = _base_spawn_interval * night_spawn_multiplier
+	set_spawn_rate(night_interval)
+	max_enemies = int(_base_max_enemies * night_max_enemy_multiplier)
+
+## Remove night modifiers (restore daytime values)
+func _remove_night_modifier() -> void:
+	set_spawn_rate(_base_spawn_interval)
+	max_enemies = _base_max_enemies
