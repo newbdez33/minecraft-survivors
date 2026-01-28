@@ -46,16 +46,32 @@ func cycle_language() -> void:
 	var next_idx = (idx + 1) % SUPPORTED_LOCALES.size()
 	set_locale(SUPPORTED_LOCALES[next_idx])
 
-## Load saved locale from config file
+## Load saved locale from config file, or detect from system
 func _load_saved_locale() -> void:
 	var config = ConfigFile.new()
 	if config.load(CONFIG_PATH) == OK:
-		var saved_locale = config.get_value("settings", "locale", "en")
+		var saved_locale = config.get_value("settings", "locale", "")
 		if saved_locale in SUPPORTED_LOCALES:
 			current_locale = saved_locale
-	
+			TranslationServer.set_locale(current_locale)
+			print("[LOCALIZATION] Loaded saved locale: " + current_locale)
+			return
+
+	# No saved locale, detect from system
+	current_locale = _detect_system_locale()
 	TranslationServer.set_locale(current_locale)
-	print("[LOCALIZATION] Loaded locale: " + current_locale)
+	print("[LOCALIZATION] Detected system locale: " + current_locale)
+
+## Detect locale from system settings
+func _detect_system_locale() -> String:
+	var system_locale = OS.get_locale()  # e.g., "en_US", "zh_CN", "ja_JP"
+	var lang_code = system_locale.split("_")[0]  # Extract "en", "zh", "ja"
+
+	if lang_code in SUPPORTED_LOCALES:
+		return lang_code
+
+	# Fallback to English
+	return "en"
 
 ## Save current locale to config file
 func _save_locale() -> void:
