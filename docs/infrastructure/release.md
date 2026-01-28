@@ -216,23 +216,21 @@ Presets configured for:
 
 | Asset | Path | Format | Notes |
 |-------|------|--------|-------|
-| Windows Icon | `assets/icon.ico` | ICO | 256x256 multi-resolution |
-| macOS Icon | `assets/icon.icns` | ICNS | 1024x1024 |
+| Project Icon | `assets/icon.png` | PNG | 256x256 (Godot project icon) |
+| Windows Icon | `assets/icon.ico` | ICO | 16/32/48/256 multi-resolution |
+| macOS Icon | `assets/icon.png` | PNG | 256x256 (Godot converts automatically) |
+| Web Favicon | `favicon.png` | PNG | 32x32 |
+| PWA Icons | `assets/icons/` | PNG | 144, 180, 512 sizes |
 
-### Create Icons
+### Generate Icons
 
-**Windows (.ico)**:
+All icons are generated from the source SVG using:
+
 ```bash
-convert icon.png -define icon:auto-resize=256,128,64,48,32,16 icon.ico
+python3 scripts/tools/generate_icons.py
 ```
 
-**macOS (.icns)**:
-```bash
-mkdir icon.iconset
-sips -z 16 16 icon.png --out icon.iconset/icon_16x16.png
-# ... (see full script in Godot docs)
-iconutil -c icns icon.iconset
-```
+This creates all required icon formats from `assets/ui/icon.svg`.
 
 ---
 
