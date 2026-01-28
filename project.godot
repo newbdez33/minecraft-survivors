@@ -14,6 +14,7 @@ config/name="Minecraft Survivors"
 config/description="A Vampire Survivors-like roguelike game with Minecraft theme - Play as Steve and survive waves of mobs!"
 run/main_scene="res://scenes/ui/splash_screen.tscn"
 config/features=PackedStringArray("4.5", "Forward Plus")
+config/icon="res://assets/icon.png"
 boot_splash/bg_color=Color(0.05, 0.05, 0.05, 1)
 boot_splash/show_image=false
 
