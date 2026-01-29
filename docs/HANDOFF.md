@@ -125,8 +125,14 @@ minecraft-survivors/
 │   └── visual/                # Visual test scenes
 ├── docs/
 │   ├── README.md              # Project overview
-│   ├── phase4_game_feel.md    # Phase 4 detailed plan
-│   ├── localization_plan.md   # i18n implementation
+│   ├── HANDOFF.md             # This file - development status
+│   ├── GAME_DATA.md           # Game data reference
+│   ├── ROADMAP.md             # Development roadmap
+│   ├── design/                # Feature design docs
+│   ├── phases/                # Development phase docs
+│   ├── testing/               # Test documentation
+│   ├── infrastructure/        # CI/CD and deployment
+│   ├── tutorials/             # Learning guides
 │   └── screenshots/           # Visual test captures
 └── assets/                    # Sprites, audio
 ```
@@ -175,7 +181,7 @@ cd minecraft-survivors
 ### 4. Next task
 Phase 5 IN PROGRESS - Game Enhancements.
 
-See [phase5_enhancements.md](./phase5_enhancements.md) for detailed plan.
+See [phase5_enhancements.md](./phases/phase5_enhancements.md) for detailed plan.
 
 **Phase 5 Features Completed:**
 - [x] **Poison System**: Witch potion causes DOT (damage over time)
@@ -219,7 +225,7 @@ See [phase5_enhancements.md](./phase5_enhancements.md) for detailed plan.
 - [ ] Boss enemies (Wither, Ender Dragon)
 
 **Infrastructure:**
-- [x] GitHub CI Release (Windows + macOS) - See [CI_RELEASE_PLAN.md](./CI_RELEASE_PLAN.md)
+- [x] GitHub CI Release (Windows + macOS) - See [infrastructure/release.md](./infrastructure/release.md)
   - `.github/workflows/release.yml` triggers on `v*` tags
   - Builds Windows (.exe) and macOS (.app) via chickensoft-games/setup-godot
   - Creates GitHub Release with zip files automatically

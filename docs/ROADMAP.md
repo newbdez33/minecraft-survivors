@@ -27,7 +27,7 @@
 | Arena System | Procedural tile-based arena |
 | Basic Assets | Player sprite, tiles |
 
-📄 Details: [phase1_core_foundation.md](./phase1_core_foundation.md)
+📄 Details: [phase1_core_foundation.md](./phases/phase1_core_foundation.md)
 
 ---
 
@@ -44,7 +44,7 @@
 | Health System | Player/enemy health |
 | XP Orbs | Experience collection |
 
-📄 Details: [phase2_combat_basics.md](./phase2_combat_basics.md)
+📄 Details: [phase2_combat_basics.md](./phases/phase2_combat_basics.md)
 
 ---
 
@@ -58,7 +58,7 @@
 | Enchantments | Sharpness, Protection, Swiftness, Knockback, Looting, Sweeping Edge |
 | HUD | Health bar, XP bar, level display |
 
-📄 Details: [phase3_progression_loop.md](./phase3_progression_loop.md)
+📄 Details: [phase3_progression_loop.md](./phases/phase3_progression_loop.md)
 
 ---
 
@@ -76,7 +76,7 @@
 | Enemy: Witch | Potion-throwing caster |
 | Poison System | DOT with visual effects |
 
-📄 Details: [phase4_game_feel.md](./phase4_game_feel.md)
+📄 Details: [phase4_game_feel.md](./phases/phase4_game_feel.md)
 
 ---
 
@@ -87,7 +87,7 @@
 
 | Feature | Description | Doc |
 |---------|-------------|-----|
-| Poison Stacking | Multiple poison effects stack | [FEATURE_DESIGN_NIGHT_MECHANICS.md](./FEATURE_DESIGN_NIGHT_MECHANICS.md) |
+| Poison Stacking | Multiple poison effects stack | [night_mechanics.md](./design/night_mechanics.md) |
 | Weapon Slots | 4-position weapon system | - |
 | Score System | High score tracking | - |
 | Combo System | Kill streak XP bonus | - |
@@ -99,10 +99,10 @@
 | Settings Panel | Volume, language, screen shake | - |
 | Lucky Drop | Rare item drops | - |
 | Health Pickups | Meat drops, Golden Apple spawns | [GAME_DATA.md](./GAME_DATA.md) |
-| Torch Weapon | Night visibility radius control | [FEATURE_DESIGN_NIGHT_MECHANICS.md](./FEATURE_DESIGN_NIGHT_MECHANICS.md) |
-| Fog of War | Circular night visibility | [FEATURE_DESIGN_NIGHT_MECHANICS.md](./FEATURE_DESIGN_NIGHT_MECHANICS.md) |
-| Enderman Dodge | Arrow dodge (random teleport) | [FEATURE_DESIGN_NIGHT_MECHANICS.md](./FEATURE_DESIGN_NIGHT_MECHANICS.md) |
-| Poison Hearts | Green hearts when poisoned | [FEATURE_DESIGN_NIGHT_MECHANICS.md](./FEATURE_DESIGN_NIGHT_MECHANICS.md) |
+| Torch Weapon | Night visibility radius control | [night_mechanics.md](./design/night_mechanics.md) |
+| Fog of War | Circular night visibility | [night_mechanics.md](./design/night_mechanics.md) |
+| Enderman Dodge | Arrow dodge (random teleport) | [night_mechanics.md](./design/night_mechanics.md) |
+| Poison Hearts | Green hearts when poisoned | [night_mechanics.md](./design/night_mechanics.md) |
 
 #### ⏳ Remaining Features
 
@@ -112,7 +112,7 @@
 | Boss Enemies | High | Wave bosses (Wither, Ender Dragon) |
 | Elite Monsters | High | Enhanced versions of all enemies |
 
-📄 Details: [phase5_enhancements.md](./phase5_enhancements.md)
+📄 Details: [phase5_enhancements.md](./phases/phase5_enhancements.md)
 
 ---
 
@@ -143,7 +143,7 @@
 | Emerald Pickup | Boss currency drop (30 emeralds) |
 | Totem Pickup | Rare drop (10% chance) |
 
-📄 Details: [BOSS_LIST.md](./BOSS_LIST.md)
+📄 Details: [boss_enemies.md](./design/boss_enemies.md)
 
 #### Elite Monster System
 
@@ -165,7 +165,7 @@
 - Wave 20+: 25%
 - Night bonus: +10%
 
-📄 Details: [ELITE_MONSTER_DESIGN.md](./ELITE_MONSTER_DESIGN.md)
+📄 Details: [elite_monsters.md](./design/elite_monsters.md)
 
 ---
 
@@ -182,7 +182,7 @@
 | Daily Challenge | Low | Daily missions |
 | Economy System | Low | Emeralds, meta progression |
 
-📄 Details: [backlog.md](./backlog.md)
+📄 Details: [backlog.md](./phases/backlog.md)
 
 ---
 
@@ -198,7 +198,7 @@
 | iOS | Low | Planned |
 | Steam | Very Low | Future |
 
-📄 Details: [backlog.md](./backlog.md)
+📄 Details: [backlog.md](./phases/backlog.md)
 
 ---
 
@@ -211,37 +211,43 @@
 | [CLAUDE.md](../CLAUDE.md) | AI Assistant Guide |
 | [HANDOFF.md](./HANDOFF.md) | Project Handoff Status |
 | [GAME_DATA.md](./GAME_DATA.md) | Complete Game Data Reference |
-| [TESTING.md](./TESTING.md) | Testing Guide |
 
-### Feature Design / 功能设计
+### Feature Design / 功能设计 (`design/`)
 
 | Document | Description |
 |----------|-------------|
-| [BOSS_LIST.md](./BOSS_LIST.md) | Boss enemies with JP/CN names |
-| [ELITE_MONSTER_DESIGN.md](./ELITE_MONSTER_DESIGN.md) | Elite monster system |
-| [FEATURE_DESIGN_NIGHT_MECHANICS.md](./FEATURE_DESIGN_NIGHT_MECHANICS.md) | Night fog, torch, Enderman dodge |
-| [upgrade_system.md](./upgrade_system.md) | Upgrade/enchantment system |
-| [localization_plan.md](./localization_plan.md) | Multi-language support |
+| [boss_enemies.md](./design/boss_enemies.md) | Boss enemies with JP/CN names |
+| [elite_monsters.md](./design/elite_monsters.md) | Elite monster system |
+| [night_mechanics.md](./design/night_mechanics.md) | Night fog, torch, Enderman dodge |
+| [upgrade_system.md](./design/upgrade_system.md) | Upgrade/enchantment system |
+| [localization.md](./design/localization.md) | Multi-language support |
+| [art_style.md](./design/art_style.md) | Art style guide |
 
-### Phase Documentation / 阶段文档
+### Phase Documentation / 阶段文档 (`phases/`)
 
 | Document | Phase |
 |----------|-------|
-| [phase1_core_foundation.md](./phase1_core_foundation.md) | Phase 1 |
-| [phase2_combat_basics.md](./phase2_combat_basics.md) | Phase 2 |
-| [phase3_progression_loop.md](./phase3_progression_loop.md) | Phase 3 |
-| [phase4_game_feel.md](./phase4_game_feel.md) | Phase 4 |
-| [phase5_enhancements.md](./phase5_enhancements.md) | Phase 5 |
-| [backlog.md](./backlog.md) | Future Plans |
+| [phase1_core_foundation.md](./phases/phase1_core_foundation.md) | Phase 1 |
+| [phase2_combat_basics.md](./phases/phase2_combat_basics.md) | Phase 2 |
+| [phase3_progression_loop.md](./phases/phase3_progression_loop.md) | Phase 3 |
+| [phase4_game_feel.md](./phases/phase4_game_feel.md) | Phase 4 |
+| [phase5_enhancements.md](./phases/phase5_enhancements.md) | Phase 5 |
+| [backlog.md](./phases/backlog.md) | Future Plans |
 
-### Infrastructure / 基础设施
+### Testing / 测试 (`testing/`)
 
 | Document | Description |
 |----------|-------------|
-| [CI_RELEASE_PLAN.md](./CI_RELEASE_PLAN.md) | CI/CD Release Pipeline |
-| [DEPLOY_WEB.md](./DEPLOY_WEB.md) | Web Deployment Guide |
-| [ART_STYLE.md](./ART_STYLE.md) | Art Style Guide |
-| [art_asset_plan.md](./art_asset_plan.md) | Asset Planning |
+| [guide.md](./testing/guide.md) | Testing guide and checklist |
+| [phase5_test_plan.md](./testing/phase5_test_plan.md) | Phase 5 test cases |
+
+### Infrastructure / 基础设施 (`infrastructure/`)
+
+| Document | Description |
+|----------|-------------|
+| [release.md](./infrastructure/release.md) | CI/CD Release Pipeline |
+| [web_deploy.md](./infrastructure/web_deploy.md) | Web Deployment Guide |
+| [assets.md](./infrastructure/assets.md) | Asset Planning |
 
 ---
 
@@ -260,7 +266,7 @@ Phase 5: Game Enhancements  - 361 tests
 Phase 6: Boss System        - 63 tests (NEW - all passing)
 ```
 
-📄 Details: [test_plan.md](./test_plan.md)
+📄 Details: [testing/guide.md](./testing/guide.md)
 
 ---
 
