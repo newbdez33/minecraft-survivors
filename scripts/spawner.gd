@@ -218,3 +218,24 @@ func _apply_night_modifier() -> void:
 func _remove_night_modifier() -> void:
 	set_spawn_rate(_base_spawn_interval)
 	max_enemies = _base_max_enemies
+
+
+## Pause spawning (used during boss fights)
+var _spawn_paused: bool = false
+
+func pause_spawning() -> void:
+	_spawn_paused = true
+	if spawn_timer:
+		spawn_timer.stop()
+
+
+## Resume spawning (after boss is defeated)
+func resume_spawning() -> void:
+	_spawn_paused = false
+	if spawn_timer:
+		spawn_timer.start()
+
+
+## Check if spawning is paused
+func is_spawning_paused() -> bool:
+	return _spawn_paused

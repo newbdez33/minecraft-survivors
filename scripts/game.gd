@@ -18,8 +18,11 @@ extends Node2D
 @onready var pause_menu: CanvasLayer = $PauseMenu
 @onready var torch_manager: Node = $TorchManager
 @onready var fog_of_war: ColorRect = $FogOfWarLayer/FogOfWar
+@onready var boss_health_bar: CanvasLayer = $BossHealthBar
 
+var evoker_scene: PackedScene = preload("res://scenes/enemies/evoker.tscn")
 var _sword: Node = null
+var _current_boss: Node = null
 var _total_time: float = 0.0
 var _is_paused: bool = false
 var _fog_material: ShaderMaterial = null
@@ -217,6 +220,68 @@ func _on_wave_started(wave_number: int) -> void:
 	# Track highest wave in game stats
 	if game_stats:
 		game_stats.set_wave(wave_number)
+
+	# Check for boss wave
+	if wave_manager and wave_manager.is_boss_wave(wave_number):
+		_spawn_boss(wave_number)
+
+
+## Spawn a boss for boss waves
+func _spawn_boss(wave_number: int) -> void:
+	if not player:
+		return
+
+	var boss_type = wave_manager.get_boss_for_wave(wave_number)
+	if boss_type.is_empty():
+		return
+
+	# Get boss scene based on type
+	var boss_scene: PackedScene = null
+	var boss_name: String = ""
+	match boss_type:
+		"evoker":
+			boss_scene = evoker_scene
+			boss_name = tr("BOSS_EVOKER") if TranslationServer.get_locale() else "Evoker"
+
+	if not boss_scene:
+		return
+
+	# Pause normal spawning during boss fight
+	if spawner:
+		spawner.pause_spawning()
+
+	# Spawn boss at edge of screen
+	var boss = boss_scene.instantiate()
+	var spawn_angle = randf() * TAU
+	var spawn_distance = 500.0
+	boss.global_position = player.global_position + Vector2(cos(spawn_angle), sin(spawn_angle)) * spawn_distance
+
+	# Connect boss signals
+	if boss.has_signal("died"):
+		boss.died.connect(_on_boss_died)
+
+	# Add boss to scene
+	add_child(boss)
+	_current_boss = boss
+
+	# Show boss health bar
+	if boss_health_bar:
+		boss_health_bar.set_boss(boss, boss_name)
+		boss_health_bar.boss_defeated.connect(_on_boss_defeated, CONNECT_ONE_SHOT)
+
+
+## Called when boss dies
+func _on_boss_died(_xp: int) -> void:
+	pass  # Health bar handles the UI, _on_boss_defeated handles spawner
+
+
+## Called when boss health bar finishes (after death animation)
+func _on_boss_defeated() -> void:
+	_current_boss = null
+	# Resume normal spawning
+	if spawner:
+		spawner.resume_spawning()
+
 
 func _on_torch_level_changed(_level: int) -> void:
 	# Update fog visibility radius when torch is upgraded

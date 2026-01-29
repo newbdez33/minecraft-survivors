@@ -20,6 +20,8 @@ const RUN_PHASE3_TESTS: bool = true
 const RUN_PHASE4_TESTS: bool = true
 # Set to true to run Phase 5 tests (TDD - will fail until implemented)
 const RUN_PHASE5_TESTS: bool = true
+# Set to true to run Phase 6 tests (TDD - will fail until implemented)
+const RUN_PHASE6_TESTS: bool = true
 
 func _init() -> void:
 	print("\n" + "=".repeat(60))
@@ -117,6 +119,16 @@ func _init() -> void:
 		_run_test_suite("Enderman Arrow Dodge Tests", _test_enderman_arrow_dodge)
 		_run_test_suite("Elite Enemy Spawning Tests", _test_elite_enemy_spawning)
 		_run_test_suite("Upgrade Artwork Tests", _test_upgrade_artwork)
+
+	# Phase 6 Tests (TDD - write first, implement later)
+	if RUN_PHASE6_TESTS:
+		print("[PHASE 6: Boss System - TDD]")
+		print("")
+		_run_test_suite("Evoker Boss Tests", _test_evoker_boss)
+		_run_test_suite("Evoker Fang Tests", _test_evoker_fang)
+		_run_test_suite("Vex Tests", _test_vex)
+		_run_test_suite("Boss Battle System Tests", _test_boss_battle_system)
+		_run_test_suite("Boss Drop System Tests", _test_boss_drop_system)
 
 	# Print summary
 	_print_summary()
@@ -2146,11 +2158,13 @@ func _test_sword_tier_evolution() -> void:
 	var scene = load("res://scenes/weapons/wood_sword.tscn")
 	_assert_not_null(scene, "T5.6.2: Wood Sword scene loads")
 
-	if scene:
+	if scene and script:
 		var sword = scene.instantiate()
+		# Get Tier enum from script
+		var Tier = script.Tier
 
 		# T5.6.3: Sword starts at Wood tier
-		_assert_equal(sword.current_tier, SwordBase.Tier.WOOD, "T5.6.3: Sword starts at WOOD tier")
+		_assert_equal(sword.current_tier, Tier.WOOD, "T5.6.3: Sword starts at WOOD tier")
 
 		# T5.6.4: Wood sword has correct damage
 		_assert_equal(sword.damage, 5, "T5.6.4: Wood sword damage is 5")
@@ -2171,7 +2185,7 @@ func _test_sword_tier_evolution() -> void:
 		# T5.6.9: Evolve to Stone at 50 kills
 		for i in range(49):
 			sword.on_enemy_killed()
-		_assert_equal(sword.current_tier, SwordBase.Tier.STONE, "T5.6.9: Evolves to STONE at 50 kills")
+		_assert_equal(sword.current_tier, Tier.STONE, "T5.6.9: Evolves to STONE at 50 kills")
 
 		# T5.6.10: Stone sword has correct damage
 		_assert_equal(sword.damage, 8, "T5.6.10: Stone sword damage is 8")
@@ -2189,7 +2203,7 @@ func _test_sword_tier_evolution() -> void:
 		_assert_equal(sword.get_kills_to_next_tier(), 150, "T5.6.14: Kills to next tier is 150")
 
 		# T5.6.15: set_tier works
-		sword.set_tier(SwordBase.Tier.DIAMOND)
+		sword.set_tier(Tier.DIAMOND)
 		_assert_equal(sword.damage, 15, "T5.6.15: Diamond sword damage is 15")
 		_assert_equal(sword.attack_range, 45.0, "T5.6.16: Diamond sword range is 45")
 
@@ -2208,21 +2222,28 @@ func _test_torch_visibility() -> void:
 	var torch_script = load("res://scripts/systems/torch_manager.gd")
 	_assert_not_null(torch_script, "T5.7.1: TorchManager script loads")
 
+	if not torch_script:
+		_assert_true(false, "T5.7.2: TorchManager has BASE_VISIBILITY_RADIUS")
+		_assert_true(false, "T5.7.3: BASE_VISIBILITY_RADIUS is 0.25")
+		_assert_true(false, "T5.7.4: TorchManager has TORCH_RADIUS_BONUS")
+		_assert_true(false, "T5.7.5: TORCH_RADIUS_BONUS values correct")
+		return
+
 	# T5.7.2: TorchManager has BASE_VISIBILITY_RADIUS constant
-	_assert_true("BASE_VISIBILITY_RADIUS" in TorchManager, "T5.7.2: TorchManager has BASE_VISIBILITY_RADIUS")
+	_assert_true("BASE_VISIBILITY_RADIUS" in torch_script, "T5.7.2: TorchManager has BASE_VISIBILITY_RADIUS")
 
 	# T5.7.3: BASE_VISIBILITY_RADIUS is 0.25 (increased for better visibility)
-	_assert_equal(TorchManager.BASE_VISIBILITY_RADIUS, 0.25, "T5.7.3: BASE_VISIBILITY_RADIUS is 0.25")
+	_assert_equal(torch_script.BASE_VISIBILITY_RADIUS, 0.25, "T5.7.3: BASE_VISIBILITY_RADIUS is 0.25")
 
 	# T5.7.4: TorchManager has TORCH_RADIUS_BONUS array
-	_assert_true("TORCH_RADIUS_BONUS" in TorchManager, "T5.7.4: TorchManager has TORCH_RADIUS_BONUS")
+	_assert_true("TORCH_RADIUS_BONUS" in torch_script, "T5.7.4: TorchManager has TORCH_RADIUS_BONUS")
 
 	# T5.7.5: TORCH_RADIUS_BONUS has correct values
 	var expected_bonus = [0.0, 0.15, 0.30, 0.60]
-	_assert_equal(TorchManager.TORCH_RADIUS_BONUS, expected_bonus, "T5.7.5: TORCH_RADIUS_BONUS values correct")
+	_assert_equal(torch_script.TORCH_RADIUS_BONUS, expected_bonus, "T5.7.5: TORCH_RADIUS_BONUS values correct")
 
 	# Create instance for method tests
-	var torch = TorchManager.new()
+	var torch = torch_script.new()
 
 	# T5.7.6: get_visibility_radius method exists
 	_assert_true(torch.has_method("get_visibility_radius"), "T5.7.6: get_visibility_radius method exists")
@@ -2484,8 +2505,12 @@ func _test_upgrade_artwork() -> void:
 	var manager_script = load("res://scripts/systems/upgrade_manager.gd")
 	_assert_not_null(manager_script, "T5.10.1: UpgradeManager script loads")
 
+	if not manager_script:
+		_assert_true(false, "T5.10.2: UPGRADE_DEFS exists")
+		return
+
 	# T5.10.2: UPGRADE_DEFS exists
-	_assert_true("UPGRADE_DEFS" in UpgradeManager, "T5.10.2: UPGRADE_DEFS exists")
+	_assert_true("UPGRADE_DEFS" in manager_script, "T5.10.2: UPGRADE_DEFS exists")
 
 	# Test each upgrade icon exists
 	var upgrade_icons = {
@@ -2524,32 +2549,32 @@ func _test_upgrade_artwork() -> void:
 		test_num += 1
 
 	# Test UPGRADE_DEFS icon paths match actual files
-	for id in UpgradeManager.UPGRADE_DEFS:
-		var def = UpgradeManager.UPGRADE_DEFS[id]
+	for id in manager_script.UPGRADE_DEFS:
+		var def = manager_script.UPGRADE_DEFS[id]
 		if def.has("icon"):
 			var icon = load(def.icon)
 			_assert_not_null(icon, "T5.10.%d: UPGRADE_DEFS[%s] icon path valid" % [test_num, id])
 			test_num += 1
 
 	# Test sword icon matches default in UPGRADE_DEFS
-	var sword_def = UpgradeManager.UPGRADE_DEFS.get("sword", {})
+	var sword_def = manager_script.UPGRADE_DEFS.get("sword", {})
 	_assert_equal(sword_def.get("icon", ""), "res://assets/weapons/wood_sword.svg", "T5.10.%d: Sword default icon is wood_sword" % test_num)
 	test_num += 1
 
 	# Test bow icon matches default in UPGRADE_DEFS
-	var bow_def = UpgradeManager.UPGRADE_DEFS.get("bow", {})
+	var bow_def = manager_script.UPGRADE_DEFS.get("bow", {})
 	_assert_equal(bow_def.get("icon", ""), "res://assets/weapons/bow.svg", "T5.10.%d: Bow default icon is bow" % test_num)
 	test_num += 1
 
 	# Test UpgradeManager methods exist
-	var manager = UpgradeManager.new()
+	var manager = manager_script.new()
 	_assert_true(manager.has_method("get_weapon_icon"), "T5.10.%d: get_weapon_icon method exists" % (test_num + 1))
 	_assert_true(manager.has_method("get_next_evolution_icon"), "T5.10.%d: get_next_evolution_icon method exists" % (test_num + 2))
 	manager.free()
 	test_num += 3
 
 	# Test torch is in WEAPON_UPGRADE_IDS
-	_assert_true("torch" in UpgradeManager.WEAPON_UPGRADE_IDS, "T5.10.%d: Torch in WEAPON_UPGRADE_IDS" % test_num)
+	_assert_true("torch" in manager_script.WEAPON_UPGRADE_IDS, "T5.10.%d: Torch in WEAPON_UPGRADE_IDS" % test_num)
 	test_num += 1
 
 	# Test torch weapon scene exists
@@ -2578,3 +2603,319 @@ func _test_upgrade_artwork() -> void:
 		_assert_not_null(sprite, "T5.10.%d: Torch has Sprite2D" % test_num)
 
 		torch.free()
+
+
+# =============================================================================
+# PHASE 6: BOSS SYSTEM TESTS
+# =============================================================================
+
+# =============================================================================
+# PHASE 6 STEP 1: EVOKER BOSS TESTS (T6.1)
+# =============================================================================
+
+func _test_evoker_boss() -> void:
+	# T6.1.1: Evoker script loads
+	var evoker_script = load("res://scripts/enemies/evoker.gd")
+	_assert_not_null(evoker_script, "T6.1.1: Evoker script loads")
+
+	# T6.1.2: Evoker scene loads
+	var evoker_scene = load("res://scenes/enemies/evoker.tscn")
+	_assert_not_null(evoker_scene, "T6.1.2: Evoker scene loads")
+
+	if evoker_scene:
+		var evoker = evoker_scene.instantiate()
+
+		# T6.1.3: Evoker has health property (100)
+		_assert_true("health" in evoker, "T6.1.3: Evoker has health property")
+		if "health" in evoker:
+			_assert_equal(evoker.health, 100, "T6.1.3a: Evoker health is 100")
+
+		# T6.1.4: Evoker has speed property (40)
+		_assert_true("speed" in evoker, "T6.1.4: Evoker has speed property")
+		if "speed" in evoker:
+			_assert_equal(evoker.speed, 40, "T6.1.4a: Evoker speed is 40")
+
+		# T6.1.5: Evoker has contact_damage property (5)
+		_assert_true("contact_damage" in evoker, "T6.1.5: Evoker has contact_damage property")
+		if "contact_damage" in evoker:
+			_assert_equal(evoker.contact_damage, 5, "T6.1.5a: Evoker contact_damage is 5")
+
+		# T6.1.6: Evoker has fang_cooldown property (3.0)
+		_assert_true("fang_cooldown" in evoker, "T6.1.6: Evoker has fang_cooldown property")
+		if "fang_cooldown" in evoker:
+			_assert_equal(evoker.fang_cooldown, 3.0, "T6.1.6a: Evoker fang_cooldown is 3.0")
+
+		# T6.1.7: Evoker has summon_cooldown property (8.0)
+		_assert_true("summon_cooldown" in evoker, "T6.1.7: Evoker has summon_cooldown property")
+		if "summon_cooldown" in evoker:
+			_assert_equal(evoker.summon_cooldown, 8.0, "T6.1.7a: Evoker summon_cooldown is 8.0")
+
+		# T6.1.8: Evoker has cast_fang_attack method
+		_assert_true(evoker.has_method("cast_fang_attack"), "T6.1.8: Evoker has cast_fang_attack method")
+
+		# T6.1.9: Evoker has summon_vex method
+		_assert_true(evoker.has_method("summon_vex"), "T6.1.9: Evoker has summon_vex method")
+
+		# T6.1.10: Evoker has xp_value property (50)
+		_assert_true("xp_value" in evoker, "T6.1.10: Evoker has xp_value property")
+		if "xp_value" in evoker:
+			_assert_equal(evoker.xp_value, 50, "T6.1.10a: Evoker xp_value is 50")
+
+		# T6.1.11: Evoker has emerald_drop property (30)
+		_assert_true("emerald_drop" in evoker, "T6.1.11: Evoker has emerald_drop property")
+		if "emerald_drop" in evoker:
+			_assert_equal(evoker.emerald_drop, 30, "T6.1.11a: Evoker emerald_drop is 30")
+
+		# T6.1.12: Evoker is CharacterBody2D
+		_assert_true(evoker is CharacterBody2D, "T6.1.12: Evoker is CharacterBody2D")
+
+		# T6.1.13: Evoker knockback_immune
+		_assert_true("knockback_immune" in evoker, "T6.1.13: Evoker has knockback_immune property")
+		if "knockback_immune" in evoker:
+			_assert_true(evoker.knockback_immune, "T6.1.13a: Evoker knockback_immune is true")
+
+		# T6.1.14: Evoker poison_immune
+		_assert_true("poison_immune" in evoker, "T6.1.14: Evoker has poison_immune property")
+		if "poison_immune" in evoker:
+			_assert_true(evoker.poison_immune, "T6.1.14a: Evoker poison_immune is true")
+
+		# T6.1.15: Evoker damage_reduction (0.2)
+		_assert_true("damage_reduction" in evoker, "T6.1.15: Evoker has damage_reduction property")
+		if "damage_reduction" in evoker:
+			_assert_equal(evoker.damage_reduction, 0.2, "T6.1.15a: Evoker damage_reduction is 0.2")
+
+		evoker.free()
+	else:
+		# Script/scene doesn't exist yet - fail remaining tests
+		_assert_true(false, "T6.1.3: Evoker has health property")
+		_assert_true(false, "T6.1.3a: Evoker health is 100")
+		_assert_true(false, "T6.1.4: Evoker has speed property")
+		_assert_true(false, "T6.1.4a: Evoker speed is 40")
+		_assert_true(false, "T6.1.5: Evoker has contact_damage property")
+		_assert_true(false, "T6.1.5a: Evoker contact_damage is 5")
+		_assert_true(false, "T6.1.6: Evoker has fang_cooldown property")
+		_assert_true(false, "T6.1.6a: Evoker fang_cooldown is 3.0")
+		_assert_true(false, "T6.1.7: Evoker has summon_cooldown property")
+		_assert_true(false, "T6.1.7a: Evoker summon_cooldown is 8.0")
+		_assert_true(false, "T6.1.8: Evoker has cast_fang_attack method")
+		_assert_true(false, "T6.1.9: Evoker has summon_vex method")
+		_assert_true(false, "T6.1.10: Evoker has xp_value property")
+		_assert_true(false, "T6.1.10a: Evoker xp_value is 50")
+		_assert_true(false, "T6.1.11: Evoker has emerald_drop property")
+		_assert_true(false, "T6.1.11a: Evoker emerald_drop is 30")
+		_assert_true(false, "T6.1.12: Evoker is CharacterBody2D")
+		_assert_true(false, "T6.1.13: Evoker has knockback_immune property")
+		_assert_true(false, "T6.1.13a: Evoker knockback_immune is true")
+		_assert_true(false, "T6.1.14: Evoker has poison_immune property")
+		_assert_true(false, "T6.1.14a: Evoker poison_immune is true")
+		_assert_true(false, "T6.1.15: Evoker has damage_reduction property")
+		_assert_true(false, "T6.1.15a: Evoker damage_reduction is 0.2")
+
+
+# =============================================================================
+# PHASE 6 STEP 2: EVOKER FANG TESTS (T6.2)
+# =============================================================================
+
+func _test_evoker_fang() -> void:
+	# T6.2.1: EvokerFang script loads
+	var fang_script = load("res://scripts/effects/evoker_fang.gd")
+	_assert_not_null(fang_script, "T6.2.1: EvokerFang script loads")
+
+	# T6.2.2: EvokerFang scene loads
+	var fang_scene = load("res://scenes/effects/evoker_fang.tscn")
+	_assert_not_null(fang_scene, "T6.2.2: EvokerFang scene loads")
+
+	if fang_scene:
+		var fang = fang_scene.instantiate()
+
+		# T6.2.3: EvokerFang has damage property (15)
+		_assert_true("damage" in fang, "T6.2.3: EvokerFang has damage property")
+		if "damage" in fang:
+			_assert_equal(fang.damage, 15, "T6.2.3a: EvokerFang damage is 15")
+
+		# T6.2.4: EvokerFang has lifetime property (0.5)
+		_assert_true("lifetime" in fang, "T6.2.4: EvokerFang has lifetime property")
+		if "lifetime" in fang:
+			_assert_equal(fang.lifetime, 0.5, "T6.2.4a: EvokerFang lifetime is 0.5")
+
+		# T6.2.5: EvokerFang is Area2D
+		_assert_true(fang is Area2D, "T6.2.5: EvokerFang is Area2D")
+
+		# T6.2.6: EvokerFang has warning_duration (0.5)
+		_assert_true("warning_duration" in fang, "T6.2.6: EvokerFang has warning_duration property")
+		if "warning_duration" in fang:
+			_assert_equal(fang.warning_duration, 0.5, "T6.2.6a: EvokerFang warning_duration is 0.5")
+
+		fang.free()
+	else:
+		# Script/scene doesn't exist yet - fail remaining tests
+		_assert_true(false, "T6.2.3: EvokerFang has damage property")
+		_assert_true(false, "T6.2.3a: EvokerFang damage is 15")
+		_assert_true(false, "T6.2.4: EvokerFang has lifetime property")
+		_assert_true(false, "T6.2.4a: EvokerFang lifetime is 0.5")
+		_assert_true(false, "T6.2.5: EvokerFang is Area2D")
+		_assert_true(false, "T6.2.6: EvokerFang has warning_duration property")
+		_assert_true(false, "T6.2.6a: EvokerFang warning_duration is 0.5")
+
+
+# =============================================================================
+# PHASE 6 STEP 3: VEX TESTS (T6.3)
+# =============================================================================
+
+func _test_vex() -> void:
+	# T6.3.1: Vex script loads
+	var vex_script = load("res://scripts/enemies/vex.gd")
+	_assert_not_null(vex_script, "T6.3.1: Vex script loads")
+
+	# T6.3.2: Vex scene loads
+	var vex_scene = load("res://scenes/enemies/vex.tscn")
+	_assert_not_null(vex_scene, "T6.3.2: Vex scene loads")
+
+	if vex_scene:
+		var vex = vex_scene.instantiate()
+
+		# T6.3.3: Vex has health property (10)
+		_assert_true("health" in vex, "T6.3.3: Vex has health property")
+		if "health" in vex:
+			_assert_equal(vex.health, 10, "T6.3.3a: Vex health is 10")
+
+		# T6.3.4: Vex has damage property (8)
+		_assert_true("damage" in vex, "T6.3.4: Vex has damage property")
+		if "damage" in vex:
+			_assert_equal(vex.damage, 8, "T6.3.4a: Vex damage is 8")
+
+		# T6.3.5: Vex has speed property (120)
+		_assert_true("speed" in vex, "T6.3.5: Vex has speed property")
+		if "speed" in vex:
+			_assert_equal(vex.speed, 120, "T6.3.5a: Vex speed is 120")
+
+		# T6.3.6: Vex has xp_value property (3)
+		_assert_true("xp_value" in vex, "T6.3.6: Vex has xp_value property")
+		if "xp_value" in vex:
+			_assert_equal(vex.xp_value, 3, "T6.3.6a: Vex xp_value is 3")
+
+		# T6.3.7: Vex has lifetime property (15.0)
+		_assert_true("lifetime" in vex, "T6.3.7: Vex has lifetime property")
+		if "lifetime" in vex:
+			_assert_equal(vex.lifetime, 15.0, "T6.3.7a: Vex lifetime is 15.0")
+
+		# T6.3.8: Vex is CharacterBody2D
+		_assert_true(vex is CharacterBody2D, "T6.3.8: Vex is CharacterBody2D")
+
+		# T6.3.9: Vex has can_pass_walls property (true)
+		_assert_true("can_pass_walls" in vex, "T6.3.9: Vex has can_pass_walls property")
+		if "can_pass_walls" in vex:
+			_assert_true(vex.can_pass_walls, "T6.3.9a: Vex can_pass_walls is true")
+
+		# T6.3.10: Vex has apply_knockback method
+		_assert_true(vex.has_method("apply_knockback"), "T6.3.10: Vex has apply_knockback method")
+
+		vex.free()
+	else:
+		# Script/scene doesn't exist yet - fail remaining tests
+		_assert_true(false, "T6.3.3: Vex has health property")
+		_assert_true(false, "T6.3.3a: Vex health is 10")
+		_assert_true(false, "T6.3.4: Vex has damage property")
+		_assert_true(false, "T6.3.4a: Vex damage is 8")
+		_assert_true(false, "T6.3.5: Vex has speed property")
+		_assert_true(false, "T6.3.5a: Vex speed is 120")
+		_assert_true(false, "T6.3.6: Vex has xp_value property")
+		_assert_true(false, "T6.3.6a: Vex xp_value is 3")
+		_assert_true(false, "T6.3.7: Vex has lifetime property")
+		_assert_true(false, "T6.3.7a: Vex lifetime is 15.0")
+		_assert_true(false, "T6.3.8: Vex is CharacterBody2D")
+		_assert_true(false, "T6.3.9: Vex has can_pass_walls property")
+		_assert_true(false, "T6.3.9a: Vex can_pass_walls is true")
+		_assert_true(false, "T6.3.10: Vex has apply_knockback method")
+
+
+# =============================================================================
+# PHASE 6 STEP 4: BOSS BATTLE SYSTEM TESTS (T6.4)
+# =============================================================================
+
+func _test_boss_battle_system() -> void:
+	# T6.4.1: WaveManager has is_boss_wave method
+	var wave_script = load("res://scripts/systems/wave_manager.gd")
+	_assert_not_null(wave_script, "T6.4.1a: WaveManager script loads")
+
+	if wave_script:
+		var wave_manager = wave_script.new()
+
+		_assert_true(wave_manager.has_method("is_boss_wave"), "T6.4.1: WaveManager has is_boss_wave method")
+
+		# T6.4.2: WaveManager.is_boss_wave(5) returns true
+		if wave_manager.has_method("is_boss_wave"):
+			_assert_true(wave_manager.is_boss_wave(5), "T6.4.2: WaveManager.is_boss_wave(5) returns true")
+		else:
+			_assert_true(false, "T6.4.2: WaveManager.is_boss_wave(5) returns true")
+
+		wave_manager.free()
+	else:
+		_assert_true(false, "T6.4.1: WaveManager has is_boss_wave method")
+		_assert_true(false, "T6.4.2: WaveManager.is_boss_wave(5) returns true")
+
+	# T6.4.3: BossHealthBar script loads
+	var bar_script = load("res://scripts/ui/boss_health_bar.gd")
+	_assert_not_null(bar_script, "T6.4.3: BossHealthBar script loads")
+
+	# T6.4.4-5: BossHealthBar methods
+	var bar_scene = load("res://scenes/ui/boss_health_bar.tscn")
+	if bar_scene:
+		var bar = bar_scene.instantiate()
+		_assert_true(bar.has_method("set_boss"), "T6.4.4: BossHealthBar has set_boss method")
+		_assert_true(bar.has_method("update_health"), "T6.4.5: BossHealthBar has update_health method")
+		bar.free()
+	else:
+		_assert_true(false, "T6.4.4: BossHealthBar has set_boss method")
+		_assert_true(false, "T6.4.5: BossHealthBar has update_health method")
+
+	# T6.4.6: Spawner has pause_spawning method
+	var spawner_script = load("res://scripts/spawner.gd")
+	if spawner_script:
+		var spawner = spawner_script.new()
+		_assert_true(spawner.has_method("pause_spawning"), "T6.4.6: Spawner has pause_spawning method")
+		spawner.free()
+	else:
+		_assert_true(false, "T6.4.6: Spawner has pause_spawning method")
+
+
+# =============================================================================
+# PHASE 6 STEP 5: BOSS DROP SYSTEM TESTS (T6.5)
+# =============================================================================
+
+func _test_boss_drop_system() -> void:
+	# T6.5.1: Evoker emits died signal with xp_value
+	var evoker_scene = load("res://scenes/enemies/evoker.tscn")
+	if evoker_scene:
+		var evoker = evoker_scene.instantiate()
+		_assert_true(evoker.has_signal("died"), "T6.5.1: Evoker has died signal")
+		if "xp_value" in evoker:
+			_assert_equal(evoker.xp_value, 50, "T6.5.1a: Evoker xp_value for died signal is 50")
+		else:
+			_assert_true(false, "T6.5.1a: Evoker xp_value for died signal is 50")
+		evoker.free()
+	else:
+		_assert_true(false, "T6.5.1: Evoker has died signal")
+		_assert_true(false, "T6.5.1a: Evoker xp_value for died signal is 50")
+
+	# T6.5.2: EmeraldPickup script loads
+	var emerald_script = load("res://scripts/pickups/emerald_pickup.gd")
+	_assert_not_null(emerald_script, "T6.5.2: EmeraldPickup script loads")
+
+	# T6.5.3: EmeraldPickup has value property (30)
+	var emerald_scene = load("res://scenes/pickups/emerald_pickup.tscn")
+	if emerald_scene:
+		var emerald = emerald_scene.instantiate()
+		_assert_true("value" in emerald, "T6.5.3: EmeraldPickup has value property")
+		if "value" in emerald:
+			_assert_equal(emerald.value, 30, "T6.5.3a: EmeraldPickup value is 30")
+		else:
+			_assert_true(false, "T6.5.3a: EmeraldPickup value is 30")
+		emerald.free()
+	else:
+		_assert_true(false, "T6.5.3: EmeraldPickup has value property")
+		_assert_true(false, "T6.5.3a: EmeraldPickup value is 30")
+
+	# T6.5.4: TotemPickup script loads
+	var totem_script = load("res://scripts/pickups/totem_pickup.gd")
+	_assert_not_null(totem_script, "T6.5.4: TotemPickup script loads")

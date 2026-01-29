@@ -246,6 +246,42 @@ assets/
 
 ---
 
+## 应用图标 (App Icons)
+
+游戏图标使用 Steve 头像的像素风格设计。
+
+### 源文件
+| 文件 | 路径 | 说明 |
+|------|------|------|
+| icon.svg | assets/ui/icon.svg | 16x16 SVG 源文件 |
+
+### 生成的图标
+| 文件 | 尺寸 | 用途 |
+|------|------|------|
+| icon.png | 256x256 | Godot 项目图标 |
+| icon.ico | 16/32/48/256 | Windows 可执行文件图标 |
+| favicon.png | 32x32 | Web 网页图标 |
+| icons/icon_144.png | 144x144 | PWA 图标 |
+| icons/icon_180.png | 180x180 | PWA 图标 (iOS) |
+| icons/icon_512.png | 512x512 | PWA 图标 (大) |
+
+### 图标生成脚本
+运行以下命令从 SVG 生成所有图标格式：
+```bash
+python3 scripts/utils/generate_icons.py
+```
+
+### 配置位置
+| 平台 | 配置文件 | 设置项 |
+|------|----------|--------|
+| Godot | project.godot | config/icon |
+| Windows | export_presets.cfg | application/icon |
+| macOS | export_presets.cfg | application/icon |
+| Web/PWA | export_presets.cfg | progressive_web_app/icon_* |
+
+---
+
 ## 更新日志
 
+- **2026-01-28**: 添加应用图标系统，从 icon.svg 生成多平台图标
 - **2026-01-23**: 创建所有 19 个 SVG 资源，集成 Steve 和草地瓷砖到游戏中

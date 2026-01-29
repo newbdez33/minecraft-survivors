@@ -16,6 +16,7 @@ run/main_scene="res://scenes/ui/splash_screen.tscn"
 config/features=PackedStringArray("4.5", "Forward Plus")
 boot_splash/bg_color=Color(0.05, 0.05, 0.05, 1)
 boot_splash/show_image=false
+config/icon="res://assets/icon.png"
 
 [autoload]
 

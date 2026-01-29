@@ -1,6 +1,7 @@
-[gd_scene load_steps=16 format=3 uid="uid://main001"]
+[gd_scene load_steps=17 format=3 uid="uid://main001"]
 
 [ext_resource type="PackedScene" uid="uid://player001" path="res://scenes/player.tscn" id="1_player"]
+[ext_resource type="PackedScene" path="res://scenes/ui/boss_health_bar.tscn" id="17_boss_health_bar"]
 [ext_resource type="Shader" path="res://assets/shaders/fog_of_war.gdshader" id="16_fog_shader"]
 [ext_resource type="Script" path="res://scripts/camera.gd" id="2_camera"]
 [ext_resource type="Script" path="res://scripts/arena.gd" id="3_arena"]
@@ -94,3 +95,5 @@ spawn_interval = 20.0
 spawn_interval_min = 15.0
 max_pickups = 3
 initial_delay = 30.0
+
+[node name="BossHealthBar" parent="." instance=ExtResource("17_boss_health_bar")]
