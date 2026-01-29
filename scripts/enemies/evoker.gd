@@ -6,7 +6,7 @@ signal died(xp_value: int)
 signal health_changed(current: int, maximum: int)
 
 # Boss stats
-@export var health: int = 100
+@export var health: int = 500
 @export var speed: float = 40.0
 @export var contact_damage: int = 5
 @export var xp_value: int = 50
@@ -33,7 +33,7 @@ var _vex_count: int = 0
 const MAX_VEX: int = 3
 
 var target: Node2D = null
-var _max_health: int = 100
+var _max_health: int = 500
 
 func _ready() -> void:
 	add_to_group("enemies")
