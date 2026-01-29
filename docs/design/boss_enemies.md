@@ -25,8 +25,8 @@ This document lists all Minecraft bosses for potential implementation in Minecra
 - Immune to status effects / 状態異常無効
 
 **Recommended Implementation:**
-- Wave 20 boss
-- 500 HP for game balance
+- Wave 30 boss (FINAL BOSS)
+- 800 HP for game balance
 - Summons Endermen as minions
 
 ---
@@ -51,8 +51,8 @@ This document lists all Minecraft bosses for potential implementation in Minecra
 - Shield Phase / シールドフェーズ - Half HP becomes melee only
 
 **Recommended Implementation:**
-- Wave 10 boss
-- 300 HP for game balance
+- Wave 25 boss (Second-to-last)
+- 500 HP for game balance
 - Summons Skeletons as minions
 
 ---
@@ -77,7 +77,7 @@ This document lists all Minecraft bosses for potential implementation in Minecra
 - Swim Speed / 泳ぐ速度 - Fast in water
 
 **Recommended Implementation:**
-- Wave 15 boss
+- Wave 10 boss
 - 150 HP for game balance
 - Laser attack charges then fires
 
@@ -102,7 +102,7 @@ This document lists all Minecraft bosses for potential implementation in Minecra
 - Emerge Animation / 出現アニメーション
 
 **Recommended Implementation:**
-- Wave 25 boss (hardest)
+- Wave 20 boss
 - 400 HP for game balance
 - Sonic boom ignores armor
 
@@ -126,7 +126,7 @@ This document lists all Minecraft bosses for potential implementation in Minecra
 - Block Breaking / ブロック破壊 - Destroys crops/leaves
 
 **Recommended Implementation:**
-- Wave 12 boss
+- Wave 15 boss
 - 200 HP for game balance
 - Charge attack with knockback
 
@@ -149,7 +149,7 @@ This document lists all Minecraft bosses for potential implementation in Minecra
 - Magic / 魔法 - Ranged magic attacks
 
 **Recommended Implementation:**
-- Wave 8 mini-boss
+- Wave 5 boss (First boss)
 - 100 HP for game balance
 - Summons 3 Vexes
 
@@ -273,14 +273,14 @@ This document lists all Minecraft bosses for potential implementation in Minecra
 
 ## Implementation Priority / 実装優先度
 
-| Priority | Boss | Wave | HP | Reason |
-|----------|------|------|-----|--------|
-| 1 | Wither / ウィザー | 10 | 300 | Iconic, good mid-game challenge |
-| 2 | Ender Dragon / エンダードラゴン | 20 | 500 | Ultimate boss, end-game |
-| 3 | Elder Guardian / エルダーガーディアン | 15 | 150 | Good laser mechanic |
-| 4 | Evoker / エヴォーカー | 8 | 100 | Minion summoner |
-| 5 | Warden / ウォーデン | 25 | 400 | Hardest challenge |
-| 6 | Ravager / ラヴェジャー | 12 | 200 | Charge attack variety |
+| Priority | Boss | Wave | HP | Status | Reason |
+|----------|------|------|-----|--------|--------|
+| 1 | Evoker / エヴォーカー | 5 | 100 | ✅ **DONE** | First boss, minion summoner |
+| 2 | Elder Guardian / エルダーガーディアン | 10 | 150 | ⏳ Planned | Good laser mechanic |
+| 3 | Ravager / ラヴェジャー | 15 | 200 | ⏳ Planned | Charge attack variety |
+| 4 | Warden / ウォーデン | 20 | 400 | ⏳ Planned | Late-game challenge |
+| 5 | Wither / ウィザー | 25 | 500 | ⏳ Planned | Second-to-last boss |
+| 6 | Ender Dragon / エンダードラゴン | 30 | 800 | ⏳ Planned | FINAL BOSS |
 
 ---
 
@@ -295,25 +295,26 @@ This document lists all Minecraft bosses for potential implementation in Minecra
 ### Boss Wave Schedule:
 | Wave | Boss | Difficulty |
 |------|------|------------|
-| 5 | Evoker | Easy |
-| 10 | Wither | Medium |
-| 15 | Elder Guardian | Medium |
-| 20 | Ender Dragon | Hard |
-| 25 | Warden | Very Hard |
-| 30 | Arch-Illager | Final |
+| 5 | Evoker / 唤魔者 | ⭐⭐ Easy |
+| 10 | Elder Guardian / 远古守卫者 | ⭐⭐ Medium |
+| 15 | Ravager / 劫掠兽 | ⭐⭐⭐ Medium |
+| 20 | Warden / 监守者 | ⭐⭐⭐⭐ Hard |
+| 25 | Wither / 凋灵 | ⭐⭐⭐⭐ Very Hard |
+| 30 | Ender Dragon / 末影龙 | ⭐⭐⭐⭐⭐ FINAL |
 
 ---
 
 ## Visual Design Notes / ビジュアルデザインノート
 
 ### Size Scale (pixels):
-| Boss | Width | Height | Scale vs Player |
-|------|-------|--------|-----------------|
-| Evoker | 16 | 32 | 1.5x |
-| Wither | 48 | 48 | 3x |
-| Elder Guardian | 32 | 32 | 2x |
-| Ender Dragon | 64 | 48 | 4x |
-| Warden | 24 | 48 | 2x |
+| Boss | Width | Height | Scale vs Player | Wave |
+|------|-------|--------|-----------------|------|
+| Evoker | 16 | 32 | 1.5x | 5 |
+| Elder Guardian | 32 | 32 | 2x | 10 |
+| Ravager | 32 | 32 | 2x | 15 |
+| Warden | 24 | 48 | 2x | 20 |
+| Wither | 48 | 48 | 3x | 25 |
+| Ender Dragon | 64 | 48 | 4x | 30 |
 
 ### Color Palette:
 - **Wither**: Black (#1a1a1a), Dark Gray (#4a4a4a), Blue skull (#5555ff)
@@ -335,6 +336,8 @@ This document lists all Minecraft bosses for potential implementation in Minecra
 
 ## Version Info
 
-- Document Version: 1.0
+- Document Version: 1.1
 - Created: 2026-01-26
-- Game Phase: 5 (Planning for Phase 6)
+- Updated: 2026-01-29
+- Game Phase: 6 (Boss System Implementation)
+- **Evoker Boss: IMPLEMENTED** (63 tests passing)

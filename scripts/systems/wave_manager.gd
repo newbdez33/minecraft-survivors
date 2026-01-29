@@ -143,5 +143,30 @@ func get_wave_info() -> Dictionary:
 		"current_wave": current_wave,
 		"enemies_count": get_enemies_for_wave(current_wave),
 		"enemy_types": get_enemy_types_for_wave(current_wave),
-		"is_night": day_night_cycle.is_night() if day_night_cycle else false
+		"is_night": day_night_cycle.is_night() if day_night_cycle else false,
+		"is_boss_wave": is_boss_wave(current_wave)
 	}
+
+
+## Check if a wave is a boss wave
+## Boss waves occur every 5 waves (5, 10, 15, etc.)
+func is_boss_wave(wave: int) -> bool:
+	return wave > 0 and wave % 5 == 0
+
+
+## Get the boss type for a specific wave
+func get_boss_for_wave(wave: int) -> String:
+	if not is_boss_wave(wave):
+		return ""
+
+	# Boss rotation based on wave number
+	var boss_index = (wave / 5) % 3
+	match boss_index:
+		0:
+			return "evoker"  # Wave 5, 20, 35...
+		1:
+			return "evoker"  # Wave 10, 25, 40... (future: wither skeleton)
+		2:
+			return "evoker"  # Wave 15, 30, 45... (future: warden)
+		_:
+			return "evoker"

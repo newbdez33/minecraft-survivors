@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16" shape-rendering="crispEdges">
+  <!-- Vex - Small flying minion - Minecraft Survivors -->
+  <!-- 16x16 scaled down sprite -->
+
+  <!-- Body (semi-transparent blue-gray ghost) -->
+  <rect x="5" y="4" width="6" height="8" fill="#8899AA" fill-opacity="0.8"/>
+  <rect x="6" y="5" width="4" height="6" fill="#99AABB" fill-opacity="0.9"/>
+
+  <!-- Head -->
+  <rect x="5" y="2" width="6" height="4" fill="#8899AA" fill-opacity="0.8"/>
+  <rect x="6" y="3" width="4" height="2" fill="#AABBCC" fill-opacity="0.9"/>
+
+  <!-- Eyes (glowing white/blue) -->
+  <rect x="6" y="3" width="2" height="2" fill="#FFFFFF"/>
+  <rect x="9" y="3" width="2" height="2" fill="#FFFFFF"/>
+  <rect x="7" y="4" width="1" height="1" fill="#88CCFF"/>
+  <rect x="9" y="4" width="1" height="1" fill="#88CCFF"/>
+
+  <!-- Wings (translucent) -->
+  <rect x="1" y="5" width="4" height="4" fill="#6688AA" fill-opacity="0.6"/>
+  <rect x="11" y="5" width="4" height="4" fill="#6688AA" fill-opacity="0.6"/>
+  <rect x="2" y="4" width="2" height="2" fill="#7799BB" fill-opacity="0.5"/>
+  <rect x="12" y="4" width="2" height="2" fill="#7799BB" fill-opacity="0.5"/>
+
+  <!-- Sword (iron colored) -->
+  <rect x="12" y="8" width="3" height="1" fill="#C0C0C0"/>
+  <rect x="14" y="7" width="1" height="3" fill="#A0A0A0"/>
+  <rect x="13" y="9" width="1" height="4" fill="#888888"/>
+  <rect x="13" y="13" width="1" height="2" fill="#8B4513"/>
+
+  <!-- Ghostly trail/wisp -->
+  <rect x="6" y="12" width="4" height="2" fill="#6688AA" fill-opacity="0.5"/>
+  <rect x="7" y="14" width="2" height="1" fill="#5577AA" fill-opacity="0.3"/>
+</svg>

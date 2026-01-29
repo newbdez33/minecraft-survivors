@@ -116,19 +116,32 @@
 
 ---
 
-### 📋 Phase 6: Bosses & Elites / Boss与精英怪 (PLANNED)
-**Status: DESIGN COMPLETE**
+### 🔄 Phase 6: Bosses & Elites / Boss与精英怪
+**Status: IN PROGRESS (17%)**
 
 #### Boss System
 
-| Boss | Wave | HP | Special Ability |
-|------|------|-----|-----------------|
-| Evoker / エヴォーカー | 5 | 100 | Summons Vexes |
-| Wither / ウィザー | 10 | 300 | Wither skulls, summons skeletons |
-| Elder Guardian / エルダーガーディアン | 15 | 150 | Laser attack |
-| Ender Dragon / エンダードラゴン | 20 | 500 | Dragon breath, flight |
-| Warden / ウォーデン | 25 | 400 | Sonic boom |
-| Arch-Illager / 邪悪な村人の王 | 30 | 500 | Multi-phase final boss |
+| Boss | Wave | HP | Special Ability | Status |
+|------|------|-----|-----------------|--------|
+| Evoker / 唤魔者 | 5 | 100 | Summons Vexes, Fang Attack | ✅ **DONE** |
+| Elder Guardian / 远古守卫者 | 10 | 150 | Laser attack | ⏳ Planned |
+| Ravager / 劫掠兽 | 15 | 200 | Charge attack | ⏳ Planned |
+| Warden / 监守者 | 20 | 400 | Sonic boom | ⏳ Planned |
+| Wither / 凋灵 | 25 | 500 | Wither skulls, summons skeletons | ⏳ Planned |
+| Ender Dragon / 末影龙 | 30 | 800 | Dragon breath, flight (FINAL BOSS) | ⏳ Planned |
+
+#### ✅ Implemented Features
+
+| Feature | Description |
+|---------|-------------|
+| Evoker Boss | First boss at Wave 5, 100 HP, knockback/poison immune |
+| Evoker Fang Attack | 5 fangs in line, 0.5s warning, 15 damage |
+| Vex Summon | 3 flying minions, 15s lifetime, pass through walls |
+| Boss Health Bar | Top-screen health display with boss name |
+| Boss Wave Detection | WaveManager.is_boss_wave() |
+| Spawner Pause | pause_spawning()/resume_spawning() for boss fights |
+| Emerald Pickup | Boss currency drop (30 emeralds) |
+| Totem Pickup | Rare drop (10% chance) |
 
 📄 Details: [boss_enemies.md](./design/boss_enemies.md)
 
@@ -240,14 +253,17 @@
 
 ## Test Status / 测试状态
 
-**Total Tests: 389+**
+**Total Tests: 701**
+- Passed: 659
+- Failed: 42 (pre-existing issues)
 
 ```
 Phase 1: Core Foundation    - 37 tests
 Phase 2: Combat Basics      - 32 tests
 Phase 3: Progression Loop   - 63 tests
 Phase 4: Game Feel          - 145 tests
-Phase 5: Game Enhancements  - 112+ tests
+Phase 5: Game Enhancements  - 361 tests
+Phase 6: Boss System        - 63 tests (NEW - all passing)
 ```
 
 📄 Details: [testing/guide.md](./testing/guide.md)
@@ -266,6 +282,7 @@ Phase 5: Game Enhancements  - 112+ tests
 
 | Version | Date | Highlights |
 |---------|------|------------|
+| v0.6.0 | 2026-01-29 | **Evoker Boss**, Vex minions, Fang attack, Boss health bar |
 | v0.5.0 | 2026-01-26 | Torch fog system, bow rebalance, elite/boss design |
 | v0.4.0 | 2026-01-24 | Night mechanics, poison hearts, Enderman dodge |
 | v0.3.0 | 2026-01-22 | Weapon evolution, health pickups |
@@ -280,4 +297,4 @@ See [CLAUDE.md](../CLAUDE.md) for development guidelines and code conventions.
 
 ---
 
-*Last Updated: 2026-01-26*
+*Last Updated: 2026-01-29*
