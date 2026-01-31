@@ -78,7 +78,7 @@ func _create_hearts() -> void:
 	for i in range(max_hearts):
 		var heart = TextureRect.new()
 		heart.texture = heart_full_texture
-		heart.custom_minimum_size = Vector2(32, 32)
+		heart.custom_minimum_size = Vector2(16, 16)
 		heart.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		hearts_container.add_child(heart)
 		heart_nodes.append(heart)
