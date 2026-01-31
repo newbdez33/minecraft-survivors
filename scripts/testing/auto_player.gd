@@ -152,29 +152,53 @@ func handle_upgrade_selection(upgrade_ui: Node) -> void:
 	# Wait a frame for UI to populate
 	await get_tree().process_frame
 
-	# Try to select preferred upgrade
+	# First check weapon upgrades (right side) for preferred weapons like "sword", "bow"
+	var weapon_upgrades = upgrade_ui.get("_weapon_upgrades")
+	if weapon_upgrades and weapon_upgrades.size() > 0:
+		for i in range(weapon_upgrades.size()):
+			var upgrade = weapon_upgrades[i]
+			if upgrade.id in preferred_upgrades:
+				# Switch to weapon section and select
+				upgrade_ui._in_weapon_section = true
+				upgrade_ui._selected_index = i
+				upgrade_ui._update_selection_visuals()
+				# Wait 0.5s for screenshot capture before confirming
+				await get_tree().create_timer(0.5).timeout
+				upgrade_ui._confirm_selection()
+				test_event.emit("upgrade_selected", {
+					"upgrade": upgrade.id,
+					"index": i,
+					"level": upgrade.current_level,
+					"is_weapon": true,
+					"is_sword": upgrade.id == "sword"
+				})
+				return
+
+	# Then check enchantment upgrades (left side)
 	var upgrades = upgrade_ui.get("_upgrades")
 	if upgrades:
 		for i in range(upgrades.size()):
 			var upgrade = upgrades[i]
 			if upgrade.id in preferred_upgrades:
+				upgrade_ui._in_weapon_section = false
 				upgrade_ui._selected_index = i
 				upgrade_ui._confirm_selection()
-				var is_sword = upgrade.id == "sword"
 				test_event.emit("upgrade_selected", {
 					"upgrade": upgrade.id,
 					"index": i,
 					"level": upgrade.current_level,
-					"is_sword": is_sword
+					"is_weapon": false,
+					"is_sword": false
 				})
 				return
 
-		# No preferred upgrade found, select first available
+		# No preferred upgrade found, select first available enchantment
 		var first_upgrade = upgrades[0] if upgrades.size() > 0 else null
 		upgrade_ui._confirm_selection()
 		test_event.emit("upgrade_selected", {
 			"upgrade": first_upgrade.id if first_upgrade else "none",
 			"index": 0,
 			"level": first_upgrade.current_level if first_upgrade else 0,
-			"is_sword": first_upgrade.id == "sword" if first_upgrade else false
+			"is_weapon": false,
+			"is_sword": false
 		})
