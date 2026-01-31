@@ -13,7 +13,7 @@ A Vampire Survivors-like roguelike game with Minecraft theme built in Godot 4.5.
 ## Completed Phases
 
 ### Phase 1: Core Foundation ✅
-- Player movement (WASD/Arrow keys)
+- Player movement (WASD/Arrow keys + Mouse click/drag)
 - Basic arena with boundaries
 - Camera following player
 

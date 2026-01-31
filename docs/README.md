@@ -23,13 +23,17 @@ godot --path . scenes/main.tscn
 
 ## Controls
 
-| Key | Action |
-|-----|--------|
+| Input | Action |
+|-------|--------|
 | W / ↑ | Move up |
 | S / ↓ | Move down |
 | A / ← | Move left |
 | D / → | Move right |
+| Mouse Left Click | Move to clicked position |
+| Mouse Left Hold + Drag | Follow mouse position |
 | ESC | Pause |
+
+**Note:** Keyboard input takes priority over mouse input.
 
 ## Documentation Index
 

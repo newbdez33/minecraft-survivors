@@ -65,6 +65,7 @@ godot res://scenes/main.tscn -- --test-mode --duration=60 --fast-all
 - [x] Player script loads
 - [x] Player scene loads
 - [x] Player movement (WASD/Arrow keys)
+- [x] Player movement (Mouse click/drag)
 - [x] Player has positive speed
 - [x] Player collision layers correct
 

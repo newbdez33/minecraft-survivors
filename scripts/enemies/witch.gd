@@ -107,7 +107,7 @@ func throw_potion() -> void:
 		potion.damage = potion_damage
 
 		if get_tree() and get_tree().current_scene:
-			get_tree().current_scene.add_child(potion)
+			get_tree().current_scene.call_deferred("add_child", potion)
 
 	# Start cooldown
 	var timer = get_node_or_null("AttackTimer")
@@ -140,7 +140,7 @@ func _spawn_hit_effect() -> void:
 	if hit_scene and get_tree() and get_tree().current_scene:
 		var hit = hit_scene.instantiate()
 		hit.global_position = global_position
-		get_tree().current_scene.add_child(hit)
+		get_tree().current_scene.call_deferred("add_child", hit)
 
 func _on_died() -> void:
 	died.emit(xp_value)
@@ -163,7 +163,7 @@ func _spawn_death_effect() -> void:
 		var poof = death_scene.instantiate()
 		poof.global_position = global_position
 		poof.modulate = Color(0.3, 0.6, 0.3)  # Green tint for Witch
-		get_tree().current_scene.add_child(poof)
+		get_tree().current_scene.call_deferred("add_child", poof)
 
 func _spawn_xp_orb() -> void:
 	var xp_scene = load("res://scenes/pickups/xp_orb.tscn")
@@ -171,4 +171,4 @@ func _spawn_xp_orb() -> void:
 		var orb = xp_scene.instantiate()
 		orb.global_position = global_position
 		orb.xp_value = xp_value
-		get_tree().current_scene.add_child(orb)
+		get_tree().current_scene.call_deferred("add_child", orb)

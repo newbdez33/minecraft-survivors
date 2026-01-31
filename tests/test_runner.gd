@@ -12,6 +12,9 @@ var tests_failed: int = 0
 var tests_skipped: int = 0
 var test_results: Array = []
 
+# Coverage tracker
+var coverage_tracker = null
+
 # Set to true to run Phase 2 tests (will fail until implemented)
 const RUN_PHASE2_TESTS: bool = true
 # Set to true to run Phase 3 tests (TDD - will fail until implemented)
@@ -22,6 +25,10 @@ const RUN_PHASE4_TESTS: bool = true
 const RUN_PHASE5_TESTS: bool = true
 # Set to true to run Phase 6 tests (TDD - will fail until implemented)
 const RUN_PHASE6_TESTS: bool = true
+# Set to true to run Phase 7 tests (Complete Coverage)
+const RUN_PHASE7_TESTS: bool = true
+# Set to true to enable coverage tracking
+const ENABLE_COVERAGE: bool = true
 
 func _init() -> void:
 	print("\n" + "=".repeat(60))
@@ -130,8 +137,19 @@ func _init() -> void:
 		_run_test_suite("Boss Battle System Tests", _test_boss_battle_system)
 		_run_test_suite("Boss Drop System Tests", _test_boss_drop_system)
 
+	# Phase 7 Tests (Complete Coverage)
+	if RUN_PHASE7_TESTS:
+		print("[PHASE 7: Complete Coverage Tests]")
+		print("")
+		_run_complete_coverage_tests()
+
 	# Print summary
 	_print_summary()
+
+	# Print coverage report if enabled
+	if ENABLE_COVERAGE and coverage_tracker:
+		coverage_tracker.print_summary()
+		coverage_tracker.save_report()
 
 	# Exit with appropriate code
 	quit(0 if tests_failed == 0 else 1)
@@ -2919,3 +2937,299 @@ func _test_boss_drop_system() -> void:
 	# T6.5.4: TotemPickup script loads
 	var totem_script = load("res://scripts/pickups/totem_pickup.gd")
 	_assert_not_null(totem_script, "T6.5.4: TotemPickup script loads")
+
+# =============================================================================
+# PHASE 7: COMPLETE COVERAGE TESTS
+# =============================================================================
+
+func _run_complete_coverage_tests() -> void:
+	# Initialize coverage tracker if enabled
+	if ENABLE_COVERAGE:
+		var CoverageTrackerClass = load("res://tests/coverage/coverage_tracker.gd")
+		if CoverageTrackerClass:
+			coverage_tracker = CoverageTrackerClass.new()
+
+	# Run Player Complete Tests
+	_run_external_test_suite("Player Complete Tests", "res://tests/unit/player/test_player_complete.gd")
+
+	# Run Health Component Complete Tests
+	_run_external_test_suite("Health Complete Tests", "res://tests/unit/components/test_health_complete.gd")
+
+	# Run Upgrade Manager Complete Tests
+	_run_external_test_suite("Upgrade Manager Complete Tests", "res://tests/unit/systems/test_upgrade_manager_complete.gd")
+
+	# Run Enemy Complete Tests
+	_run_external_test_suite("Zombie Complete Tests", "res://tests/unit/enemies/test_zombie_complete.gd")
+	_run_external_test_suite("Skeleton Complete Tests", "res://tests/unit/enemies/test_skeleton_complete.gd")
+	_run_external_test_suite("Spider Complete Tests", "res://tests/unit/enemies/test_spider_complete.gd")
+	_run_external_test_suite("Creeper Complete Tests", "res://tests/unit/enemies/test_creeper_complete.gd")
+	_run_external_test_suite("Enderman Complete Tests", "res://tests/unit/enemies/test_enderman_complete.gd")
+	_run_external_test_suite("Witch Complete Tests", "res://tests/unit/enemies/test_witch_complete.gd")
+	_run_external_test_suite("Evoker Complete Tests", "res://tests/unit/enemies/test_evoker_complete.gd")
+	_run_external_test_suite("Vex Complete Tests", "res://tests/unit/enemies/test_vex_complete.gd")
+
+	# Run Weapon Complete Tests
+	_run_external_test_suite("Sword Complete Tests", "res://tests/unit/weapons/test_sword_complete.gd")
+	_run_external_test_suite("Bow Complete Tests", "res://tests/unit/weapons/test_bow_complete.gd")
+	_run_external_test_suite("Crossbow Complete Tests", "res://tests/unit/weapons/test_crossbow_complete.gd")
+
+	# Run Projectile Tests
+	_run_external_test_suite("Projectiles Complete Tests", "res://tests/unit/projectiles/test_projectiles_complete.gd")
+
+	# Run System Complete Tests
+	_run_external_test_suite("Wave Manager Complete Tests", "res://tests/unit/systems/test_wave_manager_complete.gd")
+	_run_external_test_suite("Day/Night Complete Tests", "res://tests/unit/systems/test_day_night_complete.gd")
+	_run_external_test_suite("Combo System Complete Tests", "res://tests/unit/systems/test_combo_system_complete.gd")
+
+	# Run UI Complete Tests
+	_run_external_test_suite("UI Complete Tests", "res://tests/unit/ui/test_ui_complete.gd")
+
+	# Run Core Complete Tests (NEW)
+	_run_external_test_suite("Game Complete Tests", "res://tests/unit/core/test_game_complete.gd")
+	_run_external_test_suite("Spawner Complete Tests", "res://tests/unit/core/test_spawner_complete.gd")
+	_run_external_test_suite("Arena Complete Tests", "res://tests/unit/core/test_arena_complete.gd")
+	_run_external_test_suite("Camera Complete Tests", "res://tests/unit/core/test_camera_complete.gd")
+
+	# Run Additional Component Tests (NEW)
+	_run_external_test_suite("Status Effect Complete Tests", "res://tests/unit/components/test_status_effect_complete.gd")
+	_run_external_test_suite("Status Effect Manager Complete Tests", "res://tests/unit/components/test_status_effect_manager_complete.gd")
+	_run_external_test_suite("Weapon Slots Complete Tests", "res://tests/unit/components/test_weapon_slots_complete.gd")
+
+	# Run Additional Weapon Tests (NEW)
+	_run_external_test_suite("Diamond Sword Complete Tests", "res://tests/unit/weapons/test_diamond_sword_complete.gd")
+	_run_external_test_suite("Torch Complete Tests", "res://tests/unit/weapons/test_torch_complete.gd")
+
+	# Run Pickups Complete Tests (NEW)
+	_run_external_test_suite("Pickups Complete Tests", "res://tests/unit/pickups/test_pickups_complete.gd")
+
+	# Run Effects Complete Tests (NEW)
+	_run_external_test_suite("Effects Complete Tests", "res://tests/unit/effects/test_effects_complete.gd")
+
+	# Run Additional Systems Tests (NEW)
+	_run_external_test_suite("Systems Complete Tests", "res://tests/unit/systems/test_systems_complete.gd")
+
+	# Run UI Remaining Complete Tests (NEW)
+	_run_external_test_suite("UI Remaining Complete Tests", "res://tests/unit/ui/test_ui_remaining_complete.gd")
+
+	# Run Integration Tests
+	_run_external_test_suite("Combat Flow Integration Tests", "res://tests/integration/test_combat_flow.gd")
+	_run_external_test_suite("Progression Flow Integration Tests", "res://tests/integration/test_progression_flow.gd")
+
+	# Run E2E Tests
+	_run_external_test_suite("Game Session E2E Tests", "res://tests/e2e/test_game_session.gd")
+
+	# Run Behavioral Tests (DEEP BEHAVIOR VERIFICATION)
+	print("")
+	print("[BEHAVIORAL TESTS: Deep Logic Verification]")
+	print("")
+	_run_external_test_suite("Player Behavior Tests", "res://tests/unit/behavioral/test_player_behavior.gd")
+	_run_external_test_suite("Sword Behavior Tests", "res://tests/unit/behavioral/test_sword_behavior.gd")
+	_run_external_test_suite("Upgrade Behavior Tests", "res://tests/unit/behavioral/test_upgrade_behavior.gd")
+	_run_external_test_suite("Wave Behavior Tests", "res://tests/unit/behavioral/test_wave_behavior.gd")
+	_run_external_test_suite("Combo Behavior Tests", "res://tests/unit/behavioral/test_combo_behavior.gd")
+	_run_external_test_suite("Day/Night Behavior Tests", "res://tests/unit/behavioral/test_day_night_behavior.gd")
+	_run_external_test_suite("Combat Behavior Tests", "res://tests/unit/behavioral/test_combat_behavior.gd")
+	_run_external_test_suite("Status Effect Behavior Tests", "res://tests/unit/behavioral/test_status_effect_behavior.gd")
+	_run_external_test_suite("Pickup Behavior Tests", "res://tests/unit/behavioral/test_pickup_behavior.gd")
+
+## Run tests from an external test file that follows the run_tests() -> Dictionary pattern
+func _run_external_test_suite(suite_name: String, script_path: String) -> void:
+	print("[SUITE] " + suite_name)
+	print("-".repeat(40))
+
+	var script = load(script_path)
+	if not script:
+		_assert_true(false, "Failed to load: " + script_path)
+		print("")
+		return
+
+	# Check if script has run_tests method
+	var temp_instance = script.new() if script.can_instantiate() else null
+	if temp_instance == null:
+		# Static class - call run_tests directly
+		if script.has_method("run_tests"):
+			var results = script.run_tests()
+			_process_test_results(results)
+
+			# Update coverage tracker - call static method directly
+			_try_mark_coverage(script, script_path)
+		else:
+			_assert_true(false, "Script has no run_tests method: " + script_path)
+	else:
+		temp_instance.free()
+		# Try static call
+		if script.has_method("run_tests"):
+			var results = script.run_tests()
+			_process_test_results(results)
+
+			# Update coverage tracker - call static method directly
+			_try_mark_coverage(script, script_path)
+		else:
+			_assert_true(false, "Script has no run_tests method: " + script_path)
+
+	print("")
+
+## Process results from external test suite
+func _process_test_results(results: Dictionary) -> void:
+	if not results.has("tests"):
+		return
+
+	for test in results.tests:
+		if test.passed:
+			tests_passed += 1
+			test_results.append({"name": test.name, "passed": true})
+			print("  ✓ " + test.name)
+		else:
+			tests_failed += 1
+			test_results.append({"name": test.name, "passed": false})
+			print("  ✗ " + test.name + " [FAILED]")
+
+## Try to mark coverage by calling get_tested_functions() static method directly
+func _try_mark_coverage(script: GDScript, script_path: String) -> void:
+	if not coverage_tracker:
+		return
+
+	# Check if the script has get_tested_functions method in its method list
+	var has_method = false
+	for method in script.get_script_method_list():
+		if method.name == "get_tested_functions":
+			has_method = true
+			break
+
+	if has_method:
+		# Call the static method directly on the script
+		var tested_funcs = script.get_tested_functions()
+		if tested_funcs.size() > 0:
+			_mark_coverage_from_test(script_path, tested_funcs)
+
+## Mark functions as tested in coverage tracker
+func _mark_coverage_from_test(test_script_path: String, tested_funcs: Array) -> void:
+	if not coverage_tracker:
+		return
+
+	# Map test script to target script
+	var target_script = ""
+	if "player" in test_script_path:
+		target_script = "res://scripts/player.gd"
+	elif "health_complete" in test_script_path:
+		target_script = "res://scripts/components/health.gd"
+	elif "upgrade_manager" in test_script_path:
+		target_script = "res://scripts/systems/upgrade_manager.gd"
+	elif "zombie_complete" in test_script_path:
+		target_script = "res://scripts/enemies/zombie.gd"
+	elif "skeleton_complete" in test_script_path:
+		target_script = "res://scripts/enemies/skeleton.gd"
+	elif "spider_complete" in test_script_path:
+		target_script = "res://scripts/enemies/spider.gd"
+	elif "creeper_complete" in test_script_path:
+		target_script = "res://scripts/enemies/creeper.gd"
+	elif "enderman_complete" in test_script_path:
+		target_script = "res://scripts/enemies/enderman.gd"
+	elif "witch_complete" in test_script_path:
+		target_script = "res://scripts/enemies/witch.gd"
+	elif "evoker_complete" in test_script_path:
+		target_script = "res://scripts/enemies/evoker.gd"
+	elif "vex_complete" in test_script_path:
+		target_script = "res://scripts/enemies/vex.gd"
+	elif "test_sword_complete" in test_script_path and "diamond" not in test_script_path:
+		target_script = "res://scripts/weapons/sword_base.gd"
+	elif "test_bow_complete" in test_script_path and "crossbow" not in test_script_path:
+		target_script = "res://scripts/weapons/bow.gd"
+	elif "test_crossbow_complete" in test_script_path:
+		target_script = "res://scripts/weapons/crossbow.gd"
+	elif "wave_manager" in test_script_path:
+		target_script = "res://scripts/systems/wave_manager.gd"
+	elif "day_night" in test_script_path:
+		target_script = "res://scripts/systems/day_night_cycle.gd"
+	elif "combo_system" in test_script_path:
+		target_script = "res://scripts/systems/combo_system.gd"
+	elif "projectiles" in test_script_path:
+		# Projectiles test covers multiple scripts - mark all
+		coverage_tracker.mark_functions_tested("res://scripts/projectiles/arrow.gd", tested_funcs)
+		coverage_tracker.mark_functions_tested("res://scripts/projectiles/player_arrow.gd", tested_funcs)
+		coverage_tracker.mark_functions_tested("res://scripts/projectiles/crossbow_bolt.gd", tested_funcs)
+		coverage_tracker.mark_functions_tested("res://scripts/projectiles/potion.gd", tested_funcs)
+		return  # Already handled
+	elif "ui_complete" in test_script_path:
+		# UI test covers multiple scripts - mark all
+		coverage_tracker.mark_functions_tested("res://scripts/ui/hud.gd", tested_funcs)
+		coverage_tracker.mark_functions_tested("res://scripts/ui/upgrade_ui.gd", tested_funcs)
+		coverage_tracker.mark_functions_tested("res://scripts/ui/game_over_ui.gd", tested_funcs)
+		coverage_tracker.mark_functions_tested("res://scripts/ui/main_menu.gd", tested_funcs)
+		coverage_tracker.mark_functions_tested("res://scripts/ui/settings_panel.gd", tested_funcs)
+		return  # Already handled
+	# Core scripts
+	elif "game_complete" in test_script_path:
+		target_script = "res://scripts/game.gd"
+	elif "spawner_complete" in test_script_path:
+		target_script = "res://scripts/spawner.gd"
+	elif "arena_complete" in test_script_path:
+		target_script = "res://scripts/arena.gd"
+	elif "camera_complete" in test_script_path:
+		target_script = "res://scripts/camera.gd"
+	# Components
+	elif "status_effect_manager_complete" in test_script_path:
+		target_script = "res://scripts/components/status_effect_manager.gd"
+	elif "status_effect_complete" in test_script_path:
+		target_script = "res://scripts/components/status_effect.gd"
+	elif "weapon_slots_complete" in test_script_path:
+		target_script = "res://scripts/components/weapon_slots.gd"
+	# Weapons
+	elif "diamond_sword_complete" in test_script_path:
+		target_script = "res://scripts/weapons/diamond_sword.gd"
+	elif "torch_complete" in test_script_path:
+		target_script = "res://scripts/weapons/torch.gd"
+	# Pickups
+	elif "pickups_complete" in test_script_path:
+		# Pickups test covers multiple scripts - mark all
+		coverage_tracker.mark_functions_tested("res://scripts/pickups/xp_orb.gd", tested_funcs)
+		coverage_tracker.mark_functions_tested("res://scripts/pickups/health_pickup.gd", tested_funcs)
+		coverage_tracker.mark_functions_tested("res://scripts/pickups/meat_pickup.gd", tested_funcs)
+		coverage_tracker.mark_functions_tested("res://scripts/pickups/emerald_pickup.gd", tested_funcs)
+		coverage_tracker.mark_functions_tested("res://scripts/pickups/totem_pickup.gd", tested_funcs)
+		coverage_tracker.mark_functions_tested("res://scripts/pickups/lucky_drop_pickup.gd", tested_funcs)
+		return  # Already handled
+	# Effects
+	elif "effects_complete" in test_script_path:
+		# Effects test covers multiple scripts - mark all
+		coverage_tracker.mark_functions_tested("res://scripts/effects/death_poof.gd", tested_funcs)
+		coverage_tracker.mark_functions_tested("res://scripts/effects/effect_base.gd", tested_funcs)
+		coverage_tracker.mark_functions_tested("res://scripts/effects/explosion.gd", tested_funcs)
+		coverage_tracker.mark_functions_tested("res://scripts/effects/hit_effect.gd", tested_funcs)
+		coverage_tracker.mark_functions_tested("res://scripts/effects/damage_number.gd", tested_funcs)
+		coverage_tracker.mark_functions_tested("res://scripts/effects/screen_shake.gd", tested_funcs)
+		coverage_tracker.mark_functions_tested("res://scripts/effects/poison_cloud.gd", tested_funcs)
+		coverage_tracker.mark_functions_tested("res://scripts/effects/evoker_fang.gd", tested_funcs)
+		return  # Already handled
+	# Systems
+	elif "systems_complete" in test_script_path:
+		# Systems test covers multiple scripts - mark all
+		coverage_tracker.mark_functions_tested("res://scripts/systems/upgrade.gd", tested_funcs)
+		coverage_tracker.mark_functions_tested("res://scripts/systems/game_stats.gd", tested_funcs)
+		coverage_tracker.mark_functions_tested("res://scripts/systems/score_storage.gd", tested_funcs)
+		coverage_tracker.mark_functions_tested("res://scripts/systems/health_pickup_spawner.gd", tested_funcs)
+		coverage_tracker.mark_functions_tested("res://scripts/systems/localization_manager.gd", tested_funcs)
+		coverage_tracker.mark_functions_tested("res://scripts/systems/achievement.gd", tested_funcs)
+		coverage_tracker.mark_functions_tested("res://scripts/systems/achievement_manager.gd", tested_funcs)
+		coverage_tracker.mark_functions_tested("res://scripts/systems/character.gd", tested_funcs)
+		coverage_tracker.mark_functions_tested("res://scripts/systems/character_manager.gd", tested_funcs)
+		coverage_tracker.mark_functions_tested("res://scripts/systems/weapon_evolution.gd", tested_funcs)
+		coverage_tracker.mark_functions_tested("res://scripts/systems/weapon_evolution_manager.gd", tested_funcs)
+		coverage_tracker.mark_functions_tested("res://scripts/systems/torch_manager.gd", tested_funcs)
+		return  # Already handled
+	# UI Remaining
+	elif "ui_remaining_complete" in test_script_path:
+		# UI remaining test covers multiple scripts - mark all
+		coverage_tracker.mark_functions_tested("res://scripts/ui/game_over_ui.gd", tested_funcs)
+		coverage_tracker.mark_functions_tested("res://scripts/ui/main_menu.gd", tested_funcs)
+		coverage_tracker.mark_functions_tested("res://scripts/ui/pause_menu.gd", tested_funcs)
+		coverage_tracker.mark_functions_tested("res://scripts/ui/settings_panel.gd", tested_funcs)
+		coverage_tracker.mark_functions_tested("res://scripts/ui/scoreboard_panel.gd", tested_funcs)
+		coverage_tracker.mark_functions_tested("res://scripts/ui/status_container.gd", tested_funcs)
+		coverage_tracker.mark_functions_tested("res://scripts/ui/status_icon.gd", tested_funcs)
+		coverage_tracker.mark_functions_tested("res://scripts/ui/boss_health_bar.gd", tested_funcs)
+		coverage_tracker.mark_functions_tested("res://scripts/ui/splash_screen.gd", tested_funcs)
+		return  # Already handled
+
+	if target_script != "":
+		coverage_tracker.mark_functions_tested(target_script, tested_funcs)
