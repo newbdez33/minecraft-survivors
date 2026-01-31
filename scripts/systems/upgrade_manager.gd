@@ -9,7 +9,6 @@ signal upgrade_applied(upgrade)
 var available_upgrades: Array = []
 var player: Node = null
 var torch_manager: Node = null  # Reference to TorchManager for torch upgrade
-var first_night_occurred: bool = false  # Torch only available after first night
 
 ## For testing: always include these upgrades in the random selection if available
 var prioritized_upgrades: Array[String] = []
@@ -79,7 +78,6 @@ func get_random_upgrades(count: int = 3) -> Array:
 
 ## Get available weapon upgrades (for right side of upgrade menu)
 ## Returns only 1 random weapon - either owned (for upgrade) or new (to acquire)
-## Torch only appears after first night
 func get_weapon_upgrades() -> Array:
 	if not player:
 		return []
@@ -87,9 +85,6 @@ func get_weapon_upgrades() -> Array:
 	var available_weapons: Array = []
 	for upgrade in available_upgrades:
 		if upgrade.id in WEAPON_UPGRADE_IDS and upgrade.can_upgrade():
-			# Torch only available after first night
-			if upgrade.id == "torch" and not first_night_occurred:
-				continue
 			available_weapons.append(upgrade)
 
 	# Return 1 random weapon upgrade
@@ -97,10 +92,6 @@ func get_weapon_upgrades() -> Array:
 		available_weapons.shuffle()
 		return [available_weapons[0]]
 	return []
-
-## Called when first night starts - enables torch upgrade
-func on_first_night() -> void:
-	first_night_occurred = true
 
 ## Map upgrade ID to weapon node name
 func _get_weapon_node_name(upgrade_id: String) -> String:

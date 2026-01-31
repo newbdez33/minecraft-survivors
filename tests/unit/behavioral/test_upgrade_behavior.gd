@@ -44,7 +44,6 @@ static func run_tests() -> Dictionary:
 	# Random Selection Tests
 	_add_result(results, test_maxed_upgrades_excluded_from_selection())
 	_add_result(results, test_weapon_upgrades_separate_from_random())
-	_add_result(results, test_torch_only_after_first_night())
 
 	# Edge Cases
 	_add_result(results, test_apply_upgrade_increments_level())
@@ -265,12 +264,6 @@ static func test_weapon_upgrades_separate_from_random() -> Dictionary:
 	var passed = "sword" in weapon_ids and "bow" in weapon_ids and "torch" in weapon_ids
 	return {"name": "TC.UB.26: Weapon upgrades in separate section", "passed": passed}
 
-static func test_torch_only_after_first_night() -> Dictionary:
-	# Torch requires first_night_occurred = true
-	# get_weapon_upgrades() checks this flag
-	var passed = true  # Logic verified in code
-	return {"name": "TC.UB.27: Torch only available after first night", "passed": passed}
-
 # =============================================================================
 # EDGE CASES
 # =============================================================================
@@ -321,7 +314,7 @@ static func test_swiftness_compounds_correctly() -> Dictionary:
 static func get_tested_functions() -> Array:
 	return [
 		"_ready", "_init_upgrades", "set_player", "get_random_upgrades",
-		"get_weapon_upgrades", "on_first_night", "_get_weapon_node_name",
+		"get_weapon_upgrades", "_get_weapon_node_name",
 		"get_weapon_icon", "get_next_evolution_icon", "all_weapons_maxed",
 		"will_evolve_tier", "get_next_tier_name", "get_evolution_bonus_description",
 		"apply_upgrade", "_apply_effect", "_apply_sword", "_apply_sharpness",
