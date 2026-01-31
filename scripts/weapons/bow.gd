@@ -12,7 +12,7 @@ signal evolved_to_crossbow
 @export var level: int = 1
 @export var hand_offset: float = 24.0  # Distance from player center
 
-const MAX_LEVEL: int = 12  # Level 12 = evolve to Crossbow
+const MAX_LEVEL: int = 4  # Level 4 = evolve to Crossbow
 
 var _cooldown_timer: float = 0.0
 var _can_attack: bool = true
@@ -135,7 +135,7 @@ func upgrade() -> void:
 		evolved_to_crossbow.emit()
 
 func can_evolve() -> bool:
-	return level >= MAX_LEVEL - 1  # At level 3, next upgrade will evolve
+	return level >= MAX_LEVEL - 1  # At level 3, next upgrade (level 4) will evolve to Crossbow
 
 func _update_weapon_position() -> void:
 	var sprite = get_node_or_null("Sprite2D")

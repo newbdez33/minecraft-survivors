@@ -107,7 +107,7 @@ func _spawn_hit_effect() -> void:
 		hit.global_position = global_position
 		hit.modulate = Color(0.5, 0.7, 0.9)  # Light blue tint
 		hit.scale = Vector2(0.6, 0.6)
-		get_tree().current_scene.add_child(hit)
+		get_tree().current_scene.call_deferred("add_child", hit)
 
 
 func _on_died() -> void:
@@ -124,7 +124,7 @@ func _spawn_death_effect() -> void:
 		poof.global_position = global_position
 		poof.modulate = Color(0.6, 0.7, 0.9)  # Light blue tint
 		poof.scale = Vector2(0.7, 0.7)
-		get_tree().current_scene.add_child(poof)
+		get_tree().current_scene.call_deferred("add_child", poof)
 
 
 func _spawn_xp_orb() -> void:

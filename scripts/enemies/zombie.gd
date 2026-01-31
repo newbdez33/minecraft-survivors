@@ -89,7 +89,7 @@ func _spawn_hit_effect() -> void:
 	if hit_scene and get_tree() and get_tree().current_scene:
 		var hit = hit_scene.instantiate()
 		hit.global_position = global_position
-		get_tree().current_scene.add_child(hit)
+		get_tree().current_scene.call_deferred("add_child", hit)
 
 func _on_died() -> void:
 	died.emit(xp_value)
@@ -119,4 +119,4 @@ func _spawn_death_effect() -> void:
 	if death_scene and get_tree() and get_tree().current_scene:
 		var poof = death_scene.instantiate()
 		poof.global_position = global_position
-		get_tree().current_scene.add_child(poof)
+		get_tree().current_scene.call_deferred("add_child", poof)

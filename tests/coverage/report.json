@@ -1,0 +1,422 @@
+{
+	"scripts": {
+		"res://scripts/arena.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 5,
+			"total_functions": 5,
+			"untested": []
+		},
+		"res://scripts/camera.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 2,
+			"total_functions": 2,
+			"untested": []
+		},
+		"res://scripts/components/health.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 6,
+			"total_functions": 6,
+			"untested": []
+		},
+		"res://scripts/components/status_effect.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 3,
+			"total_functions": 3,
+			"untested": []
+		},
+		"res://scripts/components/status_effect_manager.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 7,
+			"total_functions": 7,
+			"untested": []
+		},
+		"res://scripts/components/weapon_slots.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 9,
+			"total_functions": 9,
+			"untested": []
+		},
+		"res://scripts/effects/damage_number.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 3,
+			"total_functions": 3,
+			"untested": []
+		},
+		"res://scripts/effects/death_poof.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 1,
+			"total_functions": 1,
+			"untested": []
+		},
+		"res://scripts/effects/effect_base.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 2,
+			"total_functions": 2,
+			"untested": []
+		},
+		"res://scripts/effects/evoker_fang.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 6,
+			"total_functions": 6,
+			"untested": []
+		},
+		"res://scripts/effects/explosion.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 1,
+			"total_functions": 1,
+			"untested": []
+		},
+		"res://scripts/effects/hit_effect.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 1,
+			"total_functions": 1,
+			"untested": []
+		},
+		"res://scripts/effects/poison_cloud.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 10,
+			"total_functions": 10,
+			"untested": []
+		},
+		"res://scripts/effects/screen_shake.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 8,
+			"total_functions": 8,
+			"untested": []
+		},
+		"res://scripts/enemies/creeper.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 14,
+			"total_functions": 14,
+			"untested": []
+		},
+		"res://scripts/enemies/enderman.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 18,
+			"total_functions": 18,
+			"untested": []
+		},
+		"res://scripts/enemies/evoker.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 20,
+			"total_functions": 20,
+			"untested": []
+		},
+		"res://scripts/enemies/skeleton.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 13,
+			"total_functions": 13,
+			"untested": []
+		},
+		"res://scripts/enemies/spider.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 13,
+			"total_functions": 13,
+			"untested": []
+		},
+		"res://scripts/enemies/vex.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 10,
+			"total_functions": 10,
+			"untested": []
+		},
+		"res://scripts/enemies/witch.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 13,
+			"total_functions": 13,
+			"untested": []
+		},
+		"res://scripts/enemies/zombie.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 11,
+			"total_functions": 11,
+			"untested": []
+		},
+		"res://scripts/game.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 29,
+			"total_functions": 29,
+			"untested": []
+		},
+		"res://scripts/pickups/emerald_pickup.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 7,
+			"total_functions": 7,
+			"untested": []
+		},
+		"res://scripts/pickups/health_pickup.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 7,
+			"total_functions": 7,
+			"untested": []
+		},
+		"res://scripts/pickups/lucky_drop_pickup.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 7,
+			"total_functions": 7,
+			"untested": []
+		},
+		"res://scripts/pickups/meat_pickup.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 7,
+			"total_functions": 7,
+			"untested": []
+		},
+		"res://scripts/pickups/totem_pickup.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 7,
+			"total_functions": 7,
+			"untested": []
+		},
+		"res://scripts/pickups/xp_orb.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 6,
+			"total_functions": 6,
+			"untested": []
+		},
+		"res://scripts/player.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 19,
+			"total_functions": 19,
+			"untested": []
+		},
+		"res://scripts/projectiles/arrow.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 5,
+			"total_functions": 5,
+			"untested": []
+		},
+		"res://scripts/projectiles/crossbow_bolt.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 7,
+			"total_functions": 7,
+			"untested": []
+		},
+		"res://scripts/projectiles/player_arrow.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 8,
+			"total_functions": 8,
+			"untested": []
+		},
+		"res://scripts/projectiles/potion.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 7,
+			"total_functions": 7,
+			"untested": []
+		},
+		"res://scripts/spawner.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 17,
+			"total_functions": 17,
+			"untested": []
+		},
+		"res://scripts/systems/achievement.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 6,
+			"total_functions": 6,
+			"untested": []
+		},
+		"res://scripts/systems/achievement_manager.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 20,
+			"total_functions": 20,
+			"untested": []
+		},
+		"res://scripts/systems/character.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 4,
+			"total_functions": 4,
+			"untested": []
+		},
+		"res://scripts/systems/character_manager.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 11,
+			"total_functions": 11,
+			"untested": []
+		},
+		"res://scripts/systems/combo_system.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 6,
+			"total_functions": 6,
+			"untested": []
+		},
+		"res://scripts/systems/day_night_cycle.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 11,
+			"total_functions": 11,
+			"untested": []
+		},
+		"res://scripts/systems/game_stats.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 12,
+			"total_functions": 12,
+			"untested": []
+		},
+		"res://scripts/systems/health_pickup_spawner.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 10,
+			"total_functions": 10,
+			"untested": []
+		},
+		"res://scripts/systems/localization_manager.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 10,
+			"total_functions": 10,
+			"untested": []
+		},
+		"res://scripts/systems/lucky_drop.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 0,
+			"total_functions": 0,
+			"untested": []
+		},
+		"res://scripts/systems/score_calculator.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 0,
+			"total_functions": 0,
+			"untested": []
+		},
+		"res://scripts/systems/score_storage.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 8,
+			"total_functions": 8,
+			"untested": []
+		},
+		"res://scripts/systems/torch_manager.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 4,
+			"total_functions": 4,
+			"untested": []
+		},
+		"res://scripts/systems/upgrade.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 6,
+			"total_functions": 6,
+			"untested": []
+		},
+		"res://scripts/systems/upgrade_manager.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 27,
+			"total_functions": 27,
+			"untested": []
+		},
+		"res://scripts/systems/wave_manager.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 12,
+			"total_functions": 12,
+			"untested": []
+		},
+		"res://scripts/systems/weapon_evolution.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 2,
+			"total_functions": 2,
+			"untested": []
+		},
+		"res://scripts/systems/weapon_evolution_manager.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 10,
+			"total_functions": 10,
+			"untested": []
+		},
+		"res://scripts/ui/boss_health_bar.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 9,
+			"total_functions": 9,
+			"untested": []
+		},
+		"res://scripts/ui/game_over_ui.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 9,
+			"total_functions": 9,
+			"untested": []
+		},
+		"res://scripts/ui/hud.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 18,
+			"total_functions": 18,
+			"untested": []
+		},
+		"res://scripts/ui/main_menu.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 10,
+			"total_functions": 10,
+			"untested": []
+		},
+		"res://scripts/ui/pause_menu.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 10,
+			"total_functions": 10,
+			"untested": []
+		},
+		"res://scripts/ui/scoreboard_panel.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 6,
+			"total_functions": 6,
+			"untested": []
+		},
+		"res://scripts/ui/settings_panel.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 13,
+			"total_functions": 13,
+			"untested": []
+		},
+		"res://scripts/ui/splash_screen.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 2,
+			"total_functions": 2,
+			"untested": []
+		},
+		"res://scripts/ui/status_container.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 5,
+			"total_functions": 5,
+			"untested": []
+		},
+		"res://scripts/ui/status_icon.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 3,
+			"total_functions": 3,
+			"untested": []
+		},
+		"res://scripts/ui/upgrade_ui.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 22,
+			"total_functions": 22,
+			"untested": []
+		},
+		"res://scripts/weapons/bow.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 10,
+			"total_functions": 10,
+			"untested": []
+		},
+		"res://scripts/weapons/crossbow.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 9,
+			"total_functions": 9,
+			"untested": []
+		},
+		"res://scripts/weapons/diamond_sword.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 11,
+			"total_functions": 11,
+			"untested": []
+		},
+		"res://scripts/weapons/sword_base.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 26,
+			"total_functions": 26,
+			"untested": []
+		},
+		"res://scripts/weapons/torch.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 6,
+			"total_functions": 6,
+			"untested": []
+		}
+	},
+	"tested_functions": 637,
+	"timestamp": "2026-01-31T22:13:12",
+	"total_coverage_percent": 100.0,
+	"total_functions": 637
+}
