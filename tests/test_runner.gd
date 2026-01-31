@@ -1805,8 +1805,8 @@ func _test_bow_weapon() -> void:
 		_assert_true("level" in bow, "T5.W.7: Bow has level property")
 		_assert_true(bow.has_signal("arrow_fired"), "T5.W.8: Bow has arrow_fired signal")
 
-		# T5.W.16: Bow MAX_LEVEL is 12 (evolves to crossbow at level 12)
-		_assert_equal(bow.MAX_LEVEL, 12, "T5.W.16: Bow MAX_LEVEL is 12")
+		# T5.W.16: Bow MAX_LEVEL is 4 (evolves to crossbow at level 4)
+		_assert_equal(bow.MAX_LEVEL, 4, "T5.W.16: Bow MAX_LEVEL is 4")
 
 		# T5.W.17: Bow has evolved_to_crossbow signal
 		_assert_true(bow.has_signal("evolved_to_crossbow"), "T5.W.17: Bow has evolved_to_crossbow signal")

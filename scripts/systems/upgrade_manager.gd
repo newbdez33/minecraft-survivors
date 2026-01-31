@@ -182,8 +182,10 @@ func will_evolve_tier(upgrade_id: String) -> bool:
 			return next_level in [3, 6, 9]
 		"bow":
 			# Evolves to Crossbow when bow.level reaches 4
-			# next_level 3 -> bow.level becomes 4
-			return next_level == 3
+			# Bow is created at level 1 on first upgrade (current_level = 1)
+			# So bow.level = current_level, evolution at bow.level = 4
+			# Show evolution UI when next upgrade will trigger it (next_level = 4)
+			return next_level == 4
 		_:
 			return false
 
@@ -206,7 +208,7 @@ func get_next_tier_name(upgrade_id: String) -> String:
 				9: return tr("DIAMOND_SWORD")
 				_: return ""
 		"bow":
-			if next_level == 3:
+			if next_level == 4:
 				return tr("UPGRADE_CROSSBOW")
 			return ""
 		_:
@@ -246,9 +248,9 @@ func get_evolution_bonus_description(upgrade_id: String) -> String:
 
 		"bow":
 			# Bow→Crossbow evolution bonus
-			# Show when current_level = 2 (next_level = 3 triggers evolution)
+			# Show when current_level = 3 (next_level = 4 triggers evolution)
 			var upgrade = get_upgrade_by_id("bow")
-			if upgrade and upgrade.current_level == 2:
+			if upgrade and upgrade.current_level == 3:
 				var parts = []
 				parts.append("+%d DMG" % BOW_EVOLUTION_BONUS.damage)
 				parts.append("+%.0f Range" % BOW_EVOLUTION_BONUS.range)

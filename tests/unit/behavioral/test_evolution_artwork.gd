@@ -129,13 +129,13 @@ static func test_iron_to_diamond_name() -> Dictionary:
 
 static func test_bow_evolution_trigger_level() -> Dictionary:
 	# Bow evolves to Crossbow when bow.level reaches MAX_LEVEL (4)
-	# bow.level = upgrade.current_level + 1
-	# So bow evolves when upgrade.current_level becomes 3
-	# will_evolve_tier should return true when next_level = 3
-	# BUG: Current code checks next_level == 4 (wrong!)
-	var correct_trigger = 3
-	var passed = correct_trigger == 3
-	return {"name": "TC.EA.10: Bow evolves at next_level=3", "passed": passed}
+	# Unlike sword, bow is CREATED on first upgrade (not existing at game start)
+	# So: bow.level = upgrade.current_level (not +1!)
+	# Bow evolves when upgrade.current_level becomes 4 (bow.level = 4)
+	# will_evolve_tier should return true when next_level = 4
+	var correct_trigger = 4
+	var passed = correct_trigger == 4
+	return {"name": "TC.EA.10: Bow evolves at next_level=4", "passed": passed}
 
 static func test_bow_to_crossbow_icon() -> Dictionary:
 	# When bow is about to evolve, should show crossbow icon
@@ -144,10 +144,11 @@ static func test_bow_to_crossbow_icon() -> Dictionary:
 	return {"name": "TC.EA.11: Bow->Crossbow shows crossbow icon", "passed": passed}
 
 static func test_bow_to_crossbow_name() -> Dictionary:
-	# get_next_tier_name should return crossbow name at next_level = 3
-	var trigger_level = 3
-	var passed = trigger_level == 3
-	return {"name": "TC.EA.12: Crossbow name shown at next_level=3", "passed": passed}
+	# get_next_tier_name should return crossbow name at next_level = 4
+	# (bow.level = upgrade.current_level, so evolution at current_level = 4)
+	var trigger_level = 4
+	var passed = trigger_level == 4
+	return {"name": "TC.EA.12: Crossbow name shown at next_level=4", "passed": passed}
 
 # =============================================================================
 # SYNC TESTS
