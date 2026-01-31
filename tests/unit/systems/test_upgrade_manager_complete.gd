@@ -56,11 +56,6 @@ static func run_tests() -> Dictionary:
 	_add_result(results, test_get_weapon_upgrades_returns_array())
 	_add_result(results, test_all_weapons_maxed_method_exists())
 
-	# Torch Night Unlock Tests
-	_add_result(results, test_first_night_occurred_property())
-	_add_result(results, test_on_first_night_method_exists())
-	_add_result(results, test_torch_hidden_before_first_night())
-
 	# Apply Upgrade Tests
 	_add_result(results, test_apply_upgrade_method_exists())
 	_add_result(results, test_get_upgrade_by_id_method_exists())
@@ -325,46 +320,6 @@ static func test_all_weapons_maxed_method_exists() -> Dictionary:
 	return {"name": "TC.UM.22: Has all_weapons_maxed method", "passed": passed}
 
 # =============================================================================
-# TORCH NIGHT UNLOCK TESTS
-# =============================================================================
-
-static func test_first_night_occurred_property() -> Dictionary:
-	var manager = get_upgrade_manager_instance()
-	var passed = manager != null and "first_night_occurred" in manager
-	if manager:
-		manager.free()
-	return {"name": "TC.UM.23: Has first_night_occurred property", "passed": passed}
-
-static func test_on_first_night_method_exists() -> Dictionary:
-	var manager = get_upgrade_manager_instance()
-	var passed = manager != null and manager.has_method("on_first_night")
-	if manager:
-		manager.free()
-	return {"name": "TC.UM.24: Has on_first_night method", "passed": passed}
-
-static func test_torch_hidden_before_first_night() -> Dictionary:
-	var manager = get_upgrade_manager_instance()
-	if not manager:
-		return {"name": "TC.UM.25: Torch hidden before first night", "passed": false}
-
-	var player = get_mock_player()
-	if player:
-		manager.set_player(player)
-	manager._init_upgrades()
-	manager.first_night_occurred = false
-	var weapons = manager.get_weapon_upgrades()
-	var has_torch = false
-	for weapon in weapons:
-		if weapon.id == "torch":
-			has_torch = true
-			break
-	var passed = not has_torch
-	if player:
-		player.queue_free()
-	manager.free()
-	return {"name": "TC.UM.25: Torch hidden before first night", "passed": passed}
-
-# =============================================================================
 # APPLY UPGRADE TESTS
 # =============================================================================
 
@@ -523,7 +478,6 @@ static func get_tested_functions() -> Array:
 		"set_player",
 		"get_random_upgrades",
 		"get_weapon_upgrades",
-		"on_first_night",
 		"_get_weapon_node_name",
 		"get_weapon_icon",
 		"get_next_evolution_icon",

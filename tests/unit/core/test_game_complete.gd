@@ -85,7 +85,6 @@ static func get_tested_functions() -> Array:
 		"_on_boss_died",
 		"_on_boss_defeated",
 		"_on_torch_level_changed",
-		"_on_first_night",
 		"_on_player_effect_applied",
 		"_on_player_effect_removed",
 		"_on_time_changed",

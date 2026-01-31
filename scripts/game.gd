@@ -54,8 +54,6 @@ func _ready() -> void:
 			spawner.day_night_cycle = day_night_cycle
 			day_night_cycle.night_started.connect(spawner._on_night_started)
 			day_night_cycle.day_started.connect(spawner._on_day_started)
-		# Connect first night to enable torch upgrade
-		day_night_cycle.night_started.connect(_on_first_night)
 		day_night_cycle.start()
 
 	# Connect player health to HUD
@@ -286,11 +284,6 @@ func _on_boss_defeated() -> void:
 func _on_torch_level_changed(_level: int) -> void:
 	# Update fog visibility radius when torch is upgraded
 	_update_fog_of_war()
-
-func _on_first_night() -> void:
-	# Enable torch upgrade after first night
-	if upgrade_manager and upgrade_manager.has_method("on_first_night"):
-		upgrade_manager.on_first_night()
 
 ## Called when a status effect is applied to player
 func _on_player_effect_applied(effect) -> void:
