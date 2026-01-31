@@ -358,3 +358,18 @@ Detailed documentation is in `docs/`:
 - Texture compression (ETC2/ASTC) enabled for mobile
 - Knockback uses lerp decay for smooth physics
 - Single CanvasModulate for day/night tint (efficient)
+
+## Workflow Rules
+
+### Post-Testing Build
+After all tests pass, always rebuild the game to ensure the Build directory has the latest version:
+
+```bash
+# Windows build
+godot --headless --export-release "Windows Desktop" Build/game.exe
+
+# Or run the export script if available
+./export.sh
+```
+
+This ensures manual testing always uses the latest code.
