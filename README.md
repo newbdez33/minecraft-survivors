@@ -6,7 +6,7 @@
 
 A Vampire Survivors-like roguelike game with Minecraft theme. Play as Steve and survive waves of mobs!
 
-![Gameplay Screenshot](docs/screenshots/auto_test/009_wave_02_start.png)
+![Gameplay Screenshot](docs/screenshots/gameplay_zombies.png)
 
 ## Play Now
 
