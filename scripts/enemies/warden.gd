@@ -3,6 +3,8 @@ class_name Warden
 ## Warden Boss (Wave 20) - Sonic boom and anger tracking
 ## HP: 400, Damage: 40, Speed: 35
 
+const EnemyAnimatorClass = preload("res://scripts/components/enemy_animator.gd")
+
 signal died(xp_value: int)
 signal health_changed(current: int, maximum: int)
 
@@ -38,6 +40,10 @@ var _melee_timer: float = 0.0
 
 var target: Node2D = null
 
+# Animation
+var _animator = null  # EnemyAnimator instance
+var _was_moving: bool = false
+
 func _ready() -> void:
 	add_to_group("enemies")
 	add_to_group("boss")
@@ -46,7 +52,27 @@ func _ready() -> void:
 	if hitbox:
 		hitbox.body_entered.connect(_on_hitbox_body_entered)
 
+	# Setup animator
+	_setup_animator()
+
 	_find_target()
+
+
+func _setup_animator() -> void:
+	var sprite = get_node_or_null("Sprite2D")
+	if sprite:
+		_animator = EnemyAnimatorClass.new()
+		_animator.name = "EnemyAnimator"
+		# Warden-specific: heavy, breathing motion
+		_animator.walk_bob_height = 5.0
+		_animator.walk_bob_speed = 0.5
+		_animator.walk_tilt_angle = 3.0
+		_animator.walk_squash = 0.04  # Breathing pulse
+		_animator.attack_windup_time = 0.3
+		_animator.attack_strike_time = 0.15
+		_animator.attack_recovery_time = 0.3
+		add_child(_animator)
+		_animator.setup(sprite)
 
 func _find_target() -> void:
 	await get_tree().process_frame
@@ -75,6 +101,14 @@ func _physics_process(delta: float) -> void:
 		State.MELEE_ATTACK:
 			pass
 
+	# Prevent sticking to player - strong separation when too close
+	var distance = global_position.distance_to(target.global_position)
+	var min_distance = 50.0
+	if distance < min_distance and distance > 0:
+		var push_direction = (global_position - target.global_position).normalized()
+		var push_strength = (min_distance - distance) / min_distance
+		velocity = push_direction * speed * push_strength * 2.0
+
 	move_and_slide()
 
 func _process_idle(_delta: float) -> void:
@@ -93,6 +127,22 @@ func _process_idle(_delta: float) -> void:
 	# Move toward player
 	var direction = (target.global_position - global_position).normalized()
 	velocity = direction * speed
+
+	# Update walk animation
+	var is_moving = velocity.length() > 10.0
+	_update_walk_animation(is_moving)
+
+
+func _update_walk_animation(is_moving: bool) -> void:
+	if _animator == null:
+		return
+
+	if is_moving and not _was_moving:
+		_animator.start_walk_animation()
+	elif not is_moving and _was_moving:
+		_animator.stop_walk_animation()
+
+	_was_moving = is_moving
 
 func _process_tracking(_delta: float) -> void:
 	# More aggressive when angry
@@ -117,6 +167,11 @@ func _do_sonic_boom() -> void:
 	_state = State.SONIC_BOOM
 	_sonic_timer = 0.0
 	velocity = Vector2.ZERO
+
+	# Play sonic boom animation
+	if _animator:
+		_animator.stop_walk_animation()
+		_animator.play_sonic_boom()
 
 	# Charging animation
 	await get_tree().create_timer(0.5).timeout
@@ -146,6 +201,10 @@ func _do_melee_attack() -> void:
 	_state = State.MELEE_ATTACK
 	_melee_timer = 0.0
 
+	# Play attack animation
+	if _animator:
+		_animator.play_attack_animation()
+
 	if target and is_instance_valid(target):
 		var distance = global_position.distance_to(target.global_position)
 		if distance <= 60:
@@ -169,6 +228,10 @@ func take_damage(amount: int) -> void:
 	# Taking damage increases anger
 	_update_anger(20)
 
+	# Play hit reaction
+	if _animator:
+		_animator.play_hit_reaction()
+
 	_spawn_hit_effect()
 
 	if health <= 0:
@@ -187,6 +250,10 @@ func _spawn_hit_effect() -> void:
 		get_tree().current_scene.call_deferred("add_child", hit)
 
 func _on_died() -> void:
+	# Clean up animator
+	if _animator:
+		_animator.reset_to_original()
+
 	died.emit(xp_value)
 	_spawn_death_effect()
 	_spawn_drops()

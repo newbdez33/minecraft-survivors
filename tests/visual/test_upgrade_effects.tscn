@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://c2n8wv4pxk6ml"]
+
+[ext_resource type="Script" path="res://tests/visual/test_upgrade_effects.gd" id="1_test"]
+
+[node name="TestUpgradeEffects" type="Node2D"]
+script = ExtResource("1_test")

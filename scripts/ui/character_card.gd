@@ -6,10 +6,10 @@ class_name CharacterCard
 
 signal selected()
 
-@onready var sprite: TextureRect = $VBox/Sprite
-@onready var name_label: Label = $VBox/NameLabel
-@onready var stats_container: VBoxContainer = $VBox/StatsContainer
-@onready var desc_label: Label = $VBox/DescLabel
+@onready var sprite: TextureRect = $MarginContainer/VBox/Sprite
+@onready var name_label: Label = $MarginContainer/VBox/NameLabel
+@onready var stats_container: VBoxContainer = $MarginContainer/VBox/StatsContainer
+@onready var desc_label: Label = $MarginContainer/VBox/DescLabel
 @onready var lock_overlay: ColorRect = $LockOverlay
 @onready var lock_label: Label = $LockOverlay/LockLabel
 
@@ -56,13 +56,19 @@ func _update_display() -> void:
 	if not character:
 		return
 
-	# Update name
+	# Update name (use translation key if available)
 	if name_label:
-		name_label.text = character.name
+		var name_key = "CHARACTER_" + character.id.to_upper()
+		var translated_name = tr(name_key)
+		# Use translation if found, otherwise fall back to character.name
+		name_label.text = translated_name if translated_name != name_key else character.name
 
-	# Update description
+	# Update description (use translation key if available)
 	if desc_label:
-		desc_label.text = character.description
+		var desc_key = "DESC_" + character.id.to_upper()
+		var translated_desc = tr(desc_key)
+		# Use translation if found, otherwise fall back to character.description
+		desc_label.text = translated_desc if translated_desc != desc_key else character.description
 
 	# Update stats display
 	_update_stats_display()
@@ -78,7 +84,10 @@ func _update_display() -> void:
 	if lock_overlay:
 		lock_overlay.visible = not is_unlocked
 	if lock_label and not is_unlocked:
-		lock_label.text = character.unlock_requirement
+		# Try to translate the unlock requirement
+		var unlock_key = character.unlock_requirement.to_upper().replace(" ", "_").replace("FOR", "")
+		var translated_req = tr(unlock_key)
+		lock_label.text = translated_req if translated_req != unlock_key else character.unlock_requirement
 
 	# Visual selection indicator - show clear selected state
 	_update_selection_visual()
@@ -108,17 +117,18 @@ func _update_stats_display() -> void:
 	for child in stats_container.get_children():
 		child.queue_free()
 
-	# Add stats
-	_add_stat_label("HP", character.health_mult)
-	_add_stat_label("Speed", character.speed_mult)
-	_add_stat_label("Damage", character.damage_mult)
-	_add_stat_label("XP", character.xp_mult)
-	_add_stat_label("Pickup", character.pickup_range_mult)
+	# Add stats with translation keys
+	_add_stat_label("STAT_HP", character.health_mult)
+	_add_stat_label("STAT_SPEED", character.speed_mult)
+	_add_stat_label("STAT_DAMAGE", character.damage_mult)
+	_add_stat_label("STAT_XP", character.xp_mult)
+	_add_stat_label("STAT_PICKUP", character.pickup_range_mult)
 
-func _add_stat_label(stat_name: String, multiplier: float) -> void:
+func _add_stat_label(stat_key: String, multiplier: float) -> void:
 	var label = Label.new()
 	var percent = int((multiplier - 1.0) * 100)
 	var sign_str = "+" if percent >= 0 else ""
+	var stat_name = tr(stat_key)
 
 	if percent == 0:
 		label.text = "%s: --" % stat_name

@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://b5k8rm2qv7n3p"]
+
+[ext_resource type="Script" path="res://tests/visual/test_all_enemies_animations.gd" id="1_test"]
+
+[node name="TestAllEnemiesAnimations" type="Node2D"]
+script = ExtResource("1_test")

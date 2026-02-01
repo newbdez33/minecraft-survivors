@@ -35,21 +35,7 @@ func _ready() -> void:
 	# Update all labels with translations
 	_update_labels()
 
-
-func _check_test_mode() -> bool:
-	var args = OS.get_cmdline_args()
-	for arg in args:
-		if arg == "--test-mode" or arg.begins_with("--test"):
-			print("[MAIN MENU] Test mode detected, skipping to game...")
-			# Defer the scene change to avoid issues during _ready
-			call_deferred("_start_game_for_test")
-			return true
-	return false
-
-
-func _start_game_for_test() -> void:
-	get_tree().change_scene_to_file("res://scenes/main.tscn")
-
+	# Connect button signals
 	if _start_button:
 		_start_button.pressed.connect(_on_start_pressed)
 	if _character_button:
@@ -76,6 +62,21 @@ func _start_game_for_test() -> void:
 		_character_panel.closed.connect(_on_panel_closed)
 		if _character_manager:
 			_character_panel.set_character_manager(_character_manager)
+
+
+func _check_test_mode() -> bool:
+	var args = OS.get_cmdline_args()
+	for arg in args:
+		if arg == "--test-mode" or arg.begins_with("--test"):
+			print("[MAIN MENU] Test mode detected, skipping to game...")
+			# Defer the scene change to avoid issues during _ready
+			call_deferred("_start_game_for_test")
+			return true
+	return false
+
+
+func _start_game_for_test() -> void:
+	get_tree().change_scene_to_file("res://scenes/main.tscn")
 
 func _load_language_setting() -> void:
 	var save_path = "user://settings.json"

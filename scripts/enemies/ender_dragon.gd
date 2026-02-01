@@ -3,6 +3,8 @@ class_name EnderDragon
 ## Ender Dragon Boss (Wave 30) - Final boss with fireball and dive attacks
 ## HP: 800, Damage: 50, Speed: 60
 
+const EnemyAnimatorClass = preload("res://scripts/components/enemy_animator.gd")
+
 signal died(xp_value: int)
 signal health_changed(current: int, maximum: int)
 
@@ -42,6 +44,9 @@ var _dive_target: Vector2 = Vector2.ZERO
 var target: Node2D = null
 var _center_point: Vector2 = Vector2.ZERO
 
+# Animation
+var _animator = null  # EnemyAnimator instance
+
 func _ready() -> void:
 	add_to_group("enemies")
 	add_to_group("boss")
@@ -51,7 +56,26 @@ func _ready() -> void:
 	if hitbox:
 		hitbox.body_entered.connect(_on_hitbox_body_entered)
 
+	# Setup animator
+	_setup_animator()
+
 	_find_target()
+
+
+func _setup_animator() -> void:
+	var sprite = get_node_or_null("Sprite2D")
+	if sprite:
+		_animator = EnemyAnimatorClass.new()
+		_animator.name = "EnemyAnimator"
+		# Dragon-specific animation: majestic flying motion
+		_animator.walk_bob_height = 8.0
+		_animator.walk_bob_speed = 0.6
+		_animator.walk_tilt_angle = 10.0
+		_animator.walk_squash = 0.03
+		add_child(_animator)
+		_animator.setup(sprite)
+		# Dragon is always flying - start animation immediately
+		_animator.start_walk_animation()
 
 func _find_target() -> void:
 	await get_tree().process_frame
@@ -82,6 +106,14 @@ func _physics_process(delta: float) -> void:
 		State.FIREBALL_ATTACK:
 			pass
 
+	# Prevent sticking to player - strong separation when too close
+	var distance = global_position.distance_to(target.global_position)
+	var min_distance = 80.0  # Larger for big boss
+	if distance < min_distance and distance > 0:
+		var push_direction = (global_position - target.global_position).normalized()
+		var push_strength = (min_distance - distance) / min_distance
+		velocity = push_direction * speed * push_strength * 2.0
+
 	move_and_slide()
 
 func _fly_pattern(delta: float) -> void:
@@ -111,6 +143,15 @@ func _start_dive_attack() -> void:
 	_dive_timer = 0.0
 	_dive_target = target.global_position if target else global_position
 
+	# Stop flying animation and play dive stretch
+	if _animator:
+		_animator.stop_walk_animation()
+		# Stretch effect for diving
+		var sprite = get_node_or_null("Sprite2D")
+		if sprite:
+			var tween = create_tween()
+			tween.tween_property(sprite, "scale", Vector2(0.8, 1.3), 0.2)
+
 func _process_dive(_delta: float) -> void:
 	var direction = (_dive_target - global_position).normalized()
 	velocity = direction * dive_speed
@@ -125,6 +166,9 @@ func _process_dive(_delta: float) -> void:
 					target.take_damage(dive_damage)
 		_spawn_dive_impact()
 		_state = State.FLYING
+		# Resume flying animation after dive
+		if _animator:
+			_animator.start_walk_animation()
 
 func _spawn_dive_impact() -> void:
 	var hit_scene = load("res://scenes/effects/hit_effect.tscn")
@@ -138,6 +182,10 @@ func _spawn_dive_impact() -> void:
 func _do_fireball_attack() -> void:
 	_state = State.FIREBALL_ATTACK
 	_fireball_timer = 0.0
+
+	# Play breath attack animation
+	if _animator:
+		_animator.play_breath_attack()
 
 	await get_tree().create_timer(0.3).timeout
 
@@ -177,6 +225,10 @@ func take_damage(amount: int) -> void:
 	health -= reduced_damage
 	health_changed.emit(health, max_health)
 
+	# Play hit reaction
+	if _animator:
+		_animator.play_hit_reaction()
+
 	_spawn_hit_effect()
 
 	if health <= 0:
@@ -195,6 +247,10 @@ func _spawn_hit_effect() -> void:
 		get_tree().current_scene.call_deferred("add_child", hit)
 
 func _on_died() -> void:
+	# Clean up animator
+	if _animator:
+		_animator.reset_to_original()
+
 	died.emit(xp_value)
 	_spawn_death_effect()
 	_spawn_drops()

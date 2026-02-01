@@ -2,6 +2,8 @@ extends CharacterBody2D
 class_name Skeleton
 ## Ranged enemy that shoots arrows at the player
 
+const EnemyAnimatorClass = preload("res://scripts/components/enemy_animator.gd")
+
 signal died(xp_value: int)
 
 @export var speed: float = 40.0
@@ -18,6 +20,10 @@ var can_attack: bool = true
 var knockback_velocity: Vector2 = Vector2.ZERO
 var knockback_decay: float = 10.0
 
+# Animation
+var _animator = null  # EnemyAnimator instance
+var _was_moving: bool = false
+
 func _ready() -> void:
 	add_to_group("enemies")
 
@@ -31,7 +37,30 @@ func _ready() -> void:
 	if timer:
 		timer.timeout.connect(_on_attack_timer_timeout)
 
+	# Setup animator
+	_setup_animator()
+
 	_find_target()
+
+
+func _setup_animator() -> void:
+	var sprite = get_node_or_null("Sprite2D")
+	if sprite:
+		_animator = EnemyAnimatorClass.new()
+		_animator.name = "EnemyAnimator"
+		# Skeleton-specific animation settings: rattling bones
+		_animator.walk_bob_height = 2.0
+		_animator.walk_bob_speed = 0.25
+		_animator.walk_tilt_angle = 3.0
+		_animator.walk_squash = 0.03
+		# Attack is bow draw - lean back then release
+		_animator.attack_windup_time = 0.3
+		_animator.attack_windup_angle = -20.0
+		_animator.attack_strike_time = 0.08
+		_animator.attack_strike_angle = 10.0
+		_animator.attack_recovery_time = 0.2
+		add_child(_animator)
+		_animator.setup(sprite)
 
 func _find_target() -> void:
 	await get_tree().process_frame
@@ -45,9 +74,11 @@ func _physics_process(delta: float) -> void:
 		knockback_velocity = knockback_velocity.lerp(Vector2.ZERO, knockback_decay * delta)
 		velocity = knockback_velocity
 		move_and_slide()
+		_update_walk_animation(false)
 		return
 
 	if not target or not is_instance_valid(target):
+		_update_walk_animation(false)
 		return
 
 	var distance = global_position.distance_to(target.global_position)
@@ -61,17 +92,34 @@ func _physics_process(delta: float) -> void:
 	else:
 		velocity = Vector2.ZERO
 
-	# Prevent sticking to player - add separation when too close
-	var min_distance = 30.0
+	# Prevent sticking to player - strong separation when too close
+	var min_distance = 40.0
 	if distance < min_distance and distance > 0:
 		var push_direction = (global_position - target.global_position).normalized()
-		velocity += push_direction * (min_distance - distance) * 5.0
+		var push_strength = (min_distance - distance) / min_distance
+		velocity = push_direction * speed * push_strength * 2.0
 
 	move_and_slide()
+
+	# Update walk animation based on movement
+	var is_moving = velocity.length() > 10.0
+	_update_walk_animation(is_moving)
 
 	# Shoot if in range
 	if distance <= attack_range and can_attack:
 		shoot_arrow()
+
+
+func _update_walk_animation(is_moving: bool) -> void:
+	if _animator == null:
+		return
+
+	if is_moving and not _was_moving:
+		_animator.start_walk_animation()
+	elif not is_moving and _was_moving:
+		_animator.stop_walk_animation()
+
+	_was_moving = is_moving
 
 func apply_knockback(force: Vector2) -> void:
 	knockback_velocity = force
@@ -81,6 +129,10 @@ func shoot_arrow() -> void:
 		return
 
 	can_attack = false
+
+	# Play bow draw animation
+	if _animator:
+		_animator.play_attack_animation()
 
 	var arrow_scene = load("res://scenes/projectiles/arrow.tscn")
 	if arrow_scene and get_tree() and get_tree().current_scene:
@@ -108,6 +160,11 @@ func _on_hitbox_body_entered(body: Node2D) -> void:
 
 func take_damage(amount: int) -> void:
 	health -= amount
+
+	# Play hit reaction animation
+	if _animator:
+		_animator.play_hit_reaction()
+
 	_spawn_hit_effect()
 
 	if health <= 0:
@@ -121,6 +178,10 @@ func _spawn_hit_effect() -> void:
 		get_tree().current_scene.call_deferred("add_child", hit)
 
 func _on_died() -> void:
+	# Clean up animator before death
+	if _animator:
+		_animator.reset_to_original()
+
 	died.emit(xp_value)
 	_spawn_death_effect()
 	_spawn_xp_orb()

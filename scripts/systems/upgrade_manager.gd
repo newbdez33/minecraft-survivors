@@ -3,6 +3,8 @@ class_name UpgradeManager
 ## Manages all available upgrades and applies them to the player
 
 const UpgradeClass = preload("res://scripts/systems/upgrade.gd")
+const UpgradeEffectClass = preload("res://scripts/effects/upgrade_effect.gd")
+const StatPopupClass = preload("res://scripts/effects/stat_popup.gd")
 
 signal upgrade_applied(upgrade)
 
@@ -292,7 +294,52 @@ func apply_upgrade(upgrade) -> void:
 
 	upgrade.current_level += 1
 	_apply_effect(upgrade)
+
+	# Play visual feedback
+	_play_upgrade_visual(upgrade)
+
 	upgrade_applied.emit(upgrade)
+
+
+func _play_upgrade_visual(upgrade) -> void:
+	"""Play visual feedback for upgrade application"""
+	if not player or not is_instance_valid(player):
+		return
+
+	# Play upgrade effect on player
+	UpgradeEffectClass.play_upgrade_effect(player, upgrade.id, upgrade.current_level)
+
+	# Spawn stat popup with upgrade info
+	var popup_text = _get_upgrade_popup_text(upgrade)
+	var popup_color = UpgradeEffectClass.get_upgrade_color(upgrade.id)
+	UpgradeEffectClass.spawn_stat_popup(player, popup_text, popup_color)
+
+
+func _get_upgrade_popup_text(upgrade) -> String:
+	"""Get the stat change text for popup display"""
+	match upgrade.id:
+		"sharpness":
+			return "+%d DMG" % int(upgrade.effect_per_level)
+		"protection":
+			return "-%d%% DMG Taken" % int(upgrade.effect_per_level)
+		"swiftness":
+			return "+%d%% Speed" % int(upgrade.effect_per_level)
+		"knockback":
+			return "+%d Knockback" % int(upgrade.effect_per_level)
+		"looting":
+			return "+%d%% XP" % int(upgrade.effect_per_level)
+		"sweeping":
+			return "+%d Range" % int(upgrade.effect_per_level)
+		"haste":
+			return "-%d%% Cooldown" % int(upgrade.effect_per_level)
+		"sword":
+			return "Sword Lv.%d" % upgrade.current_level
+		"bow":
+			return "Bow Lv.%d" % upgrade.current_level
+		"torch":
+			return "Torch Lv.%d" % upgrade.current_level
+		_:
+			return "Lv.%d" % upgrade.current_level
 
 func _apply_effect(upgrade) -> void:
 	if not player:
@@ -327,8 +374,12 @@ func _apply_sword(_upgrade) -> void:
 
 func _apply_sharpness(upgrade) -> void:
 	var sword = player.get_node_or_null("Sword")
-	if sword and "damage" in sword:
-		sword.damage += int(upgrade.effect_per_level)
+	if sword:
+		# Add to enhancement bonus (persists through weapon upgrades)
+		if "enhancement_damage_bonus" in sword:
+			sword.enhancement_damage_bonus += int(upgrade.effect_per_level)
+		# Also update current damage immediately
+		sword.damage = sword.get_total_damage() if sword.has_method("get_total_damage") else sword.damage + int(upgrade.effect_per_level)
 
 func _apply_knockback(upgrade) -> void:
 	var sword = player.get_node_or_null("Sword")
@@ -353,8 +404,12 @@ func _apply_swiftness(upgrade) -> void:
 
 func _apply_sweeping(upgrade) -> void:
 	var sword = player.get_node_or_null("Sword")
-	if sword and "attack_range" in sword:
-		sword.attack_range += upgrade.effect_per_level
+	if sword:
+		# Add to enhancement bonus (persists through weapon upgrades)
+		if "enhancement_range_bonus" in sword:
+			sword.enhancement_range_bonus += upgrade.effect_per_level
+		# Update current range immediately
+		sword.attack_range = sword.get_total_range() if sword.has_method("get_total_range") else sword.attack_range + upgrade.effect_per_level
 		# Update collision shape
 		var shape = sword.get_node_or_null("CollisionShape2D")
 		if shape and shape.shape is CircleShape2D:
@@ -364,13 +419,17 @@ func _apply_sweeping(upgrade) -> void:
 
 func _apply_haste(upgrade) -> void:
 	var sword = player.get_node_or_null("Sword")
-	if sword and "attack_speed" in sword:
-		# Reduce cooldown by percentage (e.g., 10% per level)
+	if sword:
+		# Add to enhancement cooldown reduction (persists through weapon upgrades)
 		var reduction = upgrade.effect_per_level / 100.0
-		sword.attack_speed *= (1.0 - reduction)
-	elif sword and "cooldown" in sword:
-		var reduction = upgrade.effect_per_level / 100.0
-		sword.cooldown *= (1.0 - reduction)
+		if "enhancement_cooldown_reduction" in sword:
+			sword.enhancement_cooldown_reduction += reduction
+		# Update current cooldown immediately
+		sword.attack_cooldown = sword.get_total_cooldown() if sword.has_method("get_total_cooldown") else sword.attack_cooldown * (1.0 - reduction)
+		# Update timer
+		var timer = sword.get_node_or_null("AttackTimer")
+		if timer:
+			timer.wait_time = sword.attack_cooldown
 
 func _apply_torch(_upgrade) -> void:
 	var torch = player.get_node_or_null("Torch") if player else null
