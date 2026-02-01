@@ -56,7 +56,17 @@ jobs:
         shell: bash
 
       - name: Build Windows
-        run: godot --headless --export-release "Windows Desktop" build/windows/${{ env.GAME_NAME }}.exe
+        run: |
+          godot --headless --verbose --export-release "Windows Desktop" build/windows/${{ env.GAME_NAME }}.exe 2>&1
+          if (!(Test-Path "build/windows/${{ env.GAME_NAME }}.exe")) {
+            Write-Host "Build directory contents:"
+            Get-ChildItem -Path build -Recurse -ErrorAction SilentlyContinue | Format-Table FullName, Length
+            Write-Error "Export failed - executable not found at build/windows/${{ env.GAME_NAME }}.exe"
+            exit 1
+          }
+          Write-Host "Build successful! Files created:"
+          Get-ChildItem -Path build/windows -Recurse | Format-Table Name, Length
+        shell: pwsh
         timeout-minutes: 10
 
       - name: Package Windows
