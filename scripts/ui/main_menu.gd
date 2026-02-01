@@ -25,11 +25,30 @@ signal quit_pressed
 @onready var _character_manager: Node = $CharacterManager
 
 func _ready() -> void:
+	# Check for test mode - auto-skip menu
+	if _check_test_mode():
+		return
+
 	# Load saved language setting
 	_load_language_setting()
 
 	# Update all labels with translations
 	_update_labels()
+
+
+func _check_test_mode() -> bool:
+	var args = OS.get_cmdline_args()
+	for arg in args:
+		if arg == "--test-mode" or arg.begins_with("--test"):
+			print("[MAIN MENU] Test mode detected, skipping to game...")
+			# Defer the scene change to avoid issues during _ready
+			call_deferred("_start_game_for_test")
+			return true
+	return false
+
+
+func _start_game_for_test() -> void:
+	get_tree().change_scene_to_file("res://scenes/main.tscn")
 
 	if _start_button:
 		_start_button.pressed.connect(_on_start_pressed)

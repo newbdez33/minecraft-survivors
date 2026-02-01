@@ -438,7 +438,7 @@ func _load_language_setting() -> void:
 
 ## Test Mode Support
 func _check_test_mode() -> void:
-	var args = OS.get_cmdline_user_args()
+	var args = OS.get_cmdline_args()
 	var test_mode_enabled = false
 
 	for arg in args:

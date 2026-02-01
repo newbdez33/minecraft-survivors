@@ -6,6 +6,11 @@ extends CanvasLayer
 @onready var logo_container: CenterContainer = $LogoContainer
 
 func _ready() -> void:
+	# Check for test mode - skip splash and menu
+	if _check_test_mode():
+		call_deferred("_load_game_direct")
+		return
+
 	# Start invisible
 	background.modulate.a = 0.0
 	logo_container.modulate.a = 0.0
@@ -25,6 +30,19 @@ func _ready() -> void:
 
 	tween.set_parallel(false)
 	tween.tween_callback(_load_main_menu)
+
+
+func _check_test_mode() -> bool:
+	var args = OS.get_cmdline_args()
+	for arg in args:
+		if arg == "--test-mode" or arg.begins_with("--test"):
+			print("[SPLASH] Test mode detected, skipping to game...")
+			return true
+	return false
+
+
+func _load_game_direct() -> void:
+	get_tree().change_scene_to_file("res://scenes/main.tscn")
 
 
 func _load_main_menu() -> void:
