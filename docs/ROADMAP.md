@@ -80,10 +80,10 @@
 
 ---
 
-### 🔄 Phase 5: Game Enhancements / 游戏增强
-**Status: IN PROGRESS (90%)**
+### ✅ Phase 5: Game Enhancements / 游戏增强
+**Status: COMPLETE**
 
-#### ✅ Completed Features
+#### Completed Features
 
 | Feature | Description | Doc |
 |---------|-------------|-----|
@@ -103,32 +103,27 @@
 | Fog of War | Circular night visibility | [night_mechanics.md](./design/night_mechanics.md) |
 | Enderman Dodge | Arrow dodge (random teleport) | [night_mechanics.md](./design/night_mechanics.md) |
 | Poison Hearts | Green hearts when poisoned | [night_mechanics.md](./design/night_mechanics.md) |
-
-#### ⏳ Remaining Features
-
-| Feature | Priority | Description |
-|---------|----------|-------------|
-| Achievement System | Medium | Milestones and unlocks |
-| Boss Enemies | High | Wave bosses (Wither, Ender Dragon) |
-| Elite Monsters | High | Enhanced versions of all enemies |
+| Enemy Animation System | Procedural Tween-based animations | - |
+| Upgrade Visual Feedback | Color-coded effects and stat popups | - |
+| Character Selection | Steve and Alex with unique stats | - |
 
 📄 Details: [phase5_enhancements.md](./phases/phase5_enhancements.md)
 
 ---
 
-### 🔄 Phase 6: Bosses & Elites / Boss与精英怪
-**Status: IN PROGRESS (17%)**
+### ✅ Phase 6: Boss System / Boss系统
+**Status: COMPLETE**
 
 #### Boss System
 
 | Boss | Wave | HP | Special Ability | Status |
 |------|------|-----|-----------------|--------|
-| Evoker / 唤魔者 | 5 | 100 | Summons Vexes, Fang Attack | ✅ **DONE** |
-| Elder Guardian / 远古守卫者 | 10 | 150 | Laser attack | ⏳ Planned |
-| Ravager / 劫掠兽 | 15 | 200 | Charge attack | ⏳ Planned |
-| Warden / 监守者 | 20 | 400 | Sonic boom | ⏳ Planned |
-| Wither / 凋灵 | 25 | 500 | Wither skulls, summons skeletons | ⏳ Planned |
-| Ender Dragon / 末影龙 | 30 | 800 | Dragon breath, flight (FINAL BOSS) | ⏳ Planned |
+| Evoker / 唤魔者 | 5 | 400 | Summons Vexes, Fang Attack | ✅ **DONE** |
+| Elder Guardian / 远古守卫者 | 10 | 600 | Mining fatigue beam | ✅ **DONE** |
+| Ravager / 劫掠兽 | 15 | 800 | Charge attack | ✅ **DONE** |
+| Warden / 监守者 | 20 | 1000 | Sonic boom | ✅ **DONE** |
+| Wither / 凋灵 | 25 | 1200 | Wither skulls | ✅ **DONE** |
+| Ender Dragon / 末影龙 | 30 | 1500 | Dragon breath (FINAL BOSS) | ✅ **DONE** |
 
 #### ✅ Implemented Features
 
@@ -145,27 +140,7 @@
 
 📄 Details: [boss_enemies.md](./design/boss_enemies.md)
 
-#### Elite Monster System
-
-| Elite | HP | XP | Special Ability |
-|-------|-----|-----|-----------------|
-| Elite Zombie / 精英僵尸 | 50 | 25 | Summons 2 zombies on death |
-| Elite Skeleton / 精英骷髅 | 38 | 40 | Multi-shot (3 arrows) |
-| Elite Spider / 精英蜘蛛 | 30 | 30 | Venom attack (poison) |
-| Elite Creeper / 精英苦力怕 | 63 | 50 | Chain lightning explosion |
-| Elite Enderman / 精英末影人 | 100 | 75 | Double strike |
-| Elite Witch / 精英女巫 | 50 | 60 | Potion storm (3 potions) |
-
-**Spawn Rates:**
-- Wave 1-3: 0%
-- Wave 4-6: 5%
-- Wave 7-9: 10%
-- Wave 10-14: 15%
-- Wave 15-19: 20%
-- Wave 20+: 25%
-- Night bonus: +10%
-
-📄 Details: [elite_monsters.md](./design/elite_monsters.md)
+📄 Details: [boss_enemies.md](./design/boss_enemies.md)
 
 ---
 
@@ -174,11 +149,12 @@
 
 | Feature | Priority | Description |
 |---------|----------|-------------|
-| Crafting System | High | Material collection, auto-craft |
-| MC Dungeons Weapons | High | More weapon types (Glaive, Daggers, etc.) |
+| Achievement System | High | Milestones, unlocks |
+| Elite Monsters | High | Enhanced versions of all enemies |
+| Crafting System | Medium | Material collection, auto-craft |
+| MC Dungeons Weapons | Medium | More weapon types (Glaive, Daggers, etc.) |
 | Sound & Music | Medium | BGM, SFX |
-| Achievement System | Medium | Milestones, unlocks |
-| More Characters | Low | Alex, Zombie Steve, etc. |
+| More Characters | Low | Zombie Steve, etc. |
 | Daily Challenge | Low | Daily missions |
 | Economy System | Low | Emeralds, meta progression |
 
@@ -253,17 +229,17 @@
 
 ## Test Status / 测试状态
 
-**Total Tests: 701**
-- Passed: 659
-- Failed: 42 (pre-existing issues)
+**Total Tests: 517+**
+- Unit Tests: 389 (all passing)
+- Visual Tests: 128 (all passing)
 
 ```
 Phase 1: Core Foundation    - 37 tests
 Phase 2: Combat Basics      - 32 tests
 Phase 3: Progression Loop   - 63 tests
 Phase 4: Game Feel          - 145 tests
-Phase 5: Game Enhancements  - 361 tests
-Phase 6: Boss System        - 63 tests (NEW - all passing)
+Phase 5: Game Enhancements  - 112 tests
+Visual Tests                - 128 tests (animations, upgrades, enemies)
 ```
 
 📄 Details: [testing/guide.md](./testing/guide.md)
@@ -282,7 +258,8 @@ Phase 6: Boss System        - 63 tests (NEW - all passing)
 
 | Version | Date | Highlights |
 |---------|------|------------|
-| v0.6.0 | 2026-01-29 | **Evoker Boss**, Vex minions, Fang attack, Boss health bar |
+| v0.6.2 | 2026-02-01 | Enemy animations, upgrade visual feedback, Windows build fix |
+| v0.6.0 | 2026-01-29 | **All 6 Bosses**, Evoker/Elder Guardian/Ravager/Warden/Wither/Ender Dragon |
 | v0.5.0 | 2026-01-26 | Torch fog system, bow rebalance, elite/boss design |
 | v0.4.0 | 2026-01-24 | Night mechanics, poison hearts, Enderman dodge |
 | v0.3.0 | 2026-01-22 | Weapon evolution, health pickups |
@@ -297,4 +274,4 @@ See [CLAUDE.md](../CLAUDE.md) for development guidelines and code conventions.
 
 ---
 
-*Last Updated: 2026-01-29*
+*Last Updated: 2026-02-01*

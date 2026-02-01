@@ -2,7 +2,8 @@
 
 **Last Updated:** 2026-02-01
 **Project:** Minecraft Survivors
-**Current Phase:** Phase 5 - Game Enhancements (IN PROGRESS 🔄)
+**Version:** v0.6.2-alpha
+**Current Phase:** Phase 5 & 6 Complete ✅ | Phase 7 Planning
 
 ---
 
@@ -73,14 +74,15 @@ A Vampire Survivors-like roguelike game with Minecraft theme built in Godot 4.5.
 
 ## Test Status
 
-**389 tests passing** (0 failures)
+**517+ tests passing** (0 failures)
 
 ```
 Phase 1: Core Foundation - 37 tests
 Phase 2: Combat Basics - 32 tests
-Phase 3: Progression Loop - 63 tests (incl. Upgrade UI timer tests)
-Phase 4: Game Feel - 145 tests (incl. Enderman, Witch, Potion, Integration, Day/Night)
-Phase 5: Game Enhancements - 112 tests (Status Effects, Score, Combo, Weapons, UI)
+Phase 3: Progression Loop - 63 tests
+Phase 4: Game Feel - 145 tests
+Phase 5: Game Enhancements - 112 tests
+Visual Tests - 128 tests (enemy animations, upgrade effects, all enemies)
 ```
 
 Run tests with:
@@ -218,9 +220,20 @@ See [phase5_enhancements.md](./phases/phase5_enhancements.md) for detailed plan.
 - [x] **Auto Test Mode**: Automatic gameplay testing with screenshots
 - [x] **HUD Localization**: Level/Wave/Kills labels translated with real-time refresh
 
-**Phase 5 Features Remaining:**
+**Phase 5 New Features (Latest):**
+- [x] **Enemy Animation System**: Procedural Tween-based animations for all 12 enemies
+  - Walk animations (bob, tilt, squash effects)
+  - Attack animations (windup → strike → recovery)
+  - Hit reactions (flash + shake)
+  - Special animations for bosses (breath, laser, sonic boom)
+- [x] **Upgrade Visual Feedback**: Color-coded effects and floating stat popups
+- [x] **Character Selection UI**: Steve and Alex with localized stats
+- [x] **Enhancement Bonus Tracking**: Separated from weapon level bonuses
+- [x] **Anti-sticking Fix**: Enemies no longer stick to player
+
+**Phase 7 (Next):**
 - [ ] Achievement System
-- [ ] Unlockable Characters (Alex)
+- [ ] Elite Monsters
 
 **Boss System (COMPLETE):**
 - [x] Evoker (Wave 5, 400 HP) - Summons fangs
@@ -268,7 +281,30 @@ All development follows Red→Green→Refactor:
 
 ## Recent Updates
 
-### Memory Leak Fixes & Performance Monitoring (Latest)
+### v0.6.2-alpha (2026-02-01) - Latest
+
+**Enemy Animation System:**
+- Added EnemyAnimator component with procedural Tween-based animations
+- Walk, attack, hit reaction animations for all 12 enemies
+- Special boss animations (dragon breath, warden sonic boom, etc.)
+
+**Upgrade Visual Feedback:**
+- Color-coded upgrade effects (green for damage, blue for speed, etc.)
+- Floating stat popups showing upgrade values
+- Ring expansion and flash effects
+
+**Bug Fixes:**
+- Fixed main menu buttons not working
+- Fixed enhancement overwrite when weapon upgrades
+- Fixed enemies sticking to player's head
+- Fixed Windows build in CI/CD pipeline
+
+**UI Improvements:**
+- Character selection localization
+- Character card styling with proper padding
+- Thicker Minecraft-style title logo
+
+### Memory Leak Fixes & Performance Monitoring
 Comprehensive memory leak fixes across pickups, enemies, and projectiles:
 
 **Pickup Scripts (double-collection prevention):**
