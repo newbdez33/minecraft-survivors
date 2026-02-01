@@ -76,3 +76,8 @@ UNLOCK_SURVIVE_15,Survive for 15 minutes,存活15分钟,15分間生存する
 LOCKED,Locked,未解锁,ロック中
 UNLOCKED,Unlocked,已解锁,アンロック済み
 SELECTED,Selected,已选择,選択中
+STAT_HP,HP,生命,HP
+STAT_SPEED,Speed,速度,速度
+STAT_DAMAGE,Damage,伤害,ダメージ
+STAT_XP,XP,经验,経験値
+STAT_PICKUP,Pickup,拾取,拾得範囲

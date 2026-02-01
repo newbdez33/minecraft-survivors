@@ -2,6 +2,8 @@ extends Area2D
 class_name SwordBase
 ## Base class for all sword tiers with evolution support
 
+const UpgradeEffectClass = preload("res://scripts/effects/upgrade_effect.gd")
+
 signal attacked(enemies_hit: int)
 signal evolved(new_tier: int)
 
@@ -79,6 +81,11 @@ const EVOLUTION_BONUS = {
 var evolution_damage_bonus: int = 0
 var evolution_range_bonus: float = 0.0
 var evolution_cooldown_bonus: float = 0.0
+
+# Enhancement bonuses (from upgrades like Sharpness, Sweeping Edge, Haste)
+var enhancement_damage_bonus: int = 0
+var enhancement_range_bonus: float = 0.0
+var enhancement_cooldown_reduction: float = 0.0  # Percentage (0.0 to 1.0)
 
 var range_color: Color = Color(0.3, 0.7, 1.0, 0.08)
 var range_border_color: Color = Color(0.4, 0.8, 1.0, 0.25)
@@ -294,16 +301,47 @@ func _update_sword_sprite() -> void:
 	sprite.modulate = Color.WHITE  # No color tinting
 
 func _play_evolution_effect() -> void:
-	# Flash effect
+	# Enhanced evolution effect with tier colors
 	var sprite = get_node_or_null("Sprite2D")
-	if sprite:
-		var original_modulate = sprite.modulate
-		var original_scale = sprite.scale
-		var tween = create_tween()
-		tween.tween_property(sprite, "modulate", Color.WHITE, 0.1)
-		tween.tween_property(sprite, "modulate", original_modulate, 0.2)
-		tween.tween_property(sprite, "scale", original_scale * 1.25, 0.1)
-		tween.tween_property(sprite, "scale", original_scale, 0.2)
+	if not sprite:
+		return
+
+	var original_modulate = sprite.modulate
+	var original_scale = sprite.scale
+
+	# Tier-specific glow colors
+	var tier_glow = {
+		Tier.STONE: Color(0.6, 0.6, 0.65),
+		Tier.IRON: Color(0.85, 0.85, 0.9),
+		Tier.DIAMOND: Color(0.3, 0.9, 1.0),
+	}
+
+	var glow_color = tier_glow.get(current_tier, Color.WHITE)
+
+	# Multi-stage evolution animation
+	var tween = create_tween()
+
+	# Stage 1: Shrink and spin
+	tween.tween_property(sprite, "scale", original_scale * 0.5, 0.15)
+	tween.parallel().tween_property(sprite, "rotation", sprite.rotation + TAU, 0.15)
+
+	# Stage 2: Flash bright glow
+	tween.tween_property(sprite, "modulate", glow_color, 0.1)
+	tween.tween_property(sprite, "scale", original_scale * 1.5, 0.1)
+
+	# Stage 3: Pulse
+	tween.tween_property(sprite, "scale", original_scale * 1.2, 0.1)
+	tween.tween_property(sprite, "modulate", Color.WHITE, 0.05)
+	tween.tween_property(sprite, "scale", original_scale * 1.4, 0.1)
+
+	# Stage 4: Return to normal
+	tween.tween_property(sprite, "scale", original_scale, 0.2).set_ease(Tween.EASE_OUT)
+	tween.tween_property(sprite, "modulate", original_modulate, 0.2)
+
+	# Spawn particle burst using UpgradeEffect
+	var parent = get_parent()
+	if parent:
+		UpgradeEffectClass.play_evolution_effect(parent, current_tier - 1, current_tier)
 
 func get_tier_name() -> String:
 	return TIER_CONFIG[current_tier].name
@@ -346,16 +384,17 @@ func upgrade() -> void:
 
 func get_total_damage() -> int:
 	var base = TIER_CONFIG[current_tier].damage
-	return base + (level - 1) * DAMAGE_PER_LEVEL + evolution_damage_bonus
+	return base + (level - 1) * DAMAGE_PER_LEVEL + evolution_damage_bonus + enhancement_damage_bonus
 
 func get_total_range() -> float:
 	var base = TIER_CONFIG[current_tier].attack_range
-	return base + (level - 1) * RANGE_PER_LEVEL + evolution_range_bonus
+	return base + (level - 1) * RANGE_PER_LEVEL + evolution_range_bonus + enhancement_range_bonus
 
 func get_total_cooldown() -> float:
 	var base = TIER_CONFIG[current_tier].attack_cooldown
-	var reduction = (level - 1) * COOLDOWN_REDUCTION_PER_LEVEL + evolution_cooldown_bonus
-	return max(0.2, base * (1.0 - reduction))  # Min 0.2s cooldown
+	var level_reduction = (level - 1) * COOLDOWN_REDUCTION_PER_LEVEL + evolution_cooldown_bonus
+	var total_reduction = level_reduction + enhancement_cooldown_reduction
+	return max(0.2, base * (1.0 - total_reduction))  # Min 0.2s cooldown
 
 ## Get evolution bonus for next tier (for UI display)
 func get_next_evolution_bonus() -> Dictionary:

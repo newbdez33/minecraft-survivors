@@ -9,6 +9,7 @@ signal closed()
 @onready var title_label: Label = $VBoxContainer/TitleLabel
 @onready var grid_container: HBoxContainer = $VBoxContainer/CharacterContainer
 @onready var close_button: BaseButton = $VBoxContainer/CloseButton
+@onready var close_label: Label = $VBoxContainer/CloseButton/Label
 
 var character_manager: Node = null
 var character_card_scene: PackedScene = null
@@ -21,8 +22,18 @@ func _ready() -> void:
 	if close_button:
 		close_button.pressed.connect(_on_close_pressed)
 
+	# Apply translations
+	_update_labels()
+
 	# Start hidden
 	visible = false
+
+
+func _update_labels() -> void:
+	if title_label:
+		title_label.text = tr("SELECT_CHARACTER")
+	if close_label:
+		close_label.text = tr("CLOSE")
 
 func set_character_manager(manager: Node) -> void:
 	character_manager = manager

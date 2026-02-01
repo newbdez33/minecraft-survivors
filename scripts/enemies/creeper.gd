@@ -2,6 +2,8 @@ extends CharacterBody2D
 class_name Creeper
 ## Explosive enemy that detonates when near player
 
+const EnemyAnimatorClass = preload("res://scripts/components/enemy_animator.gd")
+
 signal died(xp_value: int)
 
 @export var speed: float = 50.0
@@ -19,9 +21,31 @@ var _fuse_elapsed: float = 0.0
 var knockback_velocity: Vector2 = Vector2.ZERO
 var knockback_decay: float = 10.0
 
+# Animation
+var _animator = null  # EnemyAnimator instance
+var _was_moving: bool = false
+
 func _ready() -> void:
 	add_to_group("enemies")
+
+	# Setup animator
+	_setup_animator()
+
 	_find_target()
+
+
+func _setup_animator() -> void:
+	var sprite = get_node_or_null("Sprite2D")
+	if sprite:
+		_animator = EnemyAnimatorClass.new()
+		_animator.name = "EnemyAnimator"
+		# Creeper-specific animation settings: slow swaying
+		_animator.walk_bob_height = 2.5
+		_animator.walk_bob_speed = 0.35
+		_animator.walk_tilt_angle = 4.0
+		_animator.walk_squash = 0.04
+		add_child(_animator)
+		_animator.setup(sprite)
 
 func _find_target() -> void:
 	await get_tree().process_frame
@@ -35,17 +59,24 @@ func _physics_process(delta: float) -> void:
 		knockback_velocity = knockback_velocity.lerp(Vector2.ZERO, knockback_decay * delta)
 		velocity = knockback_velocity
 		move_and_slide()
+		_update_walk_animation(false)
 		return
 
 	if not target or not is_instance_valid(target):
+		_update_walk_animation(false)
 		return
 
 	var distance = global_position.distance_to(target.global_position)
 
 	if is_fusing:
-		# Flash while fusing
+		# Flash while fusing and swell up
 		_fuse_elapsed += delta
 		_flash_sprite()
+
+		# Animator swell effect during fuse
+		if _animator:
+			var progress = _fuse_elapsed / fuse_time
+			_animator.play_explosion_swell(progress)
 
 		if _fuse_elapsed >= fuse_time:
 			explode()
@@ -55,17 +86,34 @@ func _physics_process(delta: float) -> void:
 	var direction = (target.global_position - global_position).normalized()
 	velocity = direction * speed
 
-	# Prevent sticking to player - add separation when too close
-	var min_distance = 30.0
+	# Prevent sticking to player - strong separation when too close
+	var min_distance = 40.0
 	if distance < min_distance and distance > 0:
 		var push_direction = (global_position - target.global_position).normalized()
-		velocity += push_direction * (min_distance - distance) * 5.0
+		var push_strength = (min_distance - distance) / min_distance
+		velocity = push_direction * speed * push_strength * 2.0
 
 	move_and_slide()
+
+	# Update walk animation based on movement
+	var is_moving = velocity.length() > 10.0
+	_update_walk_animation(is_moving)
 
 	# Start fuse when close
 	if distance <= trigger_distance:
 		start_fuse()
+
+
+func _update_walk_animation(is_moving: bool) -> void:
+	if _animator == null:
+		return
+
+	if is_moving and not _was_moving:
+		_animator.start_walk_animation()
+	elif not is_moving and _was_moving:
+		_animator.stop_walk_animation()
+
+	_was_moving = is_moving
 
 func apply_knockback(force: Vector2) -> void:
 	if not is_fusing:
@@ -77,6 +125,10 @@ func start_fuse() -> void:
 
 	is_fusing = true
 	_fuse_elapsed = 0.0
+
+	# Stop walk animation when starting fuse
+	if _animator:
+		_animator.stop_walk_animation()
 
 	# Start fuse timer
 	var timer = get_node_or_null("FuseTimer")
@@ -127,6 +179,11 @@ func _spawn_explosion_effect() -> void:
 
 func take_damage(amount: int) -> void:
 	health -= amount
+
+	# Play hit reaction animation
+	if _animator:
+		_animator.play_hit_reaction()
+
 	_spawn_hit_effect()
 
 	if health <= 0:
@@ -140,6 +197,10 @@ func _spawn_hit_effect() -> void:
 		get_tree().current_scene.call_deferred("add_child", hit)
 
 func _on_died() -> void:
+	# Clean up animator before death
+	if _animator:
+		_animator.reset_to_original()
+
 	# Die without exploding
 	died.emit(xp_value)
 	_spawn_death_effect()

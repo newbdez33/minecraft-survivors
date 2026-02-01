@@ -2,6 +2,8 @@ extends CharacterBody2D
 class_name Evoker
 ## Evoker Boss - Summons Vexes and casts fang attacks
 
+const EnemyAnimatorClass = preload("res://scripts/components/enemy_animator.gd")
+
 signal died(xp_value: int)
 signal health_changed(current: int, maximum: int)
 
@@ -36,6 +38,10 @@ var _active_vexes: Array = []  # Track spawned vexes for cleanup
 var target: Node2D = null
 var _max_health: int = 400
 
+# Animation
+var _animator = null  # EnemyAnimator instance
+var _was_moving: bool = false
+
 func _ready() -> void:
 	add_to_group("enemies")
 	add_to_group("boss")
@@ -46,8 +52,25 @@ func _ready() -> void:
 	if hitbox:
 		hitbox.body_entered.connect(_on_hitbox_body_entered)
 
+	# Setup animator
+	_setup_animator()
+
 	# Find player as target
 	_find_target()
+
+
+func _setup_animator() -> void:
+	var sprite = get_node_or_null("Sprite2D")
+	if sprite:
+		_animator = EnemyAnimatorClass.new()
+		_animator.name = "EnemyAnimator"
+		# Evoker-specific: flowing robes, graceful motion
+		_animator.walk_bob_height = 3.5
+		_animator.walk_bob_speed = 0.45
+		_animator.walk_tilt_angle = 4.0
+		_animator.walk_squash = 0.02
+		add_child(_animator)
+		_animator.setup(sprite)
 
 
 func _find_target() -> void:
@@ -93,10 +116,12 @@ func _process_idle(_delta: float) -> void:
 func _process_movement(_delta: float) -> void:
 	if _state != State.IDLE:
 		velocity = Vector2.ZERO
+		_update_walk_animation(false)
 		move_and_slide()
 		return
 
 	if not target or not is_instance_valid(target):
+		_update_walk_animation(false)
 		return
 
 	var distance = global_position.distance_to(target.global_position)
@@ -116,12 +141,39 @@ func _process_movement(_delta: float) -> void:
 		if randf() < 0.02:
 			velocity = -velocity
 
+	# Prevent sticking to player - strong separation when too close
+	var min_distance = 50.0
+	if distance < min_distance and distance > 0:
+		var push_direction = (global_position - target.global_position).normalized()
+		var push_strength = (min_distance - distance) / min_distance
+		velocity = push_direction * speed * push_strength * 2.0
+
 	move_and_slide()
+
+	# Update walk animation based on movement
+	var is_moving = velocity.length() > 10.0
+	_update_walk_animation(is_moving)
+
+
+func _update_walk_animation(is_moving: bool) -> void:
+	if _animator == null:
+		return
+
+	if is_moving and not _was_moving:
+		_animator.start_walk_animation()
+	elif not is_moving and _was_moving:
+		_animator.stop_walk_animation()
+
+	_was_moving = is_moving
 
 
 func _start_fang_attack() -> void:
 	_state = State.CASTING_FANG
 	_fang_timer = 0.0
+
+	# Play summoning animation
+	if _animator:
+		_animator.play_summon_animation()
 
 	# Cast fang attack after brief delay
 	await get_tree().create_timer(0.3).timeout
@@ -133,6 +185,10 @@ func _start_fang_attack() -> void:
 func _start_summon() -> void:
 	_state = State.SUMMONING
 	_summon_timer = 0.0
+
+	# Play summoning animation
+	if _animator:
+		_animator.play_summon_animation()
 
 	# Summon animation delay
 	await get_tree().create_timer(0.5).timeout
@@ -225,6 +281,10 @@ func take_damage(amount: int) -> void:
 	health -= reduced_damage
 	health_changed.emit(health, _max_health)
 
+	# Play hit reaction
+	if _animator:
+		_animator.play_hit_reaction()
+
 	_spawn_hit_effect()
 
 	if health <= 0:
@@ -247,6 +307,10 @@ func _spawn_hit_effect() -> void:
 
 
 func _on_died() -> void:
+	# Clean up animator
+	if _animator:
+		_animator.reset_to_original()
+
 	died.emit(xp_value)
 	_spawn_death_effect()
 	_spawn_drops()

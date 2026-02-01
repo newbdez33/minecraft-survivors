@@ -3,6 +3,8 @@ class_name Wither
 ## Wither Boss (Wave 25) - Skull projectiles and wither effect
 ## HP: 500, Damage: 30, Speed: 45
 
+const EnemyAnimatorClass = preload("res://scripts/components/enemy_animator.gd")
+
 signal died(xp_value: int)
 signal health_changed(current: int, maximum: int)
 
@@ -34,6 +36,9 @@ var _shoot_burst: int = 0
 
 var target: Node2D = null
 
+# Animation
+var _animator = null  # EnemyAnimator instance
+
 func _ready() -> void:
 	add_to_group("enemies")
 	add_to_group("boss")
@@ -42,7 +47,26 @@ func _ready() -> void:
 	if hitbox:
 		hitbox.body_entered.connect(_on_hitbox_body_entered)
 
+	# Setup animator
+	_setup_animator()
+
 	_find_target()
+
+
+func _setup_animator() -> void:
+	var sprite = get_node_or_null("Sprite2D")
+	if sprite:
+		_animator = EnemyAnimatorClass.new()
+		_animator.name = "EnemyAnimator"
+		# Wither-specific: floating, ominous motion
+		_animator.walk_bob_height = 5.0
+		_animator.walk_bob_speed = 0.55
+		_animator.walk_tilt_angle = 3.0
+		_animator.walk_squash = 0.04
+		add_child(_animator)
+		_animator.setup(sprite)
+		# Wither floats - start animation
+		_animator.start_walk_animation()
 
 func _find_target() -> void:
 	await get_tree().process_frame
@@ -62,6 +86,14 @@ func _physics_process(delta: float) -> void:
 			_process_idle(delta)
 		State.SHOOTING:
 			pass
+
+	# Prevent sticking to player - strong separation when too close
+	var distance = global_position.distance_to(target.global_position)
+	var min_distance = 60.0
+	if distance < min_distance and distance > 0:
+		var push_direction = (global_position - target.global_position).normalized()
+		var push_strength = (min_distance - distance) / min_distance
+		velocity = push_direction * speed * push_strength * 2.0
 
 	move_and_slide()
 
@@ -87,6 +119,9 @@ func _start_skull_attack() -> void:
 	_shoot_burst = 3  # Shoot 3 skulls
 
 	for i in range(_shoot_burst):
+		# Play attack animation for each skull
+		if _animator:
+			_animator.play_attack_animation()
 		await get_tree().create_timer(0.3).timeout
 		_shoot_skull()
 
@@ -148,6 +183,10 @@ func take_damage(amount: int) -> void:
 	health -= reduced_damage
 	health_changed.emit(health, max_health)
 
+	# Play hit reaction
+	if _animator:
+		_animator.play_hit_reaction()
+
 	_spawn_hit_effect()
 
 	if health <= 0:
@@ -166,6 +205,10 @@ func _spawn_hit_effect() -> void:
 		get_tree().current_scene.call_deferred("add_child", hit)
 
 func _on_died() -> void:
+	# Clean up animator
+	if _animator:
+		_animator.reset_to_original()
+
 	died.emit(xp_value)
 	_spawn_death_effect()
 	_spawn_drops()
