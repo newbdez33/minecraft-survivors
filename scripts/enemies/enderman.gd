@@ -2,6 +2,8 @@ extends CharacterBody2D
 class_name Enderman
 ## Teleporting enemy that warps away when hit
 
+const EnemyAnimatorClass = preload("res://scripts/components/enemy_animator.gd")
+
 signal died(xp_value: int)
 
 @export var speed: float = 70.0
@@ -24,6 +26,12 @@ var can_teleport: bool = true
 var knockback_velocity: Vector2 = Vector2.ZERO
 var knockback_decay: float = 10.0
 
+# Animation
+var _animator = null  # EnemyAnimator instance
+var _was_moving: bool = false
+var _attack_cooldown: float = 0.0
+const ATTACK_COOLDOWN_TIME: float = 1.0
+
 func _ready() -> void:
 	add_to_group("enemies")
 
@@ -42,8 +50,28 @@ func _ready() -> void:
 	if arrow_dodge_enabled:
 		_setup_arrow_detection()
 
+	# Setup animator
+	_setup_animator()
+
 	# Find player as target
 	_find_target()
+
+
+func _setup_animator() -> void:
+	var sprite = get_node_or_null("Sprite2D")
+	if sprite:
+		_animator = EnemyAnimatorClass.new()
+		_animator.name = "EnemyAnimator"
+		# Enderman-specific animation settings: floating, ethereal
+		_animator.walk_bob_height = 4.0
+		_animator.walk_bob_speed = 0.5
+		_animator.walk_tilt_angle = 2.0
+		_animator.walk_squash = 0.02
+		_animator.attack_windup_time = 0.15
+		_animator.attack_strike_time = 0.1
+		_animator.attack_recovery_time = 0.2
+		add_child(_animator)
+		_animator.setup(sprite)
 
 ## Create detection area for sensing incoming arrows
 func _setup_arrow_detection() -> void:
@@ -68,36 +96,68 @@ func _find_target() -> void:
 		target = players[0]
 
 func _physics_process(delta: float) -> void:
+	# Update attack cooldown
+	if _attack_cooldown > 0:
+		_attack_cooldown -= delta
+
 	# Apply knockback decay
 	if knockback_velocity.length() > 1.0:
 		knockback_velocity = knockback_velocity.lerp(Vector2.ZERO, knockback_decay * delta)
 		velocity = knockback_velocity
 		move_and_slide()
+		_update_walk_animation(false)
 		return
 
 	if not target or not is_instance_valid(target):
+		_update_walk_animation(false)
 		return
 
 	# Move toward player
 	var direction = (target.global_position - global_position).normalized()
 	velocity = direction * speed
 
-	# Prevent sticking to player - add separation when too close
+	# Prevent sticking to player - strong separation when too close
 	var distance_to_player = global_position.distance_to(target.global_position)
-	var min_distance = 30.0
+	var min_distance = 40.0
 	if distance_to_player < min_distance and distance_to_player > 0:
 		var push_direction = (global_position - target.global_position).normalized()
-		velocity += push_direction * (min_distance - distance_to_player) * 5.0
+		var push_strength = (min_distance - distance_to_player) / min_distance
+		velocity = push_direction * speed * push_strength * 2.0
 
 	move_and_slide()
+
+	# Update walk animation based on movement
+	var is_moving = velocity.length() > 10.0
+	_update_walk_animation(is_moving)
+
+
+func _update_walk_animation(is_moving: bool) -> void:
+	if _animator == null:
+		return
+
+	if is_moving and not _was_moving:
+		_animator.start_walk_animation()
+	elif not is_moving and _was_moving:
+		_animator.stop_walk_animation()
+
+	_was_moving = is_moving
 
 func _on_hitbox_body_entered(body: Node2D) -> void:
 	# Damage player on contact
 	if body.is_in_group("player") and body.has_method("take_damage"):
 		body.take_damage(damage)
+		# Play attack animation if cooldown ready
+		if _animator and _attack_cooldown <= 0:
+			_animator.play_attack_animation()
+			_attack_cooldown = ATTACK_COOLDOWN_TIME
 
 func take_damage(amount: int) -> void:
 	health -= amount
+
+	# Play hit reaction animation
+	if _animator:
+		_animator.play_hit_reaction()
+
 	_spawn_hit_effect()
 
 	# Teleport when hit if enabled and off cooldown
@@ -112,6 +172,10 @@ func teleport() -> void:
 		return
 
 	can_teleport = false
+
+	# Play teleport out animation
+	if _animator:
+		_animator.play_teleport_out()
 
 	# Calculate random teleport position within range
 	var random_angle = randf() * TAU
@@ -128,6 +192,10 @@ func teleport() -> void:
 
 	# Spawn teleport effect at new position
 	_spawn_teleport_effect(global_position)
+
+	# Play teleport in animation
+	if _animator:
+		_animator.play_teleport_in()
 
 	# Start cooldown timer
 	var timer = get_node_or_null("TeleportTimer")
@@ -233,6 +301,10 @@ func _spawn_teleport_effect(pos: Vector2) -> void:
 		get_tree().current_scene.call_deferred("add_child", effect)
 
 func _on_died() -> void:
+	# Clean up animator before death
+	if _animator:
+		_animator.reset_to_original()
+
 	died.emit(xp_value)
 	_spawn_death_effect()
 	_spawn_xp_orb()

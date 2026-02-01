@@ -3,6 +3,8 @@ class_name ElderGuardian
 ## Elder Guardian Boss (Wave 10) - Laser attack and spike aura
 ## HP: 150, Damage: 20, Speed: 30
 
+const EnemyAnimatorClass = preload("res://scripts/components/enemy_animator.gd")
+
 signal died(xp_value: int)
 signal health_changed(current: int, maximum: int)
 
@@ -35,6 +37,10 @@ var _laser_target_pos: Vector2 = Vector2.ZERO
 
 var target: Node2D = null
 
+# Animation
+var _animator = null  # EnemyAnimator instance
+var _was_moving: bool = false
+
 func _ready() -> void:
 	add_to_group("enemies")
 	add_to_group("boss")
@@ -43,7 +49,26 @@ func _ready() -> void:
 	if hitbox:
 		hitbox.body_entered.connect(_on_hitbox_body_entered)
 
+	# Setup animator
+	_setup_animator()
+
 	_find_target()
+
+
+func _setup_animator() -> void:
+	var sprite = get_node_or_null("Sprite2D")
+	if sprite:
+		_animator = EnemyAnimatorClass.new()
+		_animator.name = "EnemyAnimator"
+		# Elder Guardian-specific: pulsing, breathing motion
+		_animator.walk_bob_height = 4.0
+		_animator.walk_bob_speed = 0.7
+		_animator.walk_tilt_angle = 0.0  # No tilt - floats upright
+		_animator.walk_squash = 0.06  # Breathing pulse
+		add_child(_animator)
+		_animator.setup(sprite)
+		# Always floating - start animation
+		_animator.start_walk_animation()
 
 func _find_target() -> void:
 	await get_tree().process_frame
@@ -95,6 +120,13 @@ func _process_movement(_delta: float) -> void:
 		# Circle around player
 		velocity = direction.orthogonal() * speed * 0.4
 
+	# Prevent sticking to player - strong separation when too close
+	var min_distance = 60.0
+	if distance < min_distance and distance > 0:
+		var push_direction = (global_position - target.global_position).normalized()
+		var push_strength = (min_distance - distance) / min_distance
+		velocity = push_direction * speed * push_strength * 2.0
+
 	move_and_slide()
 
 func _start_laser_attack() -> void:
@@ -102,10 +134,19 @@ func _start_laser_attack() -> void:
 	_laser_timer = 0.0
 	_laser_target_pos = target.global_position if target else global_position
 
+	# Play laser charging animation
+	if _animator:
+		_animator.play_laser_charge()
+
 	# Charging beam (warning indicator)
 	_spawn_laser_warning()
 
 	await get_tree().create_timer(1.0).timeout
+
+	# Play laser fire animation
+	if _animator:
+		_animator.play_laser_fire()
+
 	_do_laser_attack()
 	_state = State.IDLE
 
@@ -213,6 +254,10 @@ func take_damage(amount: int) -> void:
 	health -= reduced_damage
 	health_changed.emit(health, max_health)
 
+	# Play hit reaction
+	if _animator:
+		_animator.play_hit_reaction()
+
 	_spawn_hit_effect()
 
 	if health <= 0:
@@ -231,6 +276,10 @@ func _spawn_hit_effect() -> void:
 		get_tree().current_scene.call_deferred("add_child", hit)
 
 func _on_died() -> void:
+	# Clean up animator
+	if _animator:
+		_animator.reset_to_original()
+
 	died.emit(xp_value)
 	_spawn_death_effect()
 	_spawn_drops()

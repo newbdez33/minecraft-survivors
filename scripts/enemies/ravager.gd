@@ -3,6 +3,8 @@ class_name Ravager
 ## Ravager Boss (Wave 15) - Charge and stomp attacks
 ## HP: 200, Damage: 25, Speed: 50
 
+const EnemyAnimatorClass = preload("res://scripts/components/enemy_animator.gd")
+
 signal died(xp_value: int)
 signal health_changed(current: int, maximum: int)
 
@@ -36,6 +38,10 @@ var _charge_time_remaining: float = 0.0
 
 var target: Node2D = null
 
+# Animation
+var _animator = null  # EnemyAnimator instance
+var _was_moving: bool = false
+
 func _ready() -> void:
 	add_to_group("enemies")
 	add_to_group("boss")
@@ -44,7 +50,27 @@ func _ready() -> void:
 	if hitbox:
 		hitbox.body_entered.connect(_on_hitbox_body_entered)
 
+	# Setup animator
+	_setup_animator()
+
 	_find_target()
+
+
+func _setup_animator() -> void:
+	var sprite = get_node_or_null("Sprite2D")
+	if sprite:
+		_animator = EnemyAnimatorClass.new()
+		_animator.name = "EnemyAnimator"
+		# Ravager-specific: heavy stomping walk
+		_animator.walk_bob_height = 6.0
+		_animator.walk_bob_speed = 0.35
+		_animator.walk_tilt_angle = 5.0
+		_animator.walk_squash = 0.05
+		_animator.attack_windup_time = 0.25
+		_animator.attack_strike_time = 0.1
+		_animator.attack_recovery_time = 0.3
+		add_child(_animator)
+		_animator.setup(sprite)
 
 func _find_target() -> void:
 	await get_tree().process_frame
@@ -68,6 +94,14 @@ func _physics_process(delta: float) -> void:
 		State.STOMPING:
 			pass
 
+	# Prevent sticking to player - strong separation when too close
+	var distance = global_position.distance_to(target.global_position)
+	var min_distance = 50.0
+	if distance < min_distance and distance > 0:
+		var push_direction = (global_position - target.global_position).normalized()
+		var push_strength = (min_distance - distance) / min_distance
+		velocity = push_direction * speed * push_strength * 2.0
+
 	move_and_slide()
 
 func _process_idle(_delta: float) -> void:
@@ -86,11 +120,34 @@ func _process_idle(_delta: float) -> void:
 	var direction = (target.global_position - global_position).normalized()
 	velocity = direction * speed
 
+	# Update walk animation
+	var is_moving = velocity.length() > 10.0
+	_update_walk_animation(is_moving)
+
+
+func _update_walk_animation(is_moving: bool) -> void:
+	if _animator == null:
+		return
+
+	if is_moving and not _was_moving:
+		_animator.start_walk_animation()
+	elif not is_moving and _was_moving:
+		_animator.stop_walk_animation()
+
+	_was_moving = is_moving
+
 func _start_charge() -> void:
 	_state = State.CHARGING
 	_charge_timer = 0.0
 	_charge_direction = (target.global_position - global_position).normalized()
 	_charge_time_remaining = 0.8  # Charge duration
+
+	# Play charge animations
+	if _animator:
+		_animator.stop_walk_animation()
+		_animator.play_charge_windup()
+		await get_tree().create_timer(0.2).timeout
+		_animator.play_charge_rush()
 
 func _process_charge(delta: float) -> void:
 	_charge_time_remaining -= delta
@@ -112,6 +169,11 @@ func _process_charge(delta: float) -> void:
 func _do_stomp_attack() -> void:
 	_state = State.STOMPING
 	_stomp_timer = 0.0
+
+	# Play stomp animation
+	if _animator:
+		_animator.stop_walk_animation()
+		_animator.play_attack_animation()
 
 	# Ground pound AoE
 	await get_tree().create_timer(0.3).timeout
@@ -147,6 +209,10 @@ func take_damage(amount: int) -> void:
 	health -= reduced_damage
 	health_changed.emit(health, max_health)
 
+	# Play hit reaction
+	if _animator:
+		_animator.play_hit_reaction()
+
 	_spawn_hit_effect()
 
 	if health <= 0:
@@ -165,6 +231,10 @@ func _spawn_hit_effect() -> void:
 		get_tree().current_scene.call_deferred("add_child", hit)
 
 func _on_died() -> void:
+	# Clean up animator
+	if _animator:
+		_animator.reset_to_original()
+
 	died.emit(xp_value)
 	_spawn_death_effect()
 	_spawn_drops()
