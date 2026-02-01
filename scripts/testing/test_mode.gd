@@ -16,7 +16,8 @@ enum TestScenario {
 	UPGRADE_TEST,   # Test upgrade system
 	DAY_NIGHT_TEST, # Test day/night cycle
 	SWORD_TEST,     # Test full sword upgrade path to Diamond
-	WEAPON_TEST     # Test sword + bow together
+	WEAPON_TEST,    # Test sword + bow together
+	BOUNDARY_TEST   # Test ALL bosses and ALL weapon upgrades to max
 }
 
 @export var scenario: TestScenario = TestScenario.FULL_AUTO
@@ -44,6 +45,24 @@ var _first_kill_logged: bool = false
 var _first_poison_logged: bool = false
 var _low_health_logged: bool = false
 var _sword_evolutions_logged: Array[int] = []
+
+# Boundary test tracking
+var _bosses_defeated: Array[String] = []
+var _bosses_encountered: Array[String] = []
+var _weapons_maxed: Array[String] = []
+var _bow: Node = null
+var _torch: Node = null
+var _wave_manager: Node = null
+var _boundary_test_complete: bool = false
+const ALL_BOSSES = ["evoker", "elder_guardian", "ravager", "warden", "wither", "ender_dragon"]
+const ALL_WEAPONS = ["sword", "bow", "torch"]
+
+# Performance monitoring
+var _perf_log_interval: float = 10.0  # Log every 10 seconds
+var _perf_timer: float = 0.0
+var _perf_log: Array[Dictionary] = []
+var _initial_objects: int = 0
+var _initial_orphans: int = 0
 
 func _ready() -> void:
 	print("\n" + "=".repeat(50))
@@ -114,14 +133,14 @@ func _connect_game_events() -> void:
 			if fast_sword_evolution:
 				_apply_fast_sword_evolution()
 
-		# Apply god mode if enabled (also for SWORD_TEST and WEAPON_TEST scenarios)
-		if god_mode or scenario == TestScenario.SWORD_TEST or scenario == TestScenario.WEAPON_TEST:
+		# Apply god mode if enabled (also for SWORD_TEST, WEAPON_TEST, BOUNDARY_TEST scenarios)
+		if god_mode or scenario == TestScenario.SWORD_TEST or scenario == TestScenario.WEAPON_TEST or scenario == TestScenario.BOUNDARY_TEST:
 			_player.god_mode = true
 			god_mode = true
 			print("[TEST] God mode enabled - player is invincible")
 
-		# Apply fast progression if enabled (also for SWORD_TEST and WEAPON_TEST scenarios)
-		if fast_progression or scenario == TestScenario.SWORD_TEST or scenario == TestScenario.WEAPON_TEST:
+		# Apply fast progression if enabled (also for SWORD_TEST, WEAPON_TEST, BOUNDARY_TEST scenarios)
+		if fast_progression or scenario == TestScenario.SWORD_TEST or scenario == TestScenario.WEAPON_TEST or scenario == TestScenario.BOUNDARY_TEST:
 			_player.xp_multiplier = 10.0
 			fast_progression = true
 			print("[TEST] Fast progression enabled - 10x XP")
@@ -162,6 +181,9 @@ func _connect_game_events() -> void:
 		var game_over_ui = main.get_node_or_null("GameOverUI")
 		if game_over_ui and game_over_ui.has_signal("shown"):
 			game_over_ui.shown.connect(_on_game_over)
+
+	# Connect boundary test specific events
+	_connect_boundary_test_events()
 
 func _configure_scenario() -> void:
 	# Strategy enum values: SURVIVE=0, AGGRESSIVE=1, STATIONARY=2, COLLECT_XP=3, TRIGGER_POISON=4
@@ -218,12 +240,20 @@ func _configure_scenario() -> void:
 					upgrade_manager2.prioritized_upgrades.append("bow")
 					upgrade_manager2.prioritized_upgrades.append("sword")
 					print("[TEST] Sword and Bow prioritized in upgrade selection")
+		TestScenario.BOUNDARY_TEST:
+			_configure_boundary_test()
 
 	debug_overlay.set_strategy(strategy_names[auto_player.strategy])
 
 func _start_test() -> void:
 	_is_running = true
 	_test_start_time = Time.get_ticks_msec() / 1000.0
+
+	# Record initial performance baseline
+	_initial_objects = Performance.get_monitor(Performance.OBJECT_COUNT)
+	_initial_orphans = Performance.get_monitor(Performance.OBJECT_ORPHAN_NODE_COUNT)
+	_log_performance("initial")
+
 	_test_results = {
 		"scenario": TestScenario.keys()[scenario],
 		"start_time": Time.get_datetime_string_from_system(),
@@ -256,6 +286,12 @@ func _process(delta: float) -> void:
 
 	var elapsed = (Time.get_ticks_msec() / 1000.0) - _test_start_time
 
+	# Performance monitoring
+	_perf_timer += delta
+	if _perf_timer >= _perf_log_interval:
+		_perf_timer = 0.0
+		_log_performance("periodic")
+
 	# Check test duration
 	if elapsed >= test_duration and not _game_over_triggered:
 		_end_test("duration_reached")
@@ -267,6 +303,43 @@ func _process(delta: float) -> void:
 			_test_results["sword_level"] = _sword.level if "level" in _sword else 0
 			_test_results["sword_name"] = _sword.get_tier_name() if _sword.has_method("get_tier_name") else "Diamond Sword"
 			_end_test("diamond_sword_reached")
+
+
+func _log_performance(reason: String) -> void:
+	var elapsed = (Time.get_ticks_msec() / 1000.0) - _test_start_time
+	var current_objects = Performance.get_monitor(Performance.OBJECT_COUNT)
+	var orphan_nodes = Performance.get_monitor(Performance.OBJECT_ORPHAN_NODE_COUNT)
+	var fps = Performance.get_monitor(Performance.TIME_FPS)
+	var memory_static = Performance.get_monitor(Performance.MEMORY_STATIC)
+	var render_objects = Performance.get_monitor(Performance.RENDER_TOTAL_OBJECTS_IN_FRAME)
+
+	var perf_entry = {
+		"time": elapsed,
+		"reason": reason,
+		"fps": fps,
+		"objects": current_objects,
+		"object_delta": current_objects - _initial_objects,
+		"orphan_nodes": orphan_nodes,
+		"orphan_delta": orphan_nodes - _initial_orphans,
+		"memory_mb": memory_static / 1048576.0,
+		"render_objects": render_objects
+	}
+	_perf_log.append(perf_entry)
+
+	# Print warning if objects are growing significantly
+	var object_growth = current_objects - _initial_objects
+	var orphan_growth = orphan_nodes - _initial_orphans
+
+	if orphan_growth > 100:
+		print("[PERF WARNING] %.1fs - Orphan nodes: %d (+%d from start) - POSSIBLE MEMORY LEAK!" % [
+			elapsed, orphan_nodes, orphan_growth
+		])
+	elif object_growth > 500:
+		print("[PERF] %.1fs - Objects: %d (+%d), Orphans: %d (+%d), FPS: %.0f, Mem: %.1fMB" % [
+			elapsed, current_objects, object_growth, orphan_nodes, orphan_growth, fps, memory_static / 1048576.0
+		])
+	else:
+		print("[PERF] %.1fs - Objects: %d (+%d), FPS: %.0f" % [elapsed, current_objects, object_growth, fps])
 
 func _on_player_health_changed(current: int, maximum: int) -> void:
 	var pct = float(current) / float(maximum)
@@ -314,6 +387,10 @@ func _on_wave_started(wave: int) -> void:
 
 	if auto_screenshots and wave <= 5:
 		screenshot_capture.capture_wave_start(wave)
+
+	# For boundary test, check for boss waves
+	if scenario == TestScenario.BOUNDARY_TEST:
+		_check_boss_wave(wave)
 
 func _on_day_night_changed(phase_name: String, _phase_index: int) -> void:
 	_log_event("day_night_changed", {"phase": phase_name})
@@ -396,6 +473,13 @@ func _on_auto_player_event(event_name: String, data: Dictionary) -> void:
 			_test_results["sword_level"] = _sword.level
 		debug_overlay.set_last_event("Sword upgraded to level %d" % _test_results["sword_level"])
 
+	# Track weapon levels for boundary test
+	if scenario == TestScenario.BOUNDARY_TEST and event_name == "upgrade_selected":
+		var upgrade_id = data.get("upgrade", "")
+		var level = data.get("level", 0) + 1  # level is current level before upgrade
+		if data.get("is_weapon", false):
+			_check_weapon_maxed(upgrade_id, level)
+
 func _on_screenshot_taken(_path: String) -> void:
 	_test_results["screenshots"] += 1
 	debug_overlay.set_screenshot_count(_test_results["screenshots"])
@@ -414,6 +498,10 @@ func _end_test(reason: String) -> void:
 	_is_running = false
 	_test_results["duration"] = (Time.get_ticks_msec() / 1000.0) - _test_start_time
 	_test_results["end_reason"] = reason
+
+	# Final performance log
+	_log_performance("final")
+	_test_results["performance_log"] = _perf_log
 
 	# Reset time scale
 	Engine.time_scale = 1.0
@@ -436,6 +524,35 @@ func _end_test(reason: String) -> void:
 	print("  Upgrades: %d" % _test_results["upgrades_selected"])
 	print("  Screenshots: %d" % _test_results["screenshots"])
 	print("  Screenshot Dir: %s" % screenshot_capture.get_screenshot_dir())
+
+	# Boundary test specific results
+	if scenario == TestScenario.BOUNDARY_TEST:
+		print("  --- BOUNDARY TEST RESULTS ---")
+		print("  Bosses Encountered: %d/%d %s" % [_bosses_encountered.size(), ALL_BOSSES.size(), str(_bosses_encountered)])
+		print("  Bosses Defeated: %d/%d %s" % [_bosses_defeated.size(), ALL_BOSSES.size(), str(_bosses_defeated)])
+		print("  Weapons Maxed: %d/%d %s" % [_weapons_maxed.size(), ALL_WEAPONS.size(), str(_weapons_maxed)])
+		_test_results["bosses_encountered"] = _bosses_encountered
+		_test_results["bosses_defeated"] = _bosses_defeated
+		_test_results["weapons_maxed"] = _weapons_maxed
+		_test_results["boundary_complete"] = _boundary_test_complete
+
+	# Performance summary
+	if _perf_log.size() > 0:
+		var first_log = _perf_log[0]
+		var last_log = _perf_log[_perf_log.size() - 1]
+		print("  --- PERFORMANCE SUMMARY ---")
+		print("  Initial Objects: %d" % first_log.get("objects", 0))
+		print("  Final Objects: %d (+%d)" % [last_log.get("objects", 0), last_log.get("object_delta", 0)])
+		print("  Final Orphan Nodes: %d (+%d)" % [last_log.get("orphan_nodes", 0), last_log.get("orphan_delta", 0)])
+		print("  Final Memory: %.1f MB" % last_log.get("memory_mb", 0))
+		print("  Final FPS: %.0f" % last_log.get("fps", 0))
+
+		# Check for concerning metrics
+		if last_log.get("orphan_delta", 0) > 100:
+			print("  ⚠️ WARNING: Significant orphan node growth detected!")
+		if last_log.get("object_delta", 0) > 1000:
+			print("  ⚠️ WARNING: Large object growth detected!")
+
 	print("=".repeat(50) + "\n")
 
 	# Save results to file
@@ -455,3 +572,177 @@ func _save_results() -> void:
 		file.store_string(json)
 		file.close()
 		print("[TEST] Results saved to: %s" % ProjectSettings.globalize_path(path))
+
+## ==================== BOUNDARY TEST FUNCTIONS ====================
+
+func _configure_boundary_test() -> void:
+	print("\n[BOUNDARY TEST] Configuring comprehensive boundary test...")
+	print("[BOUNDARY TEST] Will test: ALL 6 Bosses + ALL Weapons to Max Level")
+
+	# Aggressive strategy to kill enemies fast
+	auto_player.strategy = 1  # AGGRESSIVE
+	auto_player.auto_upgrade = true
+
+	# Prioritize all weapons
+	auto_player.preferred_upgrades.clear()
+	auto_player.preferred_upgrades.append("sword")
+	auto_player.preferred_upgrades.append("bow")
+	auto_player.preferred_upgrades.append("torch")
+
+	# Long duration to reach wave 30
+	test_duration = 600.0  # 10 minutes max
+
+	# Enable all fast options
+	god_mode = true
+	fast_progression = true
+	fast_sword_evolution = true
+
+	# Speed up game for faster testing
+	speed_multiplier = 2.0
+	Engine.time_scale = speed_multiplier
+	print("[BOUNDARY TEST] Game speed set to 2x")
+
+	# Get main scene references
+	var main = get_tree().current_scene
+	if main:
+		# Configure wave manager for fast waves
+		_wave_manager = main.get_node_or_null("WaveManager")
+		if _wave_manager:
+			_wave_manager.wave_interval = 5.0  # 5 seconds between waves (fast!)
+			print("[BOUNDARY TEST] Wave interval set to 5 seconds")
+
+		# Prioritize all weapons in upgrade manager
+		var upgrade_manager = main.get_node_or_null("UpgradeManager")
+		if upgrade_manager:
+			upgrade_manager.prioritized_upgrades.clear()
+			upgrade_manager.prioritized_upgrades.append("sword")
+			upgrade_manager.prioritized_upgrades.append("bow")
+			upgrade_manager.prioritized_upgrades.append("torch")
+			print("[BOUNDARY TEST] All weapons prioritized in upgrades")
+
+	print("[BOUNDARY TEST] Configuration complete!")
+	print("[BOUNDARY TEST] Bosses to defeat: %s" % str(ALL_BOSSES))
+	print("[BOUNDARY TEST] Weapons to max: %s" % str(ALL_WEAPONS))
+
+func _connect_boundary_test_events() -> void:
+	if scenario != TestScenario.BOUNDARY_TEST:
+		return
+
+	var main = get_tree().current_scene
+	if not main:
+		return
+
+	# Get weapon references for tracking
+	if _player:
+		_bow = _player.get_node_or_null("Bow")
+		var weapon_slots = _player.get_node_or_null("WeaponSlots")
+		if weapon_slots:
+			for child in weapon_slots.get_children():
+				if "Bow" in child.name:
+					_bow = child
+				elif "Torch" in child.name:
+					_torch = child
+
+	print("[BOUNDARY TEST] Boundary test events connected")
+
+func _check_boss_wave(wave: int) -> void:
+	# Boss waves are 5, 10, 15, 20, 25, 30
+	if wave % 5 != 0 or wave == 0:
+		return
+
+	var boss_map = {
+		5: "evoker",
+		10: "elder_guardian",
+		15: "ravager",
+		20: "warden",
+		25: "wither",
+		30: "ender_dragon"
+	}
+
+	var boss_type = boss_map.get(wave, "")
+	if boss_type.is_empty():
+		return
+
+	print("[BOUNDARY TEST] Boss wave %d - expecting: %s" % [wave, boss_type])
+
+	# Wait a moment for boss to spawn then connect
+	await get_tree().create_timer(1.0).timeout
+	_connect_current_boss(boss_type)
+
+func _connect_current_boss(boss_type: String) -> void:
+	# Find boss in scene
+	var bosses = get_tree().get_nodes_in_group("boss")
+	for boss in bosses:
+		if is_instance_valid(boss):
+			if boss_type not in _bosses_encountered:
+				_bosses_encountered.append(boss_type)
+				_log_event("boss_encountered", {"boss": boss_type, "wave": _test_results["max_wave"]})
+				print("[BOUNDARY TEST] Boss encountered: %s" % boss_type)
+
+				if auto_screenshots:
+					await get_tree().create_timer(0.5).timeout
+					screenshot_capture.capture_custom("boss_%s_wave%02d" % [boss_type, _test_results["max_wave"]])
+
+				# Connect to boss death
+				if boss.has_signal("died") and not boss.died.is_connected(_make_boss_death_callback(boss_type)):
+					boss.died.connect(_make_boss_death_callback(boss_type))
+
+func _make_boss_death_callback(boss_type: String) -> Callable:
+	return func(_xp): _on_boss_defeated(boss_type)
+
+func _on_boss_defeated(boss_type: String) -> void:
+	if boss_type not in _bosses_defeated:
+		_bosses_defeated.append(boss_type)
+		_log_event("boss_defeated", {"boss": boss_type, "total_defeated": _bosses_defeated.size()})
+		print("[BOUNDARY TEST] Boss defeated: %s (%d/%d)" % [boss_type, _bosses_defeated.size(), ALL_BOSSES.size()])
+
+		if auto_screenshots:
+			screenshot_capture.capture_custom("boss_%s_defeated" % boss_type)
+
+		_check_boundary_test_complete()
+
+func _check_weapon_maxed(weapon_id: String, level: int) -> void:
+	if scenario != TestScenario.BOUNDARY_TEST:
+		return
+
+	var max_levels = {"sword": 12, "bow": 12, "torch": 5}
+	var max_level = max_levels.get(weapon_id, 12)
+
+	if level >= max_level and weapon_id not in _weapons_maxed:
+		_weapons_maxed.append(weapon_id)
+		_log_event("weapon_maxed", {"weapon": weapon_id, "level": level})
+		print("[BOUNDARY TEST] Weapon maxed: %s at level %d (%d/%d)" % [weapon_id, level, _weapons_maxed.size(), ALL_WEAPONS.size()])
+
+		if auto_screenshots:
+			screenshot_capture.capture_custom("weapon_%s_maxed" % weapon_id)
+
+		_check_boundary_test_complete()
+
+func _check_boundary_test_complete() -> void:
+	if _boundary_test_complete:
+		return
+
+	var all_bosses_done = _bosses_defeated.size() >= ALL_BOSSES.size()
+	var all_weapons_done = _weapons_maxed.size() >= ALL_WEAPONS.size()
+
+	print("[BOUNDARY TEST] Progress: Bosses %d/%d, Weapons %d/%d" % [
+		_bosses_defeated.size(), ALL_BOSSES.size(),
+		_weapons_maxed.size(), ALL_WEAPONS.size()
+	])
+
+	if all_bosses_done and all_weapons_done:
+		_boundary_test_complete = true
+		_log_event("boundary_test_complete", {
+			"bosses_defeated": _bosses_defeated,
+			"weapons_maxed": _weapons_maxed
+		})
+		print("\n" + "=".repeat(50))
+		print("  [BOUNDARY TEST] ALL BOUNDARIES TESTED!")
+		print("  Bosses defeated: %s" % str(_bosses_defeated))
+		print("  Weapons maxed: %s" % str(_weapons_maxed))
+		print("=".repeat(50) + "\n")
+
+		if auto_screenshots:
+			screenshot_capture.capture_custom("boundary_test_complete")
+
+		_end_test("boundary_test_complete")

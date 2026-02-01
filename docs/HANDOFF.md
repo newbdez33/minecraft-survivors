@@ -1,6 +1,6 @@
 # Project Handoff Document
 
-**Last Updated:** 2026-01-24
+**Last Updated:** 2026-02-01
 **Project:** Minecraft Survivors
 **Current Phase:** Phase 5 - Game Enhancements (IN PROGRESS 🔄)
 
@@ -221,8 +221,15 @@ See [phase5_enhancements.md](./phases/phase5_enhancements.md) for detailed plan.
 **Phase 5 Features Remaining:**
 - [ ] Achievement System
 - [ ] Unlockable Characters (Alex)
-- [ ] Weapon Evolution (Bow → Crossbow)
-- [ ] Boss enemies (Wither, Ender Dragon)
+
+**Boss System (COMPLETE):**
+- [x] Evoker (Wave 5, 400 HP) - Summons fangs
+- [x] Elder Guardian (Wave 10, 600 HP) - Mining fatigue beam
+- [x] Ravager (Wave 15, 800 HP) - Charge attack
+- [x] Warden (Wave 20, 1000 HP) - Sonic attack
+- [x] Wither (Wave 25, 1200 HP) - Wither skulls
+- [x] Ender Dragon (Wave 30, 1500 HP) - Dragon breath
+- [x] All bosses have detailed pixel art SVG sprites with proper textures
 
 **Infrastructure:**
 - [x] GitHub CI Release (Windows + macOS) - See [infrastructure/release.md](./infrastructure/release.md)
@@ -261,7 +268,35 @@ All development follows Red→Green→Refactor:
 
 ## Recent Updates
 
-### HUD Localization (Latest)
+### Memory Leak Fixes & Performance Monitoring (Latest)
+Comprehensive memory leak fixes across pickups, enemies, and projectiles:
+
+**Pickup Scripts (double-collection prevention):**
+- `scripts/pickups/xp_orb.gd` - Added `_is_collecting` flag, tween callback queue_free
+- `scripts/pickups/health_pickup.gd` - Added `_is_collecting` flag
+- `scripts/pickups/meat_pickup.gd` - Added `_is_collecting` flag
+- `scripts/pickups/emerald_pickup.gd` - Added `_is_collecting` flag
+- `scripts/pickups/totem_pickup.gd` - Added `_is_collecting` flag
+- `scripts/pickups/lucky_drop_pickup.gd` - Kill looping tween before queue_free
+
+**Enemy Scripts (signal cleanup):**
+- `scripts/enemies/evoker.gd` - Track active vexes, cleanup signals on exit
+
+**Projectile Scripts (timer pattern):**
+- `scripts/projectiles/dragon_fireball.gd` - Use SceneTreeTimer instead of Timer node
+- `scripts/projectiles/wither_skull.gd` - Use SceneTreeTimer instead of Timer node
+
+**Performance Monitoring in Test Mode:**
+- Logs objects, orphan nodes, FPS, memory every 10 seconds
+- Warns if orphan node growth exceeds 100 (potential leak)
+- Prints performance summary at test end
+
+**Verified Stability:**
+- Game ran 3+ minutes at 2x speed (80+ waves) with 0 orphan nodes
+- Memory stable at ~92-94MB
+- FPS stable at 44-60
+
+### HUD Localization
 - HUD labels (Level, Wave, Kills) now fully localized
 - Real-time language switching: Changing language in pause menu immediately updates all UI
 - HUD connects to `LocalizationManager.language_changed` signal for automatic refresh

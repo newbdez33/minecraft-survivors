@@ -6,7 +6,7 @@ signal died(xp_value: int)
 signal health_changed(current: int, maximum: int)
 
 # Boss stats
-@export var health: int = 500
+@export var health: int = 400
 @export var speed: float = 40.0
 @export var contact_damage: int = 5
 @export var xp_value: int = 50
@@ -31,9 +31,10 @@ var _fang_timer: float = 0.0
 var _summon_timer: float = 0.0
 var _vex_count: int = 0
 const MAX_VEX: int = 3
+var _active_vexes: Array = []  # Track spawned vexes for cleanup
 
 var target: Node2D = null
-var _max_health: int = 500
+var _max_health: int = 400
 
 func _ready() -> void:
 	add_to_group("enemies")
@@ -184,15 +185,31 @@ func summon_vex() -> void:
 
 	# Connect to vex death to track count
 	if vex.has_signal("died"):
-		vex.died.connect(_on_vex_died)
+		vex.died.connect(_on_vex_died.bind(vex))
+
+	# Track active vexes for cleanup
+	_active_vexes.append(vex)
 
 	if get_tree() and get_tree().current_scene:
 		get_tree().current_scene.call_deferred("add_child", vex)
 		_vex_count += 1
 
 
-func _on_vex_died(_xp: int) -> void:
+func _on_vex_died(_xp: int, vex: Node = null) -> void:
 	_vex_count = max(0, _vex_count - 1)
+	# Remove from tracking array
+	if vex:
+		_active_vexes.erase(vex)
+
+
+func _exit_tree() -> void:
+	# Disconnect signals from any remaining vexes to prevent memory leaks
+	for vex in _active_vexes:
+		if is_instance_valid(vex) and vex.has_signal("died"):
+			var callable = _on_vex_died.bind(vex)
+			if vex.died.is_connected(callable):
+				vex.died.disconnect(callable)
+	_active_vexes.clear()
 
 
 func _on_hitbox_body_entered(body: Node2D) -> void:

@@ -15,6 +15,7 @@ var _attracted: bool = false
 var _initial_y: float = 0.0
 var _bob_time: float = 0.0
 var _glow_time: float = 0.0
+var _is_collecting: bool = false
 
 func _ready() -> void:
 	_initial_y = position.y
@@ -60,11 +61,13 @@ func _find_player() -> void:
 
 
 func _on_body_entered(body: Node2D) -> void:
-	if body.is_in_group("player"):
+	if body.is_in_group("player") and not _is_collecting:
 		_collect(body)
 
 
 func _collect(player: Node2D) -> void:
+	_is_collecting = true
+	set_deferred("monitoring", false)
 	collected.emit()
 
 	# Give player totem effect

@@ -3,12 +3,15 @@ class_name MainMenu
 ## Main menu UI with game options - Minecraft Dungeons style
 
 signal start_pressed
+signal character_pressed
 signal settings_pressed
 signal scoreboard_pressed
 signal quit_pressed
 
 @onready var _start_button: TextureButton = $Container/VBox/StartButton
 @onready var _start_label: Label = $Container/VBox/StartButton/Label
+@onready var _character_button: TextureButton = $Container/VBox/CharacterButton
+@onready var _character_label: Label = $Container/VBox/CharacterButton/Label
 @onready var _settings_button: TextureButton = $Container/VBox/SettingsButton
 @onready var _settings_label: Label = $Container/VBox/SettingsButton/Label
 @onready var _scoreboard_button: TextureButton = $Container/VBox/ScoreboardButton
@@ -17,7 +20,9 @@ signal quit_pressed
 @onready var _quit_label: Label = $Container/VBox/QuitButton/Label
 @onready var _settings_panel: Control = $SettingsPanel
 @onready var _scoreboard_panel: Control = $ScoreboardPanel
+@onready var _character_panel: Control = $CharacterSelect
 @onready var _dim_overlay: ColorRect = $DimOverlay
+@onready var _character_manager: Node = $CharacterManager
 
 func _ready() -> void:
 	# Load saved language setting
@@ -28,6 +33,8 @@ func _ready() -> void:
 
 	if _start_button:
 		_start_button.pressed.connect(_on_start_pressed)
+	if _character_button:
+		_character_button.pressed.connect(_on_character_pressed)
 	if _settings_button:
 		_settings_button.pressed.connect(_on_settings_pressed)
 	if _scoreboard_button:
@@ -45,6 +52,11 @@ func _ready() -> void:
 	if _scoreboard_panel:
 		_scoreboard_panel.visible = false
 		_scoreboard_panel.closed.connect(_on_panel_closed)
+	if _character_panel:
+		_character_panel.visible = false
+		_character_panel.closed.connect(_on_panel_closed)
+		if _character_manager:
+			_character_panel.set_character_manager(_character_manager)
 
 func _load_language_setting() -> void:
 	var save_path = "user://settings.json"
@@ -62,6 +74,8 @@ func _update_labels() -> void:
 	# Update button labels (TextureButtons with Label children)
 	if _start_label:
 		_start_label.text = tr("START_GAME")
+	if _character_label:
+		_character_label.text = tr("SELECT_CHARACTER")
 	if _settings_label:
 		_settings_label.text = tr("SETTINGS")
 	if _scoreboard_label:
@@ -81,6 +95,13 @@ func _on_panel_closed() -> void:
 func _on_start_pressed() -> void:
 	start_pressed.emit()
 	get_tree().change_scene_to_file("res://scenes/main.tscn")
+
+func _on_character_pressed() -> void:
+	character_pressed.emit()
+	if _dim_overlay:
+		_dim_overlay.visible = true
+	if _character_panel:
+		_character_panel.show_panel()
 
 func _on_settings_pressed() -> void:
 	settings_pressed.emit()

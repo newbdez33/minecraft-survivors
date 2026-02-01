@@ -62,3 +62,17 @@ ALL_MAXED,All Weapons Maxed Out!,所有武器已满级!,全武器MAX!
 UPGRADE_TORCH,Torch,火把,松明
 DESC_TORCH,Illuminate the night,照亮夜晚,夜を照らす
 BOSS_EVOKER,Evoker,唤魔者,エヴォーカー
+BOSS_ELDER_GUARDIAN,Elder Guardian,远古守卫者,エルダーガーディアン
+BOSS_RAVAGER,Ravager,劫掠兽,ラヴェジャー
+BOSS_WARDEN,Warden,监守者,ウォーデン
+BOSS_WITHER,Wither,凋灵,ウィザー
+BOSS_ENDER_DRAGON,Ender Dragon,末影龙,エンダードラゴン
+SELECT_CHARACTER,Select Character,选择角色,キャラクター選択
+CHARACTER_STEVE,Steve,史蒂夫,スティーブ
+CHARACTER_ALEX,Alex,艾莉克斯,アレックス
+DESC_STEVE,Balanced fighter with no special abilities,平衡型战士 无特殊能力,バランス型ファイター 特殊能力なし
+DESC_ALEX,Fast and agile +20% speed +50% pickup range -10% HP,敏捷型 +20%速度 +50%拾取范围 -10%生命,俊敏タイプ +20%速度 +50%拾取範囲 -10%HP
+UNLOCK_SURVIVE_15,Survive for 15 minutes,存活15分钟,15分間生存する
+LOCKED,Locked,未解锁,ロック中
+UNLOCKED,Unlocked,已解锁,アンロック済み
+SELECTED,Selected,已选择,選択中

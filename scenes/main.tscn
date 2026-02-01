@@ -17,6 +17,8 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/pause_menu.tscn" id="13_pause_menu"]
 [ext_resource type="Script" path="res://scripts/systems/health_pickup_spawner.gd" id="14_health_spawner"]
 [ext_resource type="Script" path="res://scripts/systems/torch_manager.gd" id="15_torch_manager"]
+[ext_resource type="Script" path="res://scripts/systems/achievement_manager.gd" id="20_achievement_manager"]
+[ext_resource type="Script" path="res://scripts/systems/character_manager.gd" id="21_character_manager"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_fog"]
 shader = ExtResource("16_fog_shader")
@@ -97,3 +99,9 @@ max_pickups = 3
 initial_delay = 30.0
 
 [node name="BossHealthBar" parent="." instance=ExtResource("17_boss_health_bar")]
+
+[node name="AchievementManager" type="Node" parent="."]
+script = ExtResource("20_achievement_manager")
+
+[node name="CharacterManager" type="Node" parent="."]
+script = ExtResource("21_character_manager")

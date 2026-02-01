@@ -18,6 +18,7 @@ var _attracted: bool = false
 var _initial_y: float = 0.0
 var _bob_time: float = 0.0
 var _despawn_timer: float = 0.0
+var _is_collecting: bool = false
 
 func _ready() -> void:
 	_initial_y = position.y
@@ -65,10 +66,12 @@ func _find_player() -> void:
 		_target = players[0]
 
 func _on_body_entered(body: Node2D) -> void:
-	if body.is_in_group("player"):
+	if body.is_in_group("player") and not _is_collecting:
 		_heal_player(body)
 
 func _heal_player(player: Node2D) -> void:
+	_is_collecting = true
+	set_deferred("monitoring", false)
 	if player.has_method("heal"):
 		player.heal(HEAL_AMOUNT)
 	elif "current_health" in player and "max_health" in player:
@@ -91,6 +94,10 @@ func _play_collect_effect() -> void:
 	tween.tween_callback(queue_free)
 
 func _fade_out() -> void:
+	if _is_collecting:
+		return  # Already being collected
+	_is_collecting = true
+	set_deferred("monitoring", false)
 	var tween = create_tween()
 	tween.tween_property(self, "modulate:a", 0.0, 0.2)
 	tween.tween_callback(queue_free)

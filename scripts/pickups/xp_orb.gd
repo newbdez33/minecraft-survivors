@@ -15,6 +15,7 @@ var _target: Node2D = null
 var _attracted: bool = false
 var _initial_y: float = 0.0
 var _bob_time: float = 0.0
+var _is_collecting: bool = false
 
 func _ready() -> void:
 	_initial_y = position.y
@@ -58,22 +59,26 @@ func _find_player() -> void:
 		_target = players[0]
 
 func _on_body_entered(body: Node2D) -> void:
-	if body.is_in_group("player"):
+	if body.is_in_group("player") and not _is_collecting:
+		_is_collecting = true
 		collected.emit(xp_value)
 
 		# Add XP to player if method exists
 		if body.has_method("add_xp"):
 			body.add_xp(xp_value)
 
-		# Play collect effect and remove
+		# Play collect effect and remove (tween handles queue_free)
 		_play_collect_effect()
-		queue_free()
 
 func _play_collect_effect() -> void:
+	# Disable collision to prevent double collect
+	set_deferred("monitoring", false)
+
 	# Simple scale tween before free
 	var tween = create_tween()
 	tween.tween_property(self, "scale", Vector2(1.5, 1.5), 0.1)
 	tween.tween_property(self, "modulate:a", 0.0, 0.1)
+	tween.tween_callback(queue_free)
 
 func set_xp(value: int) -> void:
 	xp_value = value

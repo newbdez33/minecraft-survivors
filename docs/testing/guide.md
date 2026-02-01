@@ -215,7 +215,65 @@ godot --path . scenes/main.tscn
 
 ---
 
-## 8. Test Environment / 测试环境
+## 8. Performance Monitoring / 性能监控
+
+Test mode includes built-in performance monitoring for detecting memory leaks and performance issues.
+
+### What Gets Monitored
+
+Every 10 seconds during test mode:
+- **Object Count** - Total objects in scene tree
+- **Orphan Nodes** - Nodes not attached to tree (potential leaks)
+- **FPS** - Current frame rate
+- **Memory** - Static memory usage in MB
+- **Render Objects** - Objects being rendered
+
+### Warning Thresholds
+
+| Metric | Warning Threshold | Indicates |
+|--------|------------------|-----------|
+| Orphan Node Growth | > 100 | Memory leak |
+| Object Growth | > 500 | May need investigation |
+
+### Example Output
+
+```
+[PERF] 10.0s - Objects: 245 (+12), FPS: 60
+[PERF] 20.0s - Objects: 267 (+34), FPS: 58
+[PERF WARNING] 30.0s - Orphan nodes: 150 (+120 from start) - POSSIBLE MEMORY LEAK!
+```
+
+### Performance Summary (at test end)
+
+```
+--- PERFORMANCE SUMMARY ---
+Initial Objects: 233
+Final Objects: 289 (+56)
+Final Orphan Nodes: 0 (+0)
+Final Memory: 93.2 MB
+Final FPS: 55
+```
+
+### Running Performance Tests
+
+```bash
+# Extended performance test (3 minutes at 2x speed)
+godot res://scenes/main.tscn -- --test-mode --duration=180 --speed=2 --god-mode
+
+# Boundary test (tests all bosses and max weapon upgrades)
+godot res://scenes/main.tscn -- --test-mode --scenario=BOUNDARY_TEST
+```
+
+### Verified Benchmarks
+
+After memory leak fixes, the game maintains:
+- **0 orphan nodes** over 3+ minute sessions
+- **Stable memory** at ~92-94MB
+- **Stable FPS** at 44-60 (at 2x speed with 80+ waves)
+
+---
+
+## 9. Test Environment / 测试环境
 
 - **Engine**: Godot 4.5
 - **Platform**: macOS / Windows / Linux

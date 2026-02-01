@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://dvisual_test_bosses"]
+
+[ext_resource type="Script" path="res://tests/visual/visual_test_bosses.gd" id="1_boss_test"]
+
+[node name="VisualTestBosses" type="Node2D"]
+script = ExtResource("1_boss_test")

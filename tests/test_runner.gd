@@ -2967,6 +2967,7 @@ func _run_complete_coverage_tests() -> void:
 	_run_external_test_suite("Witch Complete Tests", "res://tests/unit/enemies/test_witch_complete.gd")
 	_run_external_test_suite("Evoker Complete Tests", "res://tests/unit/enemies/test_evoker_complete.gd")
 	_run_external_test_suite("Vex Complete Tests", "res://tests/unit/enemies/test_vex_complete.gd")
+	_run_external_test_suite("Boss Enemies Tests", "res://tests/unit/enemies/test_boss_enemies.gd")
 
 	# Run Weapon Complete Tests
 	_run_external_test_suite("Sword Complete Tests", "res://tests/unit/weapons/test_sword_complete.gd")
@@ -3008,8 +3009,17 @@ func _run_complete_coverage_tests() -> void:
 	# Run Additional Systems Tests (NEW)
 	_run_external_test_suite("Systems Complete Tests", "res://tests/unit/systems/test_systems_complete.gd")
 
+	# Achievement Integration Tests
+	_run_external_test_suite("Achievement Integration Tests", "res://tests/unit/systems/test_achievement_integration.gd")
+
 	# Run UI Remaining Complete Tests (NEW)
 	_run_external_test_suite("UI Remaining Complete Tests", "res://tests/unit/ui/test_ui_remaining_complete.gd")
+
+	# Achievement UI Tests
+	_run_external_test_suite("Achievement UI Tests", "res://tests/unit/ui/test_achievement_ui.gd")
+
+	# Character Selection UI Tests
+	_run_external_test_suite("Character Selection UI Tests", "res://tests/unit/ui/test_character_select_ui.gd")
 
 	# Run Integration Tests
 	_run_external_test_suite("Combat Flow Integration Tests", "res://tests/integration/test_combat_flow.gd")

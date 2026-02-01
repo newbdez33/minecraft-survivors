@@ -97,10 +97,12 @@
 			"untested": []
 		},
 		"res://scripts/enemies/evoker.gd": {
-			"coverage_percent": 100.0,
+			"coverage_percent": 95.2380952380952,
 			"tested_functions": 20,
-			"total_functions": 20,
-			"untested": []
+			"total_functions": 21,
+			"untested": [
+				"_exit_tree"
+			]
 		},
 		"res://scripts/enemies/skeleton.gd": {
 			"coverage_percent": 100.0,
@@ -133,10 +135,12 @@
 			"untested": []
 		},
 		"res://scripts/game.gd": {
-			"coverage_percent": 100.0,
-			"tested_functions": 29,
+			"coverage_percent": 96.551724137931,
+			"tested_functions": 28,
 			"total_functions": 29,
-			"untested": []
+			"untested": [
+				"_on_achievement_unlocked"
+			]
 		},
 		"res://scripts/pickups/emerald_pickup.gd": {
 			"coverage_percent": 100.0,
@@ -296,8 +300,8 @@
 		},
 		"res://scripts/systems/upgrade_manager.gd": {
 			"coverage_percent": 100.0,
-			"tested_functions": 27,
-			"total_functions": 27,
+			"tested_functions": 26,
+			"total_functions": 26,
 			"untested": []
 		},
 		"res://scripts/systems/wave_manager.gd": {
@@ -337,10 +341,12 @@
 			"untested": []
 		},
 		"res://scripts/ui/main_menu.gd": {
-			"coverage_percent": 100.0,
+			"coverage_percent": 90.9090909090909,
 			"tested_functions": 10,
-			"total_functions": 10,
-			"untested": []
+			"total_functions": 11,
+			"untested": [
+				"_on_character_pressed"
+			]
 		},
 		"res://scripts/ui/pause_menu.gd": {
 			"coverage_percent": 100.0,
@@ -415,8 +421,8 @@
 			"untested": []
 		}
 	},
-	"tested_functions": 637,
-	"timestamp": "2026-01-31T22:13:12",
-	"total_coverage_percent": 100.0,
-	"total_functions": 637
+	"tested_functions": 635,
+	"timestamp": "2026-02-01T13:46:46",
+	"total_coverage_percent": 99.5297805642633,
+	"total_functions": 638
 }

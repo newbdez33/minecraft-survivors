@@ -19,8 +19,15 @@ extends Node2D
 @onready var torch_manager: Node = $TorchManager
 @onready var fog_of_war: ColorRect = $FogOfWarLayer/FogOfWar
 @onready var boss_health_bar: CanvasLayer = $BossHealthBar
+@onready var achievement_manager: Node = $AchievementManager
+@onready var character_manager: Node = $CharacterManager
 
 var evoker_scene: PackedScene = preload("res://scenes/enemies/evoker.tscn")
+var elder_guardian_scene: PackedScene = preload("res://scenes/enemies/elder_guardian.tscn")
+var ravager_scene: PackedScene = preload("res://scenes/enemies/ravager.tscn")
+var warden_scene: PackedScene = preload("res://scenes/enemies/warden.tscn")
+var wither_scene: PackedScene = preload("res://scenes/enemies/wither.tscn")
+var ender_dragon_scene: PackedScene = preload("res://scenes/enemies/ender_dragon.tscn")
 var _sword: Node = null
 var _current_boss: Node = null
 var _total_time: float = 0.0
@@ -116,11 +123,36 @@ func _ready() -> void:
 		pause_menu.resume_pressed.connect(_on_resume_pressed)
 		pause_menu.hide_menu()
 
+	# Connect achievement manager signals
+	if achievement_manager:
+		achievement_manager.achievement_unlocked.connect(_on_achievement_unlocked)
+
+	# Apply selected character stats if character manager is present
+	if character_manager and player:
+		character_manager.apply_selected_to_player(player)
+
+var _last_survival_check: int = 0  # Track last checked second for achievements
+
 func _process(delta: float) -> void:
 	if not _is_paused:
 		_total_time += delta
 		if hud:
 			hud.set_time(_total_time)
+
+		# Check survival time achievements every second
+		var current_second = int(_total_time)
+		if current_second > _last_survival_check:
+			_last_survival_check = current_second
+			if achievement_manager:
+				achievement_manager.check_survival_time(current_second)
+			# Check character unlock conditions based on survival time
+			if character_manager:
+				var stats = {"survival_time": _total_time}
+				if game_stats:
+					stats.kills = game_stats.kills
+					stats.wave = game_stats.highest_wave
+					stats.level = game_stats.highest_level if "highest_level" in game_stats else 1
+				character_manager.check_unlock_conditions(stats)
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):  # ESC key
@@ -150,6 +182,10 @@ func _on_player_leveled_up(new_level: int) -> void:
 	if hud:
 		hud.set_level(new_level)
 
+	# Check level achievements
+	if achievement_manager:
+		achievement_manager.check_level(new_level)
+
 	# Show upgrade selection
 	if upgrade_manager and upgrade_ui:
 		var upgrades = upgrade_manager.get_random_upgrades(3)
@@ -160,6 +196,11 @@ func _on_player_leveled_up(new_level: int) -> void:
 func _on_upgrade_selected(upgrade) -> void:
 	if upgrade_manager:
 		upgrade_manager.apply_upgrade(upgrade)
+
+		# Check for bow acquisition achievement
+		if upgrade.id == "bow" and upgrade.current_level == 1:
+			if achievement_manager:
+				achievement_manager.unlock_bow_achievement()
 
 func _on_player_died() -> void:
 	# Stop spawning
@@ -196,6 +237,9 @@ func _on_enemy_killed(_xp_value: int) -> void:
 		# Update kills display
 		if hud:
 			hud.set_kills(game_stats.kills)
+		# Check kill achievements
+		if achievement_manager:
+			achievement_manager.check_kill_count(game_stats.kills)
 
 	# Notify sword for evolution tracking
 	if _sword and _sword.has_method("on_enemy_killed"):
@@ -208,6 +252,15 @@ func _on_sword_evolved(new_tier: int) -> void:
 		print("[GAME] Sword evolved to: %s" % tier_name)
 		if hud and hud.has_method("show_notification"):
 			hud.show_notification("Sword evolved to %s!" % tier_name)
+	# Check evolution achievement
+	if achievement_manager:
+		achievement_manager.unlock_evolution_achievement()
+
+## Called when an achievement is unlocked
+func _on_achievement_unlocked(achievement) -> void:
+	print("[ACHIEVEMENT] Unlocked: %s" % achievement.name)
+	if hud and hud.has_method("show_notification"):
+		hud.show_notification("Achievement: %s!" % achievement.name)
 
 func _on_wave_started(wave_number: int) -> void:
 	if hud:
@@ -218,6 +271,10 @@ func _on_wave_started(wave_number: int) -> void:
 	# Track highest wave in game stats
 	if game_stats:
 		game_stats.set_wave(wave_number)
+
+	# Check wave achievements
+	if achievement_manager:
+		achievement_manager.check_wave(wave_number)
 
 	# Check for boss wave
 	if wave_manager and wave_manager.is_boss_wave(wave_number):
@@ -240,6 +297,21 @@ func _spawn_boss(wave_number: int) -> void:
 		"evoker":
 			boss_scene = evoker_scene
 			boss_name = tr("BOSS_EVOKER") if TranslationServer.get_locale() else "Evoker"
+		"elder_guardian":
+			boss_scene = elder_guardian_scene
+			boss_name = tr("BOSS_ELDER_GUARDIAN") if TranslationServer.get_locale() else "Elder Guardian"
+		"ravager":
+			boss_scene = ravager_scene
+			boss_name = tr("BOSS_RAVAGER") if TranslationServer.get_locale() else "Ravager"
+		"warden":
+			boss_scene = warden_scene
+			boss_name = tr("BOSS_WARDEN") if TranslationServer.get_locale() else "Warden"
+		"wither":
+			boss_scene = wither_scene
+			boss_name = tr("BOSS_WITHER") if TranslationServer.get_locale() else "Wither"
+		"ender_dragon":
+			boss_scene = ender_dragon_scene
+			boss_name = tr("BOSS_ENDER_DRAGON") if TranslationServer.get_locale() else "Ender Dragon"
 
 	if not boss_scene:
 		return
@@ -421,4 +493,5 @@ func _get_scenario_enum(scenario_name: String) -> int:
 		"DAY_NIGHT_TEST": return 4
 		"SWORD_TEST": return 5
 		"WEAPON_TEST": return 6
+		"BOUNDARY_TEST": return 7
 		_: return 0

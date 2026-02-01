@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" shape-rendering="crispEdges">
+  <!-- Alex - Top-down view - Minecraft Survivors -->
+  <!-- Orange hair, green eyes, light green shirt -->
+
+  <!-- Hair (orange/ginger - longer style) -->
+  <rect x="8" y="3" width="16" height="7" fill="#C65D32"/>
+  <!-- Hair sides (longer) -->
+  <rect x="6" y="6" width="2" height="10" fill="#C65D32"/>
+  <rect x="24" y="6" width="2" height="10" fill="#C65D32"/>
+  <!-- Hair highlight -->
+  <rect x="10" y="4" width="4" height="2" fill="#D97748"/>
+  <rect x="18" y="4" width="4" height="2" fill="#D97748"/>
+
+  <!-- Face/skin -->
+  <rect x="8" y="10" width="16" height="8" fill="#C9A seventeen87"/>
+  <rect x="8" y="10" width="16" height="8" fill="#D4A574"/>
+
+  <!-- Eyes (green) -->
+  <rect x="11" y="12" width="3" height="2" fill="#FFFFFF"/>
+  <rect x="18" y="12" width="3" height="2" fill="#FFFFFF"/>
+  <rect x="12" y="12" width="2" height="2" fill="#3B8526"/>
+  <rect x="19" y="12" width="2" height="2" fill="#3B8526"/>
+
+  <!-- Nose (subtle) -->
+  <rect x="15" y="14" width="2" height="1" fill="#C49666"/>
+
+  <!-- Mouth -->
+  <rect x="14" y="16" width="4" height="1" fill="#B38B6D"/>
+
+  <!-- Shirt (light green) -->
+  <rect x="6" y="18" width="20" height="8" fill="#6AAD45"/>
+  <!-- Shirt detail -->
+  <rect x="12" y="19" width="8" height="2" fill="#5C9A3A"/>
+
+  <!-- Arms (skin) -->
+  <rect x="4" y="18" width="2" height="6" fill="#D4A574"/>
+  <rect x="26" y="18" width="2" height="6" fill="#D4A574"/>
+
+  <!-- Pants (brown) -->
+  <rect x="10" y="26" width="5" height="4" fill="#6B4E31"/>
+  <rect x="17" y="26" width="5" height="4" fill="#6B4E31"/>
+</svg>
