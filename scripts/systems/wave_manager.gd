@@ -154,19 +154,26 @@ func is_boss_wave(wave: int) -> bool:
 	return wave > 0 and wave % 5 == 0
 
 
+## Boss wave mapping - specific bosses at specific waves
+const BOSS_WAVES = {
+	5: "evoker",
+	10: "elder_guardian",
+	15: "ravager",
+	20: "warden",
+	25: "wither",
+	30: "ender_dragon"
+}
+
 ## Get the boss type for a specific wave
 func get_boss_for_wave(wave: int) -> String:
 	if not is_boss_wave(wave):
 		return ""
 
-	# Boss rotation based on wave number
-	var boss_index = (wave / 5) % 3
-	match boss_index:
-		0:
-			return "evoker"  # Wave 5, 20, 35...
-		1:
-			return "evoker"  # Wave 10, 25, 40... (future: wither skeleton)
-		2:
-			return "evoker"  # Wave 15, 30, 45... (future: warden)
-		_:
-			return "evoker"
+	# Check for specific boss at this wave
+	if wave in BOSS_WAVES:
+		return BOSS_WAVES[wave]
+
+	# For waves beyond 30, cycle through bosses with increasing difficulty
+	var boss_cycle = ["evoker", "elder_guardian", "ravager", "warden", "wither", "ender_dragon"]
+	var cycle_index = ((wave / 5) - 1) % boss_cycle.size()
+	return boss_cycle[cycle_index]

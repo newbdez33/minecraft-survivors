@@ -77,20 +77,45 @@ func get_random_upgrades(count: int = 3) -> Array:
 	return result
 
 ## Get available weapon upgrades (for right side of upgrade menu)
-## Returns only 1 random weapon - either owned (for upgrade) or new (to acquire)
+## Returns only 1 weapon - prioritizes weapons player already owns
 func get_weapon_upgrades() -> Array:
 	if not player:
 		return []
 
-	var available_weapons: Array = []
+	var owned_weapons: Array = []  # Weapons player already has
+	var new_weapons: Array = []    # Weapons player can acquire
+
 	for upgrade in available_upgrades:
 		if upgrade.id in WEAPON_UPGRADE_IDS and upgrade.can_upgrade():
-			available_weapons.append(upgrade)
+			# Check if player owns this weapon
+			var has_weapon = false
+			match upgrade.id:
+				"sword":
+					has_weapon = player.get_node_or_null("Sword") != null
+				"bow":
+					has_weapon = player.get_node_or_null("Bow") != null or player.get_node_or_null("Crossbow") != null
+				"torch":
+					has_weapon = player.get_node_or_null("Torch") != null
 
-	# Return 1 random weapon upgrade
-	if available_weapons.size() > 0:
-		available_weapons.shuffle()
-		return [available_weapons[0]]
+			if has_weapon:
+				owned_weapons.append(upgrade)
+			else:
+				new_weapons.append(upgrade)
+
+	# 70% chance to show owned weapon upgrade, 30% chance to show new weapon
+	# If no owned weapons, show new weapon; if no new weapons, show owned
+	var show_owned = randf() < 0.7
+
+	if show_owned and owned_weapons.size() > 0:
+		owned_weapons.shuffle()
+		return [owned_weapons[0]]
+	elif new_weapons.size() > 0:
+		new_weapons.shuffle()
+		return [new_weapons[0]]
+	elif owned_weapons.size() > 0:
+		owned_weapons.shuffle()
+		return [owned_weapons[0]]
+
 	return []
 
 ## Map upgrade ID to weapon node name

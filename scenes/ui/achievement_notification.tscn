@@ -1,0 +1,55 @@
+[gd_scene load_steps=2 format=3 uid="uid://achievement_notification"]
+
+[ext_resource type="Script" path="res://scripts/ui/achievement_notification.gd" id="1_script"]
+
+[node name="AchievementNotification" type="CanvasLayer"]
+layer = 100
+script = ExtResource("1_script")
+
+[node name="Panel" type="PanelContainer" parent="."]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -320.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = 100.0
+grow_horizontal = 0
+
+[node name="VBox" type="VBoxContainer" parent="Panel"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="TitleHBox" type="HBoxContainer" parent="Panel/VBox"]
+layout_mode = 2
+
+[node name="Icon" type="TextureRect" parent="Panel/VBox/TitleHBox"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+stretch_mode = 5
+
+[node name="TitleLabel" type="Label" parent="Panel/VBox/TitleHBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.843, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 12
+text = "Achievement Unlocked!"
+
+[node name="NameLabel" type="Label" parent="Panel/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 14
+text = "Achievement Name"
+
+[node name="DescLabel" type="Label" parent="Panel/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
+theme_override_constants/outline_size = 1
+theme_override_font_sizes/font_size = 10
+text = "Achievement description here"
+
+[node name="Timer" type="Timer" parent="."]
+one_shot = true
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]

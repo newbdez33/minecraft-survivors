@@ -40,6 +40,7 @@ minecraft-survivors/
 │   ├── pickups/         # Pickup scripts
 │   ├── projectiles/     # Projectile scripts
 │   ├── systems/         # Global systems (upgrades, day/night, waves, localization)
+│   ├── testing/         # Test mode automation (auto_player, test_mode, screenshots)
 │   ├── ui/              # UI scripts
 │   └── weapons/         # Weapon scripts
 ├── tests/               # Test suite
@@ -70,6 +71,7 @@ minecraft-survivors/
 | `scripts/pickups/health_pickup.gd` | Golden Apple healing pickup |
 | `scripts/pickups/meat_pickup.gd` | Meat drop from enemies |
 | `tests/test_runner.gd` | Central test orchestrator (389 tests) |
+| `scripts/testing/test_mode.gd` | Auto-play test mode with performance monitoring |
 | `docs/GAME_DATA.md` | Comprehensive game data reference (bilingual) |
 
 ## Development Commands
@@ -290,6 +292,20 @@ base_count = base_enemies_per_wave * pow(wave_scaling, wave - 1)
 
 **Anti-sticking:** All enemies have push-back when < 30px from player.
 
+### Boss Enemies
+6 boss enemies spawn at specific waves with high HP:
+
+| Boss | Wave | HP | Special |
+|------|------|-----|---------|
+| Evoker | 5 | 400 | Summons fangs |
+| Elder Guardian | 10 | 600 | Mining fatigue beam |
+| Ravager | 15 | 800 | Charge attack |
+| Warden | 20 | 1000 | Sonic attack |
+| Wither | 25 | 1200 | Wither skulls |
+| Ender Dragon | 30 | 1500 | Dragon breath |
+
+All bosses have detailed pixel art SVG sprites located in `assets/characters/`.
+
 For complete game data, see `docs/GAME_DATA.md` (bilingual EN/ZH).
 
 ## Common Tasks
@@ -342,8 +358,8 @@ Detailed documentation is in `docs/`:
 - ✅ Health pickups (Meat drops, Golden Apple spawns)
 - ✅ Enemy anti-sticking mechanism
 - ✅ Bow weapon with Crossbow evolution
+- ✅ Boss enemies (6 bosses with pixel art sprites)
 - [ ] Achievement system (pending)
-- [ ] Boss enemies (pending)
 
 ## Git Workflow
 
@@ -358,6 +374,60 @@ Detailed documentation is in `docs/`:
 - Texture compression (ETC2/ASTC) enabled for mobile
 - Knockback uses lerp decay for smooth physics
 - Single CanvasModulate for day/night tint (efficient)
+
+### Memory Management Patterns
+
+The codebase follows strict memory management to prevent leaks:
+
+**Pickup Collection Pattern:**
+```gdscript
+var _is_collecting: bool = false
+
+func _on_body_entered(body: Node2D) -> void:
+    if _is_collecting:
+        return  # Prevent double collection
+    _is_collecting = true
+    # ... collection logic ...
+    queue_free()
+```
+
+**Tween Cleanup Pattern:**
+```gdscript
+func queue_free() -> void:
+    if _tween and _tween.is_running():
+        _tween.kill()  # Stop tween before freeing
+    super.queue_free()
+```
+
+**Timer Pattern (prefer SceneTreeTimer):**
+```gdscript
+# GOOD: SceneTreeTimer - auto-cleaned by scene tree
+await get_tree().create_timer(1.0).timeout
+queue_free()
+
+# AVOID: Timer node - requires manual cleanup
+var timer = Timer.new()  # Must track and free manually
+```
+
+**Signal Cleanup Pattern:**
+```gdscript
+func _exit_tree() -> void:
+    for spawned_node in _active_nodes:
+        if is_instance_valid(spawned_node):
+            if spawned_node.died.is_connected(_on_node_died):
+                spawned_node.died.disconnect(_on_node_died)
+```
+
+### Performance Monitoring (Test Mode)
+
+Test mode includes built-in performance monitoring (`scripts/testing/test_mode.gd`):
+- Logs objects, orphan nodes, FPS, memory every 10 seconds
+- Warns if orphan node growth exceeds 100 (potential memory leak)
+- Prints performance summary at test end
+
+Run with: `godot res://scenes/main.tscn -- --test-mode --duration=180 --speed=2`
+
+**Verified Stability:** Game runs 3+ minutes at 2x speed (80+ waves) with 0 orphan nodes, stable memory (~92-94MB), stable FPS (44-60).
 
 ## Workflow Rules
 

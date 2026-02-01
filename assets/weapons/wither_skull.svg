@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16" shape-rendering="crispEdges">
+  <!-- Wither Skull - Dark skull projectile -->
+  <!-- Skull base -->
+  <rect x="4" y="3" width="8" height="8" fill="#1A1A1A"/>
+  <rect x="5" y="4" width="6" height="6" fill="#252525"/>
+  <!-- Eyes (glowing) -->
+  <rect x="5" y="5" width="2" height="2" fill="#404040"/>
+  <rect x="9" y="5" width="2" height="2" fill="#404040"/>
+  <rect x="6" y="6" width="1" height="1" fill="#606060"/>
+  <rect x="9" y="6" width="1" height="1" fill="#606060"/>
+  <!-- Nose -->
+  <rect x="7" y="7" width="2" height="2" fill="#0A0A0A"/>
+  <!-- Mouth -->
+  <rect x="5" y="9" width="6" height="1" fill="#050505"/>
+  <!-- Dark aura -->
+  <rect x="3" y="5" width="1" height="4" fill="#101010"/>
+  <rect x="12" y="5" width="1" height="4" fill="#101010"/>
+  <rect x="5" y="2" width="6" height="1" fill="#101010"/>
+  <rect x="5" y="11" width="6" height="1" fill="#101010"/>
+  <!-- Trail particles -->
+  <rect x="1" y="6" width="2" height="2" fill="#202020"/>
+  <rect x="0" y="7" width="1" height="1" fill="#151515"/>
+</svg>

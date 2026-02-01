@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://mainmenu001"]
+[gd_scene load_steps=13 format=3 uid="uid://mainmenu001"]
 
 [ext_resource type="Script" path="res://scripts/ui/main_menu.gd" id="1_script"]
 [ext_resource type="Script" path="res://scripts/ui/settings_panel.gd" id="2_settings"]
@@ -9,6 +9,9 @@
 [ext_resource type="Texture2D" path="res://assets/ui/menu/button_hover.svg" id="7_btn_hover"]
 [ext_resource type="Texture2D" path="res://assets/ui/menu/button_pressed.svg" id="8_btn_pressed"]
 [ext_resource type="Texture2D" path="res://assets/ui/menu/panel_bg.svg" id="9_panel"]
+[ext_resource type="Script" path="res://scripts/ui/character_select.gd" id="10_character_select"]
+[ext_resource type="Script" path="res://scripts/systems/character_manager.gd" id="11_character_manager"]
+[ext_resource type="Script" path="res://scripts/ui/character_card.gd" id="12_character_card"]
 
 [node name="MainMenu" type="CanvasLayer"]
 layer = 10
@@ -33,34 +36,13 @@ anchor_bottom = 1.0
 custom_minimum_size = Vector2(400, 0)
 theme_override_constants/separation = 12
 
-[node name="TitleContainer" type="VBoxContainer" parent="Container/VBox"]
+[node name="TitleLogo" type="TextureRect" parent="Container/VBox"]
 layout_mode = 2
-custom_minimum_size = Vector2(0, 100)
-theme_override_constants/separation = 0
-
-[node name="Title" type="Label" parent="Container/VBox/TitleContainer"]
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.8, 0.3, 1)
-theme_override_colors/font_shadow_color = Color(0.2, 0.1, 0, 0.8)
-theme_override_colors/font_outline_color = Color(0.3, 0.15, 0, 1)
-theme_override_constants/shadow_offset_x = 3
-theme_override_constants/shadow_offset_y = 3
-theme_override_constants/outline_size = 4
-theme_override_font_sizes/font_size = 48
-text = "MINECRAFT"
-horizontal_alignment = 1
-
-[node name="Subtitle" type="Label" parent="Container/VBox/TitleContainer"]
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.6, 0.2, 1)
-theme_override_colors/font_shadow_color = Color(0.2, 0.1, 0, 0.8)
-theme_override_colors/font_outline_color = Color(0.3, 0.15, 0, 1)
-theme_override_constants/shadow_offset_x = 2
-theme_override_constants/shadow_offset_y = 2
-theme_override_constants/outline_size = 3
-theme_override_font_sizes/font_size = 36
-text = "SURVIVORS"
-horizontal_alignment = 1
+custom_minimum_size = Vector2(400, 120)
+size_flags_horizontal = 4
+texture = ExtResource("5_logo")
+expand_mode = 1
+stretch_mode = 5
 
 [node name="Spacer" type="Control" parent="Container/VBox"]
 custom_minimum_size = Vector2(0, 20)
@@ -87,6 +69,30 @@ theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_colors/font_shadow_color = Color(1, 1, 1, 0.3)
 theme_override_font_sizes/font_size = 22
 text = "Start Game"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CharacterButton" type="TextureButton" parent="Container/VBox"]
+custom_minimum_size = Vector2(300, 50)
+layout_mode = 2
+size_flags_horizontal = 4
+texture_normal = ExtResource("6_btn_normal")
+texture_pressed = ExtResource("8_btn_pressed")
+texture_hover = ExtResource("7_btn_hover")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="Label" type="Label" parent="Container/VBox/CharacterButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_colors/font_shadow_color = Color(1, 1, 1, 0.3)
+theme_override_font_sizes/font_size = 22
+text = "Select Character"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -396,3 +402,78 @@ theme_override_font_sizes/font_size = 18
 text = "Close"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="CharacterSelect" type="Control" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("10_character_select")
+
+[node name="Background" type="ColorRect" parent="CharacterSelect"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.8)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CharacterSelect"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -350.0
+offset_top = -200.0
+offset_right = 350.0
+offset_bottom = 200.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+
+[node name="TitleLabel" type="Label" parent="CharacterSelect/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.843, 0, 1)
+theme_override_colors/font_outline_color = Color(0.3, 0.15, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 28
+text = "Select Character"
+horizontal_alignment = 1
+
+[node name="CharacterContainer" type="HBoxContainer" parent="CharacterSelect/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 40
+alignment = 1
+
+[node name="CloseButton" type="TextureButton" parent="CharacterSelect/VBoxContainer"]
+custom_minimum_size = Vector2(200, 40)
+layout_mode = 2
+size_flags_horizontal = 4
+texture_normal = ExtResource("6_btn_normal")
+texture_pressed = ExtResource("8_btn_pressed")
+texture_hover = ExtResource("7_btn_hover")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="Label" type="Label" parent="CharacterSelect/VBoxContainer/CloseButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_font_sizes/font_size = 18
+text = "Close"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CharacterManager" type="Node" parent="."]
+script = ExtResource("11_character_manager")

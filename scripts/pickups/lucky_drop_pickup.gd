@@ -68,6 +68,11 @@ func _on_body_entered(body: Node2D) -> void:
 		_target = body
 
 func _collect() -> void:
+	# Kill tween before freeing to prevent memory leak
+	if _bob_tween and _bob_tween.is_valid():
+		_bob_tween.kill()
+		_bob_tween = null
+
 	if _target:
 		LuckyDropClass.apply_drop(_target, drop_type)
 

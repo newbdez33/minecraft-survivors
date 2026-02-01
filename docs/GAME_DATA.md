@@ -391,13 +391,117 @@
 
 ---
 
+## Boss数据 / Boss Data
+
+### Boss总览 / Boss Overview
+
+Boss敌人在特定波次出现，具有高生命值和独特能力。所有Boss都有详细的像素风格SVG贴图。
+
+Boss enemies appear at specific waves with high HP and unique abilities. All bosses have detailed pixel art SVG sprites.
+
+| Boss | 波次 Wave | 生命值 HP | 特殊能力 Special |
+|------|-----------|-----------|------------------|
+| Evoker 唤魔者 | 5 | 400 | 召唤尖牙 Summons fangs |
+| Elder Guardian 远古守卫者 | 10 | 600 | 挖掘疲劳光束 Mining fatigue beam |
+| Ravager 劫掠兽 | 15 | 800 | 冲撞攻击 Charge attack |
+| Warden 监守者 | 20 | 1000 | 音波攻击 Sonic attack |
+| Wither 凋灵 | 25 | 1200 | 凋灵骷髅头 Wither skulls |
+| Ender Dragon 末影龙 | 30 | 1500 | 龙息攻击 Dragon breath |
+
+---
+
+### Evoker 唤魔者
+
+**基础数据:**
+| 属性 | 数值 |
+|------|------|
+| 生命值 (Health) | 400 |
+| 出现波次 (Spawn Wave) | 5 |
+
+**行为特征:**
+- 远程魔法攻击者
+- 召唤尖牙从地面攻击玩家
+
+---
+
+### Elder Guardian 远古守卫者
+
+**基础数据:**
+| 属性 | 数值 |
+|------|------|
+| 生命值 (Health) | 600 |
+| 出现波次 (Spawn Wave) | 10 |
+
+**行为特征:**
+- 发射挖掘疲劳光束
+- 减缓玩家攻击速度
+
+---
+
+### Ravager 劫掠兽
+
+**基础数据:**
+| 属性 | 数值 |
+|------|------|
+| 生命值 (Health) | 800 |
+| 出现波次 (Spawn Wave) | 15 |
+
+**行为特征:**
+- 强力近战Boss
+- 冲撞攻击造成大量伤害
+
+---
+
+### Warden 监守者
+
+**基础数据:**
+| 属性 | 数值 |
+|------|------|
+| 生命值 (Health) | 1000 |
+| 出现波次 (Spawn Wave) | 20 |
+
+**行为特征:**
+- 高生命值近战Boss
+- 音波攻击无视护甲
+
+---
+
+### Wither 凋灵
+
+**基础数据:**
+| 属性 | 数值 |
+|------|------|
+| 生命值 (Health) | 1200 |
+| 出现波次 (Spawn Wave) | 25 |
+
+**行为特征:**
+- 三头Boss敌人
+- 发射凋灵骷髅头造成凋零效果
+
+---
+
+### Ender Dragon 末影龙
+
+**基础数据:**
+| 属性 | 数值 |
+|------|------|
+| 生命值 (Health) | 1500 |
+| 出现波次 (Spawn Wave) | 30 |
+
+**行为特征:**
+- 最终Boss
+- 飞行并喷射龙息
+
+---
+
 ## 版本信息 / Version Info
 
-- 文档版本: 1.4
+- 文档版本: 1.5
 - 游戏版本: Phase 5
-- 更新日期: 2026-01-26
+- 更新日期: 2026-02-01
 
 ### 更新记录 / Changelog
+- v1.5: 添加Boss数据 (Evoker, Elder Guardian, Ravager, Warden, Wither, Ender Dragon)
 - v1.4: 弓每级升级攻速改为+1.0/s (原+0.1/s)
 - v1.3: 更新弓数据(伤害6,攻速0.5,12级进化)、添加火把武器数据、Enderman闪避机制
 - v1.2: 添加毒云详细数据、敌人防粘连机制说明
