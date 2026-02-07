@@ -125,20 +125,17 @@
 | Wither / 凋灵 | 25 | 1200 | Wither skulls | ✅ **DONE** |
 | Ender Dragon / 末影龙 | 30 | 1500 | Dragon breath (FINAL BOSS) | ✅ **DONE** |
 
-#### ✅ Implemented Features
+#### Implemented Features
 
 | Feature | Description |
 |---------|-------------|
-| Evoker Boss | First boss at Wave 5, 100 HP, knockback/poison immune |
-| Evoker Fang Attack | 5 fangs in line, 0.5s warning, 15 damage |
-| Vex Summon | 3 flying minions, 15s lifetime, pass through walls |
+| 6 Boss Enemies | Evoker, Elder Guardian, Ravager, Warden, Wither, Ender Dragon |
 | Boss Health Bar | Top-screen health display with boss name |
-| Boss Wave Detection | WaveManager.is_boss_wave() |
+| Boss Wave Detection | WaveManager.is_boss_wave() every 5 waves |
 | Spawner Pause | pause_spawning()/resume_spawning() for boss fights |
-| Emerald Pickup | Boss currency drop (30 emeralds) |
-| Totem Pickup | Rare drop (10% chance) |
-
-📄 Details: [boss_enemies.md](./design/boss_enemies.md)
+| Boss Drops | Emerald (30), Totem (10% chance) |
+| Boss Pixel Art | All 6 bosses have detailed SVG sprites |
+| Boss Animations | Unique attack animations per boss |
 
 📄 Details: [boss_enemies.md](./design/boss_enemies.md)
 
