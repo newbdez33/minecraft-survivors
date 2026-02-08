@@ -12,16 +12,16 @@ signal health_changed(current: int, maximum: int)
 @export var max_health: int = 800
 @export var health: int = 800
 @export var speed: float = 50.0
-@export var contact_damage: int = 20
-@export var xp_value: int = 100
+@export var contact_damage: int = 30
+@export var xp_value: int = 200
 @export var emerald_drop: int = 50
 
 # Attack properties
 @export var charge_cooldown: float = 5.0
 @export var charge_speed: float = 300.0
-@export var charge_damage: int = 35
+@export var charge_damage: int = 50
 @export var stomp_cooldown: float = 3.0
-@export var stomp_damage: int = 25
+@export var stomp_damage: int = 40
 @export var stomp_radius: float = 120.0
 
 # Boss immunities
@@ -29,12 +29,13 @@ signal health_changed(current: int, maximum: int)
 @export var damage_reduction: float = 0.25
 
 # AI State
-enum State { IDLE, CHARGING, STOMPING }
+enum State { IDLE, CHARGE_WINDUP, CHARGING, STOMPING }
 var _state: State = State.IDLE
 var _charge_timer: float = 0.0
 var _stomp_timer: float = 0.0
 var _charge_direction: Vector2 = Vector2.ZERO
 var _charge_time_remaining: float = 0.0
+var _charge_hit: bool = false
 
 var target: Node2D = null
 
@@ -89,6 +90,8 @@ func _physics_process(delta: float) -> void:
 	match _state:
 		State.IDLE:
 			_process_idle(delta)
+		State.CHARGE_WINDUP:
+			velocity = Vector2.ZERO  # Hold still during windup
 		State.CHARGING:
 			_process_charge(delta)
 		State.STOMPING:
@@ -137,46 +140,67 @@ func _update_walk_animation(is_moving: bool) -> void:
 	_was_moving = is_moving
 
 func _start_charge() -> void:
-	_state = State.CHARGING
+	_state = State.CHARGE_WINDUP
 	_charge_timer = 0.0
+	_charge_hit = false
 	_charge_direction = (target.global_position - global_position).normalized()
-	_charge_time_remaining = 0.8  # Charge duration
+	_charge_time_remaining = 0.8  # Charge duration after windup
 
-	# Play charge animations
+	# Play boss charge animation
 	if _animator:
 		_animator.stop_walk_animation()
-		_animator.play_charge_windup()
-		await get_tree().create_timer(0.2).timeout
-		_animator.play_charge_rush()
+		_animator.play_boss_charge()
+
+	# Play SFX
+	var audio = get_node_or_null("/root/AudioManager")
+	if audio and audio.has_method("play_sfx_at"):
+		audio.play_sfx_at("boss_attack", global_position)
+
+	# Hold still during windup (0.4s matches animation phase 1), then begin charge
+	await get_tree().create_timer(0.4).timeout
+	if _state == State.CHARGE_WINDUP:
+		_state = State.CHARGING
 
 func _process_charge(delta: float) -> void:
 	_charge_time_remaining -= delta
 
 	velocity = _charge_direction * charge_speed
 
-	# Check for collision with player during charge
-	if target and is_instance_valid(target):
+	# Check for collision with player during charge (wider hit-box, single-hit only)
+	if not _charge_hit and target and is_instance_valid(target):
 		var distance = global_position.distance_to(target.global_position)
-		if distance < 30:
+		if distance < 50:
+			_charge_hit = true
 			if target.has_method("take_damage"):
 				target.take_damage(charge_damage)
-			_state = State.IDLE
+			_end_charge()
 			return
 
 	if _charge_time_remaining <= 0:
-		_state = State.IDLE
+		_end_charge()
+
+func _end_charge() -> void:
+	_state = State.IDLE
+	if _animator:
+		_animator.is_attacking = false
 
 func _do_stomp_attack() -> void:
 	_state = State.STOMPING
 	_stomp_timer = 0.0
+	velocity = Vector2.ZERO
 
-	# Play stomp animation
+	# Play boss stomp animation
 	if _animator:
 		_animator.stop_walk_animation()
-		_animator.play_attack_animation()
+		_animator.play_boss_stomp()
 
-	# Ground pound AoE
-	await get_tree().create_timer(0.3).timeout
+	# Play SFX
+	var audio = get_node_or_null("/root/AudioManager")
+	if audio and audio.has_method("play_sfx_at"):
+		audio.play_sfx_at("boss_attack", global_position)
+
+	# Wait for slam to land (matches animation phase 1 + phase 2 timing)
+	await get_tree().create_timer(0.4).timeout
 
 	if target and is_instance_valid(target):
 		var distance = global_position.distance_to(target.global_position)
@@ -185,17 +209,23 @@ func _do_stomp_attack() -> void:
 				target.take_damage(stomp_damage)
 
 	_spawn_stomp_effect()
+
+	# Wait for recovery animation to finish
+	await get_tree().create_timer(0.55).timeout
 	_state = State.IDLE
 
 func _spawn_stomp_effect() -> void:
-	# Visual stomp effect
+	# Visual stomp effect - 3 effects in a ring pattern, larger scale
 	var hit_scene = load("res://scenes/effects/hit_effect.tscn")
-	if hit_scene and get_tree():
-		var hit = hit_scene.instantiate()
-		hit.global_position = global_position
-		hit.modulate = Color(0.6, 0.3, 0)  # Brown
-		hit.scale = Vector2(3, 3)
-		get_tree().current_scene.call_deferred("add_child", hit)
+	if hit_scene and get_tree() and get_tree().current_scene:
+		for i in range(3):
+			var hit = hit_scene.instantiate()
+			var angle = (TAU / 3.0) * i
+			var offset = Vector2(cos(angle), sin(angle)) * 40.0
+			hit.global_position = global_position + offset
+			hit.modulate = Color(0.6, 0.3, 0)  # Brown
+			hit.scale = Vector2(4, 4)
+			get_tree().current_scene.call_deferred("add_child", hit)
 
 func _on_hitbox_body_entered(body: Node2D) -> void:
 	if body.is_in_group("player") and body.has_method("take_damage"):

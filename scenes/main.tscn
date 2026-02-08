@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://main001"]
+[gd_scene load_steps=18 format=3 uid="uid://main001"]
 
 [ext_resource type="PackedScene" uid="uid://player001" path="res://scenes/player.tscn" id="1_player"]
 [ext_resource type="PackedScene" path="res://scenes/ui/boss_health_bar.tscn" id="17_boss_health_bar"]
@@ -19,6 +19,7 @@
 [ext_resource type="Script" path="res://scripts/systems/torch_manager.gd" id="15_torch_manager"]
 [ext_resource type="Script" path="res://scripts/systems/achievement_manager.gd" id="20_achievement_manager"]
 [ext_resource type="Script" path="res://scripts/systems/character_manager.gd" id="21_character_manager"]
+[ext_resource type="Script" path="res://scripts/systems/sfx_connector.gd" id="22_sfx_connector"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_fog"]
 shader = ExtResource("16_fog_shader")
@@ -105,3 +106,6 @@ script = ExtResource("20_achievement_manager")
 
 [node name="CharacterManager" type="Node" parent="."]
 script = ExtResource("21_character_manager")
+
+[node name="SFXConnector" type="Node" parent="."]
+script = ExtResource("22_sfx_connector")

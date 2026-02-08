@@ -135,6 +135,9 @@ func jump() -> void:
 
 	can_jump = false
 	is_jumping = true
+	var audio = get_node_or_null("/root/AudioManager")
+	if audio:
+		audio.play_sfx_at("spider_jump", global_position)
 
 	# Stop walk animation and play jump squash
 	if _animator:

@@ -62,6 +62,9 @@ func _on_body_entered(body: Node2D) -> void:
 	if body.is_in_group("player") and not _is_collecting:
 		_is_collecting = true
 		collected.emit(xp_value)
+		var audio = get_node_or_null("/root/AudioManager")
+		if audio:
+			audio.play_sfx_at("xp_orb", global_position)
 
 		# Add XP to player if method exists
 		if body.has_method("add_xp"):

@@ -212,6 +212,10 @@ func _on_player_died() -> void:
 		game_stats.stop_tracking()
 		game_stats.set_level(player.current_level if player else 1)
 
+	var audio = get_node_or_null("/root/AudioManager")
+	if audio:
+		audio.play_sfx("game_over")
+
 	# Show game over screen
 	if game_over_ui:
 		if game_stats:
@@ -333,6 +337,9 @@ func _spawn_boss(wave_number: int) -> void:
 	# Add boss to scene
 	add_child(boss)
 	_current_boss = boss
+	var audio = get_node_or_null("/root/AudioManager")
+	if audio:
+		audio.play_sfx("boss_appear")
 
 	# Show boss health bar
 	if boss_health_bar:

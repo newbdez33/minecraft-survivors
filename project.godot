@@ -21,6 +21,7 @@ config/icon="res://assets/icon.png"
 [autoload]
 
 LocalizationManager="*res://scripts/systems/localization_manager.gd"
+AudioManager="*res://scripts/systems/audio_manager.gd"
 
 [display]
 
