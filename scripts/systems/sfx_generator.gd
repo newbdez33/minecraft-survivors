@@ -350,6 +350,19 @@ static func boss_appear() -> AudioStreamWAV:
 	})
 
 
+## Preset: Boss attack - heavy impact slam
+static func boss_attack() -> AudioStreamWAV:
+	return generate({
+		"wave_type": WaveType.SAWTOOTH,
+		"frequency": 120.0,
+		"freq_end": 50.0,
+		"duration": 0.4,
+		"volume": 0.55,
+		"attack": 0.01,
+		"decay": 0.25
+	})
+
+
 ## Preset: Meat collect - softer pickup
 static func meat_collect() -> AudioStreamWAV:
 	return generate({

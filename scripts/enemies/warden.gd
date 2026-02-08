@@ -13,7 +13,7 @@ signal health_changed(current: int, maximum: int)
 @export var health: int = 1000
 @export var speed: float = 35.0
 @export var contact_damage: int = 40
-@export var xp_value: int = 150
+@export var xp_value: int = 300
 @export var emerald_drop: int = 75
 
 # Attack properties

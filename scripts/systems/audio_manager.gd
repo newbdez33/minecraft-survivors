@@ -137,6 +137,7 @@ func _precache_procedural_sounds() -> void:
 	_sound_cache["enderman_teleport"] = SFXGeneratorClass.enderman_teleport()
 	_sound_cache["spider_jump"] = SFXGeneratorClass.spider_jump()
 	_sound_cache["boss_appear"] = SFXGeneratorClass.boss_appear()
+	_sound_cache["boss_attack"] = SFXGeneratorClass.boss_attack()
 	_sound_cache["health_collect"] = SFXGeneratorClass.health_collect()
 	_sound_cache["meat_collect"] = SFXGeneratorClass.meat_collect()
 	_sound_cache["upgrade_select"] = SFXGeneratorClass.upgrade_select()
@@ -281,9 +282,13 @@ func _get_sound(sfx_name: String) -> AudioStream:
 
 	# Try loading .ogg file from assets (cache null on miss to avoid repeated I/O)
 	var ogg_path: String = "res://assets/audio/sfx/%s.ogg" % sfx_name
-	var stream: AudioStream = load(ogg_path) as AudioStream
-	_sound_cache[sfx_name] = stream
-	return stream
+	if ResourceLoader.exists(ogg_path):
+		var stream: AudioStream = load(ogg_path) as AudioStream
+		_sound_cache[sfx_name] = stream
+		return stream
+
+	_sound_cache[sfx_name] = null
+	return null
 
 
 func _get_next_global_player() -> AudioStreamPlayer:
