@@ -134,6 +134,9 @@ func shoot_arrow() -> void:
 	if _animator:
 		_animator.play_attack_animation()
 
+	var audio = get_node_or_null("/root/AudioManager")
+	if audio:
+		audio.play_sfx_at("skeleton_arrow", global_position)
 	var arrow_scene = load("res://scenes/projectiles/arrow.tscn")
 	if arrow_scene and get_tree() and get_tree().current_scene:
 		var arrow = arrow_scene.instantiate()

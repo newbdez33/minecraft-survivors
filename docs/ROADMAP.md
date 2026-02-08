@@ -136,24 +136,27 @@
 | Boss Drops | Emerald (30), Totem (10% chance) |
 | Boss Pixel Art | All 6 bosses have detailed SVG sprites |
 | Boss Animations | Unique attack animations per boss |
+| Boss Attack Improvements | Exaggerated multi-phase animations, increased damage, fixed melee deadlock |
+| Boss SFX | Procedural 8-bit sound effects for all boss attacks |
 
 📄 Details: [boss_enemies.md](./design/boss_enemies.md)
 
 ---
 
-### 📋 Phase 7: Advanced Features / 高级功能 (BACKLOG)
-**Status: PLANNING**
+### 🔧 Phase 7: Advanced Features / 高级功能 (IN PROGRESS)
+**Status: IN PROGRESS**
 
-| Feature | Priority | Description |
-|---------|----------|-------------|
-| Achievement System | High | Milestones, unlocks |
-| Elite Monsters | High | Enhanced versions of all enemies |
-| Crafting System | Medium | Material collection, auto-craft |
-| MC Dungeons Weapons | Medium | More weapon types (Glaive, Daggers, etc.) |
-| Sound & Music | Medium | BGM, SFX |
-| More Characters | Low | Zombie Steve, etc. |
-| Daily Challenge | Low | Daily missions |
-| Economy System | Low | Emeralds, meta progression |
+| Feature | Priority | Description | Status |
+|---------|----------|-------------|--------|
+| Sound & Music | Medium | Procedural 8-bit SFX system | ✅ **SFX DONE** |
+| Achievement System | High | Milestones, unlocks | Planned |
+| Elite Monsters | High | Enhanced versions of all enemies | Planned |
+| Crafting System | Medium | Material collection, auto-craft | Planned |
+| MC Dungeons Weapons | Medium | More weapon types (Glaive, Daggers, etc.) | Planned |
+| BGM / Background Music | Medium | Background music tracks | Planned |
+| More Characters | Low | Zombie Steve, etc. | Planned |
+| Daily Challenge | Low | Daily missions | Planned |
+| Economy System | Low | Emeralds, meta progression | Planned |
 
 📄 Details: [backlog.md](./phases/backlog.md)
 
@@ -226,9 +229,7 @@
 
 ## Test Status / 测试状态
 
-**Total Tests: 517+**
-- Unit Tests: 389 (all passing)
-- Visual Tests: 128 (all passing)
+**Total Tests: 1538** (1454 passed, 84 pre-existing failures)
 
 ```
 Phase 1: Core Foundation    - 37 tests
@@ -237,6 +238,8 @@ Phase 3: Progression Loop   - 63 tests
 Phase 4: Game Feel          - 145 tests
 Phase 5: Game Enhancements  - 112 tests
 Visual Tests                - 128 tests (animations, upgrades, enemies)
+BDD Tests                   - 52 tests (boss attack behavior)
+External Test Suites        - 969+ tests (combat, pickups, enemies, animations, bosses)
 ```
 
 📄 Details: [testing/guide.md](./testing/guide.md)
@@ -255,6 +258,7 @@ Visual Tests                - 128 tests (animations, upgrades, enemies)
 
 | Version | Date | Highlights |
 |---------|------|------------|
+| v0.7.0 | 2026-02-08 | Procedural 8-bit audio, boss attack improvements, BDD tests |
 | v0.6.2 | 2026-02-01 | Enemy animations, upgrade visual feedback, Windows build fix |
 | v0.6.0 | 2026-01-29 | **All 6 Bosses**, Evoker/Elder Guardian/Ravager/Warden/Wither/Ender Dragon |
 | v0.5.0 | 2026-01-26 | Torch fog system, bow rebalance, elite/boss design |
@@ -271,4 +275,4 @@ See [CLAUDE.md](../CLAUDE.md) for development guidelines and code conventions.
 
 ---
 
-*Last Updated: 2026-02-01*
+*Last Updated: 2026-02-08*

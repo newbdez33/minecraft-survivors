@@ -136,6 +136,9 @@ func throw_potion() -> void:
 	if _animator:
 		_animator.play_attack_animation()
 
+	var audio = get_node_or_null("/root/AudioManager")
+	if audio:
+		audio.play_sfx_at("witch_poison_throw", global_position)
 	# Load potion scene
 	var potion_scene = load("res://scenes/projectiles/potion.tscn")
 	if potion_scene:

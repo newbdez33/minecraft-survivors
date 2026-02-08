@@ -154,6 +154,9 @@ func explode() -> void:
 				target.take_damage(explosion_damage)
 
 	# Spawn explosion effect
+	var audio = get_node_or_null("/root/AudioManager")
+	if audio:
+		audio.play_sfx_at("creeper_explosion", global_position)
 	_spawn_explosion_effect()
 	_spawn_xp_orb()
 

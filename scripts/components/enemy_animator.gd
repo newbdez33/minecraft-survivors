@@ -394,22 +394,54 @@ func play_breath_attack() -> void:
 
 
 func play_sonic_boom() -> void:
-	"""Play sonic boom animation (Warden)"""
+	"""Play sonic boom animation (Warden) - enhanced with scale pulsing and cyan flash"""
 	if sprite == null:
 		return
+
+	is_attacking = true
+	attack_started.emit()
+
+	var was_walking = is_walking
+	if is_walking:
+		if _walk_tween and _walk_tween.is_valid():
+			_walk_tween.kill()
+			_walk_tween = null
 
 	if _attack_tween and _attack_tween.is_valid():
 		_attack_tween.kill()
 
 	_attack_tween = create_tween()
 
-	# Shake violently
-	for i in range(10):
-		var offset = Vector2(randf_range(-5, 5), randf_range(-3, 3))
+	# Charge up with cyan tint
+	_attack_tween.tween_property(sprite, "modulate", Color(0.2, 0.9, 0.9), 0.1)
+	_attack_tween.tween_property(sprite, "scale", _original_scale * 1.15, 0.1)
+
+	# Violent shake with scale pulsing (16 frames)
+	for i in range(16):
+		var offset = Vector2(randf_range(-10, 10), randf_range(-8, 8))
+		var pulse_scale = _original_scale * (1.15 if i % 2 == 0 else 0.9)
 		_attack_tween.tween_property(sprite, "position", _original_position + offset, 0.02)
+		_attack_tween.parallel().tween_property(sprite, "scale", pulse_scale, 0.02)
+
+	# Hold scaled-up before release
+	_attack_tween.tween_property(sprite, "scale", _original_scale * 1.2, 0.05)
+	_attack_tween.tween_interval(0.15)
 
 	_attack_tween.tween_callback(func(): attack_hit_frame.emit())
-	_attack_tween.tween_property(sprite, "position", _original_position, 0.05)
+
+	# Flash white on release then recover
+	_attack_tween.tween_property(sprite, "modulate", Color.WHITE, 0.03)
+	_attack_tween.tween_property(sprite, "modulate", _original_modulate, 0.15)
+	_attack_tween.parallel().tween_property(sprite, "scale", _original_scale, 0.2)
+	_attack_tween.parallel().tween_property(sprite, "position", _original_position, 0.1)
+
+	_attack_tween.tween_callback(func():
+		is_attacking = false
+		attack_finished.emit()
+		if was_walking:
+			is_walking = true
+			_play_walk_cycle()
+	)
 
 
 func play_summon_animation() -> void:
@@ -460,6 +492,157 @@ func play_laser_fire() -> void:
 	_attack_tween.tween_property(sprite, "scale", _original_scale * 0.9, 0.1)
 	_attack_tween.tween_property(sprite, "scale", _original_scale, 0.2)
 	_attack_tween.tween_property(sprite, "modulate", _original_modulate, 0.2)
+
+
+# ============================================================================
+# BOSS ANIMATIONS
+# ============================================================================
+
+func play_boss_stomp() -> void:
+	"""Play boss stomp animation (Ravager) - dramatic rise-up and slam-down"""
+	if sprite == null:
+		return
+
+	is_attacking = true
+	attack_started.emit()
+
+	var was_walking = is_walking
+	if is_walking:
+		if _walk_tween and _walk_tween.is_valid():
+			_walk_tween.kill()
+			_walk_tween = null
+
+	if _attack_tween and _attack_tween.is_valid():
+		_attack_tween.kill()
+
+	_attack_tween = create_tween()
+
+	# Phase 1: Rise up (0.3s) - scale 130%, move Y -15px, tint red
+	_attack_tween.tween_property(sprite, "scale", _original_scale * 1.3, 0.3).set_ease(Tween.EASE_OUT)
+	_attack_tween.parallel().tween_property(sprite, "position", _original_position + Vector2(0, -15), 0.3)
+	_attack_tween.parallel().tween_property(sprite, "modulate", Color(1.0, 0.4, 0.3), 0.3)
+
+	# Phase 2: Slam down (0.1s) - squash wide, move Y +10px
+	var slam_scale = Vector2(_original_scale.x * 0.8, _original_scale.y * 1.2)
+	_attack_tween.tween_property(sprite, "scale", slam_scale, 0.1).set_ease(Tween.EASE_IN)
+	_attack_tween.parallel().tween_property(sprite, "position", _original_position + Vector2(0, 10), 0.1)
+
+	# Phase 3: Hit frame
+	_attack_tween.tween_callback(func(): attack_hit_frame.emit())
+
+	# Phase 4: Shockwave squash (0.25s) - stretch wide, shrink tall
+	var shockwave_scale = Vector2(_original_scale.x * 1.4, _original_scale.y * 0.7)
+	_attack_tween.tween_property(sprite, "scale", shockwave_scale, 0.25).set_ease(Tween.EASE_OUT)
+	_attack_tween.parallel().tween_property(sprite, "modulate", Color.WHITE, 0.1)
+
+	# Phase 5: Recover (0.3s) - return to original
+	_attack_tween.tween_property(sprite, "scale", _original_scale, 0.3).set_ease(Tween.EASE_IN_OUT)
+	_attack_tween.parallel().tween_property(sprite, "position", _original_position, 0.3)
+	_attack_tween.parallel().tween_property(sprite, "modulate", _original_modulate, 0.3)
+
+	_attack_tween.tween_callback(func():
+		is_attacking = false
+		attack_finished.emit()
+		if was_walking:
+			is_walking = true
+			_play_walk_cycle()
+	)
+
+
+func play_boss_charge() -> void:
+	"""Play boss charge animation (Ravager) - windup lean-back then rush forward"""
+	if sprite == null:
+		return
+
+	is_attacking = true
+	attack_started.emit()
+
+	var was_walking = is_walking
+	if is_walking:
+		if _walk_tween and _walk_tween.is_valid():
+			_walk_tween.kill()
+			_walk_tween = null
+
+	if _attack_tween and _attack_tween.is_valid():
+		_attack_tween.kill()
+
+	_attack_tween = create_tween()
+
+	# Phase 1: Windup (0.4s) - scale 125%, rotate -20deg, tint orange-red
+	_attack_tween.tween_property(sprite, "scale", _original_scale * 1.25, 0.4).set_ease(Tween.EASE_OUT)
+	_attack_tween.parallel().tween_property(sprite, "rotation", deg_to_rad(-20), 0.4)
+	_attack_tween.parallel().tween_property(sprite, "modulate", Color(1.0, 0.5, 0.2), 0.4)
+
+	# Phase 2: Rush (0.15s) - stretch horizontal, rotate forward, flash white
+	var rush_scale = Vector2(_original_scale.x * 1.4, _original_scale.y * 0.8)
+	_attack_tween.tween_property(sprite, "scale", rush_scale, 0.15).set_ease(Tween.EASE_IN)
+	_attack_tween.parallel().tween_property(sprite, "rotation", deg_to_rad(25), 0.15)
+	_attack_tween.parallel().tween_property(sprite, "modulate", Color.WHITE, 0.08)
+
+	_attack_tween.tween_callback(func(): attack_hit_frame.emit())
+
+	# Phase 3: Recovery (0.3s) - return to original
+	_attack_tween.tween_property(sprite, "scale", _original_scale, 0.3).set_ease(Tween.EASE_IN_OUT)
+	_attack_tween.parallel().tween_property(sprite, "rotation", _original_rotation, 0.3)
+	_attack_tween.parallel().tween_property(sprite, "modulate", _original_modulate, 0.3)
+
+	_attack_tween.tween_callback(func():
+		is_attacking = false
+		attack_finished.emit()
+		if was_walking:
+			is_walking = true
+			_play_walk_cycle()
+	)
+
+
+func play_boss_melee() -> void:
+	"""Play boss melee animation (Warden) - dramatic wind-up and heavy slam"""
+	if sprite == null:
+		return
+
+	is_attacking = true
+	attack_started.emit()
+
+	var was_walking = is_walking
+	if is_walking:
+		if _walk_tween and _walk_tween.is_valid():
+			_walk_tween.kill()
+			_walk_tween = null
+
+	if _attack_tween and _attack_tween.is_valid():
+		_attack_tween.kill()
+
+	_attack_tween = create_tween()
+
+	# Phase 1: Wind up (0.35s) - scale 130%, rotate -25deg, rise up, tint dark cyan
+	_attack_tween.tween_property(sprite, "scale", _original_scale * 1.3, 0.35).set_ease(Tween.EASE_OUT)
+	_attack_tween.parallel().tween_property(sprite, "rotation", deg_to_rad(-25), 0.35)
+	_attack_tween.parallel().tween_property(sprite, "position", _original_position + Vector2(0, -10), 0.35)
+	_attack_tween.parallel().tween_property(sprite, "modulate", Color(0.2, 0.7, 0.7), 0.35)
+
+	# Phase 2: Strike (0.08s) - squash wide/tall, rotate forward, slam down
+	var strike_scale = Vector2(_original_scale.x * 0.85, _original_scale.y * 1.4)
+	_attack_tween.tween_property(sprite, "scale", strike_scale, 0.08).set_ease(Tween.EASE_IN)
+	_attack_tween.parallel().tween_property(sprite, "rotation", deg_to_rad(35), 0.08)
+	_attack_tween.parallel().tween_property(sprite, "position", _original_position + Vector2(0, 8), 0.08)
+	_attack_tween.parallel().tween_property(sprite, "modulate", Color.WHITE, 0.05)
+
+	# Phase 3: Hit frame
+	_attack_tween.tween_callback(func(): attack_hit_frame.emit())
+
+	# Phase 4: Recover (0.3s) - return to original
+	_attack_tween.tween_property(sprite, "scale", _original_scale, 0.3).set_ease(Tween.EASE_IN_OUT)
+	_attack_tween.parallel().tween_property(sprite, "rotation", _original_rotation, 0.3)
+	_attack_tween.parallel().tween_property(sprite, "position", _original_position, 0.3)
+	_attack_tween.parallel().tween_property(sprite, "modulate", _original_modulate, 0.3)
+
+	_attack_tween.tween_callback(func():
+		is_attacking = false
+		attack_finished.emit()
+		if was_walking:
+			is_walking = true
+			_play_walk_cycle()
+	)
 
 
 # ============================================================================

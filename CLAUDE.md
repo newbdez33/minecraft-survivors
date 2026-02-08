@@ -64,13 +64,16 @@ minecraft-survivors/
 | `scripts/systems/wave_manager.gd` | Wave-based difficulty scaling |
 | `scripts/systems/day_night_cycle.gd` | 8-phase day/night visual system |
 | `scripts/systems/health_pickup_spawner.gd` | Periodic health pickup spawning |
+| `scripts/systems/audio_manager.gd` | Audio autoload: object pool, bus setup, SFX playback |
+| `scripts/systems/sfx_generator.gd` | Procedural 8-bit sound generation (30 presets) |
+| `scripts/systems/sfx_connector.gd` | Signal wiring for audio events |
 | `scripts/components/health.gd` | Reusable health component |
 | `scripts/components/status_effect_manager.gd` | Poison/buff stacking system |
 | `scripts/components/weapon_slots.gd` | 4-slot weapon system |
 | `scripts/weapons/sword_base.gd` | Sword evolution system (4 tiers) |
 | `scripts/pickups/health_pickup.gd` | Golden Apple healing pickup |
 | `scripts/pickups/meat_pickup.gd` | Meat drop from enemies |
-| `tests/test_runner.gd` | Central test orchestrator (389 tests) |
+| `tests/test_runner.gd` | Central test orchestrator (1538 tests) |
 | `scripts/testing/test_mode.gd` | Auto-play test mode with performance monitoring |
 | `docs/GAME_DATA.md` | Comprehensive game data reference (bilingual) |
 
@@ -157,11 +160,14 @@ Tests are organized by development phase:
 - **Phase 3:** Progression Loop (63 tests)
 - **Phase 4:** Game Feel (145 tests)
 - **Phase 5:** Game Enhancements (112 tests)
+- **BDD Tests:** Boss Attack Behavior (52 tests)
+- **External Suites:** Combat, pickups, enemies, animations, bosses (969+ tests)
 
-**Total: 389 tests**
+**Total: 1538 tests** (1454 passed, 84 pre-existing failures)
 
 ### Test Types
 - **Unit tests** (`tests/unit/`) - Logic verification
+- **Behavioral tests** (`tests/unit/behavioral/`) - BDD Given-When-Then tests
 - **Visual tests** (`tests/visual/`) - Screenshot-based verification
 
 ### Writing Tests
@@ -292,6 +298,15 @@ base_count = base_enemies_per_wave * pow(wave_scaling, wave - 1)
 
 **Anti-sticking:** All enemies have push-back when < 30px from player.
 
+### Audio System
+Procedural 8-bit sound effects with no external audio files required:
+- `AudioManager` autoload singleton with object pool (8 global + 16 positional AudioStreamPlayers)
+- `SfxGenerator` generates AudioStreamWAV at runtime with 30 presets (square, saw, noise waveforms)
+- `SfxConnector` auto-wires signals from enemies, pickups, weapons, and player
+- XP orb collection plays ascending C major scale (8 notes, resets after 0.5s gap)
+- Audio buses: Master, SFX, Music (volume controlled via settings panel)
+- Access pattern: `get_node_or_null("/root/AudioManager")` (never bare autoload name)
+
 ### Boss Enemies
 6 boss enemies spawn at specific waves with high HP:
 
@@ -299,12 +314,13 @@ base_count = base_enemies_per_wave * pow(wave_scaling, wave - 1)
 |------|------|-----|---------|
 | Evoker | 5 | 400 | Summons fangs |
 | Elder Guardian | 10 | 600 | Mining fatigue beam |
-| Ravager | 15 | 800 | Charge attack |
-| Warden | 20 | 1000 | Sonic attack |
+| Ravager | 15 | 800 | Charge (50 dmg) + Stomp (40 dmg AoE) |
+| Warden | 20 | 1000 | Sonic boom (65 dmg) + Melee (55 dmg) |
 | Wither | 25 | 1200 | Wither skulls |
 | Ender Dragon | 30 | 1500 | Dragon breath |
 
 All bosses have detailed pixel art SVG sprites located in `assets/characters/`.
+Boss attacks use exaggerated multi-phase Tween animations with signal-based damage synchronization.
 
 For complete game data, see `docs/GAME_DATA.md` (bilingual EN/ZH).
 
@@ -349,7 +365,7 @@ Detailed documentation is in `docs/`:
 ## Development Status
 
 **Phase 4 (Game Feel):** Complete
-**Phase 5 (Enhancements):** In Progress
+**Phase 5 (Enhancements):** Complete
 - ✅ Poison stacking with visual effects
 - ✅ Weapon slots system (4 positions)
 - ✅ Score/combo systems
@@ -359,7 +375,12 @@ Detailed documentation is in `docs/`:
 - ✅ Enemy anti-sticking mechanism
 - ✅ Bow weapon with Crossbow evolution
 - ✅ Boss enemies (6 bosses with pixel art sprites)
+
+**Phase 7 (Advanced Features):** In Progress
+- ✅ Procedural 8-bit audio system (30 SFX presets)
+- ✅ Boss attack improvements (Ravager & Warden)
 - [ ] Achievement system (pending)
+- [ ] Elite monsters (pending)
 
 ## Git Workflow
 

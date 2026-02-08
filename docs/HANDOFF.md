@@ -1,9 +1,9 @@
 # Project Handoff Document
 
-**Last Updated:** 2026-02-01
+**Last Updated:** 2026-02-08
 **Project:** Minecraft Survivors
-**Version:** v0.6.2-alpha
-**Current Phase:** Phase 5 & 6 Complete ✅ | Phase 7 Planning
+**Version:** v0.7.0-alpha
+**Current Phase:** Phase 5 & 6 Complete ✅ | Phase 7 In Progress
 
 ---
 
@@ -74,7 +74,7 @@ A Vampire Survivors-like roguelike game with Minecraft theme built in Godot 4.5.
 
 ## Test Status
 
-**517+ tests passing** (0 failures)
+**1538 tests total** (1454 passed, 84 pre-existing failures)
 
 ```
 Phase 1: Core Foundation - 37 tests
@@ -83,11 +83,13 @@ Phase 3: Progression Loop - 63 tests
 Phase 4: Game Feel - 145 tests
 Phase 5: Game Enhancements - 112 tests
 Visual Tests - 128 tests (enemy animations, upgrade effects, all enemies)
+Behavioral BDD Tests - 52 tests (boss attack behavior)
+External Test Suites - 969+ tests (combat, pickups, enemies, animations, bosses)
 ```
 
 Run tests with:
 ```bash
-/Applications/Godot.app/Contents/MacOS/Godot --headless --script tests/test_runner.gd
+"C:\Users\newbd\Godot\Godot_v4.5.1-stable_win64.exe" --headless --script tests/test_runner.gd --path .
 ```
 
 ---
@@ -231,18 +233,28 @@ See [phase5_enhancements.md](./phases/phase5_enhancements.md) for detailed plan.
 - [x] **Enhancement Bonus Tracking**: Separated from weapon level bonuses
 - [x] **Anti-sticking Fix**: Enemies no longer stick to player
 
-**Phase 7 (Next):**
+**Phase 7 (In Progress):**
+- [x] Procedural 8-bit Audio System (SFX)
 - [ ] Achievement System
 - [ ] Elite Monsters
 
-**Boss System (COMPLETE):**
+**Audio System (COMPLETE):**
+- [x] AudioManager autoload singleton with object pool (8 global + 16 positional players)
+- [x] SfxGenerator with 30 procedural 8-bit sound presets (no .ogg files needed)
+- [x] SfxConnector signal wiring for enemies, pickups, weapons, player
+- [x] XP orb ascending C major scale (8 notes, resets after 0.5s gap)
+- [x] Audio bus setup (Master, SFX, Music) with volume control
+- [x] Integrated with settings panel volume slider
+
+**Boss System (COMPLETE + IMPROVED):**
 - [x] Evoker (Wave 5, 400 HP) - Summons fangs
 - [x] Elder Guardian (Wave 10, 600 HP) - Mining fatigue beam
-- [x] Ravager (Wave 15, 800 HP) - Charge attack
-- [x] Warden (Wave 20, 1000 HP) - Sonic attack
+- [x] Ravager (Wave 15, 800 HP) - Charge + stomp attacks (improved animations & damage)
+- [x] Warden (Wave 20, 1000 HP) - Sonic boom + melee attacks (improved animations & triggers)
 - [x] Wither (Wave 25, 1200 HP) - Wither skulls
 - [x] Ender Dragon (Wave 30, 1500 HP) - Dragon breath
 - [x] All bosses have detailed pixel art SVG sprites with proper textures
+- [x] Boss attack improvements: exaggerated multi-phase animations, increased damage, fixed melee deadlock
 
 **Infrastructure:**
 - [x] GitHub CI Release (Windows + macOS) - See [infrastructure/release.md](./infrastructure/release.md)
@@ -281,7 +293,33 @@ All development follows Red→Green→Refactor:
 
 ## Recent Updates
 
-### v0.6.2-alpha (2026-02-01) - Latest
+### v0.7.0-alpha (2026-02-08) - Latest
+
+**Procedural Audio System:**
+- AudioManager autoload with object pool (8 global + 16 positional AudioStreamPlayers)
+- SfxGenerator: 30 procedural 8-bit sound presets generating AudioStreamWAV at runtime
+- SfxConnector: Auto-wires signals from enemies, pickups, weapons, player to AudioManager
+- XP orb collection plays ascending C major scale (8 notes, resets after 0.5s silence)
+- Audio bus setup (Master/SFX/Music), integrated with settings panel volume slider
+- Files: `scripts/systems/audio_manager.gd`, `sfx_generator.gd`, `sfx_connector.gd`
+
+**Boss Attack Improvements (Ravager & Warden):**
+- New exaggerated multi-phase boss animations: `play_boss_stomp()`, `play_boss_charge()`, `play_boss_melee()`
+- Enhanced `play_sonic_boom()` with scale pulsing, cyan tint flash, 16-frame shake
+- Ravager: charge damage 35→50, stomp damage 25→40, contact 20→30, wider charge hitbox (50px)
+- Warden: sonic boom damage 45→65, melee damage 40→55, contact 30→40
+- Fixed Warden melee deadlock (melee range 50→80px, beyond 50px anti-sticking distance)
+- Fixed Warden sonic boom triggers (anger threshold 50→30, cooldown 6→4s, anger_per_sound 10→15)
+- Added charge single-hit guard (`_charge_hit` flag) preventing multi-frame damage
+- Added `CHARGE_WINDUP` sub-state so Ravager holds still during 0.4s windup
+- Warden sonic boom uses `await _animator.attack_hit_frame` signal for frame-perfect damage sync
+
+**BDD Tests:**
+- 52 new behavioral tests in `tests/unit/behavioral/test_boss_attack_behavior.gd`
+- 7 feature groups: Ravager charge/stomp/contact, Warden sonic/melee/contact, animator methods, boss immunities
+- Given-When-Then naming convention with `_extract_function()` source analysis helper
+
+### v0.6.2-alpha (2026-02-01)
 
 **Enemy Animation System:**
 - Added EnemyAnimator component with procedural Tween-based animations

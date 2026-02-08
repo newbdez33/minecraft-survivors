@@ -12,21 +12,21 @@ signal health_changed(current: int, maximum: int)
 @export var max_health: int = 1000
 @export var health: int = 1000
 @export var speed: float = 35.0
-@export var contact_damage: int = 30
+@export var contact_damage: int = 40
 @export var xp_value: int = 150
 @export var emerald_drop: int = 75
 
 # Attack properties
-@export var sonic_boom_cooldown: float = 6.0
-@export var sonic_boom_damage: int = 45
+@export var sonic_boom_cooldown: float = 4.0
+@export var sonic_boom_damage: int = 65
 @export var sonic_boom_range: float = 400.0
-@export var melee_damage: int = 40
+@export var melee_damage: int = 55
 @export var melee_cooldown: float = 1.5
 
 # Anger/Detection system
 @export var anger_level: int = 0
 @export var max_anger: int = 100
-@export var anger_per_sound: int = 10
+@export var anger_per_sound: int = 15
 
 # Boss immunities
 @export var knockback_immune: bool = true
@@ -114,13 +114,13 @@ func _physics_process(delta: float) -> void:
 func _process_idle(_delta: float) -> void:
 	var distance = global_position.distance_to(target.global_position)
 
-	# Sonic boom for ranged attack when anger is high
-	if _sonic_timer >= sonic_boom_cooldown and anger_level >= 50:
+	# Sonic boom for ranged attack when anger is high (lowered threshold)
+	if _sonic_timer >= sonic_boom_cooldown and anger_level >= 30:
 		_do_sonic_boom()
 		return
 
-	# Melee attack when close
-	if distance <= 50 and _melee_timer >= melee_cooldown:
+	# Melee attack when close (wider range to avoid anti-sticking deadlock)
+	if distance <= 80 and _melee_timer >= melee_cooldown:
 		_do_melee_attack()
 		return
 
@@ -168,13 +168,21 @@ func _do_sonic_boom() -> void:
 	_sonic_timer = 0.0
 	velocity = Vector2.ZERO
 
-	# Play sonic boom animation
+	# Play enhanced sonic boom animation and sync damage to hit frame
 	if _animator:
 		_animator.stop_walk_animation()
 		_animator.play_sonic_boom()
 
-	# Charging animation
-	await get_tree().create_timer(0.5).timeout
+		# Play SFX
+		var audio = get_node_or_null("/root/AudioManager")
+		if audio and audio.has_method("play_sfx_at"):
+			audio.play_sfx_at("boss_attack", global_position)
+
+		# Wait for animation to reach hit frame (syncs damage with visual)
+		await _animator.attack_hit_frame
+	else:
+		# Fallback if no animator
+		await get_tree().create_timer(0.7).timeout
 
 	# Ranged sonic attack
 	if target and is_instance_valid(target):
@@ -185,32 +193,53 @@ func _do_sonic_boom() -> void:
 			_spawn_sonic_effect()
 
 	anger_level = max(0, anger_level - 30)  # Reset some anger
+
+	# Wait for recovery animation to finish
+	if _animator:
+		await _animator.attack_finished
+	else:
+		await get_tree().create_timer(0.3).timeout
 	_state = State.IDLE
 
 func _spawn_sonic_effect() -> void:
-	# Visual sonic wave effect
+	# Visual sonic wave effect - 3 effects in a line from boss to player
 	var hit_scene = load("res://scenes/effects/hit_effect.tscn")
-	if hit_scene and target and get_tree():
-		var hit = hit_scene.instantiate()
-		hit.global_position = target.global_position
-		hit.modulate = Color(0, 0.8, 0.8)  # Teal
-		hit.scale = Vector2(4, 4)
-		get_tree().current_scene.call_deferred("add_child", hit)
+	if hit_scene and target and get_tree() and get_tree().current_scene:
+		var direction = (target.global_position - global_position).normalized()
+		var total_distance = global_position.distance_to(target.global_position)
+		for i in range(3):
+			var hit = hit_scene.instantiate()
+			var t = (i + 1) / 3.0
+			hit.global_position = global_position + direction * total_distance * t
+			hit.modulate = Color(0, 0.8, 0.8)  # Teal
+			hit.scale = Vector2(5, 5)
+			get_tree().current_scene.call_deferred("add_child", hit)
 
 func _do_melee_attack() -> void:
 	_state = State.MELEE_ATTACK
 	_melee_timer = 0.0
+	velocity = Vector2.ZERO
 
-	# Play attack animation
+	# Play boss melee animation
 	if _animator:
-		_animator.play_attack_animation()
+		_animator.stop_walk_animation()
+		_animator.play_boss_melee()
+
+	# Play SFX
+	var audio = get_node_or_null("/root/AudioManager")
+	if audio and audio.has_method("play_sfx_at"):
+		audio.play_sfx_at("boss_attack", global_position)
+
+	# Wait for wind-up + strike animation timing
+	await get_tree().create_timer(0.43).timeout
 
 	if target and is_instance_valid(target):
 		var distance = global_position.distance_to(target.global_position)
-		if distance <= 60:
+		if distance <= 90:
 			if target.has_method("take_damage"):
 				target.take_damage(melee_damage)
 
+	# Wait for recovery
 	await get_tree().create_timer(0.3).timeout
 	_state = State.IDLE
 

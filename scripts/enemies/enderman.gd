@@ -177,6 +177,9 @@ func teleport() -> void:
 	if _animator:
 		_animator.play_teleport_out()
 
+	var audio = get_node_or_null("/root/AudioManager")
+	if audio:
+		audio.play_sfx_at("enderman_teleport", global_position)
 	# Calculate random teleport position within range
 	var random_angle = randf() * TAU
 	var random_distance = randf_range(teleport_range * 0.5, teleport_range)

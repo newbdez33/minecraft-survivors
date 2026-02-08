@@ -78,6 +78,9 @@ func _heal_player(player: Node2D) -> void:
 		player.current_health = min(player.current_health + HEAL_AMOUNT, player.max_health)
 
 	collected.emit(HEAL_AMOUNT)
+	var audio = get_node_or_null("/root/AudioManager")
+	if audio:
+		audio.play_sfx_at("meat_collect", global_position)
 	_play_collect_effect()
 
 func _play_collect_effect() -> void:

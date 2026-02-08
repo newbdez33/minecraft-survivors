@@ -89,10 +89,16 @@ func _update_ui() -> void:
 
 func _on_sfx_changed(value: float) -> void:
 	settings.sfx_volume = value
+	var audio = get_node_or_null("/root/AudioManager")
+	if audio:
+		audio.set_sfx_volume(value)
 	_save_and_emit()
 
 func _on_music_changed(value: float) -> void:
 	settings.music_volume = value
+	var audio = get_node_or_null("/root/AudioManager")
+	if audio:
+		audio.set_music_volume(value)
 	_save_and_emit()
 
 func _on_shake_toggled(toggled: bool) -> void:
