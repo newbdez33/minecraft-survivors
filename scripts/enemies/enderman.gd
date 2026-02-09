@@ -10,7 +10,7 @@ signal died(xp_value: int)
 @export var damage: int = 15
 @export var health: int = 20
 @export var xp_value: int = 15
-@export var meat_drop_chance: float = 0.25  # 25% chance (boss-tier)
+@export var meat_drop_chance: float = 0.0  # Endermen don't drop meat
 @export var teleport_cooldown: float = 3.0
 @export var teleport_range: float = 200.0
 @export var teleport_on_hit: bool = true
@@ -25,6 +25,7 @@ var _arrow_detection_area: Area2D = null
 var can_teleport: bool = true
 var knockback_velocity: Vector2 = Vector2.ZERO
 var knockback_decay: float = 10.0
+var is_elite: bool = false
 
 # Animation
 var _animator = null  # EnemyAnimator instance
@@ -142,6 +143,9 @@ func _update_walk_animation(is_moving: bool) -> void:
 
 	_was_moving = is_moving
 
+func make_elite() -> void:
+	is_elite = true
+
 func _on_hitbox_body_entered(body: Node2D) -> void:
 	# Damage player on contact
 	if body.is_in_group("player") and body.has_method("take_damage"):
@@ -150,6 +154,38 @@ func _on_hitbox_body_entered(body: Node2D) -> void:
 		if _animator and _attack_cooldown <= 0:
 			_animator.play_attack_animation()
 			_attack_cooldown = ATTACK_COOLDOWN_TIME
+		# Elite Void Strike: teleport behind player, hit again after 0.3s
+		if is_elite and can_teleport:
+			_void_strike(body)
+
+func _void_strike(player_body: Node2D) -> void:
+	if not is_instance_valid(player_body) or not get_tree():
+		return
+	can_teleport = false
+	# Teleport past player (opposite side from approach)
+	var approach_dir = (player_body.global_position - global_position).normalized()
+	var behind_pos = player_body.global_position + approach_dir * 50.0
+	_spawn_teleport_effect(global_position)
+	global_position = behind_pos
+	_spawn_teleport_effect(global_position)
+	# Second hit after short delay
+	await get_tree().create_timer(0.3).timeout
+	if not is_instance_valid(self):
+		return
+	if is_instance_valid(player_body) and player_body.has_method("take_damage"):
+		var dist = global_position.distance_to(player_body.global_position)
+		if dist < 80.0:
+			player_body.take_damage(damage)
+	# Start teleport cooldown
+	if not is_instance_valid(self):
+		return
+	var timer = get_node_or_null("TeleportTimer")
+	if timer:
+		timer.start()
+	else:
+		await get_tree().create_timer(teleport_cooldown).timeout
+		if is_instance_valid(self):
+			can_teleport = true
 
 func take_damage(amount: int) -> void:
 	health -= amount

@@ -3042,6 +3042,8 @@ func _run_complete_coverage_tests() -> void:
 	_run_external_test_suite("Status Effect Behavior Tests", "res://tests/unit/behavioral/test_status_effect_behavior.gd")
 	_run_external_test_suite("Pickup Behavior Tests", "res://tests/unit/behavioral/test_pickup_behavior.gd")
 	_run_external_test_suite("Boss Attack Behavior BDD Tests", "res://tests/unit/behavioral/test_boss_attack_behavior.gd")
+	_run_external_test_suite("Elite Monsters BDD Tests", "res://tests/unit/behavioral/test_elite_monsters.gd")
+	_run_external_test_suite("Wave Scaling BDD Tests", "res://tests/unit/behavioral/test_wave_scaling.gd")
 
 ## Run tests from an external test file that follows the run_tests() -> Dictionary pattern
 func _run_external_test_suite(suite_name: String, script_path: String) -> void:

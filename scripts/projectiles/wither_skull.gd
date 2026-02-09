@@ -1,20 +1,28 @@
 extends Area2D
 ## Wither Skull - Wither boss's projectile attack
-## Flies towards target and applies wither/poison effect
+## Flies towards target with homing and applies wither/poison effect
 
 @export var speed: float = 250.0
 @export var damage: int = 25
 @export var lifetime: float = 4.0
 @export var wither_duration: float = 3.0
+## Homing turn rate in radians/sec (higher = tighter tracking)
+@export var homing_strength: float = 2.5
 
 var direction: Vector2 = Vector2.RIGHT
 
 var _lifetime_timer: SceneTreeTimer = null
+var _target: Node2D = null
 
 func _ready() -> void:
 	collision_layer = 4  # projectiles
 	collision_mask = 1   # player
 	body_entered.connect(_on_body_entered)
+
+	# Find player target for homing
+	var players = get_tree().get_nodes_in_group("player")
+	if players.size() > 0:
+		_target = players[0]
 
 	# Auto-destroy after lifetime using scene tree timer (auto-cleanup)
 	_lifetime_timer = get_tree().create_timer(lifetime)
@@ -26,6 +34,16 @@ func _on_lifetime_expired() -> void:
 		queue_free()
 
 func _physics_process(delta: float) -> void:
+	# Steer toward player
+	if is_instance_valid(_target):
+		var desired = (_target.global_position - global_position).normalized()
+		var current_angle = direction.angle()
+		var desired_angle = desired.angle()
+		var angle_diff = angle_difference(current_angle, desired_angle)
+		var max_turn = homing_strength * delta
+		var turn = clampf(angle_diff, -max_turn, max_turn)
+		direction = Vector2.from_angle(current_angle + turn)
+
 	position += direction * speed * delta
 	# Rotate sprite to face direction
 	rotation = direction.angle()

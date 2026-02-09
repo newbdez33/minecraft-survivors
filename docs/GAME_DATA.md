@@ -4,17 +4,18 @@
 
 ### 敌人总览 / Enemy Overview
 
-| 敌人 | 生命值 | 伤害 | 移动速度 | 经验值 | 特殊能力 |
-|------|--------|------|----------|--------|----------|
-| Zombie 僵尸 | 20 | 10 | 60 | 5 | 无 |
-| Skeleton 骷髅 | 15 | 8 | 40 | 8 | 远程射箭 |
-| Spider 蜘蛛 | 12 | 8 | 100 | 6 | 跳跃攻击 |
-| Creeper 苦力怕 | 25 | 30 | 50 | 10 | 自爆 |
-| Enderman 末影人 | 40 | 15 | 70 | 15 | 受击瞬移 |
-| Witch 女巫 | 20 | 12 | 35 | 12 | 投掷药水 |
+| 敌人 | 生命值 | 伤害 | 移动速度 | 经验值 | 肉掉落 | 特殊能力 |
+|------|--------|------|----------|--------|--------|----------|
+| Zombie 僵尸 | 10 | 10 | 60 | 5 | 0% | 无 |
+| Skeleton 骷髅 | 5 | 8 | 40 | 8 | 12% | 远程射箭 |
+| Spider 蜘蛛 | 6 | 8 | 100 | 6 | 0% | 跳跃攻击 |
+| Creeper 苦力怕 | 12 | 30 | 50 | 10 | 0% | 自爆 |
+| Enderman 末影人 | 20 | 15 | 70 | 15 | 0% | 受击瞬移 |
+| Witch 女巫 | 10 | 12 | 35 | 12 | 0% | 投掷药水 |
 
 **通用行为 (All Enemies):**
 - 所有敌人具有防粘连机制: 当距离玩家 < 30像素时，会受到推开力，防止敌人粘在玩家身上移动
+- 精英怪不掉落肉 (Elite monsters do not drop meat)
 
 ---
 
@@ -23,10 +24,11 @@
 **基础数据:**
 | 属性 | 数值 |
 |------|------|
-| 生命值 (Health) | 20 |
+| 生命值 (Health) | 10 |
 | 伤害 (Damage) | 10 |
 | 移动速度 (Speed) | 60 |
 | 经验值 (XP) | 5 |
+| 肉掉落 (Meat Drop) | 0% |
 
 **行为特征:**
 - 基础近战敌人
@@ -42,10 +44,11 @@
 **基础数据:**
 | 属性 | 数值 |
 |------|------|
-| 生命值 (Health) | 15 |
+| 生命值 (Health) | 5 |
 | 伤害 (Damage) | 8 |
 | 移动速度 (Speed) | 40 |
 | 经验值 (XP) | 8 |
+| 肉掉落 (Meat Drop) | 12% |
 | 攻击范围 (Attack Range) | 300 |
 | 攻击冷却 (Attack Cooldown) | 2.0s |
 | 首选距离 (Preferred Distance) | 200 |
@@ -64,10 +67,11 @@
 **基础数据:**
 | 属性 | 数值 |
 |------|------|
-| 生命值 (Health) | 12 |
+| 生命值 (Health) | 6 |
 | 伤害 (Damage) | 8 |
 | 移动速度 (Speed) | 100 |
 | 经验值 (XP) | 6 |
+| 肉掉落 (Meat Drop) | 0% |
 | 跳跃距离 (Jump Distance) | 150 |
 | 跳跃冷却 (Jump Cooldown) | 3.0s |
 | 跳跃速度 (Jump Speed) | 400 |
@@ -85,10 +89,11 @@
 **基础数据:**
 | 属性 | 数值 |
 |------|------|
-| 生命值 (Health) | 25 |
+| 生命值 (Health) | 12 |
 | 爆炸伤害 (Explosion Damage) | 30 |
 | 移动速度 (Speed) | 50 |
 | 经验值 (XP) | 10 |
+| 肉掉落 (Meat Drop) | 0% |
 | 爆炸半径 (Explosion Radius) | 80 |
 | 引信时间 (Fuse Time) | 1.5s |
 | 触发距离 (Trigger Distance) | 40 |
@@ -108,10 +113,11 @@
 **基础数据:**
 | 属性 | 数值 |
 |------|------|
-| 生命值 (Health) | 40 |
+| 生命值 (Health) | 20 |
 | 伤害 (Damage) | 15 |
 | 移动速度 (Speed) | 70 |
 | 经验值 (XP) | 15 |
+| 肉掉落 (Meat Drop) | 0% |
 | 瞬移冷却 (Teleport Cooldown) | 3.0s |
 | 瞬移范围 (Teleport Range) | 200 |
 | 箭矢感知半径 (Arrow Detection) | 120 |
@@ -133,7 +139,7 @@
 **基础数据:**
 | 属性 | 数值 |
 |------|------|
-| 生命值 (Health) | 20 |
+| 生命值 (Health) | 10 |
 | 药水伤害 (Potion Damage) | 12 |
 | 接触伤害 (Contact Damage) | 5 |
 | 移动速度 (Speed) | 35 |
@@ -345,12 +351,16 @@
 **掉落概率 (按敌人):**
 | 敌人 | 掉落概率 |
 |------|----------|
-| Zombie 僵尸 | 15% |
+| Zombie 僵尸 | 0% |
 | Skeleton 骷髅 | 12% |
-| Spider 蜘蛛 | 10% |
-| Creeper 苦力怕 | 18% |
-| Witch 女巫 | 20% |
-| Enderman 末影人 | 25% |
+| Spider 蜘蛛 | 0% |
+| Creeper 苦力怕 | 0% |
+| Witch 女巫 | 0% |
+| Enderman 末影人 | 0% |
+| Elite 精英怪 | 0% (强制) |
+
+> 注: 目前仅骷髅掉落肉。精英怪的肉掉落概率被强制设为0。
+> Note: Currently only Skeletons drop meat. Elite monsters have meat drop forced to 0%.
 
 ---
 
@@ -399,14 +409,17 @@ Boss敌人在特定波次出现，具有高生命值和独特能力。所有Boss
 
 Boss enemies appear at specific waves with high HP and unique abilities. All bosses have detailed pixel art SVG sprites.
 
-| Boss | 波次 Wave | 生命值 HP | 特殊能力 Special |
-|------|-----------|-----------|------------------|
-| Evoker 唤魔者 | 5 | 400 | 召唤尖牙 Summons fangs |
-| Elder Guardian 远古守卫者 | 10 | 600 | 挖掘疲劳光束 Mining fatigue beam |
-| Ravager 劫掠兽 | 15 | 800 | 冲撞攻击 Charge attack |
-| Warden 监守者 | 20 | 1000 | 音波攻击 Sonic attack |
-| Wither 凋灵 | 25 | 1200 | 凋灵骷髅头 Wither skulls |
-| Ender Dragon 末影龙 | 30 | 1500 | 龙息攻击 Dragon breath |
+| Boss | 波次 Wave | 生命值 HP | 经验值 XP | 特殊能力 Special |
+|------|-----------|-----------|-----------|------------------|
+| Evoker 唤魔者 | 5 | 400 | 200 | 召唤尖牙 Summons fangs |
+| Elder Guardian 远古守卫者 | 10 | 600 | 300 | 挖掘疲劳光束 Mining fatigue beam |
+| Ravager 劫掠兽 | 15 | 800 | 400 | 冲撞+践踏 Charge + Stomp |
+| Warden 监守者 | 20 | 1000 | 600 | 音波+近战 Sonic boom + Melee |
+| Wither 凋灵 | 25 | 1200 | 800 | 追踪凋灵骷髅头 Homing wither skulls |
+| Ender Dragon 末影龙 | 30 | 1500 | 1200 | 追踪龙息火球+俯冲 Homing fireballs + dive |
+
+> Boss在波次30后循环出现 (波次35=唤魔者, 40=远古守卫者...)，并按周期缩放属性。
+> Bosses cycle after wave 30 (wave 35=Evoker, 40=Elder Guardian...) with scaling applied per cycle.
 
 ---
 
@@ -476,7 +489,9 @@ Boss enemies appear at specific waves with high HP and unique abilities. All bos
 
 **行为特征:**
 - 三头Boss敌人
-- 发射凋灵骷髅头造成凋零效果
+- 发射追踪凋灵骷髅头 (追踪转速 2.5 rad/s)
+- 骷髅头造成凋零(中毒)效果
+- Fires homing wither skulls (2.5 rad/s turn rate) that apply wither/poison
 
 ---
 
@@ -490,17 +505,107 @@ Boss enemies appear at specific waves with high HP and unique abilities. All bos
 
 **行为特征:**
 - 最终Boss
-- 飞行并喷射龙息
+- 发射追踪龙息火球 (追踪转速 1.8 rad/s) + 俯冲攻击
+- Fires homing dragon fireballs (1.8 rad/s turn rate) + dive attack
+
+---
+
+## 精英怪系统 / Elite Monster System
+
+精英怪是普通敌人的强化版本，带有金色轮廓和特殊能力。
+Elite monsters are enhanced versions of normal enemies with golden outline and special abilities.
+
+### 精英属性倍率 / Elite Stat Multipliers
+
+| 属性 | 倍率 |
+|------|------|
+| 生命值 (HP) | 2.5x |
+| 伤害 (Damage) | 1.5x |
+| 速度 (Speed) | 1.2x |
+| 经验值 (XP) | 20x |
+| 体型 (Scale) | 1.3x |
+| 肉掉落 (Meat) | 0% (强制) |
+
+### 精英出现概率 / Elite Spawn Chance (Waves 1-30)
+
+| 波次 | 概率 | 最大数量 |
+|------|------|----------|
+| 1-3 | 0% | 0 |
+| 4-6 | 5% | 2 |
+| 7-9 | 10% | 2 |
+| 10-14 | 15% | 3 |
+| 15-19 | 20% | 4 |
+| 20-30 | 25% | 5 |
+
+- 夜间额外 +10% 出现概率 (Night bonus: +10%)
+
+### 精英特殊能力 / Elite Special Abilities
+
+| 敌人 | 精英能力 |
+|------|----------|
+| Zombie 僵尸 | Undead Rally 亡灵集结 (召唤2只普通僵尸) |
+| Skeleton 骷髅 | Multi-Shot 多重射击 (3方向射箭) |
+| Spider 蜘蛛 | Venom 毒液 (造成中毒效果) |
+| Creeper 苦力怕 | Charged 充能 (更大爆炸范围) |
+| Enderman 末影人 | Void Strike 虚空打击 (传送至玩家身后攻击) |
+| Witch 女巫 | Potion Storm 药水风暴 (投掷3瓶药水) |
+
+---
+
+## 波次缩放系统 / Wave Scaling System (Post-Wave 30)
+
+波次30后敌人属性无限缩放，为无尽玩法提供挑战。
+After wave 30, enemy stats scale infinitely for endless endgame challenge.
+
+### 普通敌人缩放 / Normal Enemy Scaling (per wave past 30)
+
+| 属性 | 每波增长 | 示例 (波次40) | 示例 (波次50) |
+|------|----------|---------------|---------------|
+| 生命值 (HP) | +10% | 2.0x | 3.0x |
+| 伤害 (Damage) | +5% | 1.5x | 2.0x |
+| 速度 (Speed) | +2% (上限+50%) | 1.2x | 1.4x |
+| 经验值 (XP) | +10% | 2.0x | 3.0x |
+
+### Boss缩放 / Boss Scaling (per 5-wave cycle past 30)
+
+| 属性 | 每周期增长 | 示例 (波次35) | 示例 (波次50) |
+|------|------------|---------------|---------------|
+| 生命值 (HP) | +50% | 1.5x | 3.0x |
+| 伤害 (Damage) | +25% | 1.25x | 2.0x |
+| 速度 (Speed) | +10% (上限+100%) | 1.1x | 1.4x |
+| 经验值 (XP) | 与HP相同 | 1.5x | 3.0x |
+
+### 精英缩放 / Elite Scaling (post-wave 30)
+
+| 属性 | 缩放规则 |
+|------|----------|
+| 出现概率 | 25% + 1%/波, 上限50% |
+| 最大数量 | 5 + 1/每5波 |
+| 夜间加成 | +10% (不变) |
+
+**示例 / Examples:**
+- 波次35: 概率30%, 最大6只
+- 波次50: 概率45%, 最大8只
+- 波次80: 概率50%(上限), 最大15只
+
+### 安全上限 / Safety Caps
+
+| 属性 | 上限 |
+|------|------|
+| 生命值 (HP) | 2,147,483,647 (2^31-1) |
+| 伤害 (Damage) | 100,000 |
+| 经验值 (XP) | 1,000,000 |
 
 ---
 
 ## 版本信息 / Version Info
 
-- 文档版本: 1.5
-- 游戏版本: Phase 5
-- 更新日期: 2026-02-01
+- 文档版本: 2.0
+- 游戏版本: Phase 7
+- 更新日期: 2026-02-09
 
 ### 更新记录 / Changelog
+- v2.0: 添加精英怪系统、波次缩放系统、修正敌人HP/肉掉落数据、Boss XP值
 - v1.5: 添加Boss数据 (Evoker, Elder Guardian, Ravager, Warden, Wither, Ender Dragon)
 - v1.4: 弓每级升级攻速改为+1.0/s (原+0.1/s)
 - v1.3: 更新弓数据(伤害6,攻速0.5,12级进化)、添加火把武器数据、Enderman闪避机制

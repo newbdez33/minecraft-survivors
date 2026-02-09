@@ -13,13 +13,14 @@ signal died(xp_value: int)
 @export var jump_distance: float = 150.0
 @export var jump_cooldown: float = 3.0
 @export var jump_speed: float = 400.0
-@export var meat_drop_chance: float = 0.10  # 10% chance to drop meat
+@export var meat_drop_chance: float = 0.0  # Spiders don't drop meat
 
 var target: Node2D = null
 var can_jump: bool = true
 var is_jumping: bool = false
 var knockback_velocity: Vector2 = Vector2.ZERO
 var knockback_decay: float = 10.0
+var is_elite: bool = false
 
 # Animation
 var _animator = null  # EnemyAnimator instance
@@ -175,9 +176,24 @@ func jump() -> void:
 func _on_jump_timer_timeout() -> void:
 	can_jump = true
 
+func make_elite() -> void:
+	is_elite = true
+
 func _on_hitbox_body_entered(body: Node2D) -> void:
 	if body.is_in_group("player") and body.has_method("take_damage"):
 		body.take_damage(damage)
+		# Elite Venom Strike: apply poison on hit
+		if is_elite:
+			var status_mgr = body.get_node_or_null("StatusEffectManager")
+			if status_mgr and status_mgr.has_method("apply_effect"):
+				var poison = {
+					"type": 0,  # POISON type
+					"damage": 2,
+					"interval": 0.5,
+					"duration": 3.0,
+					"source": "elite_spider"
+				}
+				status_mgr.apply_effect(poison)
 		# Play quick attack animation on hit
 		if _animator and _attack_cooldown <= 0:
 			_animator.play_quick_attack()

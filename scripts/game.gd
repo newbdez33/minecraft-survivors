@@ -22,6 +22,8 @@ extends Node2D
 @onready var achievement_manager: Node = $AchievementManager
 @onready var character_manager: Node = $CharacterManager
 
+const WaveScalerClass = preload("res://scripts/systems/wave_scaler.gd")
+
 var evoker_scene: PackedScene = preload("res://scenes/enemies/evoker.tscn")
 var elder_guardian_scene: PackedScene = preload("res://scenes/enemies/elder_guardian.tscn")
 var ravager_scene: PackedScene = preload("res://scenes/enemies/ravager.tscn")
@@ -329,6 +331,9 @@ func _spawn_boss(wave_number: int) -> void:
 	var spawn_angle = randf() * TAU
 	var spawn_distance = 500.0
 	boss.global_position = player.global_position + Vector2(cos(spawn_angle), sin(spawn_angle)) * spawn_distance
+
+	# Apply post-wave-30 scaling to boss
+	WaveScalerClass.apply_scaling(boss, wave_number, true)
 
 	# Connect boss signals
 	if boss.has_signal("died"):

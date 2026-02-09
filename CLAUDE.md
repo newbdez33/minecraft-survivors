@@ -67,13 +67,15 @@ minecraft-survivors/
 | `scripts/systems/audio_manager.gd` | Audio autoload: object pool, bus setup, SFX playback |
 | `scripts/systems/sfx_generator.gd` | Procedural 8-bit sound generation (30 presets) |
 | `scripts/systems/sfx_connector.gd` | Signal wiring for audio events |
+| `scripts/systems/wave_scaler.gd` | Post-wave-30 infinite stat scaling |
+| `scripts/components/elite_modifier.gd` | Elite monster stat boosting and abilities |
 | `scripts/components/health.gd` | Reusable health component |
 | `scripts/components/status_effect_manager.gd` | Poison/buff stacking system |
 | `scripts/components/weapon_slots.gd` | 4-slot weapon system |
 | `scripts/weapons/sword_base.gd` | Sword evolution system (4 tiers) |
 | `scripts/pickups/health_pickup.gd` | Golden Apple healing pickup |
 | `scripts/pickups/meat_pickup.gd` | Meat drop from enemies |
-| `tests/test_runner.gd` | Central test orchestrator (1538 tests) |
+| `tests/test_runner.gd` | Central test orchestrator (1607 tests) |
 | `scripts/testing/test_mode.gd` | Auto-play test mode with performance monitoring |
 | `docs/GAME_DATA.md` | Comprehensive game data reference (bilingual) |
 
@@ -160,10 +162,10 @@ Tests are organized by development phase:
 - **Phase 3:** Progression Loop (63 tests)
 - **Phase 4:** Game Feel (145 tests)
 - **Phase 5:** Game Enhancements (112 tests)
-- **BDD Tests:** Boss Attack Behavior (52 tests)
+- **BDD Tests:** Boss Attacks (52), Elite Monsters (40), Wave Scaling (29)
 - **External Suites:** Combat, pickups, enemies, animations, bosses (969+ tests)
 
-**Total: 1538 tests** (1454 passed, 84 pre-existing failures)
+**Total: 1607 tests** (1521 passed, 86 pre-existing failures)
 
 ### Test Types
 - **Unit tests** (`tests/unit/`) - Logic verification
@@ -266,7 +268,7 @@ Swords use a 4-tier evolution system (`scripts/weapons/sword_base.gd`):
 
 ### Health Pickup System
 Two types of health pickups:
-- **Meat** - Drops from enemies (10-25% chance), heals 10 HP
+- **Meat** - Drops from Skeletons (12% chance), heals 10 HP. Elite enemies never drop meat.
 - **Golden Apple** - Spawns every 20s, heals 50% max HP
 
 `HealthPickupSpawner` adjusts spawn rate based on player health:
@@ -287,14 +289,14 @@ base_count = base_enemies_per_wave * pow(wave_scaling, wave - 1)
 ### Enemy Data
 6 enemy types with unique behaviors:
 
-| Enemy | HP | Damage | Speed | XP | Special |
-|-------|-----|--------|-------|-----|---------|
-| Zombie | 20 | 10 | 60 | 5 | Basic chaser |
-| Skeleton | 15 | 8 | 40 | 8 | Ranged arrows |
-| Spider | 12 | 8 | 100 | 6 | Jump attack |
-| Creeper | 25 | 30 | 50 | 10 | Explodes |
-| Enderman | 40 | 15 | 70 | 15 | Teleports when hit |
-| Witch | 20 | 12 | 35 | 12 | Throws poison potions |
+| Enemy | HP | Damage | Speed | XP | Meat | Special |
+|-------|-----|--------|-------|-----|------|---------|
+| Zombie | 10 | 10 | 60 | 5 | 0% | Basic chaser |
+| Skeleton | 5 | 8 | 40 | 8 | 12% | Ranged arrows |
+| Spider | 6 | 8 | 100 | 6 | 0% | Jump attack |
+| Creeper | 12 | 30 | 50 | 10 | 0% | Explodes |
+| Enderman | 20 | 15 | 70 | 15 | 0% | Teleports when hit |
+| Witch | 10 | 12 | 35 | 12 | 0% | Throws poison potions |
 
 **Anti-sticking:** All enemies have push-back when < 30px from player.
 
@@ -308,19 +310,35 @@ Procedural 8-bit sound effects with no external audio files required:
 - Access pattern: `get_node_or_null("/root/AudioManager")` (never bare autoload name)
 
 ### Boss Enemies
-6 boss enemies spawn at specific waves with high HP:
+6 boss enemies spawn at specific waves with high HP. Bosses cycle after wave 30 with scaling.
 
-| Boss | Wave | HP | Special |
-|------|------|-----|---------|
-| Evoker | 5 | 400 | Summons fangs |
-| Elder Guardian | 10 | 600 | Mining fatigue beam |
-| Ravager | 15 | 800 | Charge (50 dmg) + Stomp (40 dmg AoE) |
-| Warden | 20 | 1000 | Sonic boom (65 dmg) + Melee (55 dmg) |
-| Wither | 25 | 1200 | Wither skulls |
-| Ender Dragon | 30 | 1500 | Dragon breath |
+| Boss | Wave | HP | XP | Special |
+|------|------|-----|-----|---------|
+| Evoker | 5 | 400 | 200 | Summons fangs |
+| Elder Guardian | 10 | 600 | 300 | Mining fatigue beam |
+| Ravager | 15 | 800 | 400 | Charge (50 dmg) + Stomp (40 dmg AoE) |
+| Warden | 20 | 1000 | 600 | Sonic boom (65 dmg) + Melee (55 dmg) |
+| Wither | 25 | 1200 | 800 | Homing wither skulls |
+| Ender Dragon | 30 | 1500 | 1200 | Homing dragon fireballs + dive |
 
 All bosses have detailed pixel art SVG sprites located in `assets/characters/`.
 Boss attacks use exaggerated multi-phase Tween animations with signal-based damage synchronization.
+
+### Elite Monsters
+Elite enemies are stat-boosted normal enemies with golden outline shader and unique abilities.
+- **Stats:** 2.5x HP, 1.5x damage, 1.2x speed, 20x XP, 1.3x scale, no meat drops
+- **Spawn:** Wave-based chance (0% at wave 1-3 → 25% at wave 20+), night +10%
+- **Max cap:** 0 (wave 1-3) → 5 (wave 20+)
+- **Abilities:** Zombie=Undead Rally, Skeleton=Multi-Shot, Spider=Venom, Creeper=Charged, Enderman=Void Strike, Witch=Potion Storm
+- **Files:** `scripts/components/elite_modifier.gd`, `assets/shaders/elite_outline.gdshader`
+
+### Wave Scaling (Post-Wave 30)
+`WaveScaler` applies infinite stat scaling after wave 30.
+- **Normal enemies:** +10% HP, +5% dmg, +2% speed (cap +50%), +10% XP per wave
+- **Bosses:** +50% HP, +25% dmg, +10% speed (cap +100%) per 5-wave cycle
+- **Elite scaling:** +1% chance/wave (cap 50%), +1 max elites per 5 waves
+- **Safety caps:** HP 2^31, damage 100K, XP 1M
+- **File:** `scripts/systems/wave_scaler.gd`
 
 For complete game data, see `docs/GAME_DATA.md` (bilingual EN/ZH).
 
@@ -379,8 +397,9 @@ Detailed documentation is in `docs/`:
 **Phase 7 (Advanced Features):** In Progress
 - ✅ Procedural 8-bit audio system (30 SFX presets)
 - ✅ Boss attack improvements (Ravager & Warden)
+- ✅ Elite monsters (6 types with unique abilities, golden shader)
+- ✅ Post-wave-30 infinite scaling (enemies, bosses, elites)
 - [ ] Achievement system (pending)
-- [ ] Elite monsters (pending)
 
 ## Git Workflow
 

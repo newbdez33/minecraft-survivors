@@ -74,7 +74,7 @@ A Vampire Survivors-like roguelike game with Minecraft theme built in Godot 4.5.
 
 ## Test Status
 
-**1538 tests total** (1454 passed, 84 pre-existing failures)
+**1607 tests total** (1521 passed, 86 pre-existing failures)
 
 ```
 Phase 1: Core Foundation - 37 tests
@@ -83,7 +83,7 @@ Phase 3: Progression Loop - 63 tests
 Phase 4: Game Feel - 145 tests
 Phase 5: Game Enhancements - 112 tests
 Visual Tests - 128 tests (enemy animations, upgrade effects, all enemies)
-Behavioral BDD Tests - 52 tests (boss attack behavior)
+Behavioral BDD Tests - 121 tests (boss attacks 52, elite monsters 40, wave scaling 29)
 External Test Suites - 969+ tests (combat, pickups, enemies, animations, bosses)
 ```
 
@@ -235,8 +235,9 @@ See [phase5_enhancements.md](./phases/phase5_enhancements.md) for detailed plan.
 
 **Phase 7 (In Progress):**
 - [x] Procedural 8-bit Audio System (SFX)
+- [x] Elite Monsters (6 enemy types with unique abilities, golden outline shader)
+- [x] Post-Wave-30 Infinite Scaling (HP, damage, speed, XP scale infinitely)
 - [ ] Achievement System
-- [ ] Elite Monsters
 
 **Audio System (COMPLETE):**
 - [x] AudioManager autoload singleton with object pool (8 global + 16 positional players)
@@ -251,8 +252,8 @@ See [phase5_enhancements.md](./phases/phase5_enhancements.md) for detailed plan.
 - [x] Elder Guardian (Wave 10, 600 HP) - Mining fatigue beam
 - [x] Ravager (Wave 15, 800 HP) - Charge + stomp attacks (improved animations & damage)
 - [x] Warden (Wave 20, 1000 HP) - Sonic boom + melee attacks (improved animations & triggers)
-- [x] Wither (Wave 25, 1200 HP) - Wither skulls
-- [x] Ender Dragon (Wave 30, 1500 HP) - Dragon breath
+- [x] Wither (Wave 25, 1200 HP) - Homing wither skulls (2.5 rad/s tracking)
+- [x] Ender Dragon (Wave 30, 1500 HP) - Homing dragon fireballs (1.8 rad/s tracking) + dive
 - [x] All bosses have detailed pixel art SVG sprites with proper textures
 - [x] Boss attack improvements: exaggerated multi-phase animations, increased damage, fixed melee deadlock
 
@@ -293,7 +294,31 @@ All development follows Red→Green→Refactor:
 
 ## Recent Updates
 
-### v0.7.0-alpha (2026-02-08) - Latest
+### v0.7.1-alpha (2026-02-09) - Latest
+
+**Elite Monsters System:**
+- EliteModifier static component: 2.5x HP, 1.5x damage, 1.2x speed, 20x XP, 1.3x scale
+- Golden outline shader (`elite_outline.gdshader`) with pulsing effect
+- Wave-based spawn chance (0% wave 1-3 → 25% wave 20+), night +10% bonus
+- Max elite cap (0 → 5 based on wave)
+- 6 unique elite abilities: Undead Rally, Multi-Shot, Venom, Charged, Void Strike, Potion Storm
+- Elite monsters don't drop meat
+- 40 BDD tests in `tests/unit/behavioral/test_elite_monsters.gd`
+
+**Homing Boss Projectiles:**
+- Wither skulls now track the player (2.5 rad/s turn rate, smooth curve)
+- Dragon fireballs now track the player (1.8 rad/s turn rate, gentler curve)
+- Both use `angle_difference` + clamped turn for dodgeable but persistent tracking
+
+**Post-Wave-30 Infinite Scaling:**
+- WaveScaler static component (`scripts/systems/wave_scaler.gd`)
+- Normal enemies: +10% HP, +5% damage, +2% speed (cap +50%), +10% XP per wave past 30
+- Boss enemies: +50% HP, +25% damage, +10% speed (cap +100%) per 5-wave cycle
+- Elite scaling: +1% chance/wave (cap 50%), +1 max elites per 5 waves
+- Safety caps: HP 2^31, damage 100K, XP 1M
+- 29 BDD tests in `tests/unit/behavioral/test_wave_scaling.gd`
+
+### v0.7.0-alpha (2026-02-08)
 
 **Procedural Audio System:**
 - AudioManager autoload with object pool (8 global + 16 positional AudioStreamPlayers)

@@ -266,6 +266,17 @@ func evolve() -> void:
 		print("[SWORD] Evolution bonus applied! +%d damage, +%.0f range, -%.0f%% cooldown" % [bonus.damage, bonus.range, bonus.cooldown_reduction * 100])
 
 	_apply_tier_stats()
+
+	# Recalculate with all accumulated bonuses (level + evolution + enhancement)
+	damage = get_total_damage()
+	attack_range = get_total_range()
+	attack_cooldown = get_total_cooldown()
+
+	# Update timer with correct cooldown
+	var cooldown_timer = get_node_or_null("AttackTimer")
+	if cooldown_timer:
+		cooldown_timer.wait_time = attack_cooldown
+
 	_update_collision_shape()
 	_update_sword_sprite()
 	queue_redraw()
@@ -355,6 +366,16 @@ func set_tier(tier: Tier) -> void:
 	current_tier = tier
 	kill_count = 0
 	_apply_tier_stats()
+
+	# Recalculate with all accumulated bonuses
+	damage = get_total_damage()
+	attack_range = get_total_range()
+	attack_cooldown = get_total_cooldown()
+
+	var cooldown_timer = get_node_or_null("AttackTimer")
+	if cooldown_timer:
+		cooldown_timer.wait_time = attack_cooldown
+
 	_update_collision_shape()
 	_update_sword_sprite()
 	queue_redraw()

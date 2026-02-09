@@ -85,21 +85,25 @@
 			"untested": []
 		},
 		"res://scripts/enemies/creeper.gd": {
-			"coverage_percent": 87.5,
+			"coverage_percent": 77.7777777777778,
 			"tested_functions": 14,
-			"total_functions": 16,
+			"total_functions": 18,
 			"untested": [
 				"_setup_animator",
-				"_update_walk_animation"
+				"_update_walk_animation",
+				"make_elite",
+				"_chain_damage_nearby"
 			]
 		},
 		"res://scripts/enemies/enderman.gd": {
-			"coverage_percent": 90.0,
+			"coverage_percent": 81.8181818181818,
 			"tested_functions": 18,
-			"total_functions": 20,
+			"total_functions": 22,
 			"untested": [
 				"_setup_animator",
-				"_update_walk_animation"
+				"_update_walk_animation",
+				"make_elite",
+				"_void_strike"
 			]
 		},
 		"res://scripts/enemies/evoker.gd": {
@@ -113,21 +117,23 @@
 			]
 		},
 		"res://scripts/enemies/skeleton.gd": {
-			"coverage_percent": 86.6666666666667,
+			"coverage_percent": 81.25,
 			"tested_functions": 13,
-			"total_functions": 15,
+			"total_functions": 16,
 			"untested": [
 				"_setup_animator",
-				"_update_walk_animation"
+				"_update_walk_animation",
+				"make_elite"
 			]
 		},
 		"res://scripts/enemies/spider.gd": {
-			"coverage_percent": 86.6666666666667,
+			"coverage_percent": 81.25,
 			"tested_functions": 13,
-			"total_functions": 15,
+			"total_functions": 16,
 			"untested": [
 				"_setup_animator",
-				"_update_walk_animation"
+				"_update_walk_animation",
+				"make_elite"
 			]
 		},
 		"res://scripts/enemies/vex.gd": {
@@ -137,21 +143,23 @@
 			"untested": []
 		},
 		"res://scripts/enemies/witch.gd": {
-			"coverage_percent": 86.6666666666667,
+			"coverage_percent": 81.25,
 			"tested_functions": 13,
-			"total_functions": 15,
+			"total_functions": 16,
 			"untested": [
 				"_setup_animator",
-				"_update_walk_animation"
+				"_update_walk_animation",
+				"make_elite"
 			]
 		},
 		"res://scripts/enemies/zombie.gd": {
-			"coverage_percent": 84.6153846153846,
+			"coverage_percent": 78.5714285714286,
 			"tested_functions": 11,
-			"total_functions": 13,
+			"total_functions": 14,
 			"untested": [
 				"_setup_animator",
-				"_update_walk_animation"
+				"_update_walk_animation",
+				"make_elite"
 			]
 		},
 		"res://scripts/game.gd": {
@@ -229,10 +237,14 @@
 			"untested": []
 		},
 		"res://scripts/spawner.gd": {
-			"coverage_percent": 100.0,
+			"coverage_percent": 85.0,
 			"tested_functions": 17,
-			"total_functions": 17,
-			"untested": []
+			"total_functions": 20,
+			"untested": [
+				"_get_elite_chance",
+				"_get_max_elites",
+				"_on_rally_requested"
+			]
 		},
 		"res://scripts/systems/achievement.gd": {
 			"coverage_percent": 100.0,
@@ -450,7 +462,7 @@
 		}
 	},
 	"tested_functions": 635,
-	"timestamp": "2026-02-08T21:35:08",
-	"total_coverage_percent": 96.5045592705167,
-	"total_functions": 658
+	"timestamp": "2026-02-10T01:10:20",
+	"total_coverage_percent": 94.9177877428998,
+	"total_functions": 669
 }

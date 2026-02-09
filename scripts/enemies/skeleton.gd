@@ -19,6 +19,7 @@ var target: Node2D = null
 var can_attack: bool = true
 var knockback_velocity: Vector2 = Vector2.ZERO
 var knockback_decay: float = 10.0
+var is_elite: bool = false
 
 # Animation
 var _animator = null  # EnemyAnimator instance
@@ -124,6 +125,9 @@ func _update_walk_animation(is_moving: bool) -> void:
 func apply_knockback(force: Vector2) -> void:
 	knockback_velocity = force
 
+func make_elite() -> void:
+	is_elite = true
+
 func shoot_arrow() -> void:
 	if not target or not is_instance_valid(target):
 		return
@@ -139,12 +143,24 @@ func shoot_arrow() -> void:
 		audio.play_sfx_at("skeleton_arrow", global_position)
 	var arrow_scene = load("res://scenes/projectiles/arrow.tscn")
 	if arrow_scene and get_tree() and get_tree().current_scene:
-		var arrow = arrow_scene.instantiate()
-		arrow.global_position = global_position
 		var direction = (target.global_position - global_position).normalized()
-		arrow.set_direction(direction)
-		arrow.damage = damage
-		get_tree().current_scene.add_child(arrow)
+
+		if is_elite:
+			# Elite Multi-Shot: 3 arrows at -15, 0, +15 degrees
+			var spread_angles = [deg_to_rad(-15.0), 0.0, deg_to_rad(15.0)]
+			for angle_offset in spread_angles:
+				var arrow = arrow_scene.instantiate()
+				arrow.global_position = global_position
+				var spread_dir = direction.rotated(angle_offset)
+				arrow.set_direction(spread_dir)
+				arrow.damage = damage
+				get_tree().current_scene.call_deferred("add_child", arrow)
+		else:
+			var arrow = arrow_scene.instantiate()
+			arrow.global_position = global_position
+			arrow.set_direction(direction)
+			arrow.damage = damage
+			get_tree().current_scene.add_child(arrow)
 
 	# Start cooldown
 	var timer = get_node_or_null("AttackTimer")

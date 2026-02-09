@@ -146,6 +146,7 @@ func _precache_procedural_sounds() -> void:
 	_sound_cache["night_transition"] = SFXGeneratorClass.night_transition()
 	_sound_cache["achievement_unlock"] = SFXGeneratorClass.achievement_unlock()
 	_sound_cache["poison_applied"] = SFXGeneratorClass.poison_tick()
+	_sound_cache["elite_spawn"] = SFXGeneratorClass.elite_spawn()
 
 	# Pre-generate XP pitched sounds
 	for i in range(8):

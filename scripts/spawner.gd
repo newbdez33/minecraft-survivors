@@ -2,6 +2,9 @@ extends Node
 class_name MobSpawner
 ## Spawns enemies around the player at regular intervals
 
+const EliteModifierClass = preload("res://scripts/components/elite_modifier.gd")
+const WaveScalerClass = preload("res://scripts/systems/wave_scaler.gd")
+
 signal enemy_spawned(enemy: Node2D)
 signal enemy_killed(xp_value: int)
 
@@ -21,6 +24,10 @@ var day_night_cycle: Node = null
 var _base_spawn_interval: float = 1.25
 var _base_max_enemies: int = 48
 var _is_night: bool = false
+
+## Elite tracking
+var _current_wave: int = 1
+var _elite_count: int = 0
 
 # Enemy scenes
 var zombie_scene: PackedScene
@@ -123,11 +130,23 @@ func _spawn_enemy() -> void:
 
 	# Connect to enemy death signal
 	if enemy.has_signal("died"):
-		enemy.died.connect(_on_enemy_died)
+		enemy.died.connect(_on_enemy_died.bind(enemy))
 
-	# Add to scene
+	# Connect rally signal for elite zombies
+	if enemy.has_signal("rally_requested"):
+		enemy.rally_requested.connect(_on_rally_requested)
+
+	# Add to scene first (needed for AudioManager access in elite apply)
 	get_parent().add_child(enemy)
 	current_enemy_count += 1
+
+	# Apply post-wave-30 scaling to normal enemies
+	WaveScalerClass.apply_scaling(enemy, _current_wave, false)
+
+	# Roll for elite promotion (after adding to tree so SFX works)
+	if _elite_count < _get_max_elites() and randf() < _get_elite_chance():
+		EliteModifierClass.apply(enemy)
+		_elite_count += 1
 
 	enemy_spawned.emit(enemy)
 
@@ -160,8 +179,10 @@ func _select_enemy_type() -> PackedScene:
 
 	return zombie_scene
 
-func _on_enemy_died(xp_value: int) -> void:
+func _on_enemy_died(xp_value: int, enemy: Node2D = null) -> void:
 	current_enemy_count -= 1
+	if enemy and is_instance_valid(enemy) and enemy.is_in_group("elite"):
+		_elite_count = maxi(_elite_count - 1, 0)
 	enemy_killed.emit(xp_value)
 
 func set_spawn_rate(interval: float) -> void:
@@ -170,6 +191,11 @@ func set_spawn_rate(interval: float) -> void:
 		spawn_timer.wait_time = interval
 
 func set_wave(wave: int) -> void:
+	_current_wave = wave
+	# Reconcile elite count from actual scene state to prevent drift
+	if get_tree():
+		_elite_count = get_tree().get_nodes_in_group("elite").size()
+
 	# Increase difficulty based on wave (adjusted for 60% base increase)
 	# Faster spawns: 1.25s → 1.0s → 0.75s → 0.5s
 	var new_interval = max(0.5, 1.25 - (wave - 1) * 0.1)
@@ -239,3 +265,67 @@ func resume_spawning() -> void:
 ## Check if spawning is paused
 func is_spawning_paused() -> bool:
 	return _spawn_paused
+
+
+## Get elite spawn chance based on current wave and time of day
+func _get_elite_chance() -> float:
+	# Post-wave-30 scaling overrides base logic
+	var scaled = WaveScalerClass.get_elite_chance(_current_wave, _is_night)
+	if scaled >= 0.0:
+		return scaled
+
+	var chance: float = 0.0
+	if _current_wave < 4:
+		chance = 0.0
+	elif _current_wave <= 6:
+		chance = 0.05
+	elif _current_wave <= 9:
+		chance = 0.10
+	elif _current_wave <= 14:
+		chance = 0.15
+	elif _current_wave <= 19:
+		chance = 0.20
+	else:
+		chance = 0.25
+
+	# Night bonus
+	if _is_night:
+		chance += 0.10
+
+	return chance
+
+
+## Get max simultaneous elites based on current wave
+func _get_max_elites() -> int:
+	# Post-wave-30 scaling overrides base logic
+	var scaled = WaveScalerClass.get_max_elites(_current_wave)
+	if scaled >= 0:
+		return scaled
+
+	if _current_wave < 4:
+		return 0
+	elif _current_wave <= 9:
+		return 2
+	elif _current_wave <= 14:
+		return 3
+	elif _current_wave <= 19:
+		return 4
+	else:
+		return 5
+
+
+## Handle elite zombie rally: spawn tracked normal zombies
+func _on_rally_requested(pos: Vector2, count: int) -> void:
+	if not zombie_scene:
+		return
+	for i in range(count):
+		var zombie = zombie_scene.instantiate()
+		var offset = Vector2(randf_range(-30, 30), randf_range(-30, 30))
+		zombie.global_position = pos + offset
+		if zombie.has_signal("died"):
+			zombie.died.connect(_on_enemy_died.bind(zombie))
+		if zombie.has_signal("rally_requested"):
+			zombie.rally_requested.connect(_on_rally_requested)
+		get_parent().add_child(zombie)
+		current_enemy_count += 1
+		enemy_spawned.emit(zombie)
