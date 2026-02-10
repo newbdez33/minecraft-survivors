@@ -4,7 +4,8 @@ class_name TestIdleModeBehavior
 ##
 ## Tests cover:
 ## - Achievement unlock requirement (wave 31+)
-## - IdleController AI movement (flee, dodge, collect)
+## - IdleController AI movement (kite, dodge, collect, engage)
+## - Weapons always preferred over enchantments
 ## - Upgrade auto-select strategies (WEAPON_FIRST, BALANCED, DEFENSIVE)
 ## - Player idle_mode flag behavior
 ## - HUD idle mode indicator methods
@@ -32,9 +33,10 @@ static func run_tests() -> Dictionary:
 	_add_result(results, test_controller_set_strategy())
 
 	# =========================================================================
-	# Feature: Flee Vector Calculation
+	# Feature: Kiting Distance Properties
 	# =========================================================================
-	_add_result(results, test_controller_has_flee_distance())
+	_add_result(results, test_controller_has_danger_distance())
+	_add_result(results, test_controller_has_kite_distance())
 	_add_result(results, test_controller_has_safe_distance())
 	_add_result(results, test_controller_has_pickup_radius())
 
@@ -44,6 +46,11 @@ static func run_tests() -> Dictionary:
 	_add_result(results, test_weapon_first_picks_weapon_upgrades())
 	_add_result(results, test_weapon_first_picks_sharpness_over_protection())
 	_add_result(results, test_weapon_first_falls_back_to_first_enchant())
+
+	# =========================================================================
+	# Feature: Weapons Always Preferred
+	# =========================================================================
+	_add_result(results, test_weapon_always_preferred_over_enchants())
 
 	# =========================================================================
 	# Feature: Upgrade Auto-Select (DEFENSIVE)
@@ -65,7 +72,7 @@ static func run_tests() -> Dictionary:
 	# =========================================================================
 	# Feature: Source Code Verification
 	# =========================================================================
-	_add_result(results, test_idle_controller_source_has_flee_logic())
+	_add_result(results, test_idle_controller_source_has_kite_logic())
 	_add_result(results, test_idle_controller_source_has_projectile_dodge())
 	_add_result(results, test_idle_controller_source_has_pickup_collection())
 	_add_result(results, test_game_source_has_tab_key_handler())
@@ -161,17 +168,23 @@ static func test_controller_set_strategy() -> Dictionary:
 # Feature: Flee Vector Calculation
 # =============================================================================
 
-static func test_controller_has_flee_distance() -> Dictionary:
+static func test_controller_has_danger_distance() -> Dictionary:
 	var controller = _IdleController.new()
-	var passed = controller._flee_distance > 0
+	var passed = controller._danger_distance > 0
 	controller.free()
-	return {"name": "BDD.IM.9: Given IdleController, Then _flee_distance > 0", "passed": passed}
+	return {"name": "BDD.IM.9: Given IdleController, Then _danger_distance > 0", "passed": passed}
+
+static func test_controller_has_kite_distance() -> Dictionary:
+	var controller = _IdleController.new()
+	var passed = controller._kite_distance > controller._danger_distance
+	controller.free()
+	return {"name": "BDD.IM.9b: Given IdleController, Then _kite_distance > _danger_distance", "passed": passed}
 
 static func test_controller_has_safe_distance() -> Dictionary:
 	var controller = _IdleController.new()
-	var passed = controller._safe_distance > controller._flee_distance
+	var passed = controller._safe_distance > controller._kite_distance
 	controller.free()
-	return {"name": "BDD.IM.10: Given IdleController, Then _safe_distance > _flee_distance", "passed": passed}
+	return {"name": "BDD.IM.10: Given IdleController, Then _safe_distance > _kite_distance", "passed": passed}
 
 static func test_controller_has_pickup_radius() -> Dictionary:
 	var controller = _IdleController.new()
@@ -214,6 +227,24 @@ static func test_weapon_first_falls_back_to_first_enchant() -> Dictionary:
 	return {"name": "BDD.IM.14: Given WEAPON_FIRST no weapon keywords, Then picks first enchant", "passed": passed}
 
 # =============================================================================
+# Feature: Weapons Always Preferred
+# =============================================================================
+
+static func test_weapon_always_preferred_over_enchants() -> Dictionary:
+	# All strategies should pick weapon when available
+	var controller = _IdleController.new()
+	var enchants = [_make_mock_upgrade("Protection"), _make_mock_upgrade("Sharpness")]
+	var weapons = [_make_mock_upgrade("Sword")]
+	var all_passed = true
+	for strategy_val in [0, 1, 2]:  # WEAPON_FIRST, BALANCED, DEFENSIVE
+		controller.set_strategy(strategy_val)
+		var choice = controller.select_upgrade(enchants, weapons)
+		if choice.section != "weapon" or choice.index != 0:
+			all_passed = false
+	controller.free()
+	return {"name": "BDD.IM.14b: Given any strategy + weapon available, Then ALWAYS picks weapon first", "passed": all_passed}
+
+# =============================================================================
 # Feature: Upgrade Auto-Select (DEFENSIVE)
 # =============================================================================
 
@@ -221,11 +252,11 @@ static func test_defensive_picks_protection_first() -> Dictionary:
 	var controller = _IdleController.new()
 	controller.set_strategy(2)  # DEFENSIVE
 	var enchants = [_make_mock_upgrade("Sharpness"), _make_mock_upgrade("Protection"), _make_mock_upgrade("Looting")]
-	var weapons = [_make_mock_upgrade("Sword")]
+	var weapons = []  # No weapons available — defensive picks Protection
 	var choice = controller.select_upgrade(enchants, weapons)
 	var passed = choice.section == "enchant" and choice.index == 1  # Protection
 	controller.free()
-	return {"name": "BDD.IM.15: Given DEFENSIVE, Then picks Protection over Sword", "passed": passed}
+	return {"name": "BDD.IM.15: Given DEFENSIVE no weapons, Then picks Protection", "passed": passed}
 
 static func test_defensive_picks_swiftness() -> Dictionary:
 	var controller = _IdleController.new()
@@ -245,13 +276,11 @@ static func test_balanced_returns_valid_selection() -> Dictionary:
 	var controller = _IdleController.new()
 	controller.set_strategy(1)  # BALANCED
 	var enchants = [_make_mock_upgrade("Sharpness"), _make_mock_upgrade("Protection")]
-	var weapons = [_make_mock_upgrade("Sword")]
+	var weapons = []  # No weapons — balanced picks random enchant
 	var choice = controller.select_upgrade(enchants, weapons)
-	var valid_enchant = choice.section == "enchant" and choice.index >= 0 and choice.index < 2
-	var valid_weapon = choice.section == "weapon" and choice.index == 0
-	var passed = valid_enchant or valid_weapon
+	var passed = choice.section == "enchant" and choice.index >= 0 and choice.index < 2
 	controller.free()
-	return {"name": "BDD.IM.17: Given BALANCED, Then returns valid section+index", "passed": passed}
+	return {"name": "BDD.IM.17: Given BALANCED no weapons, Then returns valid enchant index", "passed": passed}
 
 # =============================================================================
 # Feature: Player Idle Mode Flag
@@ -271,10 +300,10 @@ static func test_player_idle_mode_default_false() -> Dictionary:
 # Feature: Source Code Verification
 # =============================================================================
 
-static func test_idle_controller_source_has_flee_logic() -> Dictionary:
+static func test_idle_controller_source_has_kite_logic() -> Dictionary:
 	var source = _get_source("res://scripts/systems/idle_controller.gd")
-	var passed = source.contains("_get_flee_vector") and source.contains("_flee_distance")
-	return {"name": "BDD.IM.20: Given idle_controller.gd, Then has flee logic", "passed": passed}
+	var passed = source.contains("_get_kite_vector") and source.contains("_kite_distance")
+	return {"name": "BDD.IM.20: Given idle_controller.gd, Then has kiting logic", "passed": passed}
 
 static func test_idle_controller_source_has_projectile_dodge() -> Dictionary:
 	var source = _get_source("res://scripts/systems/idle_controller.gd")

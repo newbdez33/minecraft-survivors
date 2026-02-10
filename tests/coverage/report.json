@@ -163,10 +163,11 @@
 			]
 		},
 		"res://scripts/game.gd": {
-			"coverage_percent": 90.3225806451613,
+			"coverage_percent": 87.5,
 			"tested_functions": 28,
-			"total_functions": 31,
+			"total_functions": 32,
 			"untested": [
+				"force_idle_mode",
 				"_toggle_idle_mode",
 				"_on_achievement_unlocked",
 				"_on_warden_darkness"
@@ -472,7 +473,7 @@
 		}
 	},
 	"tested_functions": 635,
-	"timestamp": "2026-02-11T02:12:10",
-	"total_coverage_percent": 93.9349112426035,
-	"total_functions": 676
+	"timestamp": "2026-02-11T02:37:53",
+	"total_coverage_percent": 93.7961595273264,
+	"total_functions": 677
 }

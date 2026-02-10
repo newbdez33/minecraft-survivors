@@ -185,6 +185,19 @@ func _toggle_pause() -> void:
 		else:
 			pause_menu.hide_menu()
 
+## Force-enable idle mode (bypasses achievement check, used by test mode)
+func force_idle_mode() -> void:
+	if not _idle_controller or not player:
+		return
+	_idle_controller.set_enabled(true)
+	player.idle_mode = true
+	if upgrade_ui:
+		upgrade_ui.set_use_timer(true)
+		upgrade_ui.idle_controller = _idle_controller
+	if hud and hud.has_method("set_idle_mode"):
+		hud.set_idle_mode(true)
+	print("[GAME] Idle mode force-enabled (test mode)")
+
 func _toggle_idle_mode() -> void:
 	# Check if idle mode is unlocked
 	if achievement_manager and not achievement_manager.is_achievement_unlocked("idle_master"):
@@ -524,7 +537,8 @@ func _load_language_setting() -> void:
 
 ## Test Mode Support
 func _check_test_mode() -> void:
-	var args = OS.get_cmdline_args()
+	# Combine engine args and user args (after --) for full coverage
+	var args = OS.get_cmdline_args() + OS.get_cmdline_user_args()
 	var test_mode_enabled = false
 
 	for arg in args:
@@ -580,4 +594,5 @@ func _get_scenario_enum(scenario_name: String) -> int:
 		"SWORD_TEST": return 5
 		"WEAPON_TEST": return 6
 		"BOUNDARY_TEST": return 7
+		"IDLE_TEST": return 8
 		_: return 0

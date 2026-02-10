@@ -260,6 +260,8 @@ func show_upgrades(upgrades: Array, weapon_upgrades: Array = []) -> void:
 	# Start timer only if enabled
 	if use_timer:
 		_timer = selection_timeout
+		# Must process while paused so auto-select timer ticks
+		process_mode = Node.PROCESS_MODE_ALWAYS
 	_is_active = true
 
 	visible = true
@@ -269,6 +271,7 @@ func show_upgrades(upgrades: Array, weapon_upgrades: Array = []) -> void:
 
 func hide_ui() -> void:
 	_is_active = false
+	process_mode = Node.PROCESS_MODE_INHERIT
 	visible = false
 	if container:
 		container.visible = false
