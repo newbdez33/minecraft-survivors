@@ -68,7 +68,7 @@ minecraft-survivors/
 | `scripts/systems/sfx_generator.gd` | Procedural 8-bit sound generation (30 presets) |
 | `scripts/systems/sfx_connector.gd` | Signal wiring for audio events |
 | `scripts/systems/wave_scaler.gd` | Post-wave-30 infinite stat scaling |
-| `scripts/systems/idle_controller.gd` | AI auto-play controller (flee, dodge, collect, upgrade) |
+| `scripts/systems/idle_controller.gd` | AI auto-play controller (kite, dodge, collect, weapon-first upgrades) |
 | `scripts/components/elite_modifier.gd` | Elite monster stat boosting and abilities |
 | `scripts/components/health.gd` | Reusable health component |
 | `scripts/components/status_effect_manager.gd` | Poison/buff stacking system |
@@ -163,7 +163,7 @@ Tests are organized by development phase:
 - **Phase 3:** Progression Loop (63 tests)
 - **Phase 4:** Game Feel (145 tests)
 - **Phase 5:** Game Enhancements (112 tests)
-- **BDD Tests:** Boss Attacks (52), Elite Monsters (40), Wave Scaling (29), Idle Mode (25)
+- **BDD Tests:** Boss Attacks (52), Elite Monsters (40), Wave Scaling (29), Idle Mode (27)
 - **External Suites:** Combat, pickups, enemies, animations, bosses (969+ tests)
 
 **Total: 1632 tests** (1546 passed, 86 pre-existing failures)
@@ -344,12 +344,14 @@ Elite enemies are stat-boosted normal enemies with golden outline shader and uni
 ### Idle Mode (Auto-Play)
 `IdleController` provides AI-controlled gameplay, unlocked via "Idle Master" achievement (wave 31+).
 - **Toggle:** Tab key in `game.gd` `_input()` using `KEY_TAB`
-- **AI priority:** Dodge projectiles > Flee enemies > Collect pickups > Wander
-- **Flee distance:** 100px (weighted inverse by distance), safe distance: 200px
-- **Upgrade strategies:** WEAPON_FIRST (default), BALANCED, DEFENSIVE
+- **AI priority:** Dodge projectiles > Kite enemies > Collect pickups > Engage enemies > Wander
+- **Kiting system:** `_danger_distance=50` (flee), `_kite_distance=70` (strafe), `_safe_distance=200` (projectiles)
+- **Weapon upgrades ALWAYS selected first** regardless of strategy; enchant strategies only for fallback
+- **Upgrade strategies (enchant fallback):** WEAPON_FIRST (default), BALANCED, DEFENSIVE
 - **Player integration:** `idle_mode: bool` flag in `player.gd`, skips input when true
-- **Upgrade UI:** `idle_controller` reference, `_auto_select_upgrade()` on 5s timer
+- **Upgrade UI:** `idle_controller` reference, `_auto_select_upgrade()` on 5s timer, `PROCESS_MODE_ALWAYS` while paused
 - **HUD:** `set_idle_mode()` / `set_idle_unlocked()` on `IdleModeLabel` in TopRightContainer
+- **IDLE_TEST scenario:** `test_mode.gd` with god mode, fast progression, periodic screenshots every 15s
 - **File:** `scripts/systems/idle_controller.gd`
 
 For complete game data, see `docs/GAME_DATA.md` (bilingual EN/ZH).

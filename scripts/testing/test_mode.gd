@@ -181,6 +181,9 @@ func _connect_game_events() -> void:
 				if upgrade_ui.visible:
 					_on_upgrade_ui_shown()
 			)
+			# Track actual upgrade selections for IDLE_TEST
+			if scenario == TestScenario.IDLE_TEST:
+				upgrade_ui.upgrade_selected.connect(_on_idle_upgrade_selected)
 
 		# Game over
 		var game_over_ui = main.get_node_or_null("GameOverUI")
@@ -599,6 +602,19 @@ func _save_results() -> void:
 
 var _idle_screenshot_timer: float = 0.0
 const IDLE_SCREENSHOT_INTERVAL: float = 15.0  # Screenshot every 15 real seconds
+
+const WEAPON_IDS = ["sword", "bow", "torch"]
+
+func _on_idle_upgrade_selected(upgrade) -> void:
+	var upgrade_id = upgrade.id if "id" in upgrade else ""
+	var is_weapon = upgrade_id in WEAPON_IDS
+	if is_weapon:
+		_test_results["sword_upgrades"] += 1
+		if _sword and "level" in _sword:
+			_test_results["sword_level"] = _sword.level
+		print("[IDLE TEST] Weapon upgrade selected: %s" % upgrade_id)
+	else:
+		print("[IDLE TEST] Enchant upgrade selected: %s" % upgrade_id)
 
 func _configure_idle_test() -> void:
 	print("\n[IDLE TEST] Configuring idle mode auto-play test...")
