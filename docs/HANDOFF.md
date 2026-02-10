@@ -250,10 +250,10 @@ See [phase5_enhancements.md](./phases/phase5_enhancements.md) for detailed plan.
 **Boss System (COMPLETE + IMPROVED):**
 - [x] Evoker (Wave 5, 400 HP) - Summons fangs
 - [x] Elder Guardian (Wave 10, 600 HP) - Mining fatigue beam
-- [x] Ravager (Wave 15, 800 HP) - Charge + stomp attacks (improved animations & damage)
-- [x] Warden (Wave 20, 1000 HP) - Sonic boom + melee + ground slam + darkness aura + enrage phase
-- [x] Wither (Wave 25, 1200 HP) - Homing wither skulls (2.5 rad/s tracking)
-- [x] Ender Dragon (Wave 30, 1500 HP) - Homing dragon fireballs (1.8 rad/s tracking) + dive
+- [x] Ravager (Wave 15, 2400 HP) - Charge + stomp attacks (improved animations & damage)
+- [x] Warden (Wave 20, 3000 HP) - Sonic boom + melee + ground slam + darkness aura + enrage phase
+- [x] Wither (Wave 25, 3600 HP) - Homing wither skulls (2.5 rad/s tracking)
+- [x] Ender Dragon (Wave 30, 4500 HP) - Homing dragon fireballs (1.8 rad/s tracking) + dive
 - [x] All bosses have detailed pixel art SVG sprites with proper textures
 - [x] Boss attack improvements: exaggerated multi-phase animations, increased damage, fixed melee deadlock
 

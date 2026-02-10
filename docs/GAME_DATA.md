@@ -413,10 +413,10 @@ Boss enemies appear at specific waves with high HP and unique abilities. All bos
 |------|-----------|-----------|-----------|------------------|
 | Evoker 唤魔者 | 5 | 400 | 200 | 召唤尖牙 Summons fangs |
 | Elder Guardian 远古守卫者 | 10 | 600 | 300 | 挖掘疲劳光束 Mining fatigue beam |
-| Ravager 劫掠兽 | 15 | 800 | 400 | 冲撞+践踏 Charge + Stomp |
-| Warden 监守者 | 20 | 1000 | 600 | 音波+近战+地震+黑暗光环+狂暴 Sonic boom + Melee + Ground Slam + Darkness Aura + Enrage |
-| Wither 凋灵 | 25 | 1200 | 800 | 追踪凋灵骷髅头 Homing wither skulls |
-| Ender Dragon 末影龙 | 30 | 1500 | 1200 | 追踪龙息火球+俯冲 Homing fireballs + dive |
+| Ravager 劫掠兽 | 15 | 2400 | 400 | 冲撞+践踏 Charge + Stomp |
+| Warden 监守者 | 20 | 3000 | 600 | 音波+近战+地震+黑暗光环+狂暴 Sonic boom + Melee + Ground Slam + Darkness Aura + Enrage |
+| Wither 凋灵 | 25 | 3600 | 800 | 追踪凋灵骷髅头 Homing wither skulls |
+| Ender Dragon 末影龙 | 30 | 4500 | 1200 | 追踪龙息火球+俯冲 Homing fireballs + dive |
 
 > Boss在波次30后循环出现 (波次35=唤魔者, 40=远古守卫者...)，并按周期缩放属性。
 > Bosses cycle after wave 30 (wave 35=Evoker, 40=Elder Guardian...) with scaling applied per cycle.
@@ -456,7 +456,7 @@ Boss enemies appear at specific waves with high HP and unique abilities. All bos
 **基础数据:**
 | 属性 | 数值 |
 |------|------|
-| 生命值 (Health) | 800 |
+| 生命值 (Health) | 2400 |
 | 出现波次 (Spawn Wave) | 15 |
 
 **行为特征:**
@@ -470,7 +470,7 @@ Boss enemies appear at specific waves with high HP and unique abilities. All bos
 **基础数据:**
 | 属性 | 数值 |
 |------|------|
-| 生命值 (Health) | 1000 |
+| 生命值 (Health) | 3000 |
 | 出现波次 (Spawn Wave) | 20 |
 | 接触伤害 (Contact Damage) | 40 |
 | 移动速度 (Speed) | 35 |
@@ -522,7 +522,7 @@ Boss enemies appear at specific waves with high HP and unique abilities. All bos
 **基础数据:**
 | 属性 | 数值 |
 |------|------|
-| 生命值 (Health) | 1200 |
+| 生命值 (Health) | 3600 |
 | 出现波次 (Spawn Wave) | 25 |
 
 **行为特征:**
@@ -538,7 +538,7 @@ Boss enemies appear at specific waves with high HP and unique abilities. All bos
 **基础数据:**
 | 属性 | 数值 |
 |------|------|
-| 生命值 (Health) | 1500 |
+| 生命值 (Health) | 4500 |
 | 出现波次 (Spawn Wave) | 30 |
 
 **行为特征:**
