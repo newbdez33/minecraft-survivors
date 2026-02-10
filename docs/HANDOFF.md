@@ -1,8 +1,8 @@
 # Project Handoff Document
 
-**Last Updated:** 2026-02-08
+**Last Updated:** 2026-02-11
 **Project:** Minecraft Survivors
-**Version:** v0.7.0-alpha
+**Version:** v0.7.3-alpha
 **Current Phase:** Phase 5 & 6 Complete ✅ | Phase 7 In Progress
 
 ---
@@ -74,7 +74,7 @@ A Vampire Survivors-like roguelike game with Minecraft theme built in Godot 4.5.
 
 ## Test Status
 
-**1607 tests total** (1521 passed, 86 pre-existing failures)
+**1632 tests total** (1546 passed, 86 pre-existing failures)
 
 ```
 Phase 1: Core Foundation - 37 tests
@@ -83,7 +83,7 @@ Phase 3: Progression Loop - 63 tests
 Phase 4: Game Feel - 145 tests
 Phase 5: Game Enhancements - 112 tests
 Visual Tests - 128 tests (enemy animations, upgrade effects, all enemies)
-Behavioral BDD Tests - 121 tests (boss attacks 52, elite monsters 40, wave scaling 29)
+Behavioral BDD Tests - 146 tests (boss attacks 52, elite monsters 40, wave scaling 29, idle mode 25)
 External Test Suites - 969+ tests (combat, pickups, enemies, animations, bosses)
 ```
 
@@ -237,7 +237,8 @@ See [phase5_enhancements.md](./phases/phase5_enhancements.md) for detailed plan.
 - [x] Procedural 8-bit Audio System (SFX)
 - [x] Elite Monsters (6 enemy types with unique abilities, golden outline shader)
 - [x] Post-Wave-30 Infinite Scaling (HP, damage, speed, XP scale infinitely)
-- [ ] Achievement System
+- [x] Idle Mode / Auto-Play (AI-controlled movement, dodge, upgrade selection)
+- [ ] Achievement System UI
 
 **Audio System (COMPLETE):**
 - [x] AudioManager autoload singleton with object pool (8 global + 16 positional players)
@@ -294,7 +295,23 @@ All development follows Red→Green→Refactor:
 
 ## Recent Updates
 
-### v0.7.2-alpha (2026-02-10) - Latest
+### v0.7.3-alpha (2026-02-11) - Latest
+
+**Idle Mode / Auto-Play System:**
+- New `IdleController` AI: flees nearby enemies, dodges boss projectiles, collects XP/health pickups
+- Unlocked via "Idle Master" achievement (survive past wave 30, target=31)
+- Toggle with **Tab** key during gameplay
+- Three upgrade strategies: WEAPON_FIRST (default), BALANCED, DEFENSIVE
+- WEAPON_FIRST prioritizes: Sword/Bow levels > Sharpness/Haste > Sweeping Edge > fallback
+- Upgrade auto-select uses existing 5s timer when idle mode active
+- HUD shows cyan "IDLE MODE" indicator when active, subtle "Tab: Idle Mode" hint when unlocked
+- Player `idle_mode` flag skips input reading; IdleController sets velocity directly
+- `achievement_manager.gd` gains `is_achievement_unlocked()` convenience method
+- Localized in EN/ZH/JA (IDLE_MODE, IDLE_MODE_ACTIVE, IDLE_MODE_LOCKED keys)
+- 25 BDD tests in `tests/unit/behavioral/test_idle_mode_behavior.gd`
+- Files: `scripts/systems/idle_controller.gd` (new), modified `game.gd`, `player.gd`, `hud.gd`, `upgrade_ui.gd`
+
+### v0.7.2-alpha (2026-02-10)
 
 **Warden Boss Improvements:**
 - Darkness Aura: reduces player visibility by 40% when within 350px (signal-based fog shader control)

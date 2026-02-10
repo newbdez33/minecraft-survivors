@@ -636,13 +636,55 @@ After wave 30, enemy stats scale infinitely for endless endgame challenge.
 
 ---
 
+## 放置模式 / Idle Mode (Auto-Play)
+
+放置模式让AI自动控制玩家角色，自动闪避攻击、收集物品和选择升级。
+Idle mode lets AI automatically control the player: dodge attacks, collect items, and select upgrades.
+
+### 解锁条件 / Unlock Requirement
+
+| 条件 | 详情 |
+|------|------|
+| 成就 (Achievement) | Idle Master / 放置大师 |
+| 目标 (Target) | 存活超过30波 (wave 31+) |
+| 切换键 (Toggle Key) | Tab |
+
+### AI行为优先级 / AI Behavior Priority
+
+| 优先级 | 行为 | 描述 |
+|--------|------|------|
+| 1 | 闪避投射物 (Dodge projectiles) | 垂直于投射物方向闪避 |
+| 2 | 逃离敌人 (Flee enemies) | 距离 < 100像素时逃离，按距离加权 |
+| 3 | 收集拾取物 (Collect pickups) | 150像素内收集XP和血量道具 |
+| 4 | 闲逛 (Wander) | 缓慢环绕移动，避免站立不动 |
+
+### 升级策略 / Upgrade Strategies
+
+| 策略 | 优先顺序 |
+|------|----------|
+| WEAPON_FIRST (默认) | 武器升级 > Sharpness/Haste > Sweeping Edge > 其他 |
+| BALANCED | 随机选择武器和附魔 |
+| DEFENSIVE | Protection/Swiftness > 武器升级 > 其他 |
+
+### 参数 / Parameters
+
+| 参数 | 数值 |
+|------|------|
+| 逃离距离 (Flee distance) | 100 像素 |
+| 安全距离 (Safe distance) | 200 像素 |
+| 拾取半径 (Pickup radius) | 150 像素 |
+| 自动选择超时 (Auto-select timeout) | 5 秒 |
+
+---
+
 ## 版本信息 / Version Info
 
-- 文档版本: 2.1
+- 文档版本: 2.2
 - 游戏版本: Phase 7
-- 更新日期: 2026-02-10
+- 更新日期: 2026-02-11
 
 ### 更新记录 / Changelog
+- v2.2: 添加放置模式/自动玩法系统 (Idle Mode auto-play system)
 - v2.1: 更新Warden详细数据 (黑暗光环、地震践踏、狂暴阶段、加速怒气系统)
 - v2.0: 添加精英怪系统、波次缩放系统、修正敌人HP/肉掉落数据、Boss XP值
 - v1.5: 添加Boss数据 (Evoker, Elder Guardian, Ravager, Warden, Wither, Ender Dragon)

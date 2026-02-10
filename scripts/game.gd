@@ -35,6 +35,7 @@ var _current_boss: Node = null
 var _total_time: float = 0.0
 var _is_paused: bool = false
 var _fog_material: ShaderMaterial = null
+var _idle_controller: Node = null
 
 func _ready() -> void:
 	# Load language setting
@@ -133,6 +134,17 @@ func _ready() -> void:
 	if character_manager and player:
 		character_manager.apply_selected_to_player(player)
 
+	# Setup idle controller (always present, disabled by default)
+	var IdleControllerClass = preload("res://scripts/systems/idle_controller.gd")
+	_idle_controller = IdleControllerClass.new()
+	_idle_controller.name = "IdleController"
+	_idle_controller.player = player
+	add_child(_idle_controller)
+
+	# Show idle mode hint if unlocked
+	if hud and hud.has_method("set_idle_unlocked") and achievement_manager:
+		hud.set_idle_unlocked(achievement_manager.is_achievement_unlocked("idle_master"))
+
 var _last_survival_check: int = 0  # Track last checked second for achievements
 
 func _process(delta: float) -> void:
@@ -160,6 +172,10 @@ func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):  # ESC key
 		_toggle_pause()
 
+	# Tab key toggles idle mode
+	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_TAB:
+		_toggle_idle_mode()
+
 func _toggle_pause() -> void:
 	_is_paused = !_is_paused
 	get_tree().paused = _is_paused
@@ -168,6 +184,33 @@ func _toggle_pause() -> void:
 			pause_menu.show_menu()
 		else:
 			pause_menu.hide_menu()
+
+func _toggle_idle_mode() -> void:
+	# Check if idle mode is unlocked
+	if achievement_manager and not achievement_manager.is_achievement_unlocked("idle_master"):
+		if hud and hud.has_method("show_notification"):
+			hud.show_notification(tr("IDLE_MODE_LOCKED"))
+		return
+
+	if not _idle_controller or not player:
+		return
+
+	var new_state = not _idle_controller.is_enabled()
+	_idle_controller.set_enabled(new_state)
+	player.idle_mode = new_state
+
+	# Toggle upgrade auto-select
+	if upgrade_ui:
+		upgrade_ui.set_use_timer(new_state)
+		upgrade_ui.idle_controller = _idle_controller if new_state else null
+
+	# Update HUD indicator
+	if hud and hud.has_method("set_idle_mode"):
+		hud.set_idle_mode(new_state)
+
+	var audio = get_node_or_null("/root/AudioManager")
+	if audio:
+		audio.play_sfx("level_up" if new_state else "pickup")
 
 func _on_resume_pressed() -> void:
 	_toggle_pause()
@@ -267,6 +310,9 @@ func _on_achievement_unlocked(achievement) -> void:
 	print("[ACHIEVEMENT] Unlocked: %s" % achievement.name)
 	if hud and hud.has_method("show_notification"):
 		hud.show_notification("Achievement: %s!" % achievement.name)
+	# Show idle mode hint when idle_master is unlocked
+	if achievement.id == "idle_master" and hud and hud.has_method("set_idle_unlocked"):
+		hud.set_idle_unlocked(true)
 
 func _on_wave_started(wave_number: int) -> void:
 	if hud:

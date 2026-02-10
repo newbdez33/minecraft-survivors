@@ -81,3 +81,8 @@ STAT_SPEED,Speed,速度,速度
 STAT_DAMAGE,Damage,伤害,ダメージ
 STAT_XP,XP,经验,経験値
 STAT_PICKUP,Pickup,拾取,拾得範囲
+IDLE_MODE,Idle Mode,放置模式,放置モード
+IDLE_MODE_ACTIVE,IDLE MODE,放置模式中,放置モード中
+IDLE_MODE_LOCKED,Survive past wave 30 to unlock Idle Mode,存活超过30波以解锁放置模式,ウェーブ30を超えて放置モードを解除
+IDLE_MASTER_NAME,Idle Master,放置大师,放置マスター
+IDLE_MASTER_DESC,Survive past wave 30,存活超过30波,ウェーブ30を超えて生存

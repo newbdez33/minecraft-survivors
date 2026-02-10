@@ -10,6 +10,7 @@ class_name HUD
 @onready var time_label: Label = $TopCenterContainer/TimeLabel
 @onready var day_night_icon: TextureRect = $TopCenterContainer/DayNightIcon
 @onready var notification_label: Label = $NotificationContainer/NotificationLabel
+@onready var idle_mode_label: Label = $TopRightContainer/IdleModeLabel
 
 var heart_full_texture: Texture2D
 var heart_half_texture: Texture2D
@@ -300,3 +301,24 @@ func _start_poison_pulse() -> void:
 		heart_tween.tween_property(heart, "modulate", bright_green, 0.5)
 		heart_tween.tween_property(heart, "modulate", dark_green, 0.5)
 		_heart_pulse_tweens.append(heart_tween)  # Track for cleanup
+
+## Show idle mode hint when achievement is unlocked (subtle "Tab: Idle" text)
+func set_idle_unlocked(unlocked: bool) -> void:
+	if not idle_mode_label:
+		return
+	if unlocked:
+		idle_mode_label.text = "Tab: " + tr("IDLE_MODE")
+		idle_mode_label.modulate = Color(1, 1, 1, 0.5)
+	else:
+		idle_mode_label.text = ""
+
+## Set idle mode active/inactive display
+func set_idle_mode(active: bool) -> void:
+	if not idle_mode_label:
+		return
+	if active:
+		idle_mode_label.text = tr("IDLE_MODE_ACTIVE")
+		idle_mode_label.modulate = Color(0, 0.9, 0.9, 1.0)
+	else:
+		idle_mode_label.text = "Tab: " + tr("IDLE_MODE")
+		idle_mode_label.modulate = Color(1, 1, 1, 0.5)

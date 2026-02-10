@@ -163,10 +163,11 @@
 			]
 		},
 		"res://scripts/game.gd": {
-			"coverage_percent": 93.3333333333333,
+			"coverage_percent": 90.3225806451613,
 			"tested_functions": 28,
-			"total_functions": 30,
+			"total_functions": 31,
 			"untested": [
+				"_toggle_idle_mode",
 				"_on_achievement_unlocked",
 				"_on_warden_darkness"
 			]
@@ -238,13 +239,14 @@
 			"untested": []
 		},
 		"res://scripts/spawner.gd": {
-			"coverage_percent": 85.0,
+			"coverage_percent": 80.9523809523809,
 			"tested_functions": 17,
-			"total_functions": 20,
+			"total_functions": 21,
 			"untested": [
 				"_get_elite_chance",
 				"_get_max_elites",
-				"_on_rally_requested"
+				"_on_rally_requested",
+				"_spawn_rally_zombies"
 			]
 		},
 		"res://scripts/systems/achievement.gd": {
@@ -254,10 +256,12 @@
 			"untested": []
 		},
 		"res://scripts/systems/achievement_manager.gd": {
-			"coverage_percent": 100.0,
+			"coverage_percent": 95.2380952380952,
 			"tested_functions": 20,
-			"total_functions": 20,
-			"untested": []
+			"total_functions": 21,
+			"untested": [
+				"is_achievement_unlocked"
+			]
 		},
 		"res://scripts/systems/character.gd": {
 			"coverage_percent": 100.0,
@@ -371,10 +375,13 @@
 			"untested": []
 		},
 		"res://scripts/ui/hud.gd": {
-			"coverage_percent": 100.0,
+			"coverage_percent": 90.0,
 			"tested_functions": 18,
-			"total_functions": 18,
-			"untested": []
+			"total_functions": 20,
+			"untested": [
+				"set_idle_unlocked",
+				"set_idle_mode"
+			]
 		},
 		"res://scripts/ui/main_menu.gd": {
 			"coverage_percent": 76.9230769230769,
@@ -426,10 +433,12 @@
 			"untested": []
 		},
 		"res://scripts/ui/upgrade_ui.gd": {
-			"coverage_percent": 100.0,
+			"coverage_percent": 95.6521739130435,
 			"tested_functions": 22,
-			"total_functions": 22,
-			"untested": []
+			"total_functions": 23,
+			"untested": [
+				"_auto_select_upgrade"
+			]
 		},
 		"res://scripts/weapons/bow.gd": {
 			"coverage_percent": 100.0,
@@ -463,7 +472,7 @@
 		}
 	},
 	"tested_functions": 635,
-	"timestamp": "2026-02-10T22:54:10",
-	"total_coverage_percent": 94.7761194029851,
-	"total_functions": 670
+	"timestamp": "2026-02-11T02:12:10",
+	"total_coverage_percent": 93.9349112426035,
+	"total_functions": 676
 }

@@ -68,6 +68,7 @@ minecraft-survivors/
 | `scripts/systems/sfx_generator.gd` | Procedural 8-bit sound generation (30 presets) |
 | `scripts/systems/sfx_connector.gd` | Signal wiring for audio events |
 | `scripts/systems/wave_scaler.gd` | Post-wave-30 infinite stat scaling |
+| `scripts/systems/idle_controller.gd` | AI auto-play controller (flee, dodge, collect, upgrade) |
 | `scripts/components/elite_modifier.gd` | Elite monster stat boosting and abilities |
 | `scripts/components/health.gd` | Reusable health component |
 | `scripts/components/status_effect_manager.gd` | Poison/buff stacking system |
@@ -75,7 +76,7 @@ minecraft-survivors/
 | `scripts/weapons/sword_base.gd` | Sword evolution system (4 tiers) |
 | `scripts/pickups/health_pickup.gd` | Golden Apple healing pickup |
 | `scripts/pickups/meat_pickup.gd` | Meat drop from enemies |
-| `tests/test_runner.gd` | Central test orchestrator (1607 tests) |
+| `tests/test_runner.gd` | Central test orchestrator (1632 tests) |
 | `scripts/testing/test_mode.gd` | Auto-play test mode with performance monitoring |
 | `docs/GAME_DATA.md` | Comprehensive game data reference (bilingual) |
 
@@ -162,10 +163,10 @@ Tests are organized by development phase:
 - **Phase 3:** Progression Loop (63 tests)
 - **Phase 4:** Game Feel (145 tests)
 - **Phase 5:** Game Enhancements (112 tests)
-- **BDD Tests:** Boss Attacks (52), Elite Monsters (40), Wave Scaling (29)
+- **BDD Tests:** Boss Attacks (52), Elite Monsters (40), Wave Scaling (29), Idle Mode (25)
 - **External Suites:** Combat, pickups, enemies, animations, bosses (969+ tests)
 
-**Total: 1607 tests** (1521 passed, 86 pre-existing failures)
+**Total: 1632 tests** (1546 passed, 86 pre-existing failures)
 
 ### Test Types
 - **Unit tests** (`tests/unit/`) - Logic verification
@@ -340,6 +341,17 @@ Elite enemies are stat-boosted normal enemies with golden outline shader and uni
 - **Safety caps:** HP 2^31, damage 100K, XP 1M
 - **File:** `scripts/systems/wave_scaler.gd`
 
+### Idle Mode (Auto-Play)
+`IdleController` provides AI-controlled gameplay, unlocked via "Idle Master" achievement (wave 31+).
+- **Toggle:** Tab key in `game.gd` `_input()` using `KEY_TAB`
+- **AI priority:** Dodge projectiles > Flee enemies > Collect pickups > Wander
+- **Flee distance:** 100px (weighted inverse by distance), safe distance: 200px
+- **Upgrade strategies:** WEAPON_FIRST (default), BALANCED, DEFENSIVE
+- **Player integration:** `idle_mode: bool` flag in `player.gd`, skips input when true
+- **Upgrade UI:** `idle_controller` reference, `_auto_select_upgrade()` on 5s timer
+- **HUD:** `set_idle_mode()` / `set_idle_unlocked()` on `IdleModeLabel` in TopRightContainer
+- **File:** `scripts/systems/idle_controller.gd`
+
 For complete game data, see `docs/GAME_DATA.md` (bilingual EN/ZH).
 
 ## Common Tasks
@@ -399,7 +411,8 @@ Detailed documentation is in `docs/`:
 - ✅ Boss attack improvements (Ravager & Warden)
 - ✅ Elite monsters (6 types with unique abilities, golden shader)
 - ✅ Post-wave-30 infinite scaling (enemies, bosses, elites)
-- [ ] Achievement system (pending)
+- ✅ Idle mode / auto-play (AI controller, Tab toggle, upgrade strategies)
+- [ ] Achievement system UI (pending)
 
 ## Git Workflow
 

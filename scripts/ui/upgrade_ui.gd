@@ -35,6 +35,7 @@ var _timer: float = 0.0
 var _is_active: bool = false
 var _upgrade_manager: Node = null
 var _evolution_cards: Array[bool] = []  # Track which weapon cards are evolution upgrades
+var idle_controller: Node = null  # Set by game.gd when idle mode is active
 
 ## Normal, selected, and disabled styles
 var _normal_style: StyleBoxFlat
@@ -109,7 +110,7 @@ func _process(delta: float) -> void:
 	if use_timer:
 		_timer -= delta
 		if _timer <= 0:
-			_confirm_selection()
+			_auto_select_upgrade()
 			return
 
 		# Update timer display
@@ -219,6 +220,17 @@ func _confirm_selection() -> void:
 	if selected:
 		upgrade_selected.emit(selected)
 	hide_ui()
+
+func _auto_select_upgrade() -> void:
+	if idle_controller and idle_controller.has_method("select_upgrade"):
+		var choice = idle_controller.select_upgrade(_upgrades, _weapon_upgrades)
+		if choice.section == "weapon" and _weapon_section_available and choice.index < _weapon_upgrades.size():
+			_in_weapon_section = true
+			_selected_index = choice.index
+		elif choice.index < _upgrades.size():
+			_in_weapon_section = false
+			_selected_index = choice.index
+	_confirm_selection()
 
 func set_upgrade_manager(manager: Node) -> void:
 	_upgrade_manager = manager
