@@ -339,6 +339,10 @@ func _spawn_boss(wave_number: int) -> void:
 	if boss.has_signal("died"):
 		boss.died.connect(_on_boss_died)
 
+	# Connect Warden darkness aura signal
+	if boss.has_signal("darkness_aura_changed"):
+		boss.darkness_aura_changed.connect(_on_warden_darkness)
+
 	# Add boss to scene
 	add_child(boss)
 	_current_boss = boss
@@ -360,9 +364,33 @@ func _on_boss_died(_xp: int) -> void:
 ## Called when boss health bar finishes (after death animation)
 func _on_boss_defeated() -> void:
 	_current_boss = null
+	# Restore fog of war in case Warden darkness was active
+	_update_fog_of_war()
 	# Resume normal spawning
 	if spawner:
 		spawner.resume_spawning()
+
+
+## Called when Warden darkness aura activates/deactivates
+func _on_warden_darkness(active: bool) -> void:
+	if not _fog_material:
+		return
+	if active:
+		_fog_material.set_shader_parameter("enabled", true)
+		var base_radius = 0.25
+		if torch_manager and torch_manager.has_method("get_visibility_radius"):
+			base_radius = torch_manager.get_visibility_radius()
+		_fog_material.set_shader_parameter("visibility_radius", base_radius * (1.0 - darkness_visibility_reduction))
+	else:
+		# Fully restore fog state based on current time of day
+		var is_night = day_night_cycle and day_night_cycle.is_night()
+		if is_night:
+			_update_fog_of_war()
+		else:
+			_fog_material.set_shader_parameter("enabled", false)
+
+## Warden darkness visibility reduction (matches warden.gd export)
+var darkness_visibility_reduction: float = 0.40
 
 
 func _on_torch_level_changed(_level: int) -> void:

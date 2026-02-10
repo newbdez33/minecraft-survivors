@@ -251,7 +251,7 @@ See [phase5_enhancements.md](./phases/phase5_enhancements.md) for detailed plan.
 - [x] Evoker (Wave 5, 400 HP) - Summons fangs
 - [x] Elder Guardian (Wave 10, 600 HP) - Mining fatigue beam
 - [x] Ravager (Wave 15, 800 HP) - Charge + stomp attacks (improved animations & damage)
-- [x] Warden (Wave 20, 1000 HP) - Sonic boom + melee attacks (improved animations & triggers)
+- [x] Warden (Wave 20, 1000 HP) - Sonic boom + melee + ground slam + darkness aura + enrage phase
 - [x] Wither (Wave 25, 1200 HP) - Homing wither skulls (2.5 rad/s tracking)
 - [x] Ender Dragon (Wave 30, 1500 HP) - Homing dragon fireballs (1.8 rad/s tracking) + dive
 - [x] All bosses have detailed pixel art SVG sprites with proper textures
@@ -294,7 +294,16 @@ All development follows Red→Green→Refactor:
 
 ## Recent Updates
 
-### v0.7.1-alpha (2026-02-09) - Latest
+### v0.7.2-alpha (2026-02-10) - Latest
+
+**Warden Boss Improvements:**
+- Darkness Aura: reduces player visibility by 40% when within 350px (signal-based fog shader control)
+- Ground Slam AoE: 45 damage in 150px radius, 6s cooldown, reuses boss stomp animation
+- Enrage Phase: at 50% HP, 1.5x speed, 40% faster attacks, permanent red tint, max anger
+- Faster Anger Buildup: anger_per_sound 15→25, damage anger 20→35, sonic threshold 30→20, tracking threshold 80→50, anger decay 30→15
+- game.gd connects `darkness_aura_changed` signal, restores fog on boss defeat
+
+### v0.7.1-alpha (2026-02-09)
 
 **Elite Monsters System:**
 - EliteModifier static component: 2.5x HP, 1.5x damage, 1.2x speed, 20x XP, 1.3x scale

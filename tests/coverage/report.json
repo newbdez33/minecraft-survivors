@@ -163,11 +163,12 @@
 			]
 		},
 		"res://scripts/game.gd": {
-			"coverage_percent": 96.551724137931,
+			"coverage_percent": 93.3333333333333,
 			"tested_functions": 28,
-			"total_functions": 29,
+			"total_functions": 30,
 			"untested": [
-				"_on_achievement_unlocked"
+				"_on_achievement_unlocked",
+				"_on_warden_darkness"
 			]
 		},
 		"res://scripts/pickups/emerald_pickup.gd": {
@@ -462,7 +463,7 @@
 		}
 	},
 	"tested_functions": 635,
-	"timestamp": "2026-02-10T01:10:20",
-	"total_coverage_percent": 94.9177877428998,
-	"total_functions": 669
+	"timestamp": "2026-02-10T22:54:10",
+	"total_coverage_percent": 94.7761194029851,
+	"total_functions": 670
 }

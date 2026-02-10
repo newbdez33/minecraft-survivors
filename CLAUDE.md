@@ -317,7 +317,7 @@ Procedural 8-bit sound effects with no external audio files required:
 | Evoker | 5 | 400 | 200 | Summons fangs |
 | Elder Guardian | 10 | 600 | 300 | Mining fatigue beam |
 | Ravager | 15 | 800 | 400 | Charge (50 dmg) + Stomp (40 dmg AoE) |
-| Warden | 20 | 1000 | 600 | Sonic boom (65 dmg) + Melee (55 dmg) |
+| Warden | 20 | 1000 | 600 | Sonic boom (65 dmg) + Melee (55 dmg) + Ground Slam (45 dmg AoE) + Darkness Aura + Enrage at 50% HP |
 | Wither | 25 | 1200 | 800 | Homing wither skulls |
 | Ender Dragon | 30 | 1500 | 1200 | Homing dragon fireballs + dive |
 

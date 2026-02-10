@@ -414,7 +414,7 @@ Boss enemies appear at specific waves with high HP and unique abilities. All bos
 | Evoker 唤魔者 | 5 | 400 | 200 | 召唤尖牙 Summons fangs |
 | Elder Guardian 远古守卫者 | 10 | 600 | 300 | 挖掘疲劳光束 Mining fatigue beam |
 | Ravager 劫掠兽 | 15 | 800 | 400 | 冲撞+践踏 Charge + Stomp |
-| Warden 监守者 | 20 | 1000 | 600 | 音波+近战 Sonic boom + Melee |
+| Warden 监守者 | 20 | 1000 | 600 | 音波+近战+地震+黑暗光环+狂暴 Sonic boom + Melee + Ground Slam + Darkness Aura + Enrage |
 | Wither 凋灵 | 25 | 1200 | 800 | 追踪凋灵骷髅头 Homing wither skulls |
 | Ender Dragon 末影龙 | 30 | 1500 | 1200 | 追踪龙息火球+俯冲 Homing fireballs + dive |
 
@@ -472,10 +472,48 @@ Boss enemies appear at specific waves with high HP and unique abilities. All bos
 |------|------|
 | 生命值 (Health) | 1000 |
 | 出现波次 (Spawn Wave) | 20 |
+| 接触伤害 (Contact Damage) | 40 |
+| 移动速度 (Speed) | 35 |
+| 经验值 (XP) | 600 |
+| 伤害减免 (Damage Reduction) | 30% |
+| 击退免疫 (Knockback Immune) | 是 Yes |
+
+**攻击技能 / Attacks:**
+
+| 技能 | 伤害 | 范围 | 冷却 | 说明 |
+|------|------|------|------|------|
+| Sonic Boom 音波 | 65 | 400px | 4.0s | 怒气≥20时触发 Fires when anger ≥ 20 |
+| Melee 近战 | 55 | 80px | 1.5s | 近距离重击 Close-range heavy hit |
+| Ground Slam 地震 | 45 | 150px | 6.0s | 玩家≤200px时触发 AoE when player ≤ 200px |
+
+**黑暗光环 / Darkness Aura:**
+- 玩家在350px范围内时，迷雾可见半径减少40%
+- When player is within 350px, fog visibility radius reduced by 40%
+- 监守者死亡时自动恢复 Auto-restores on Warden death
+
+**狂暴阶段 / Enrage Phase (< 50% HP):**
+| 属性 | 效果 |
+|------|------|
+| 速度 (Speed) | x1.5 |
+| 攻击冷却 (Cooldowns) | x0.6 (40%更快 40% faster) |
+| 怒气 (Anger) | 永久满值 Permanently maxed |
+| 视觉 (Visual) | 红色染色 Red tint |
+
+**怒气系统 / Anger System:**
+| 触发 | 怒气增量 |
+|------|----------|
+| 玩家移动 (Player movement) | +25/tick |
+| 受到伤害 (Taking damage) | +35 |
+| 音波后衰减 (Post sonic boom) | -15 |
+| 追踪阈值 (Tracking threshold) | 50 |
+| 音波阈值 (Sonic boom threshold) | 20 |
 
 **行为特征:**
 - 高生命值近战Boss
-- 音波攻击无视护甲
+- 音波攻击远程伤害
+- 地震践踏AoE伤害
+- 黑暗光环限制玩家视野
+- 低血量狂暴加速攻击
 
 ---
 
@@ -600,11 +638,12 @@ After wave 30, enemy stats scale infinitely for endless endgame challenge.
 
 ## 版本信息 / Version Info
 
-- 文档版本: 2.0
+- 文档版本: 2.1
 - 游戏版本: Phase 7
-- 更新日期: 2026-02-09
+- 更新日期: 2026-02-10
 
 ### 更新记录 / Changelog
+- v2.1: 更新Warden详细数据 (黑暗光环、地震践踏、狂暴阶段、加速怒气系统)
 - v2.0: 添加精英怪系统、波次缩放系统、修正敌人HP/肉掉落数据、Boss XP值
 - v1.5: 添加Boss数据 (Evoker, Elder Guardian, Ravager, Warden, Wither, Ender Dragon)
 - v1.4: 弓每级升级攻速改为+1.0/s (原+0.1/s)
