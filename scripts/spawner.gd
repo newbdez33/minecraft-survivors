@@ -315,7 +315,11 @@ func _get_max_elites() -> int:
 
 
 ## Handle elite zombie rally: spawn tracked normal zombies
+## Deferred to avoid physics query errors when called from _on_body_entered chain
 func _on_rally_requested(pos: Vector2, count: int) -> void:
+	call_deferred("_spawn_rally_zombies", pos, count)
+
+func _spawn_rally_zombies(pos: Vector2, count: int) -> void:
 	if not zombie_scene:
 		return
 	for i in range(count):
