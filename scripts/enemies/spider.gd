@@ -186,13 +186,13 @@ func _on_hitbox_body_entered(body: Node2D) -> void:
 		if is_elite:
 			var status_mgr = body.get_node_or_null("StatusEffectManager")
 			if status_mgr and status_mgr.has_method("apply_effect"):
-				var poison = {
-					"type": 0,  # POISON type
-					"damage": 2,
-					"interval": 0.5,
-					"duration": 3.0,
-					"source": "elite_spider"
-				}
+				var StatusEffectClass = load("res://scripts/components/status_effect.gd")
+				var poison = StatusEffectClass.new(
+					StatusEffectClass.Type.POISON,
+					3.0,   # duration
+					0.5,   # tick_interval
+					2      # damage_per_tick
+				)
 				status_mgr.apply_effect(poison)
 		# Play quick attack animation on hit
 		if _animator and _attack_cooldown <= 0:
