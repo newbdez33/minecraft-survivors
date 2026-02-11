@@ -74,7 +74,7 @@ A Vampire Survivors-like roguelike game with Minecraft theme built in Godot 4.5.
 
 ## Test Status
 
-**1632 tests total** (1546 passed, 86 pre-existing failures)
+**1663 tests total** (1663 passed, 0 failures)
 
 ```
 Phase 1: Core Foundation - 37 tests
@@ -83,7 +83,7 @@ Phase 3: Progression Loop - 63 tests
 Phase 4: Game Feel - 145 tests
 Phase 5: Game Enhancements - 112 tests
 Visual Tests - 128 tests (enemy animations, upgrade effects, all enemies)
-Behavioral BDD Tests - 146 tests (boss attacks 52, elite monsters 40, wave scaling 29, idle mode 25)
+Behavioral BDD Tests - 148 tests (boss attacks 52, elite monsters 40, wave scaling 29, idle mode 27)
 External Test Suites - 969+ tests (combat, pickups, enemies, animations, bosses)
 ```
 
@@ -237,7 +237,9 @@ See [phase5_enhancements.md](./phases/phase5_enhancements.md) for detailed plan.
 - [x] Procedural 8-bit Audio System (SFX)
 - [x] Elite Monsters (6 enemy types with unique abilities, golden outline shader)
 - [x] Post-Wave-30 Infinite Scaling (HP, damage, speed, XP scale infinitely)
-- [x] Idle Mode / Auto-Play (AI-controlled movement, dodge, upgrade selection)
+- [x] Idle Mode / Auto-Play (AI kiting, dodge, weapon-first upgrades)
+- [x] Fixed elite spider venom bug (Dictionary instead of StatusEffect)
+- [x] Fixed all 86 pre-existing test failures (1663/1663 pass)
 - [ ] Achievement System UI
 
 **Audio System (COMPLETE):**
@@ -298,18 +300,26 @@ All development follows Red→Green→Refactor:
 ### v0.7.3-alpha (2026-02-11) - Latest
 
 **Idle Mode / Auto-Play System:**
-- New `IdleController` AI: flees nearby enemies, dodges boss projectiles, collects XP/health pickups
+- New `IdleController` AI with **kiting behavior**: maintains attack range distance from enemies
+- Kiting distances: `_danger_distance=50` (flee), `_kite_distance=70` (strafe), `_safe_distance=200` (projectiles)
+- AI priority: dodge projectiles > kite enemies > collect pickups > engage enemies > wander
+- **Weapons ALWAYS selected first** regardless of strategy (enchant strategies only for fallback)
 - Unlocked via "Idle Master" achievement (survive past wave 30, target=31)
 - Toggle with **Tab** key during gameplay
-- Three upgrade strategies: WEAPON_FIRST (default), BALANCED, DEFENSIVE
-- WEAPON_FIRST prioritizes: Sword/Bow levels > Sharpness/Haste > Sweeping Edge > fallback
-- Upgrade auto-select uses existing 5s timer when idle mode active
 - HUD shows cyan "IDLE MODE" indicator when active, subtle "Tab: Idle Mode" hint when unlocked
-- Player `idle_mode` flag skips input reading; IdleController sets velocity directly
-- `achievement_manager.gd` gains `is_achievement_unlocked()` convenience method
 - Localized in EN/ZH/JA (IDLE_MODE, IDLE_MODE_ACTIVE, IDLE_MODE_LOCKED keys)
-- 25 BDD tests in `tests/unit/behavioral/test_idle_mode_behavior.gd`
+- 27 BDD tests in `tests/unit/behavioral/test_idle_mode_behavior.gd`
 - Files: `scripts/systems/idle_controller.gd` (new), modified `game.gd`, `player.gd`, `hud.gd`, `upgrade_ui.gd`
+
+**Bug Fixes:**
+- Fixed elite spider venom passing Dictionary instead of StatusEffect (caused `remaining_time` errors and FPS drops to 4-7)
+- Fixed all 86 pre-existing test failures across 23 test files (outdated values, missing scenes, wrong API, infrastructure)
+- Test suite now: **1663 passed, 0 failures**
+
+**Visual Test Results (IDLE_TEST, 120s @ 2x speed):**
+- 233 kills, wave 7, level 12, Stone Sword (Tier 2)
+- 60 FPS stable, 0 orphan nodes, ~97 MB memory
+- 11/11 upgrades were weapon upgrades (weapon-first verified)
 
 ### v0.7.2-alpha (2026-02-10)
 

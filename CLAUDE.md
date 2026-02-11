@@ -166,7 +166,7 @@ Tests are organized by development phase:
 - **BDD Tests:** Boss Attacks (52), Elite Monsters (40), Wave Scaling (29), Idle Mode (27)
 - **External Suites:** Combat, pickups, enemies, animations, bosses (969+ tests)
 
-**Total: 1632 tests** (1546 passed, 86 pre-existing failures)
+**Total: 1663 tests** (1663 passed, 0 failures)
 
 ### Test Types
 - **Unit tests** (`tests/unit/`) - Logic verification
@@ -413,7 +413,9 @@ Detailed documentation is in `docs/`:
 - ✅ Boss attack improvements (Ravager & Warden)
 - ✅ Elite monsters (6 types with unique abilities, golden shader)
 - ✅ Post-wave-30 infinite scaling (enemies, bosses, elites)
-- ✅ Idle mode / auto-play (AI controller, Tab toggle, upgrade strategies)
+- ✅ Idle mode / auto-play (AI kiting controller, Tab toggle, weapon-first upgrades)
+- ✅ Fixed elite spider venom (was passing Dictionary instead of StatusEffect)
+- ✅ Fixed all 86 pre-existing test failures (1663/1663 pass)
 - [ ] Achievement system UI (pending)
 
 ## Git Workflow
