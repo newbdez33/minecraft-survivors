@@ -71,17 +71,19 @@ static func test_crossbow_has_attack_speed() -> Dictionary:
 
 static func test_crossbow_has_pierce() -> Dictionary:
 	var crossbow = get_crossbow_instance()
-	var passed = crossbow != null and "pierce" in crossbow
+	# Crossbow uses pierce_count (not pierce)
+	var passed = crossbow != null and "pierce_count" in crossbow
 	if crossbow:
 		crossbow.queue_free()
-	return {"name": "TC.CB.6: Crossbow has pierce property", "passed": passed}
+	return {"name": "TC.CB.6: Crossbow has pierce_count property", "passed": passed}
 
 static func test_crossbow_has_bolt_scene() -> Dictionary:
 	var crossbow = get_crossbow_instance()
-	var passed = crossbow != null and "bolt_scene" in crossbow
+	# Crossbow uses _bolt_scene (private property)
+	var passed = crossbow != null and "_bolt_scene" in crossbow
 	if crossbow:
 		crossbow.queue_free()
-	return {"name": "TC.CB.7: Crossbow has bolt_scene property", "passed": passed}
+	return {"name": "TC.CB.7: Crossbow has _bolt_scene property", "passed": passed}
 
 static func test_crossbow_damage_higher_than_bow() -> Dictionary:
 	var crossbow = get_crossbow_instance()
@@ -92,10 +94,11 @@ static func test_crossbow_damage_higher_than_bow() -> Dictionary:
 
 static func test_crossbow_has_pierce_ability() -> Dictionary:
 	var crossbow = get_crossbow_instance()
-	var passed = crossbow != null and crossbow.pierce >= 3  # Hits multiple enemies
+	# Crossbow uses pierce_count (not pierce)
+	var passed = crossbow != null and crossbow.pierce_count >= 3  # Hits multiple enemies
 	if crossbow:
 		crossbow.queue_free()
-	return {"name": "TC.CB.9: Crossbow pierce >= 3", "passed": passed}
+	return {"name": "TC.CB.9: Crossbow pierce_count >= 3", "passed": passed}
 
 static func test_crossbow_has_upgrade_method() -> Dictionary:
 	var crossbow = get_crossbow_instance()
@@ -106,10 +109,11 @@ static func test_crossbow_has_upgrade_method() -> Dictionary:
 
 static func test_crossbow_has_shoot_method() -> Dictionary:
 	var crossbow = get_crossbow_instance()
-	var passed = crossbow != null and crossbow.has_method("_shoot")
+	# Crossbow uses _fire_at method (not _shoot)
+	var passed = crossbow != null and crossbow.has_method("_fire_at")
 	if crossbow:
 		crossbow.queue_free()
-	return {"name": "TC.CB.11: Crossbow has _shoot method", "passed": passed}
+	return {"name": "TC.CB.11: Crossbow has _fire_at method", "passed": passed}
 
 static func get_tested_functions() -> Array:
 	return [

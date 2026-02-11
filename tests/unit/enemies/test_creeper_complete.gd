@@ -130,17 +130,18 @@ static func test_creeper_has_fuse_time() -> Dictionary:
 
 static func test_creeper_has_explosion_scene() -> Dictionary:
 	var creeper = get_creeper_instance()
-	# Check for explode method instead
-	var passed = creeper != null and creeper.has_method("_explode")
+	# Creeper uses explode (public method, no underscore prefix)
+	var passed = creeper != null and creeper.has_method("explode")
 	if creeper:
 		creeper.queue_free()
-	return {"name": "TC.CR.13: Creeper has _explode method", "passed": passed}
+	return {"name": "TC.CR.13: Creeper has explode method", "passed": passed}
 
 static func test_creeper_health_value() -> Dictionary:
 	var creeper = get_creeper_instance()
 	var passed = false
 	if creeper:
 		if "health" in creeper:
+			# Scene file overrides script default: creeper.tscn sets health = 25
 			passed = creeper.health == 25
 		elif creeper.has_node("HealthComponent"):
 			var health_comp = creeper.get_node("HealthComponent")
@@ -158,10 +159,11 @@ static func test_creeper_speed_value() -> Dictionary:
 
 static func test_creeper_damage_value() -> Dictionary:
 	var creeper = get_creeper_instance()
-	var passed = creeper != null and creeper.damage == 30
+	# Creeper uses explosion_damage (30) as its primary damage
+	var passed = creeper != null and creeper.explosion_damage == 30
 	if creeper:
 		creeper.queue_free()
-	return {"name": "TC.CR.16: Creeper damage is 30", "passed": passed}
+	return {"name": "TC.CR.16: Creeper explosion_damage is 30", "passed": passed}
 
 static func test_creeper_xp_value() -> Dictionary:
 	var creeper = get_creeper_instance()

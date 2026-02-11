@@ -78,10 +78,11 @@ static func test_has_wave_scaling() -> Dictionary:
 
 static func test_has_wave_duration() -> Dictionary:
 	var manager = get_wave_manager_instance()
-	var passed = manager != null and "wave_duration" in manager
+	# WaveManager uses wave_interval (not wave_duration)
+	var passed = manager != null and "wave_interval" in manager
 	if manager:
 		manager.free()
-	return {"name": "TC.WM.5: Has wave_duration property", "passed": passed}
+	return {"name": "TC.WM.5: Has wave_interval property", "passed": passed}
 
 static func test_has_start_wave_method() -> Dictionary:
 	var manager = get_wave_manager_instance()

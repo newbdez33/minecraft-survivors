@@ -110,11 +110,10 @@ static func test_character_card_has_stats_display() -> Dictionary:
 	var passed = false
 	if scene:
 		var instance = scene.instantiate()
-		# Check for stats labels
-		passed = instance.get_node_or_null("Stats") != null or \
-				 instance.get_node_or_null("StatsLabel") != null or \
-				 instance.get_node_or_null("VBox/Stats") != null or \
-				 instance.get_node_or_null("VBox/StatsContainer") != null
+		# CharacterCard uses MarginContainer/VBox/StatsContainer path
+		passed = instance.get_node_or_null("MarginContainer/VBox/StatsContainer") != null or \
+				 instance.get_node_or_null("Stats") != null or \
+				 instance.get_node_or_null("StatsLabel") != null
 		instance.queue_free()
 	return {"name": "TC.CSU.10: Character card has stats display", "passed": passed}
 

@@ -102,10 +102,10 @@ static func test_bow_targets_nearest_enemy() -> Dictionary:
 	if not bow_scene:
 		return {"name": "TC.CF.7: Bow has target logic", "passed": false}
 	var bow = bow_scene.instantiate()
-	# Check for target-related properties instead of private method
-	var passed = "attack_range" in bow and bow.attack_range > 0
+	# Bow uses "range" property (not "attack_range")
+	var passed = "range" in bow and bow.range > 0
 	bow.queue_free()
-	return {"name": "TC.CF.7: Bow has attack range for targeting", "passed": passed}
+	return {"name": "TC.CF.7: Bow has range for targeting", "passed": passed}
 
 static func test_poison_damages_over_time() -> Dictionary:
 	var status_script = load("res://scripts/components/status_effect.gd")

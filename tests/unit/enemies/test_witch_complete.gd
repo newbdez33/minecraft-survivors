@@ -124,17 +124,18 @@ static func test_witch_has_throw_range() -> Dictionary:
 
 static func test_witch_has_potion_scene() -> Dictionary:
 	var witch = get_witch_instance()
-	# Check for throw method instead
-	var passed = witch != null and witch.has_method("_throw_potion")
+	# Witch uses throw_potion (public method, no underscore prefix)
+	var passed = witch != null and witch.has_method("throw_potion")
 	if witch:
 		witch.queue_free()
-	return {"name": "TC.WI.12: Witch has _throw_potion method", "passed": passed}
+	return {"name": "TC.WI.12: Witch has throw_potion method", "passed": passed}
 
 static func test_witch_health_value() -> Dictionary:
 	var witch = get_witch_instance()
 	var passed = false
 	if witch:
 		if "health" in witch:
+			# Scene file overrides script default: witch.tscn sets health = 20
 			passed = witch.health == 20
 		elif witch.has_node("HealthComponent"):
 			var health_comp = witch.get_node("HealthComponent")
@@ -152,10 +153,11 @@ static func test_witch_speed_value() -> Dictionary:
 
 static func test_witch_damage_value() -> Dictionary:
 	var witch = get_witch_instance()
-	var passed = witch != null and witch.damage == 12
+	# Witch uses potion_damage as primary damage value
+	var passed = witch != null and witch.potion_damage == 12
 	if witch:
 		witch.queue_free()
-	return {"name": "TC.WI.15: Witch damage is 12", "passed": passed}
+	return {"name": "TC.WI.15: Witch potion_damage is 12", "passed": passed}
 
 static func test_witch_xp_value() -> Dictionary:
 	var witch = get_witch_instance()
