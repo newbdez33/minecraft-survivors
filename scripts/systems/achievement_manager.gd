@@ -58,6 +58,7 @@ func _init_achievements() -> void:
 	for id in ACHIEVEMENT_DEFS:
 		var def = ACHIEVEMENT_DEFS[id]
 		var achievement = AchievementClass.new(id, def.name, def.desc, def.target, def.reward)
+		achievement.icon_path = "res://assets/ui/achievements/%s.svg" % id
 		achievements[id] = achievement
 
 func check_kill_count(kills: int) -> void:

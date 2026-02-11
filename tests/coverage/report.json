@@ -163,13 +163,14 @@
 			]
 		},
 		"res://scripts/game.gd": {
-			"coverage_percent": 87.5,
+			"coverage_percent": 84.8484848484848,
 			"tested_functions": 28,
-			"total_functions": 32,
+			"total_functions": 33,
 			"untested": [
 				"force_idle_mode",
 				"_toggle_idle_mode",
 				"_on_achievement_unlocked",
+				"_on_combo_changed",
 				"_on_warden_darkness"
 			]
 		},
@@ -385,20 +386,25 @@
 			]
 		},
 		"res://scripts/ui/main_menu.gd": {
+			"coverage_percent": 73.3333333333333,
+			"tested_functions": 11,
+			"total_functions": 15,
+			"untested": [
+				"_check_test_mode",
+				"_start_game_for_test",
+				"_on_character_pressed",
+				"_on_achievements_pressed"
+			]
+		},
+		"res://scripts/ui/pause_menu.gd": {
 			"coverage_percent": 76.9230769230769,
 			"tested_functions": 10,
 			"total_functions": 13,
 			"untested": [
-				"_check_test_mode",
-				"_start_game_for_test",
-				"_on_character_pressed"
+				"_on_achievements_pressed",
+				"_on_achievement_panel_closed",
+				"set_achievement_manager"
 			]
-		},
-		"res://scripts/ui/pause_menu.gd": {
-			"coverage_percent": 100.0,
-			"tested_functions": 10,
-			"total_functions": 10,
-			"untested": []
 		},
 		"res://scripts/ui/scoreboard_panel.gd": {
 			"coverage_percent": 100.0,
@@ -472,8 +478,8 @@
 			"untested": []
 		}
 	},
-	"tested_functions": 635,
-	"timestamp": "2026-02-11T11:12:56",
-	"total_coverage_percent": 93.7961595273264,
-	"total_functions": 677
+	"tested_functions": 636,
+	"timestamp": "2026-02-11T12:29:58",
+	"total_coverage_percent": 93.1185944363104,
+	"total_functions": 683
 }

@@ -23,6 +23,8 @@ extends Node2D
 @onready var character_manager: Node = $CharacterManager
 
 const WaveScalerClass = preload("res://scripts/systems/wave_scaler.gd")
+const ComboSystemClass = preload("res://scripts/systems/combo_system.gd")
+var _achievement_notification_scene: PackedScene = preload("res://scenes/ui/achievement_notification.tscn")
 
 var evoker_scene: PackedScene = preload("res://scenes/enemies/evoker.tscn")
 var elder_guardian_scene: PackedScene = preload("res://scenes/enemies/elder_guardian.tscn")
@@ -36,6 +38,12 @@ var _total_time: float = 0.0
 var _is_paused: bool = false
 var _fog_material: ShaderMaterial = null
 var _idle_controller: Node = null
+var _achievement_notification: Node = null
+var _combo_system: RefCounted = null
+var _poison_survived_count: int = 0
+var _no_damage_time: float = 0.0
+var _last_no_damage_check: int = 0
+var _last_health: int = -1
 
 func _ready() -> void:
 	# Load language setting
@@ -130,6 +138,19 @@ func _ready() -> void:
 	if achievement_manager:
 		achievement_manager.achievement_unlocked.connect(_on_achievement_unlocked)
 
+	# Pass achievement_manager to pause menu
+	if pause_menu and pause_menu.has_method("set_achievement_manager"):
+		pause_menu.set_achievement_manager(achievement_manager)
+
+	# Instantiate achievement notification
+	if _achievement_notification_scene:
+		_achievement_notification = _achievement_notification_scene.instantiate()
+		add_child(_achievement_notification)
+
+	# Setup combo system for achievement tracking
+	_combo_system = ComboSystemClass.new()
+	_combo_system.combo_changed.connect(_on_combo_changed)
+
 	# Apply selected character stats if character manager is present
 	if character_manager and player:
 		character_manager.apply_selected_to_player(player)
@@ -152,6 +173,18 @@ func _process(delta: float) -> void:
 		_total_time += delta
 		if hud:
 			hud.set_time(_total_time)
+
+		# Update combo system timer
+		if _combo_system:
+			_combo_system.update(delta)
+
+		# Track no-damage time for achievement (throttle to once per second)
+		_no_damage_time += delta
+		var no_damage_second = int(_no_damage_time)
+		if no_damage_second > _last_no_damage_check:
+			_last_no_damage_check = no_damage_second
+			if achievement_manager:
+				achievement_manager.check_no_damage_time(no_damage_second)
 
 		# Check survival time achievements every second
 		var current_second = int(_total_time)
@@ -231,6 +264,13 @@ func _on_resume_pressed() -> void:
 func _on_player_health_changed(current: int, maximum: int) -> void:
 	if hud:
 		hud.update_health(current, maximum)
+	# Reset no-damage timer if health decreased (took damage)
+	if _last_health >= 0 and current < _last_health:
+		_no_damage_time = 0.0
+		_last_no_damage_check = 0
+		if _combo_system:
+			_combo_system.on_player_damaged()
+	_last_health = current
 
 func _on_player_xp_changed(current: int, needed: int) -> void:
 	if hud:
@@ -303,6 +343,10 @@ func _on_enemy_killed(_xp_value: int) -> void:
 		if achievement_manager:
 			achievement_manager.check_kill_count(game_stats.kills)
 
+	# Update combo system
+	if _combo_system:
+		_combo_system.on_enemy_killed()
+
 	# Notify sword for evolution tracking
 	if _sword and _sword.has_method("on_enemy_killed"):
 		_sword.on_enemy_killed()
@@ -321,11 +365,27 @@ func _on_sword_evolved(new_tier: int) -> void:
 ## Called when an achievement is unlocked
 func _on_achievement_unlocked(achievement) -> void:
 	print("[ACHIEVEMENT] Unlocked: %s" % achievement.name)
-	if hud and hud.has_method("show_notification"):
+
+	# Show achievement notification popup
+	if _achievement_notification and _achievement_notification.has_method("show_achievement"):
+		_achievement_notification.show_achievement(achievement)
+	elif hud and hud.has_method("show_notification"):
 		hud.show_notification("Achievement: %s!" % achievement.name)
+
+	# Play achievement SFX
+	var audio = get_node_or_null("/root/AudioManager")
+	if audio:
+		audio.play_sfx("achievement_unlock")
+
 	# Show idle mode hint when idle_master is unlocked
 	if achievement.id == "idle_master" and hud and hud.has_method("set_idle_unlocked"):
 		hud.set_idle_unlocked(true)
+
+## Called when combo changes (from ComboSystem)
+func _on_combo_changed(combo: int) -> void:
+	if achievement_manager:
+		achievement_manager.check_combo(combo)
+
 
 func _on_wave_started(wave_number: int) -> void:
 	if hud:
@@ -469,6 +529,10 @@ func _on_player_effect_removed(effect) -> void:
 	if StatusEffectClass and effect.type == StatusEffectClass.Type.POISON:
 		if hud and hud.has_method("set_poisoned"):
 			hud.set_poisoned(false)
+		# Track poison survived for achievement
+		_poison_survived_count += 1
+		if achievement_manager:
+			achievement_manager.check_poison_survived(_poison_survived_count)
 
 func _on_time_changed(time: float, _is_night: bool) -> void:
 	# Update time icon with 8-phase granularity (uses cycling time for day/night phases)

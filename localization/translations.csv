@@ -86,3 +86,49 @@ IDLE_MODE_ACTIVE,IDLE MODE,放置模式中,放置モード中
 IDLE_MODE_LOCKED,Survive past wave 30 to unlock Idle Mode,存活超过30波以解锁放置模式,ウェーブ30を超えて放置モードを解除
 IDLE_MASTER_NAME,Idle Master,放置大师,放置マスター
 IDLE_MASTER_DESC,Survive past wave 30,存活超过30波,ウェーブ30を超えて生存
+ACHIEVEMENTS,Achievements,成就,実績
+ACH_PROGRESS,%d / %d Achievements,%d / %d 成就,%d / %d 実績
+ACH_UNLOCKED,Unlocked!,已解锁!,アンロック済み!
+ACH_UNLOCKED_TITLE,Achievement Unlocked!,成就解锁!,実績解除!
+ACH_FIRST_KILL_NAME,First Blood,初次击杀,初キル
+ACH_FIRST_KILL_DESC,Kill your first enemy,击杀你的第一个敌人,最初の敵を倒す
+ACH_KILLS_100_NAME,Centurion,百人斩,百人斬り
+ACH_KILLS_100_DESC,Kill 100 enemies in one game,在一局游戏中击杀100个敌人,1ゲームで敵を100体倒す
+ACH_KILLS_1000_NAME,Massacre,大屠杀,大虐殺
+ACH_KILLS_1000_DESC,Kill 1000 enemies in one game,在一局游戏中击杀1000个敌人,1ゲームで敵を1000体倒す
+ACH_SURVIVE_60_NAME,Survivor,幸存者,サバイバー
+ACH_SURVIVE_60_DESC,Survive for 1 minute,存活1分钟,1分間生存する
+ACH_SURVIVE_300_NAME,Endurance,耐力,エンデュランス
+ACH_SURVIVE_300_DESC,Survive for 5 minutes,存活5分钟,5分間生存する
+ACH_SURVIVE_600_NAME,Ironman,铁人,アイアンマン
+ACH_SURVIVE_600_DESC,Survive for 10 minutes,存活10分钟,10分間生存する
+ACH_SURVIVE_900_NAME,Legend,传说,レジェンド
+ACH_SURVIVE_900_DESC,Survive for 15 minutes,存活15分钟,15分間生存する
+ACH_LEVEL_5_NAME,Getting Strong,渐入佳境,強くなってきた
+ACH_LEVEL_5_DESC,Reach level 5,达到5级,レベル5に到達
+ACH_LEVEL_10_NAME,Veteran,老手,ベテラン
+ACH_LEVEL_10_DESC,Reach level 10,达到10级,レベル10に到達
+ACH_LEVEL_20_NAME,Master,大师,マスター
+ACH_LEVEL_20_DESC,Reach level 20,达到20级,レベル20に到達
+ACH_WAVE_3_NAME,Wave Rider,冲浪者,ウェーブライダー
+ACH_WAVE_3_DESC,Reach wave 3,到达第3波,ウェーブ3に到達
+ACH_WAVE_5_NAME,Wave Master,波浪大师,ウェーブマスター
+ACH_WAVE_5_DESC,Reach wave 5,到达第5波,ウェーブ5に到達
+ACH_WAVE_10_NAME,Wave Legend,波浪传说,ウェーブレジェンド
+ACH_WAVE_10_DESC,Reach wave 10,到达第10波,ウェーブ10に到達
+ACH_POISON_SURVIVE_NAME,Toxic Resistance,抗毒体质,毒耐性
+ACH_POISON_SURVIVE_DESC,Survive poison 10 times,存活过10次中毒,毒を10回生き延びる
+ACH_COMBO_50_NAME,Combo King,连击王,コンボキング
+ACH_COMBO_50_DESC,Reach 50 combo,达到50连击,50コンボ達成
+ACH_COMBO_100_NAME,Unstoppable,势不可挡,アンストッパブル
+ACH_COMBO_100_DESC,Reach 100 combo,达到100连击,100コンボ達成
+ACH_NO_DAMAGE_60_NAME,Untouchable,无懈可击,アンタッチャブル
+ACH_NO_DAMAGE_60_DESC,Survive 60 seconds without damage,60秒不受伤,60秒間ダメージを受けない
+ACH_UNLOCK_ALEX_NAME,New Friend,新朋友,新しい仲間
+ACH_UNLOCK_ALEX_DESC,Unlock Alex character,解锁Alex角色,アレックスを解放
+ACH_UNLOCK_BOW_NAME,Archer,弓箭手,アーチャー
+ACH_UNLOCK_BOW_DESC,Get the Bow weapon,获得弓武器,弓を入手
+ACH_EVOLVE_WEAPON_NAME,Evolution,进化,進化
+ACH_EVOLVE_WEAPON_DESC,Evolve a weapon,进化一件武器,武器を進化させる
+ACH_IDLE_MASTER_NAME,Idle Master,放置大师,放置マスター
+ACH_IDLE_MASTER_DESC,Survive past wave 30,存活超过30波,ウェーブ30を超えて生存

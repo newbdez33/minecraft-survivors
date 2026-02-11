@@ -13,6 +13,7 @@ signal closed()
 
 var achievement_manager: Node = null
 var achievement_item_scene: PackedScene = null
+var _localization_manager: Node = null
 
 func _ready() -> void:
 	# Load achievement item scene
@@ -22,10 +23,21 @@ func _ready() -> void:
 	if close_button:
 		close_button.pressed.connect(_on_close_pressed)
 
+	# Connect localization
+	_localization_manager = get_node_or_null("/root/LocalizationManager")
+	if _localization_manager and _localization_manager.has_signal("language_changed"):
+		_localization_manager.language_changed.connect(_on_language_changed)
+
+	_update_texts()
+
 	# Start hidden
 	visible = false
 
 func set_achievement_manager(manager: Node) -> void:
+	# Disconnect previous manager if any
+	if achievement_manager and achievement_manager.has_signal("achievement_unlocked"):
+		if achievement_manager.achievement_unlocked.is_connected(_on_achievement_unlocked):
+			achievement_manager.achievement_unlocked.disconnect(_on_achievement_unlocked)
 	achievement_manager = manager
 	if manager:
 		manager.achievement_unlocked.connect(_on_achievement_unlocked)
@@ -62,7 +74,17 @@ func _create_achievement_item(achievement) -> void:
 
 func _update_progress_display(unlocked: int, total: int) -> void:
 	if progress_label:
-		progress_label.text = "%d / %d Achievements" % [unlocked, total]
+		progress_label.text = tr("ACH_PROGRESS") % [unlocked, total]
+
+func _update_texts() -> void:
+	if title_label:
+		title_label.text = tr("ACHIEVEMENTS")
+	if close_button:
+		close_button.text = tr("CLOSE")
+
+func _on_language_changed(_locale: String) -> void:
+	_update_texts()
+	populate_achievements()
 
 func _on_achievement_unlocked(_achievement) -> void:
 	# Refresh the display
@@ -73,6 +95,7 @@ func _on_close_pressed() -> void:
 	closed.emit()
 
 func show_panel() -> void:
+	_update_texts()
 	populate_achievements()
 	visible = true
 

@@ -29,14 +29,20 @@ func _update_display() -> void:
 	if not achievement:
 		return
 
-	# Update name
+	# Build translation keys from achievement id
+	var name_key: String = "ACH_%s_NAME" % achievement.id.to_upper()
+	var desc_key: String = "ACH_%s_DESC" % achievement.id.to_upper()
+
+	# Update name (use tr() with fallback to raw name)
 	if name_label:
-		name_label.text = achievement.name
+		var translated_name: String = tr(name_key)
+		name_label.text = translated_name if translated_name != name_key else achievement.name
 		name_label.modulate = UNLOCKED_COLOR if is_unlocked else Color.WHITE
 
 	# Update description
 	if desc_label:
-		desc_label.text = achievement.description
+		var translated_desc: String = tr(desc_key)
+		desc_label.text = translated_desc if translated_desc != desc_key else achievement.description
 
 	# Update progress bar
 	if progress_bar:
@@ -47,12 +53,19 @@ func _update_display() -> void:
 	# Update status
 	if status_label:
 		if is_unlocked:
-			status_label.text = "Unlocked!"
+			status_label.text = tr("ACH_UNLOCKED")
 			status_label.modulate = UNLOCKED_COLOR
 		else:
 			var percent = (float(achievement.progress) / float(achievement.target)) * 100.0
 			status_label.text = "%d / %d (%.0f%%)" % [achievement.progress, achievement.target, percent]
 			status_label.modulate = Color.WHITE
+
+	# Load icon texture
+	if icon and achievement.icon_path != "":
+		if ResourceLoader.exists(achievement.icon_path):
+			var texture = load(achievement.icon_path)
+			if texture:
+				icon.texture = texture
 
 	# Visual state for locked/unlocked
 	if is_unlocked:

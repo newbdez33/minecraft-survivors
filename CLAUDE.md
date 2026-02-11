@@ -76,7 +76,12 @@ minecraft-survivors/
 | `scripts/weapons/sword_base.gd` | Sword evolution system (4 tiers) |
 | `scripts/pickups/health_pickup.gd` | Golden Apple healing pickup |
 | `scripts/pickups/meat_pickup.gd` | Meat drop from enemies |
-| `tests/test_runner.gd` | Central test orchestrator (1632 tests) |
+| `scripts/systems/achievement_manager.gd` | Achievement tracking, persistence, 21 achievements |
+| `scripts/systems/achievement.gd` | Achievement data class with icon_path |
+| `scripts/ui/achievement_panel.gd` | Achievement grid panel (main menu + pause menu) |
+| `scripts/ui/achievement_item.gd` | Individual achievement card with badge icon |
+| `scripts/ui/achievement_notification.gd` | Toast popup on achievement unlock |
+| `tests/test_runner.gd` | Central test orchestrator (1690 tests) |
 | `scripts/testing/test_mode.gd` | Auto-play test mode with performance monitoring |
 | `docs/GAME_DATA.md` | Comprehensive game data reference (bilingual) |
 
@@ -163,10 +168,10 @@ Tests are organized by development phase:
 - **Phase 3:** Progression Loop (63 tests)
 - **Phase 4:** Game Feel (145 tests)
 - **Phase 5:** Game Enhancements (112 tests)
-- **BDD Tests:** Boss Attacks (52), Elite Monsters (40), Wave Scaling (29), Idle Mode (27)
+- **BDD Tests:** Boss Attacks (52), Elite Monsters (40), Wave Scaling (29), Idle Mode (27), Achievement UI (27)
 - **External Suites:** Combat, pickups, enemies, animations, bosses (969+ tests)
 
-**Total: 1663 tests** (1663 passed, 0 failures)
+**Total: 1690 tests** (1690 passed, 0 failures)
 
 ### Test Types
 - **Unit tests** (`tests/unit/`) - Logic verification
@@ -310,6 +315,16 @@ Procedural 8-bit sound effects with no external audio files required:
 - Audio buses: Master, SFX, Music (volume controlled via settings panel)
 - Access pattern: `get_node_or_null("/root/AudioManager")` (never bare autoload name)
 
+### Achievement System
+21 achievements with pixel-art badge icons, localization (EN/JA/ZH), SFX, and notification popup:
+- **Files:** `achievement_manager.gd` (tracking/persistence), `achievement.gd` (data class), `achievement_panel.gd` (grid UI), `achievement_item.gd` (card with badge), `achievement_notification.gd` (toast popup)
+- **Badges:** 21 SVG pixel-art icons in `assets/ui/achievements/`, loaded via `ResourceLoader.exists()` + `load()`
+- **Categories:** Kill (3), Survival (4), Level (3), Wave (3), Special (4), Unlock (3), Idle (1)
+- **Integration:** Main menu (AchievementsButton + AchievementPanel + AchievementManagerMenu), Pause menu (button + panel, manager passed from game.gd)
+- **Game.gd wiring:** ComboSystem (RefCounted), poison tracking, no-damage timer (1s throttle), notification popup + `achievement_unlock` SFX
+- **Localization:** 50+ keys in `translations.csv` (ACH_*_NAME, ACH_*_DESC, ACH_PROGRESS, ACH_UNLOCKED, ACH_UNLOCKED_TITLE)
+- **Note:** Two locale persistence systems: `LocalizationManager` (settings.cfg) and main_menu (settings.json). CSV must be reimported via Godot editor after edits.
+
 ### Boss Enemies
 6 boss enemies spawn at specific waves with high HP. Bosses cycle after wave 30 with scaling.
 
@@ -416,7 +431,7 @@ Detailed documentation is in `docs/`:
 - ✅ Idle mode / auto-play (AI kiting controller, Tab toggle, weapon-first upgrades)
 - ✅ Fixed elite spider venom (was passing Dictionary instead of StatusEffect)
 - ✅ Fixed all 86 pre-existing test failures (1663/1663 pass)
-- [ ] Achievement system UI (pending)
+- ✅ Achievement system UI (21 achievements, badges, localization EN/JA/ZH, SFX, notification popup)
 
 ## Git Workflow
 
