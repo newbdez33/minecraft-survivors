@@ -3,11 +3,12 @@ class_name AchievementItem
 ## Individual achievement display item
 ## Shows icon, name, description, and progress
 
-@onready var icon: TextureRect = $HBox/Icon
-@onready var name_label: Label = $HBox/VBox/NameLabel
-@onready var desc_label: Label = $HBox/VBox/DescLabel
-@onready var progress_bar: ProgressBar = $HBox/VBox/ProgressBar
-@onready var status_label: Label = $HBox/VBox/StatusLabel
+@onready var icon: TextureRect = $MarginContainer/HBox/Icon
+@onready var name_label: Label = $MarginContainer/HBox/VBox/NameLabel
+@onready var desc_label: Label = $MarginContainer/HBox/VBox/DescLabel
+@onready var progress_bar: ProgressBar = $MarginContainer/HBox/VBox/ProgressBar
+@onready var status_label: Label = $MarginContainer/HBox/VBox/StatusLabel
+@onready var check_icon: Label = $MarginContainer/HBox/CheckIcon
 
 var achievement = null
 var is_unlocked: bool = false
@@ -70,5 +71,9 @@ func _update_display() -> void:
 	# Visual state for locked/unlocked
 	if is_unlocked:
 		modulate = Color.WHITE
+		if check_icon:
+			check_icon.visible = true
 	else:
 		modulate = LOCKED_COLOR
+		if check_icon:
+			check_icon.visible = false

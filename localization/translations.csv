@@ -87,6 +87,12 @@ IDLE_MODE_LOCKED,Survive past wave 30 to unlock Idle Mode,存活超过30波以�
 IDLE_MASTER_NAME,Idle Master,放置大师,放置マスター
 IDLE_MASTER_DESC,Survive past wave 30,存活超过30波,ウェーブ30を超えて生存
 ACHIEVEMENTS,Achievements,成就,実績
+KILL_ACHIEVEMENTS,Kill Achievements,击杀成就,キル実績
+SURVIVAL_ACHIEVEMENTS,Survival Achievements,生存成就,サバイバル実績
+LEVEL_ACHIEVEMENTS,Level Achievements,等级成就,レベル実績
+WAVE_ACHIEVEMENTS,Wave Achievements,波次成就,ウェーブ実績
+SPECIAL_ACHIEVEMENTS,Special Achievements,特殊成就,スペシャル実績
+UNLOCK_ACHIEVEMENTS,Unlock Achievements,解锁成就,解放実績
 ACH_PROGRESS,%d / %d Achievements,%d / %d 成就,%d / %d 実績
 ACH_UNLOCKED,Unlocked!,已解锁!,アンロック済み!
 ACH_UNLOCKED_TITLE,Achievement Unlocked!,成就解锁!,実績解除!
