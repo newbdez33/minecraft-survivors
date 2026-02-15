@@ -257,11 +257,11 @@ func show_upgrades(upgrades: Array, weapon_upgrades: Array = []) -> void:
 			weapon_label.text = tr("WEAPONS_MAX")
 			weapon_label.modulate = Color(0.5, 0.5, 0.5, 0.7)
 
+	# Must process while paused so input and auto-select timer work
+	process_mode = Node.PROCESS_MODE_ALWAYS
 	# Start timer only if enabled
 	if use_timer:
 		_timer = selection_timeout
-		# Must process while paused so auto-select timer ticks
-		process_mode = Node.PROCESS_MODE_ALWAYS
 	_is_active = true
 
 	visible = true
