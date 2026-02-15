@@ -19,7 +19,7 @@ minecraft-survivors/
 │   ├── characters/      # Player and enemy sprites
 │   ├── effects/         # Visual effect sprites
 │   ├── items/           # Collectibles (xp_orb, heart, meat, golden_apple)
-│   ├── tiles/           # Ground tiles (grass, dirt)
+│   ├── tiles/           # Ground tiles (grass, desert, snow, swamp)
 │   ├── ui/              # UI icons (upgrades, day/night)
 │   └── weapons/         # Weapon sprites (wood/stone/iron/diamond swords, bow, crossbow)
 ├── docs/                # Comprehensive documentation
@@ -64,11 +64,14 @@ minecraft-survivors/
 | `scripts/systems/wave_manager.gd` | Wave-based difficulty scaling |
 | `scripts/systems/day_night_cycle.gd` | 8-phase day/night visual system |
 | `scripts/systems/health_pickup_spawner.gd` | Periodic health pickup spawning |
-| `scripts/systems/audio_manager.gd` | Audio autoload: object pool, bus setup, SFX playback |
+| `scripts/systems/audio_manager.gd` | Audio autoload: object pool, bus setup, SFX + music playback |
 | `scripts/systems/sfx_generator.gd` | Procedural 8-bit sound generation (30 presets) |
 | `scripts/systems/sfx_connector.gd` | Signal wiring for audio events |
 | `scripts/systems/wave_scaler.gd` | Post-wave-30 infinite stat scaling |
 | `scripts/systems/idle_controller.gd` | AI auto-play controller (kite, dodge, collect, weapon-first upgrades) |
+| `scripts/systems/biome_manager.gd` | Biome zone math, tile selection, transition blending |
+| `scripts/systems/music_generator.gd` | Procedural 12s ambient music loops per biome |
+| `scripts/systems/music_player.gd` | Dual-player crossfade controller for biome music |
 | `scripts/components/elite_modifier.gd` | Elite monster stat boosting and abilities |
 | `scripts/components/health.gd` | Reusable health component |
 | `scripts/components/status_effect_manager.gd` | Poison/buff stacking system |
@@ -81,7 +84,7 @@ minecraft-survivors/
 | `scripts/ui/achievement_panel.gd` | Achievement grid panel (main menu + pause menu) |
 | `scripts/ui/achievement_item.gd` | Individual achievement card with badge icon |
 | `scripts/ui/achievement_notification.gd` | Toast popup on achievement unlock |
-| `tests/test_runner.gd` | Central test orchestrator (1690 tests) |
+| `tests/test_runner.gd` | Central test orchestrator (1718 tests) |
 | `scripts/testing/test_mode.gd` | Auto-play test mode with performance monitoring |
 | `docs/GAME_DATA.md` | Comprehensive game data reference (bilingual) |
 
@@ -169,9 +172,10 @@ Tests are organized by development phase:
 - **Phase 4:** Game Feel (145 tests)
 - **Phase 5:** Game Enhancements (112 tests)
 - **BDD Tests:** Boss Attacks (52), Elite Monsters (40), Wave Scaling (29), Idle Mode (27), Achievement UI (27)
+- **System Tests:** Biome Manager (16), Music Generator (12)
 - **External Suites:** Combat, pickups, enemies, animations, bosses (969+ tests)
 
-**Total: 1690 tests** (1690 passed, 0 failures)
+**Total: 1718 tests** (1718 passed, 0 failures)
 
 ### Test Types
 - **Unit tests** (`tests/unit/`) - Logic verification
@@ -369,6 +373,24 @@ Elite enemies are stat-boosted normal enemies with golden outline shader and uni
 - **IDLE_TEST scenario:** `test_mode.gd` with god mode, fast progression, periodic screenshots every 15s
 - **File:** `scripts/systems/idle_controller.gd`
 
+### Biome Terrain System
+Direction-based biome zones beyond 800px from spawn with procedural tile transitions:
+- **4 Biomes:** Plains (inner <800px), Desert (east), Snow (north), Swamp (south-west)
+- **Transition zone:** 800-1100px with probabilistic tile mixing (deterministic hash)
+- **Tiles:** 12 SVG tiles (4 biomes x 3 variants: base, variant1, variant2)
+- **Arena integration:** `arena.gd` uses `BiomeManager` for per-tile biome selection, emits `biome_changed` signal
+- **Sector angles** (atan2 from +X, Y-down): Desert 330-90°, Swamp 90-210°, Snow 210-330°
+- **Files:** `scripts/systems/biome_manager.gd`, `assets/tiles/{desert,snow,swamp}*.svg`
+
+### Procedural Background Music
+Ambient music that crossfades between biome-specific tracks:
+- **Generation:** 12-second looping AudioStreamWAV per biome (deterministic, no `randf`)
+- **3 Layers:** Bass drone (triangle wave) + melody (triangle/square, pentatonic) + noise texture
+- **Scales:** Plains=C major penta, Desert=D minor penta, Snow=E minor penta, Swamp=A minor penta
+- **Crossfade:** Dual AudioStreamPlayer, 2-second linear crossfade on biome change
+- **Integration:** AudioManager caches tracks on first biome entry; `game.gd` connects `arena.biome_changed` → `audio.play_biome_music()`
+- **Files:** `scripts/systems/music_generator.gd`, `scripts/systems/music_player.gd`
+
 For complete game data, see `docs/GAME_DATA.md` (bilingual EN/ZH).
 
 ## Common Tasks
@@ -432,6 +454,8 @@ Detailed documentation is in `docs/`:
 - ✅ Fixed elite spider venom (was passing Dictionary instead of StatusEffect)
 - ✅ Fixed all 86 pre-existing test failures (1663/1663 pass)
 - ✅ Achievement system UI (21 achievements, badges, localization EN/JA/ZH, SFX, notification popup)
+- ✅ Biome terrain system (4 biomes, 12 tile SVGs, direction-based zones, transition blending)
+- ✅ Procedural background music (4 biome tracks, 12s loops, crossfade, pentatonic scales)
 
 ## Git Workflow
 

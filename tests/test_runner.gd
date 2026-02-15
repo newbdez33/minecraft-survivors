@@ -3057,6 +3057,10 @@ func _run_complete_coverage_tests() -> void:
 	_run_external_test_suite("Idle Mode BDD Tests", "res://tests/unit/behavioral/test_idle_mode_behavior.gd")
 	_run_external_test_suite("Achievement UI Behavior BDD Tests", "res://tests/unit/behavioral/test_achievement_ui_behavior.gd")
 
+	# Biome & Music System Tests
+	_run_external_test_suite("Biome Manager Tests", "res://tests/unit/systems/test_biome_manager.gd")
+	_run_external_test_suite("Music Generator Tests", "res://tests/unit/systems/test_music_generator.gd")
+
 ## Run tests from an external test file that follows the run_tests() -> Dictionary pattern
 func _run_external_test_suite(suite_name: String, script_path: String) -> void:
 	print("[SUITE] " + suite_name)

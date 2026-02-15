@@ -21,6 +21,7 @@ extends Node2D
 @onready var boss_health_bar: CanvasLayer = $BossHealthBar
 @onready var achievement_manager: Node = $AchievementManager
 @onready var character_manager: Node = $CharacterManager
+@onready var arena: Node2D = $Arena
 
 const WaveScalerClass = preload("res://scripts/systems/wave_scaler.gd")
 const ComboSystemClass = preload("res://scripts/systems/combo_system.gd")
@@ -165,6 +166,15 @@ func _ready() -> void:
 	# Show idle mode hint if unlocked
 	if hud and hud.has_method("set_idle_unlocked") and achievement_manager:
 		hud.set_idle_unlocked(achievement_manager.is_achievement_unlocked("idle_master"))
+
+	# Connect arena biome changes to music
+	if arena and arena.has_signal("biome_changed"):
+		arena.biome_changed.connect(_on_biome_changed)
+
+	# Start plains music
+	var audio = get_node_or_null("/root/AudioManager")
+	if audio and audio.has_method("play_biome_music"):
+		audio.play_biome_music(0)  # 0 = Plains
 
 var _last_survival_check: int = 0  # Track last checked second for achievements
 
@@ -385,6 +395,13 @@ func _on_achievement_unlocked(achievement) -> void:
 func _on_combo_changed(combo: int) -> void:
 	if achievement_manager:
 		achievement_manager.check_combo(combo)
+
+
+## Called when player enters a new biome zone
+func _on_biome_changed(biome: int) -> void:
+	var audio = get_node_or_null("/root/AudioManager")
+	if audio and audio.has_method("play_biome_music"):
+		audio.play_biome_music(biome)
 
 
 func _on_wave_started(wave_number: int) -> void:
