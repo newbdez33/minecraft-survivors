@@ -1,40 +1,43 @@
 extends Node2D
 ## Arena/Ground manager
-## Draws tiled grass background that follows the camera
+## Draws tiled background that follows the camera
+## Supports biome transitions based on distance/direction from spawn
+
+const BiomeManagerClass = preload("res://scripts/systems/biome_manager.gd")
 
 @export var tile_size: int = 32
 @export var background_color: Color = Color(0.48, 0.74, 0.42, 1.0)  # Grass green fallback
 
-var camera: Camera2D
-var grass_texture: Texture2D
-var grass_variant1_texture: Texture2D
-var grass_variant2_texture: Texture2D
-var textures_loaded: bool = false
+signal biome_changed(biome: int)
 
-# Pseudo-random pattern for tile variants (seeded by position)
-func _get_tile_variant(tile_x: int, tile_y: int) -> int:
-	var hash_val = (tile_x * 374761393 + tile_y * 668265263) % 100
-	if hash_val < 70:
-		return 0  # 70% normal grass
-	elif hash_val < 85:
-		return 1  # 15% flowers
-	else:
-		return 2  # 15% grass tufts
+var camera: Camera2D
+var textures_loaded: bool = false
+var _current_biome: int = BiomeManagerClass.Biome.PLAINS
+var _player: Node2D = null
+
+# Texture cache: biome enum -> [base, variant1, variant2]
+var _biome_textures: Dictionary = {}
+
 
 func _ready() -> void:
 	camera = get_viewport().get_camera_2d()
 	_load_textures()
 
-func _load_textures() -> void:
-	# Try to load grass textures
-	if ResourceLoader.exists("res://assets/tiles/grass.svg"):
-		grass_texture = load("res://assets/tiles/grass.svg")
-	if ResourceLoader.exists("res://assets/tiles/grass_variant1.svg"):
-		grass_variant1_texture = load("res://assets/tiles/grass_variant1.svg")
-	if ResourceLoader.exists("res://assets/tiles/grass_variant2.svg"):
-		grass_variant2_texture = load("res://assets/tiles/grass_variant2.svg")
 
-	textures_loaded = grass_texture != null
+func _load_textures() -> void:
+	var any_loaded: bool = false
+	for biome in BiomeManagerClass.TILE_PATHS:
+		var paths: Array = BiomeManagerClass.TILE_PATHS[biome]
+		var textures: Array = [null, null, null]
+		for i in range(paths.size()):
+			if ResourceLoader.exists(paths[i]):
+				textures[i] = load(paths[i])
+				if i == 0:
+					any_loaded = true
+		_biome_textures[biome] = textures
+
+	textures_loaded = any_loaded
+
 
 func _draw() -> void:
 	if not camera:
@@ -65,29 +68,57 @@ func _draw() -> void:
 			y += tile_size
 		return
 
-	# Draw grass tiles
+	# Draw tiles with biome support
 	var x = start_x
 	while x < start_x + draw_size.x + tile_size:
 		var y = start_y
 		while y < start_y + draw_size.y + tile_size:
 			var tile_x = int(x / tile_size)
 			var tile_y = int(y / tile_size)
-			var variant = _get_tile_variant(tile_x, tile_y)
 
-			var tex: Texture2D = grass_texture
-			match variant:
-				1:
-					if grass_variant1_texture:
-						tex = grass_variant1_texture
-				2:
-					if grass_variant2_texture:
-						tex = grass_variant2_texture
+			# Get biome and variant for this tile
+			var biome: int = BiomeManagerClass.get_tile_biome(tile_x, tile_y, tile_size)
+			var variant: int = BiomeManagerClass.get_tile_variant(tile_x, tile_y)
+
+			# Get texture from cache
+			var tex: Texture2D = _get_biome_texture(biome, variant)
 
 			if tex:
 				draw_texture(tex, Vector2(x, y))
 			y += tile_size
 		x += tile_size
 
+
 func _process(_delta: float) -> void:
 	# Redraw every frame to update with camera movement
 	queue_redraw()
+
+	# Check for biome change based on player position
+	_update_current_biome()
+
+
+func _get_biome_texture(biome: int, variant: int) -> Texture2D:
+	if biome not in _biome_textures:
+		return null
+	var textures: Array = _biome_textures[biome]
+	if variant > 0 and variant < textures.size() and textures[variant] != null:
+		return textures[variant]
+	return textures[0]
+
+
+func _update_current_biome() -> void:
+	# Find player if not cached
+	if not _player:
+		_player = get_node_or_null("../Player")
+		if not _player:
+			return
+
+	var new_biome: int = BiomeManagerClass.get_primary_biome(_player.global_position)
+	if new_biome != _current_biome:
+		_current_biome = new_biome
+		biome_changed.emit(new_biome)
+
+
+## Get the current biome the player is in
+func get_current_biome() -> int:
+	return _current_biome

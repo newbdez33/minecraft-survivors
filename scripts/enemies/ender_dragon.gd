@@ -9,11 +9,11 @@ signal died(xp_value: int)
 signal health_changed(current: int, maximum: int)
 
 # Boss stats
-@export var max_health: int = 1500
-@export var health: int = 1500
+@export var max_health: int = 4500
+@export var health: int = 4500
 @export var speed: float = 60.0
 @export var contact_damage: int = 40
-@export var xp_value: int = 600
+@export var xp_value: int = 1200
 @export var emerald_drop: int = 150
 
 # Attack properties

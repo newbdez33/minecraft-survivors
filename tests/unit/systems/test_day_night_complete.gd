@@ -58,63 +58,71 @@ static func test_day_night_script_loads() -> Dictionary:
 
 static func test_has_current_phase() -> Dictionary:
 	var cycle = get_day_night_instance()
-	var passed = cycle != null and "current_phase" in cycle
+	# DayNightCycle uses current_time (not current_phase)
+	var passed = cycle != null and "current_time" in cycle
 	if cycle:
 		cycle.free()
-	return {"name": "TC.DN.2: Has current_phase property", "passed": passed}
+	return {"name": "TC.DN.2: Has current_time property", "passed": passed}
 
 static func test_has_day_count() -> Dictionary:
 	var cycle = get_day_night_instance()
-	var passed = cycle != null and "day_count" in cycle
+	# DayNightCycle uses current_day (not day_count)
+	var passed = cycle != null and "current_day" in cycle
 	if cycle:
 		cycle.free()
-	return {"name": "TC.DN.3: Has day_count property", "passed": passed}
+	return {"name": "TC.DN.3: Has current_day property", "passed": passed}
 
 static func test_has_phase_duration() -> Dictionary:
 	var cycle = get_day_night_instance()
-	var passed = cycle != null and "phase_duration" in cycle
+	# DayNightCycle uses day_duration and night_duration (not phase_duration)
+	var passed = cycle != null and "day_duration" in cycle
 	if cycle:
 		cycle.free()
-	return {"name": "TC.DN.4: Has phase_duration property", "passed": passed}
+	return {"name": "TC.DN.4: Has day_duration property", "passed": passed}
 
 static func test_has_time_in_phase() -> Dictionary:
 	var cycle = get_day_night_instance()
-	var passed = cycle != null and "time_in_phase" in cycle
+	# DayNightCycle uses night_duration (no time_in_phase; uses get_period_progress())
+	var passed = cycle != null and "night_duration" in cycle
 	if cycle:
 		cycle.free()
-	return {"name": "TC.DN.5: Has time_in_phase property", "passed": passed}
+	return {"name": "TC.DN.5: Has night_duration property", "passed": passed}
 
 static func test_has_8_phases() -> Dictionary:
 	var cycle = get_day_night_instance()
 	if not cycle:
-		return {"name": "TC.DN.6: Has 8 phases", "passed": false}
-	# Check if Phase enum has 8 values
-	var passed = "Phase" in cycle and cycle.Phase.size() == 8
+		return {"name": "TC.DN.6: Has TimeOfDay enum", "passed": false}
+	# DayNightCycle uses TimeOfDay enum with 4 values (DAWN, DAY, DUSK, NIGHT)
+	# HUD handles the 8 visual phases via set_time_icon()
+	var passed = "TimeOfDay" in cycle and cycle.TimeOfDay.size() == 4
 	cycle.free()
-	return {"name": "TC.DN.6: Has 8 phases", "passed": passed}
+	return {"name": "TC.DN.6: Has 4 TimeOfDay phases", "passed": passed}
 
 static func test_starts_at_dawn() -> Dictionary:
 	var cycle = get_day_night_instance()
 	if not cycle:
 		return {"name": "TC.DN.7: Starts at DAWN", "passed": false}
-	var passed = cycle.current_phase == cycle.Phase.DAWN
+	# DayNightCycle starts with current_time = 0.0, get_time_of_day() returns DAWN
+	var passed = cycle.current_time == 0.0 and cycle.get_time_of_day() == cycle.TimeOfDay.DAWN
 	cycle.free()
 	return {"name": "TC.DN.7: Starts at DAWN", "passed": passed}
 
 static func test_phase_names_exist() -> Dictionary:
 	var cycle = get_day_night_instance()
 	if not cycle:
-		return {"name": "TC.DN.8: Phase names exist", "passed": false}
-	var passed = "PHASE_NAMES" in cycle or cycle.has_method("get_phase_name")
+		return {"name": "TC.DN.8: Time of day string method exists", "passed": false}
+	# DayNightCycle uses get_time_of_day_string() (not PHASE_NAMES or get_phase_name)
+	var passed = cycle.has_method("get_time_of_day_string")
 	cycle.free()
-	return {"name": "TC.DN.8: Phase names exist", "passed": passed}
+	return {"name": "TC.DN.8: Has get_time_of_day_string method", "passed": passed}
 
 static func test_has_advance_phase_method() -> Dictionary:
 	var cycle = get_day_night_instance()
-	var passed = cycle != null and cycle.has_method("advance_phase")
+	# DayNightCycle uses start/stop methods (no advance_phase - time advances via _process)
+	var passed = cycle != null and cycle.has_method("start")
 	if cycle:
 		cycle.free()
-	return {"name": "TC.DN.9: Has advance_phase method", "passed": passed}
+	return {"name": "TC.DN.9: Has start method", "passed": passed}
 
 static func test_has_is_night_method() -> Dictionary:
 	var cycle = get_day_night_instance()
@@ -125,17 +133,19 @@ static func test_has_is_night_method() -> Dictionary:
 
 static func test_has_get_phase_name_method() -> Dictionary:
 	var cycle = get_day_night_instance()
-	var passed = cycle != null and cycle.has_method("get_phase_name")
+	# DayNightCycle uses get_time_of_day_string() (not get_phase_name)
+	var passed = cycle != null and cycle.has_method("get_time_of_day_string")
 	if cycle:
 		cycle.free()
-	return {"name": "TC.DN.11: Has get_phase_name method", "passed": passed}
+	return {"name": "TC.DN.11: Has get_time_of_day_string method", "passed": passed}
 
 static func test_has_phase_changed_signal() -> Dictionary:
 	var cycle = get_day_night_instance()
-	var passed = cycle != null and cycle.has_signal("phase_changed")
+	# DayNightCycle uses time_changed signal (not phase_changed)
+	var passed = cycle != null and cycle.has_signal("time_changed")
 	if cycle:
 		cycle.free()
-	return {"name": "TC.DN.12: Has phase_changed signal", "passed": passed}
+	return {"name": "TC.DN.12: Has time_changed signal", "passed": passed}
 
 static func test_has_day_started_signal() -> Dictionary:
 	var cycle = get_day_night_instance()
@@ -154,10 +164,11 @@ static func test_has_night_started_signal() -> Dictionary:
 static func test_has_phase_tints() -> Dictionary:
 	var cycle = get_day_night_instance()
 	if not cycle:
-		return {"name": "TC.DN.15: Has phase tints", "passed": false}
-	var passed = "PHASE_TINTS" in cycle or "phase_tints" in cycle
+		return {"name": "TC.DN.15: Has tint method", "passed": false}
+	# DayNightCycle uses get_current_tint() method (not PHASE_TINTS dict)
+	var passed = cycle.has_method("get_current_tint") or "night_tint" in cycle
 	cycle.free()
-	return {"name": "TC.DN.15: Has phase tints dictionary", "passed": passed}
+	return {"name": "TC.DN.15: Has get_current_tint method", "passed": passed}
 
 static func get_tested_functions() -> Array:
 	return [

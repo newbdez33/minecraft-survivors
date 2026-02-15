@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" shape-rendering="crispEdges">
+  <!-- Snow with Tracks - Minecraft Survivors -->
+
+  <!-- Base snow -->
+  <rect x="0" y="0" width="32" height="32" fill="#E8EEF0"/>
+
+  <!-- Shadow patches -->
+  <rect x="0" y="4" width="4" height="4" fill="#C8D8E0"/>
+  <rect x="16" y="0" width="4" height="4" fill="#C8D8E0"/>
+  <rect x="28" y="12" width="4" height="4" fill="#C8D8E0"/>
+  <rect x="4" y="20" width="4" height="4" fill="#C8D8E0"/>
+  <rect x="20" y="28" width="4" height="4" fill="#C8D8E0"/>
+
+  <!-- Footprint tracks (top-down indentations) -->
+  <rect x="8" y="8" width="4" height="2" fill="#C0D0D8"/>
+  <rect x="14" y="12" width="4" height="2" fill="#C0D0D8"/>
+  <rect x="10" y="18" width="4" height="2" fill="#C0D0D8"/>
+  <rect x="16" y="22" width="4" height="2" fill="#C0D0D8"/>
+
+  <!-- Bright highlights -->
+  <rect x="24" y="4" width="2" height="2" fill="#FFFFFF"/>
+  <rect x="2" y="14" width="2" height="2" fill="#FFFFFF"/>
+  <rect x="26" y="26" width="2" height="2" fill="#FFFFFF"/>
+</svg>

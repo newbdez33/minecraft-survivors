@@ -132,20 +132,22 @@ static func test_potion_has_damage() -> Dictionary:
 static func test_potion_has_splash_radius() -> Dictionary:
 	var scene = load("res://scenes/projectiles/potion.tscn")
 	if not scene:
-		return {"name": "TC.PR.12: Potion has splash_radius", "passed": false}
+		return {"name": "TC.PR.12: Potion has cloud_size", "passed": false}
 	var potion = scene.instantiate()
-	var passed = "splash_radius" in potion
+	# Potion uses cloud_size (not splash_radius)
+	var passed = "cloud_size" in potion
 	potion.queue_free()
-	return {"name": "TC.PR.12: Potion has splash_radius property", "passed": passed}
+	return {"name": "TC.PR.12: Potion has cloud_size property", "passed": passed}
 
 static func test_potion_has_poison_damage() -> Dictionary:
 	var scene = load("res://scenes/projectiles/potion.tscn")
 	if not scene:
-		return {"name": "TC.PR.13: Potion has poison_damage", "passed": false}
+		return {"name": "TC.PR.13: Potion has poison_damage_per_tick", "passed": false}
 	var potion = scene.instantiate()
-	var passed = "poison_damage" in potion
+	# Potion uses poison_damage_per_tick (not poison_damage)
+	var passed = "poison_damage_per_tick" in potion
 	potion.queue_free()
-	return {"name": "TC.PR.13: Potion has poison_damage property", "passed": passed}
+	return {"name": "TC.PR.13: Potion has poison_damage_per_tick property", "passed": passed}
 
 # =============================================================================
 # CROSSBOW BOLT TESTS
@@ -192,11 +194,12 @@ static func test_fang_has_damage() -> Dictionary:
 static func test_fang_has_delay() -> Dictionary:
 	var scene = load("res://scenes/effects/evoker_fang.tscn")
 	if not scene:
-		return {"name": "TC.PR.20: Evoker fang has delay", "passed": false}
+		return {"name": "TC.PR.20: Evoker fang has warning_duration", "passed": false}
 	var fang = scene.instantiate()
-	var passed = "spawn_delay" in fang or "delay" in fang
+	# EvokerFang uses warning_duration (not spawn_delay or delay)
+	var passed = "warning_duration" in fang
 	fang.queue_free()
-	return {"name": "TC.PR.20: Evoker fang has delay property", "passed": passed}
+	return {"name": "TC.PR.20: Evoker fang has warning_duration property", "passed": passed}
 
 static func get_tested_functions() -> Array:
 	return [

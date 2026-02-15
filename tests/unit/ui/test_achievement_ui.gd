@@ -103,7 +103,8 @@ static func test_achievement_panel_has_grid_container() -> Dictionary:
 	if scene:
 		var instance = scene.instantiate()
 		# Check for any container that could hold achievements
-		passed = instance.get_node_or_null("ScrollContainer/GridContainer") != null or \
+		passed = instance.get_node_or_null("MarginContainer/VBoxContainer/ScrollContainer/CategoryContainer") != null or \
+				 instance.get_node_or_null("ScrollContainer/GridContainer") != null or \
 				 instance.get_node_or_null("GridContainer") != null or \
 				 instance.get_node_or_null("VBoxContainer") != null
 		instance.queue_free()
@@ -131,7 +132,8 @@ static func test_achievement_item_has_icon() -> Dictionary:
 	var passed = false
 	if scene:
 		var instance = scene.instantiate()
-		passed = instance.get_node_or_null("Icon") != null or \
+		passed = instance.get_node_or_null("MarginContainer/HBox/Icon") != null or \
+				 instance.get_node_or_null("Icon") != null or \
 				 instance.get_node_or_null("HBox/Icon") != null or \
 				 instance.get_node_or_null("TextureRect") != null
 		instance.queue_free()
@@ -142,7 +144,8 @@ static func test_achievement_item_has_progress_bar() -> Dictionary:
 	var passed = false
 	if scene:
 		var instance = scene.instantiate()
-		passed = instance.get_node_or_null("ProgressBar") != null or \
+		passed = instance.get_node_or_null("MarginContainer/HBox/VBox/ProgressBar") != null or \
+				 instance.get_node_or_null("ProgressBar") != null or \
 				 instance.get_node_or_null("Progress") != null or \
 				 instance.get_node_or_null("VBox/ProgressBar") != null or \
 				 instance.get_node_or_null("HBox/VBox/ProgressBar") != null

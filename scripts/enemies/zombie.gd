@@ -5,17 +5,19 @@ class_name Zombie
 const EnemyAnimatorClass = preload("res://scripts/components/enemy_animator.gd")
 
 signal died(xp_value: int)
+signal rally_requested(position: Vector2, count: int)
 
 @export var speed: float = 60.0
 @export var damage: int = 10
 @export var xp_value: int = 5
 @export var health: int = 10
-@export var meat_drop_chance: float = 0.15  # 15% chance to drop meat
+@export var meat_drop_chance: float = 0.0  # Zombies don't drop meat
 
 var target: Node2D = null
 var _health_component: Node = null
 var knockback_velocity: Vector2 = Vector2.ZERO
 var knockback_decay: float = 10.0  # How fast knockback fades
+var is_elite: bool = false
 
 # Animation
 var _animator = null  # EnemyAnimator instance
@@ -149,10 +151,17 @@ func _spawn_hit_effect() -> void:
 		hit.global_position = global_position
 		get_tree().current_scene.call_deferred("add_child", hit)
 
+func make_elite() -> void:
+	is_elite = true
+
 func _on_died() -> void:
 	# Clean up animator before death
 	if _animator:
 		_animator.reset_to_original()
+
+	# Elite Undead Rally: 50% chance to request spawner to spawn 2 normal zombies
+	if is_elite and randf() < 0.5:
+		rally_requested.emit(global_position, 2)
 
 	died.emit(xp_value)
 	_spawn_death_effect()

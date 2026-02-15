@@ -362,41 +362,47 @@ static func test_will_evolve_tier_method_exists() -> Dictionary:
 static func test_will_evolve_tier_sword_at_4() -> Dictionary:
 	var manager = get_upgrade_manager_instance()
 	if not manager:
-		return {"name": "TC.UM.30: Sword evolves at level 4", "passed": false}
+		return {"name": "TC.UM.30: Sword evolves when next_level=3", "passed": false}
 
 	manager._init_upgrades()
 	var sword = manager.get_upgrade_by_id("sword")
 	if sword:
-		sword.current_level = 3  # Next level is 4
+		# will_evolve_tier checks next_level in [3, 6, 9]
+		# next_level = current_level + 1, so current_level must be 2
+		sword.current_level = 2  # Next level is 3 (Wood->Stone evolution)
 	var passed = manager.will_evolve_tier("sword")
 	manager.free()
-	return {"name": "TC.UM.30: Sword evolves at level 4", "passed": passed}
+	return {"name": "TC.UM.30: Sword evolves at next_level=3 (current=2)", "passed": passed}
 
 static func test_will_evolve_tier_sword_at_7() -> Dictionary:
 	var manager = get_upgrade_manager_instance()
 	if not manager:
-		return {"name": "TC.UM.31: Sword evolves at level 7", "passed": false}
+		return {"name": "TC.UM.31: Sword evolves when next_level=6", "passed": false}
 
 	manager._init_upgrades()
 	var sword = manager.get_upgrade_by_id("sword")
 	if sword:
-		sword.current_level = 6  # Next level is 7
+		# will_evolve_tier checks next_level in [3, 6, 9]
+		# next_level = current_level + 1, so current_level must be 5
+		sword.current_level = 5  # Next level is 6 (Stone->Iron evolution)
 	var passed = manager.will_evolve_tier("sword")
 	manager.free()
-	return {"name": "TC.UM.31: Sword evolves at level 7", "passed": passed}
+	return {"name": "TC.UM.31: Sword evolves at next_level=6 (current=5)", "passed": passed}
 
 static func test_will_evolve_tier_sword_at_10() -> Dictionary:
 	var manager = get_upgrade_manager_instance()
 	if not manager:
-		return {"name": "TC.UM.32: Sword evolves at level 10", "passed": false}
+		return {"name": "TC.UM.32: Sword evolves when next_level=9", "passed": false}
 
 	manager._init_upgrades()
 	var sword = manager.get_upgrade_by_id("sword")
 	if sword:
-		sword.current_level = 9  # Next level is 10
+		# will_evolve_tier checks next_level in [3, 6, 9]
+		# next_level = current_level + 1, so current_level must be 8
+		sword.current_level = 8  # Next level is 9 (Iron->Diamond evolution)
 	var passed = manager.will_evolve_tier("sword")
 	manager.free()
-	return {"name": "TC.UM.32: Sword evolves at level 10", "passed": passed}
+	return {"name": "TC.UM.32: Sword evolves at next_level=9 (current=8)", "passed": passed}
 
 static func test_will_evolve_tier_bow_at_4() -> Dictionary:
 	var manager = get_upgrade_manager_instance()

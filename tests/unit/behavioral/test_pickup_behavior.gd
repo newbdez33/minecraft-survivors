@@ -107,7 +107,8 @@ static func test_combo_bonus_added_to_xp() -> Dictionary:
 	var base_xp = 5
 	var multiplier = 0.4
 	var combo_bonus = 0.2
-	var actual = int(base_xp * (1.0 + multiplier + combo_bonus))
+	# Use roundi() to avoid floating point truncation (1.0+0.4+0.2 = 1.5999... in IEEE 754)
+	var actual = roundi(base_xp * (1.0 + multiplier + combo_bonus))
 	var passed = actual == 8
 	return {"name": "TC.PK.7: Combo bonus adds to XP", "passed": passed}
 

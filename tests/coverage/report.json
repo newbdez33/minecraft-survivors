@@ -85,21 +85,25 @@
 			"untested": []
 		},
 		"res://scripts/enemies/creeper.gd": {
-			"coverage_percent": 87.5,
+			"coverage_percent": 77.7777777777778,
 			"tested_functions": 14,
-			"total_functions": 16,
+			"total_functions": 18,
 			"untested": [
 				"_setup_animator",
-				"_update_walk_animation"
+				"_update_walk_animation",
+				"make_elite",
+				"_chain_damage_nearby"
 			]
 		},
 		"res://scripts/enemies/enderman.gd": {
-			"coverage_percent": 90.0,
+			"coverage_percent": 81.8181818181818,
 			"tested_functions": 18,
-			"total_functions": 20,
+			"total_functions": 22,
 			"untested": [
 				"_setup_animator",
-				"_update_walk_animation"
+				"_update_walk_animation",
+				"make_elite",
+				"_void_strike"
 			]
 		},
 		"res://scripts/enemies/evoker.gd": {
@@ -113,21 +117,23 @@
 			]
 		},
 		"res://scripts/enemies/skeleton.gd": {
-			"coverage_percent": 86.6666666666667,
+			"coverage_percent": 81.25,
 			"tested_functions": 13,
-			"total_functions": 15,
+			"total_functions": 16,
 			"untested": [
 				"_setup_animator",
-				"_update_walk_animation"
+				"_update_walk_animation",
+				"make_elite"
 			]
 		},
 		"res://scripts/enemies/spider.gd": {
-			"coverage_percent": 86.6666666666667,
+			"coverage_percent": 81.25,
 			"tested_functions": 13,
-			"total_functions": 15,
+			"total_functions": 16,
 			"untested": [
 				"_setup_animator",
-				"_update_walk_animation"
+				"_update_walk_animation",
+				"make_elite"
 			]
 		},
 		"res://scripts/enemies/vex.gd": {
@@ -137,29 +143,35 @@
 			"untested": []
 		},
 		"res://scripts/enemies/witch.gd": {
-			"coverage_percent": 86.6666666666667,
+			"coverage_percent": 81.25,
 			"tested_functions": 13,
-			"total_functions": 15,
+			"total_functions": 16,
 			"untested": [
 				"_setup_animator",
-				"_update_walk_animation"
+				"_update_walk_animation",
+				"make_elite"
 			]
 		},
 		"res://scripts/enemies/zombie.gd": {
-			"coverage_percent": 84.6153846153846,
+			"coverage_percent": 78.5714285714286,
 			"tested_functions": 11,
-			"total_functions": 13,
+			"total_functions": 14,
 			"untested": [
 				"_setup_animator",
-				"_update_walk_animation"
+				"_update_walk_animation",
+				"make_elite"
 			]
 		},
 		"res://scripts/game.gd": {
-			"coverage_percent": 96.551724137931,
+			"coverage_percent": 84.8484848484848,
 			"tested_functions": 28,
-			"total_functions": 29,
+			"total_functions": 33,
 			"untested": [
-				"_on_achievement_unlocked"
+				"force_idle_mode",
+				"_toggle_idle_mode",
+				"_on_achievement_unlocked",
+				"_on_combo_changed",
+				"_on_warden_darkness"
 			]
 		},
 		"res://scripts/pickups/emerald_pickup.gd": {
@@ -229,10 +241,15 @@
 			"untested": []
 		},
 		"res://scripts/spawner.gd": {
-			"coverage_percent": 100.0,
+			"coverage_percent": 80.9523809523809,
 			"tested_functions": 17,
-			"total_functions": 17,
-			"untested": []
+			"total_functions": 21,
+			"untested": [
+				"_get_elite_chance",
+				"_get_max_elites",
+				"_on_rally_requested",
+				"_spawn_rally_zombies"
+			]
 		},
 		"res://scripts/systems/achievement.gd": {
 			"coverage_percent": 100.0,
@@ -241,10 +258,12 @@
 			"untested": []
 		},
 		"res://scripts/systems/achievement_manager.gd": {
-			"coverage_percent": 100.0,
+			"coverage_percent": 95.2380952380952,
 			"tested_functions": 20,
-			"total_functions": 20,
-			"untested": []
+			"total_functions": 21,
+			"untested": [
+				"is_achievement_unlocked"
+			]
 		},
 		"res://scripts/systems/character.gd": {
 			"coverage_percent": 100.0,
@@ -358,26 +377,34 @@
 			"untested": []
 		},
 		"res://scripts/ui/hud.gd": {
-			"coverage_percent": 100.0,
+			"coverage_percent": 90.0,
 			"tested_functions": 18,
-			"total_functions": 18,
-			"untested": []
+			"total_functions": 20,
+			"untested": [
+				"set_idle_unlocked",
+				"set_idle_mode"
+			]
 		},
 		"res://scripts/ui/main_menu.gd": {
+			"coverage_percent": 73.3333333333333,
+			"tested_functions": 11,
+			"total_functions": 15,
+			"untested": [
+				"_check_test_mode",
+				"_start_game_for_test",
+				"_on_character_pressed",
+				"_on_achievements_pressed"
+			]
+		},
+		"res://scripts/ui/pause_menu.gd": {
 			"coverage_percent": 76.9230769230769,
 			"tested_functions": 10,
 			"total_functions": 13,
 			"untested": [
-				"_check_test_mode",
-				"_start_game_for_test",
-				"_on_character_pressed"
+				"_on_achievements_pressed",
+				"_on_achievement_panel_closed",
+				"set_achievement_manager"
 			]
-		},
-		"res://scripts/ui/pause_menu.gd": {
-			"coverage_percent": 100.0,
-			"tested_functions": 10,
-			"total_functions": 10,
-			"untested": []
 		},
 		"res://scripts/ui/scoreboard_panel.gd": {
 			"coverage_percent": 100.0,
@@ -413,10 +440,12 @@
 			"untested": []
 		},
 		"res://scripts/ui/upgrade_ui.gd": {
-			"coverage_percent": 100.0,
+			"coverage_percent": 95.6521739130435,
 			"tested_functions": 22,
-			"total_functions": 22,
-			"untested": []
+			"total_functions": 23,
+			"untested": [
+				"_auto_select_upgrade"
+			]
 		},
 		"res://scripts/weapons/bow.gd": {
 			"coverage_percent": 100.0,
@@ -449,8 +478,8 @@
 			"untested": []
 		}
 	},
-	"tested_functions": 635,
-	"timestamp": "2026-02-08T21:35:08",
-	"total_coverage_percent": 96.5045592705167,
-	"total_functions": 658
+	"tested_functions": 636,
+	"timestamp": "2026-02-11T12:29:58",
+	"total_coverage_percent": 93.1185944363104,
+	"total_functions": 683
 }

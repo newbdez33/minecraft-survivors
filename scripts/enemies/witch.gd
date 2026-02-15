@@ -9,7 +9,7 @@ signal died(xp_value: int)
 @export var speed: float = 35.0
 @export var health: int = 10
 @export var xp_value: int = 12
-@export var meat_drop_chance: float = 0.20  # 20% chance (harder enemy)
+@export var meat_drop_chance: float = 0.0  # Witches don't drop meat
 @export var potion_damage: int = 12
 @export var attack_range: float = 250.0
 @export var attack_cooldown: float = 3.0
@@ -19,6 +19,7 @@ var target: Node2D = null
 var can_attack: bool = true
 var knockback_velocity: Vector2 = Vector2.ZERO
 var knockback_decay: float = 10.0
+var is_elite: bool = false
 
 # Animation
 var _animator = null  # EnemyAnimator instance
@@ -126,6 +127,9 @@ func _update_walk_animation(is_moving: bool) -> void:
 
 	_was_moving = is_moving
 
+func make_elite() -> void:
+	is_elite = true
+
 func throw_potion() -> void:
 	if not target or not is_instance_valid(target):
 		return
@@ -142,27 +146,39 @@ func throw_potion() -> void:
 	# Load potion scene
 	var potion_scene = load("res://scenes/projectiles/potion.tscn")
 	if potion_scene:
-		var potion = potion_scene.instantiate()
-
 		# Get spawn position (from marker or default offset)
+		var spawn_pos = global_position
 		var spawn_point = get_node_or_null("PotionSpawnPoint")
 		if spawn_point:
-			potion.global_position = spawn_point.global_position
+			spawn_pos = spawn_point.global_position
+
+		var base_direction = (target.global_position - spawn_pos).normalized()
+
+		if is_elite:
+			# Elite Potion Storm: 3 potions at -20, 0, +20 degrees
+			var spread_angles = [deg_to_rad(-20.0), 0.0, deg_to_rad(20.0)]
+			for angle_offset in spread_angles:
+				var p = potion_scene.instantiate()
+				p.global_position = spawn_pos
+				var offset = Vector2(randf_range(-15, 15), randf_range(-15, 15))
+				var target_pos = target.global_position + offset
+				p.set_target(target_pos)
+				var spread_dir = base_direction.rotated(angle_offset)
+				p.set_direction(spread_dir)
+				p.damage = potion_damage
+				if get_tree() and get_tree().current_scene:
+					get_tree().current_scene.call_deferred("add_child", p)
 		else:
-			potion.global_position = global_position
-
-		# Set target position near the player (with small random offset)
-		var offset = Vector2(randf_range(-30, 30), randf_range(-30, 30))
-		var target_pos = target.global_position + offset
-		potion.set_target(target_pos)
-
-		# Set potion direction toward target
-		var direction = (target_pos - potion.global_position).normalized()
-		potion.set_direction(direction)
-		potion.damage = potion_damage
-
-		if get_tree() and get_tree().current_scene:
-			get_tree().current_scene.call_deferred("add_child", potion)
+			var potion = potion_scene.instantiate()
+			potion.global_position = spawn_pos
+			var offset = Vector2(randf_range(-30, 30), randf_range(-30, 30))
+			var target_pos = target.global_position + offset
+			potion.set_target(target_pos)
+			var direction = (target_pos - potion.global_position).normalized()
+			potion.set_direction(direction)
+			potion.damage = potion_damage
+			if get_tree() and get_tree().current_scene:
+				get_tree().current_scene.call_deferred("add_child", potion)
 
 	# Start cooldown
 	var timer = get_node_or_null("AttackTimer")

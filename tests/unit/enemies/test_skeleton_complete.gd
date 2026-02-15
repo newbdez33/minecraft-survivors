@@ -123,17 +123,18 @@ static func test_skeleton_has_shoot_range() -> Dictionary:
 
 static func test_skeleton_has_arrow_scene() -> Dictionary:
 	var skeleton = get_skeleton_instance()
-	# Skeleton may spawn arrows differently - check for attack method
-	var passed = skeleton != null and skeleton.has_method("_shoot_arrow")
+	# Skeleton uses shoot_arrow (public method, no underscore prefix)
+	var passed = skeleton != null and skeleton.has_method("shoot_arrow")
 	if skeleton:
 		skeleton.queue_free()
-	return {"name": "TC.SK.12: Skeleton has _shoot_arrow method", "passed": passed}
+	return {"name": "TC.SK.12: Skeleton has shoot_arrow method", "passed": passed}
 
 static func test_skeleton_health_value() -> Dictionary:
 	var skeleton = get_skeleton_instance()
 	var passed = false
 	if skeleton:
 		if "health" in skeleton:
+			# Scene file overrides script default: skeleton.tscn sets health = 15
 			passed = skeleton.health == 15
 		elif skeleton.has_node("HealthComponent"):
 			var health_comp = skeleton.get_node("HealthComponent")

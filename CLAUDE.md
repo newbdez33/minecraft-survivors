@@ -19,7 +19,7 @@ minecraft-survivors/
 │   ├── characters/      # Player and enemy sprites
 │   ├── effects/         # Visual effect sprites
 │   ├── items/           # Collectibles (xp_orb, heart, meat, golden_apple)
-│   ├── tiles/           # Ground tiles (grass, dirt)
+│   ├── tiles/           # Ground tiles (grass, desert, snow, swamp)
 │   ├── ui/              # UI icons (upgrades, day/night)
 │   └── weapons/         # Weapon sprites (wood/stone/iron/diamond swords, bow, crossbow)
 ├── docs/                # Comprehensive documentation
@@ -64,16 +64,27 @@ minecraft-survivors/
 | `scripts/systems/wave_manager.gd` | Wave-based difficulty scaling |
 | `scripts/systems/day_night_cycle.gd` | 8-phase day/night visual system |
 | `scripts/systems/health_pickup_spawner.gd` | Periodic health pickup spawning |
-| `scripts/systems/audio_manager.gd` | Audio autoload: object pool, bus setup, SFX playback |
+| `scripts/systems/audio_manager.gd` | Audio autoload: object pool, bus setup, SFX + music playback |
 | `scripts/systems/sfx_generator.gd` | Procedural 8-bit sound generation (30 presets) |
 | `scripts/systems/sfx_connector.gd` | Signal wiring for audio events |
+| `scripts/systems/wave_scaler.gd` | Post-wave-30 infinite stat scaling |
+| `scripts/systems/idle_controller.gd` | AI auto-play controller (kite, dodge, collect, weapon-first upgrades) |
+| `scripts/systems/biome_manager.gd` | Biome zone math, tile selection, transition blending |
+| `scripts/systems/music_generator.gd` | Procedural 12s ambient music loops per biome |
+| `scripts/systems/music_player.gd` | Dual-player crossfade controller for biome music |
+| `scripts/components/elite_modifier.gd` | Elite monster stat boosting and abilities |
 | `scripts/components/health.gd` | Reusable health component |
 | `scripts/components/status_effect_manager.gd` | Poison/buff stacking system |
 | `scripts/components/weapon_slots.gd` | 4-slot weapon system |
 | `scripts/weapons/sword_base.gd` | Sword evolution system (4 tiers) |
 | `scripts/pickups/health_pickup.gd` | Golden Apple healing pickup |
 | `scripts/pickups/meat_pickup.gd` | Meat drop from enemies |
-| `tests/test_runner.gd` | Central test orchestrator (1538 tests) |
+| `scripts/systems/achievement_manager.gd` | Achievement tracking, persistence, 21 achievements |
+| `scripts/systems/achievement.gd` | Achievement data class with icon_path |
+| `scripts/ui/achievement_panel.gd` | Achievement grid panel (main menu + pause menu) |
+| `scripts/ui/achievement_item.gd` | Individual achievement card with badge icon |
+| `scripts/ui/achievement_notification.gd` | Toast popup on achievement unlock |
+| `tests/test_runner.gd` | Central test orchestrator (1718 tests) |
 | `scripts/testing/test_mode.gd` | Auto-play test mode with performance monitoring |
 | `docs/GAME_DATA.md` | Comprehensive game data reference (bilingual) |
 
@@ -160,10 +171,11 @@ Tests are organized by development phase:
 - **Phase 3:** Progression Loop (63 tests)
 - **Phase 4:** Game Feel (145 tests)
 - **Phase 5:** Game Enhancements (112 tests)
-- **BDD Tests:** Boss Attack Behavior (52 tests)
+- **BDD Tests:** Boss Attacks (52), Elite Monsters (40), Wave Scaling (29), Idle Mode (27), Achievement UI (27)
+- **System Tests:** Biome Manager (16), Music Generator (12)
 - **External Suites:** Combat, pickups, enemies, animations, bosses (969+ tests)
 
-**Total: 1538 tests** (1454 passed, 84 pre-existing failures)
+**Total: 1718 tests** (1718 passed, 0 failures)
 
 ### Test Types
 - **Unit tests** (`tests/unit/`) - Logic verification
@@ -266,7 +278,7 @@ Swords use a 4-tier evolution system (`scripts/weapons/sword_base.gd`):
 
 ### Health Pickup System
 Two types of health pickups:
-- **Meat** - Drops from enemies (10-25% chance), heals 10 HP
+- **Meat** - Drops from Skeletons (12% chance), heals 10 HP. Elite enemies never drop meat.
 - **Golden Apple** - Spawns every 20s, heals 50% max HP
 
 `HealthPickupSpawner` adjusts spawn rate based on player health:
@@ -287,14 +299,14 @@ base_count = base_enemies_per_wave * pow(wave_scaling, wave - 1)
 ### Enemy Data
 6 enemy types with unique behaviors:
 
-| Enemy | HP | Damage | Speed | XP | Special |
-|-------|-----|--------|-------|-----|---------|
-| Zombie | 20 | 10 | 60 | 5 | Basic chaser |
-| Skeleton | 15 | 8 | 40 | 8 | Ranged arrows |
-| Spider | 12 | 8 | 100 | 6 | Jump attack |
-| Creeper | 25 | 30 | 50 | 10 | Explodes |
-| Enderman | 40 | 15 | 70 | 15 | Teleports when hit |
-| Witch | 20 | 12 | 35 | 12 | Throws poison potions |
+| Enemy | HP | Damage | Speed | XP | Meat | Special |
+|-------|-----|--------|-------|-----|------|---------|
+| Zombie | 10 | 10 | 60 | 5 | 0% | Basic chaser |
+| Skeleton | 5 | 8 | 40 | 8 | 12% | Ranged arrows |
+| Spider | 6 | 8 | 100 | 6 | 0% | Jump attack |
+| Creeper | 12 | 30 | 50 | 10 | 0% | Explodes |
+| Enderman | 20 | 15 | 70 | 15 | 0% | Teleports when hit |
+| Witch | 10 | 12 | 35 | 12 | 0% | Throws poison potions |
 
 **Anti-sticking:** All enemies have push-back when < 30px from player.
 
@@ -307,20 +319,77 @@ Procedural 8-bit sound effects with no external audio files required:
 - Audio buses: Master, SFX, Music (volume controlled via settings panel)
 - Access pattern: `get_node_or_null("/root/AudioManager")` (never bare autoload name)
 
-### Boss Enemies
-6 boss enemies spawn at specific waves with high HP:
+### Achievement System
+21 achievements with pixel-art badge icons, localization (EN/JA/ZH), SFX, and notification popup:
+- **Files:** `achievement_manager.gd` (tracking/persistence), `achievement.gd` (data class), `achievement_panel.gd` (grid UI), `achievement_item.gd` (card with badge), `achievement_notification.gd` (toast popup)
+- **Badges:** 21 SVG pixel-art icons in `assets/ui/achievements/`, loaded via `ResourceLoader.exists()` + `load()`
+- **Categories:** Kill (3), Survival (4), Level (3), Wave (3), Special (4), Unlock (3), Idle (1)
+- **Integration:** Main menu (AchievementsButton + AchievementPanel + AchievementManagerMenu), Pause menu (button + panel, manager passed from game.gd)
+- **Game.gd wiring:** ComboSystem (RefCounted), poison tracking, no-damage timer (1s throttle), notification popup + `achievement_unlock` SFX
+- **Localization:** 50+ keys in `translations.csv` (ACH_*_NAME, ACH_*_DESC, ACH_PROGRESS, ACH_UNLOCKED, ACH_UNLOCKED_TITLE)
+- **Note:** Two locale persistence systems: `LocalizationManager` (settings.cfg) and main_menu (settings.json). CSV must be reimported via Godot editor after edits.
 
-| Boss | Wave | HP | Special |
-|------|------|-----|---------|
-| Evoker | 5 | 400 | Summons fangs |
-| Elder Guardian | 10 | 600 | Mining fatigue beam |
-| Ravager | 15 | 800 | Charge (50 dmg) + Stomp (40 dmg AoE) |
-| Warden | 20 | 1000 | Sonic boom (65 dmg) + Melee (55 dmg) |
-| Wither | 25 | 1200 | Wither skulls |
-| Ender Dragon | 30 | 1500 | Dragon breath |
+### Boss Enemies
+6 boss enemies spawn at specific waves with high HP. Bosses cycle after wave 30 with scaling.
+
+| Boss | Wave | HP | XP | Special |
+|------|------|-----|-----|---------|
+| Evoker | 5 | 400 | 200 | Summons fangs |
+| Elder Guardian | 10 | 600 | 300 | Mining fatigue beam |
+| Ravager | 15 | 2400 | 400 | Charge (50 dmg) + Stomp (40 dmg AoE) |
+| Warden | 20 | 3000 | 600 | Sonic boom (65 dmg) + Melee (55 dmg) + Ground Slam (45 dmg AoE) + Darkness Aura + Enrage at 50% HP |
+| Wither | 25 | 3600 | 800 | Homing wither skulls |
+| Ender Dragon | 30 | 4500 | 1200 | Homing dragon fireballs + dive |
 
 All bosses have detailed pixel art SVG sprites located in `assets/characters/`.
 Boss attacks use exaggerated multi-phase Tween animations with signal-based damage synchronization.
+
+### Elite Monsters
+Elite enemies are stat-boosted normal enemies with golden outline shader and unique abilities.
+- **Stats:** 2.5x HP, 1.5x damage, 1.2x speed, 20x XP, 1.3x scale, no meat drops
+- **Spawn:** Wave-based chance (0% at wave 1-3 → 25% at wave 20+), night +10%
+- **Max cap:** 0 (wave 1-3) → 5 (wave 20+)
+- **Abilities:** Zombie=Undead Rally, Skeleton=Multi-Shot, Spider=Venom, Creeper=Charged, Enderman=Void Strike, Witch=Potion Storm
+- **Files:** `scripts/components/elite_modifier.gd`, `assets/shaders/elite_outline.gdshader`
+
+### Wave Scaling (Post-Wave 30)
+`WaveScaler` applies infinite stat scaling after wave 30.
+- **Normal enemies:** +10% HP, +5% dmg, +2% speed (cap +50%), +10% XP per wave
+- **Bosses:** +50% HP, +25% dmg, +10% speed (cap +100%) per 5-wave cycle
+- **Elite scaling:** +1% chance/wave (cap 50%), +1 max elites per 5 waves
+- **Safety caps:** HP 2^31, damage 100K, XP 1M
+- **File:** `scripts/systems/wave_scaler.gd`
+
+### Idle Mode (Auto-Play)
+`IdleController` provides AI-controlled gameplay, unlocked via "Idle Master" achievement (wave 31+).
+- **Toggle:** Tab key in `game.gd` `_input()` using `KEY_TAB`
+- **AI priority:** Dodge projectiles > Kite enemies > Collect pickups > Engage enemies > Wander
+- **Kiting system:** `_danger_distance=50` (flee), `_kite_distance=70` (strafe), `_safe_distance=200` (projectiles)
+- **Weapon upgrades ALWAYS selected first** regardless of strategy; enchant strategies only for fallback
+- **Upgrade strategies (enchant fallback):** WEAPON_FIRST (default), BALANCED, DEFENSIVE
+- **Player integration:** `idle_mode: bool` flag in `player.gd`, skips input when true
+- **Upgrade UI:** `idle_controller` reference, `_auto_select_upgrade()` on 5s timer, `PROCESS_MODE_ALWAYS` while paused
+- **HUD:** `set_idle_mode()` / `set_idle_unlocked()` on `IdleModeLabel` in TopRightContainer
+- **IDLE_TEST scenario:** `test_mode.gd` with god mode, fast progression, periodic screenshots every 15s
+- **File:** `scripts/systems/idle_controller.gd`
+
+### Biome Terrain System
+Direction-based biome zones beyond 800px from spawn with procedural tile transitions:
+- **4 Biomes:** Plains (inner <800px), Desert (east), Snow (north), Swamp (south-west)
+- **Transition zone:** 800-1100px with probabilistic tile mixing (deterministic hash)
+- **Tiles:** 12 SVG tiles (4 biomes x 3 variants: base, variant1, variant2)
+- **Arena integration:** `arena.gd` uses `BiomeManager` for per-tile biome selection, emits `biome_changed` signal
+- **Sector angles** (atan2 from +X, Y-down): Desert 330-90°, Swamp 90-210°, Snow 210-330°
+- **Files:** `scripts/systems/biome_manager.gd`, `assets/tiles/{desert,snow,swamp}*.svg`
+
+### Procedural Background Music
+Ambient music that crossfades between biome-specific tracks:
+- **Generation:** 12-second looping AudioStreamWAV per biome (deterministic, no `randf`)
+- **3 Layers:** Bass drone (triangle wave) + melody (triangle/square, pentatonic) + noise texture
+- **Scales:** Plains=C major penta, Desert=D minor penta, Snow=E minor penta, Swamp=A minor penta
+- **Crossfade:** Dual AudioStreamPlayer, 2-second linear crossfade on biome change
+- **Integration:** AudioManager caches tracks on first biome entry; `game.gd` connects `arena.biome_changed` → `audio.play_biome_music()`
+- **Files:** `scripts/systems/music_generator.gd`, `scripts/systems/music_player.gd`
 
 For complete game data, see `docs/GAME_DATA.md` (bilingual EN/ZH).
 
@@ -379,8 +448,14 @@ Detailed documentation is in `docs/`:
 **Phase 7 (Advanced Features):** In Progress
 - ✅ Procedural 8-bit audio system (30 SFX presets)
 - ✅ Boss attack improvements (Ravager & Warden)
-- [ ] Achievement system (pending)
-- [ ] Elite monsters (pending)
+- ✅ Elite monsters (6 types with unique abilities, golden shader)
+- ✅ Post-wave-30 infinite scaling (enemies, bosses, elites)
+- ✅ Idle mode / auto-play (AI kiting controller, Tab toggle, weapon-first upgrades)
+- ✅ Fixed elite spider venom (was passing Dictionary instead of StatusEffect)
+- ✅ Fixed all 86 pre-existing test failures (1663/1663 pass)
+- ✅ Achievement system UI (21 achievements, badges, localization EN/JA/ZH, SFX, notification popup)
+- ✅ Biome terrain system (4 biomes, 12 tile SVGs, direction-based zones, transition blending)
+- ✅ Procedural background music (4 biome tracks, 12s loops, crossfade, pentatonic scales)
 
 ## Git Workflow
 

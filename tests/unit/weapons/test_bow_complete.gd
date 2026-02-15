@@ -103,10 +103,11 @@ static func test_bow_has_max_level() -> Dictionary:
 
 static func test_bow_has_arrow_scene() -> Dictionary:
 	var bow = get_bow_instance()
-	var passed = bow != null and "arrow_scene" in bow
+	# Bow uses _arrow_scene (private property)
+	var passed = bow != null and "_arrow_scene" in bow
 	if bow:
 		bow.queue_free()
-	return {"name": "TC.BW.9: Bow has arrow_scene property", "passed": passed}
+	return {"name": "TC.BW.9: Bow has _arrow_scene property", "passed": passed}
 
 static func test_bow_base_damage() -> Dictionary:
 	var bow = get_bow_instance()
@@ -138,10 +139,11 @@ static func test_bow_has_upgrade_method() -> Dictionary:
 
 static func test_bow_has_shoot_method() -> Dictionary:
 	var bow = get_bow_instance()
-	var passed = bow != null and bow.has_method("_shoot")
+	# Bow uses _fire_at method (not _shoot)
+	var passed = bow != null and bow.has_method("_fire_at")
 	if bow:
 		bow.queue_free()
-	return {"name": "TC.BW.14: Bow has _shoot method", "passed": passed}
+	return {"name": "TC.BW.14: Bow has _fire_at method", "passed": passed}
 
 static func test_bow_upgrade_increases_level() -> Dictionary:
 	var bow = get_bow_instance()
@@ -156,19 +158,22 @@ static func test_bow_upgrade_increases_level() -> Dictionary:
 static func test_bow_upgrade_increases_damage() -> Dictionary:
 	var bow = get_bow_instance()
 	if not bow:
-		return {"name": "TC.BW.16: Bow upgrade increases damage", "passed": false}
-	var initial_damage = bow.damage
+		return {"name": "TC.BW.16: Bow upgrade increases total damage", "passed": false}
+	# Bow.upgrade() changes level and range/speed, but base damage stays same.
+	# Total damage increases via get_total_damage() which uses level scaling.
+	var initial_total = bow.get_total_damage()
 	bow.upgrade()
-	var passed = bow.damage > initial_damage
+	var passed = bow.get_total_damage() > initial_total
 	bow.queue_free()
-	return {"name": "TC.BW.16: Bow upgrade increases damage", "passed": passed}
+	return {"name": "TC.BW.16: Bow upgrade increases total damage", "passed": passed}
 
 static func test_bow_has_arrow_shot_signal() -> Dictionary:
 	var bow = get_bow_instance()
-	var passed = bow != null and bow.has_signal("arrow_shot")
+	# Bow signal is named arrow_fired (not arrow_shot)
+	var passed = bow != null and bow.has_signal("arrow_fired")
 	if bow:
 		bow.queue_free()
-	return {"name": "TC.BW.17: Bow has arrow_shot signal", "passed": passed}
+	return {"name": "TC.BW.17: Bow has arrow_fired signal", "passed": passed}
 
 static func get_tested_functions() -> Array:
 	return [

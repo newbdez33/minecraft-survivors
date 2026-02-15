@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" shape-rendering="crispEdges">
+  <!-- Swamp with Lily Pads - Minecraft Survivors -->
+
+  <!-- Base swamp -->
+  <rect x="0" y="0" width="32" height="32" fill="#4A6B3A"/>
+
+  <!-- Deep dark patches -->
+  <rect x="4" y="0" width="4" height="4" fill="#3A5A2A"/>
+  <rect x="20" y="4" width="4" height="4" fill="#3A5A2A"/>
+  <rect x="0" y="16" width="4" height="4" fill="#3A5A2A"/>
+  <rect x="24" y="20" width="4" height="4" fill="#3A5A2A"/>
+  <rect x="8" y="24" width="4" height="4" fill="#3A5A2A"/>
+
+  <!-- Lily pad 1 (top-down circle) -->
+  <rect x="8" y="8" width="8" height="6" fill="#3AAA3A"/>
+  <rect x="10" y="6" width="4" height="2" fill="#3AAA3A"/>
+  <rect x="10" y="14" width="4" height="2" fill="#3AAA3A"/>
+  <rect x="12" y="10" width="2" height="2" fill="#50CC50"/>
+
+  <!-- Lily pad 2 (smaller) -->
+  <rect x="22" y="14" width="4" height="4" fill="#3AAA3A"/>
+  <rect x="23" y="15" width="2" height="2" fill="#50CC50"/>
+
+  <!-- Muddy water specks -->
+  <rect x="26" y="6" width="2" height="2" fill="#5A7A4A"/>
+  <rect x="4" y="28" width="2" height="2" fill="#5A7A4A"/>
+</svg>

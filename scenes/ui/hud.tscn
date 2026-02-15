@@ -68,6 +68,15 @@ theme_override_font_sizes/font_size = 9
 text = "Kills: 0"
 horizontal_alignment = 2
 
+[node name="IdleModeLabel" type="Label" parent="TopRightContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.9, 0.9, 0.6)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 8
+text = ""
+horizontal_alignment = 2
+
 [node name="TopCenterContainer" type="HBoxContainer" parent="."]
 anchors_preset = 5
 anchor_left = 0.5

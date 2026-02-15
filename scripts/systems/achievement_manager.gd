@@ -44,6 +44,9 @@ const ACHIEVEMENT_DEFS = {
 	"unlock_alex": {"name": "New Friend", "desc": "Unlock Alex character", "target": 1, "reward": 50},
 	"unlock_bow": {"name": "Archer", "desc": "Get the Bow weapon", "target": 1, "reward": 30},
 	"evolve_weapon": {"name": "Evolution", "desc": "Evolve a weapon", "target": 1, "reward": 100},
+
+	# Idle mode unlock
+	"idle_master": {"name": "Idle Master", "desc": "Survive past wave 30", "target": 31, "reward": 150},
 }
 
 func _ready() -> void:
@@ -55,6 +58,7 @@ func _init_achievements() -> void:
 	for id in ACHIEVEMENT_DEFS:
 		var def = ACHIEVEMENT_DEFS[id]
 		var achievement = AchievementClass.new(id, def.name, def.desc, def.target, def.reward)
+		achievement.icon_path = "res://assets/ui/achievements/%s.svg" % id
 		achievements[id] = achievement
 
 func check_kill_count(kills: int) -> void:
@@ -77,6 +81,7 @@ func check_wave(wave: int) -> void:
 	_check_achievement("wave_3", wave)
 	_check_achievement("wave_5", wave)
 	_check_achievement("wave_10", wave)
+	_check_achievement("idle_master", wave)
 
 func check_combo(combo: int) -> void:
 	_check_achievement("combo_50", combo)
@@ -108,6 +113,10 @@ func _check_achievement(id: String, value: int) -> void:
 		save_achievements()
 	else:
 		progress_updated.emit(id, achievement.progress, achievement.target)
+
+func is_achievement_unlocked(id: String) -> bool:
+	var achievement = achievements.get(id)
+	return achievement != null and achievement.is_unlocked
 
 func get_achievement(id: String) -> RefCounted:
 	return achievements.get(id)

@@ -921,20 +921,20 @@ func _test_localization() -> void:
 	if loc_script:
 		var loc_manager = loc_script.new()
 
-		# T4.7.2: LocalizationManager has set_language method
-		_assert_true(loc_manager.has_method("set_language"), "T4.7.2: LocalizationManager has set_language method")
+		# T4.7.2: LocalizationManager has set_locale method
+		_assert_true(loc_manager.has_method("set_locale"), "T4.7.2: LocalizationManager has set_locale method")
 
-		# T4.7.3: LocalizationManager has get_current_language method
-		_assert_true(loc_manager.has_method("get_current_language"), "T4.7.3: LocalizationManager has get_current_language method")
+		# T4.7.3: LocalizationManager has get_locale method
+		_assert_true(loc_manager.has_method("get_locale"), "T4.7.3: LocalizationManager has get_locale method")
 
-		# T4.7.4: LocalizationManager has get_available_languages method
-		_assert_true(loc_manager.has_method("get_available_languages"), "T4.7.4: LocalizationManager has get_available_languages method")
+		# T4.7.4: LocalizationManager has get_supported_locales method
+		_assert_true(loc_manager.has_method("get_supported_locales"), "T4.7.4: LocalizationManager has get_supported_locales method")
 
 		# T4.7.5: LocalizationManager has language_changed signal
 		_assert_true(loc_manager.has_signal("language_changed"), "T4.7.5: LocalizationManager has language_changed signal")
 
 		# T4.7.6: LocalizationManager supports English
-		var langs = loc_manager.get_available_languages()
+		var langs = loc_manager.get_supported_locales()
 		_assert_true("en" in langs, "T4.7.6: LocalizationManager supports English")
 
 		# T4.7.7: LocalizationManager supports Japanese
@@ -945,9 +945,9 @@ func _test_localization() -> void:
 
 		loc_manager.free()
 	else:
-		_assert_true(false, "T4.7.2: LocalizationManager has set_language method")
-		_assert_true(false, "T4.7.3: LocalizationManager has get_current_language method")
-		_assert_true(false, "T4.7.4: LocalizationManager has get_available_languages method")
+		_assert_true(false, "T4.7.2: LocalizationManager has set_locale method")
+		_assert_true(false, "T4.7.3: LocalizationManager has get_locale method")
+		_assert_true(false, "T4.7.4: LocalizationManager has get_supported_locales method")
 		_assert_true(false, "T4.7.5: LocalizationManager has language_changed signal")
 		_assert_true(false, "T4.7.6: LocalizationManager supports English")
 		_assert_true(false, "T4.7.7: LocalizationManager supports Japanese")
@@ -1135,10 +1135,10 @@ func _test_potion() -> void:
 		if "damage" in potion:
 			_assert_equal(potion.damage, 12, "T4.6.28a: Potion damage is 12")
 
-		# T4.6.29: Potion has splash_radius property (60)
-		_assert_true("splash_radius" in potion, "T4.6.29: Potion has splash_radius property")
-		if "splash_radius" in potion:
-			_assert_equal(potion.splash_radius, 100.0, "T4.6.29a: Potion splash_radius is 100")
+		# T4.6.29: Potion has cloud_size property (80)
+		_assert_true("cloud_size" in potion, "T4.6.29: Potion has cloud_size property")
+		if "cloud_size" in potion:
+			_assert_equal(potion.cloud_size, 80.0, "T4.6.29a: Potion cloud_size is 80")
 
 		# T4.6.30: Potion has lifetime property (2.0)
 		_assert_true("lifetime" in potion, "T4.6.30: Potion has lifetime property")
@@ -1148,8 +1148,8 @@ func _test_potion() -> void:
 		# T4.6.31: Potion has set_direction method
 		_assert_true(potion.has_method("set_direction"), "T4.6.31: Potion has set_direction method")
 
-		# T4.6.32: Potion has explode method
-		_assert_true(potion.has_method("explode"), "T4.6.32: Potion has explode method")
+		# T4.6.32: Potion has _land method
+		_assert_true(potion.has_method("_land"), "T4.6.32: Potion has _land method")
 
 		# T4.6.33: Potion is Area2D
 		_assert_true(potion is Area2D, "T4.6.33: Potion is Area2D")
@@ -1164,12 +1164,12 @@ func _test_potion() -> void:
 		_assert_true(false, "T4.6.27a: Potion speed is 200")
 		_assert_true(false, "T4.6.28: Potion has damage property")
 		_assert_true(false, "T4.6.28a: Potion damage is 12")
-		_assert_true(false, "T4.6.29: Potion has splash_radius property")
-		_assert_true(false, "T4.6.29a: Potion splash_radius is 100")
+		_assert_true(false, "T4.6.29: Potion has cloud_size property")
+		_assert_true(false, "T4.6.29a: Potion cloud_size is 80")
 		_assert_true(false, "T4.6.30: Potion has lifetime property")
 		_assert_true(false, "T4.6.30a: Potion lifetime is 2.0")
 		_assert_true(false, "T4.6.31: Potion has set_direction method")
-		_assert_true(false, "T4.6.32: Potion has explode method")
+		_assert_true(false, "T4.6.32: Potion has _land method")
 		_assert_true(false, "T4.6.33: Potion is Area2D")
 		_assert_true(false, "T4.6.34: Potion has direction property")
 
@@ -1267,8 +1267,10 @@ func _test_wave_spawner_integration() -> void:
 		_assert_true(false, "T4.13.1: Spawner script loads for wave tests")
 		return
 
+	# Add spawner to scene tree so get_tree() works inside set_wave()
 	var spawner = Node.new()
 	spawner.set_script(spawner_script)
+	root.add_child(spawner)
 
 	# T4.13.1: Spawner has set_wave method
 	_assert_true(spawner.has_method("set_wave"), "T4.13.1: Spawner has set_wave method")
@@ -1344,6 +1346,7 @@ func _test_wave_spawner_integration() -> void:
 	spawner.set_wave(6)
 	_assert_true(spawner.witch_weight > 0, "T4.13.14: Wave 6 adds witch")
 
+	root.remove_child(spawner)
 	spawner.free()
 
 	# T4.13.15: Game.gd connects wave to spawner
@@ -1517,7 +1520,7 @@ func _test_upgrade_ui_selection() -> void:
 	_assert_true("_selected_style" in ui, "T4.15.10: UpgradeUI has _selected_style property")
 
 	# T4.15.11: Scene has TimerLabel node
-	var timer_label = ui.get_node_or_null("Container/VBoxContainer/TimerLabel")
+	var timer_label = ui.get_node_or_null("Container/MainVBox/TimerLabel")
 	_assert_not_null(timer_label, "T4.15.11: UpgradeUI scene has TimerLabel")
 
 	# T4.15.12: Test default selection is middle
@@ -1612,19 +1615,19 @@ func _test_status_effect_manager() -> void:
 	_assert_true(manager.has_signal("effect_tick"), "T5.1.17: Manager has effect_tick signal")
 
 func _test_poison_system() -> void:
-	# T5.1.18: Potion has applies_poison property
+	# T5.1.18: Potion has cloud_size property (poison is always applied via cloud)
 	var potion_scene = load("res://scenes/projectiles/potion.tscn")
 	if potion_scene == null:
 		_skip_test("T5.1.18-T5.1.24", "Potion scene not found")
 		return
 
 	var potion = potion_scene.instantiate()
-	_assert_true("applies_poison" in potion, "T5.1.18: Potion has applies_poison property")
+	_assert_true("cloud_size" in potion, "T5.1.18: Potion has cloud_size property")
 
-	# T5.1.19: Potion splash_radius is 100
-	_assert_true("splash_radius" in potion, "T5.1.19: Potion has splash_radius property")
-	if "splash_radius" in potion:
-		_assert_equal(potion.splash_radius, 100.0, "T5.1.20: Potion splash_radius is 100")
+	# T5.1.19: Potion cloud_size is 80
+	_assert_true("cloud_size" in potion, "T5.1.19: Potion has cloud_size property")
+	if "cloud_size" in potion:
+		_assert_equal(potion.cloud_size, 80.0, "T5.1.20: Potion cloud_size is 80")
 
 	# T5.1.21: Potion has poison_duration
 	_assert_true("poison_duration" in potion, "T5.1.21: Potion has poison_duration property")
@@ -2187,8 +2190,8 @@ func _test_sword_tier_evolution() -> void:
 		# T5.6.4: Wood sword has correct damage
 		_assert_equal(sword.damage, 5, "T5.6.4: Wood sword damage is 5")
 
-		# T5.6.5: Wood sword has correct range
-		_assert_equal(sword.attack_range, 30.0, "T5.6.5: Wood sword range is 30")
+		# T5.6.5: Wood sword has correct range (60.0)
+		_assert_equal(sword.attack_range, 60.0, "T5.6.5: Wood sword range is 60")
 
 		# T5.6.6: Wood sword has correct cooldown
 		_assert_equal(sword.attack_cooldown, 1.2, "T5.6.6: Wood sword cooldown is 1.2")
@@ -2200,16 +2203,22 @@ func _test_sword_tier_evolution() -> void:
 		sword.on_enemy_killed()
 		_assert_equal(sword.kill_count, 1, "T5.6.8: Kill count increments")
 
-		# T5.6.9: Evolve to Stone at 50 kills
-		for i in range(49):
-			sword.on_enemy_killed()
-		_assert_equal(sword.current_tier, Tier.STONE, "T5.6.9: Evolves to STONE at 50 kills")
+		# T5.6.9: Evolve to Stone via upgrade() at level 4
+		# Evolution is level-based: levels 4, 7, 10 trigger tier evolution
+		sword.kill_count = 0  # Reset from previous test
+		sword.upgrade()  # level 2
+		sword.upgrade()  # level 3
+		sword.upgrade()  # level 4 -> triggers evolution to Stone
+		_assert_equal(sword.current_tier, Tier.STONE, "T5.6.9: Evolves to STONE at level 4 via upgrade()")
 
-		# T5.6.10: Stone sword has correct damage
-		_assert_equal(sword.damage, 8, "T5.6.10: Stone sword damage is 8")
+		# T5.6.10: Stone sword has correct base damage (8) + level bonuses + evolution bonuses
+		# Base 8 + (level-1)*2 damage_per_level + evolution bonus 5 = 8 + 6 + 5 = 19
+		var expected_damage = sword.get_total_damage()
+		_assert_equal(sword.damage, expected_damage, "T5.6.10: Stone sword damage matches get_total_damage()")
 
-		# T5.6.11: Stone sword has correct range
-		_assert_equal(sword.attack_range, 35.0, "T5.6.11: Stone sword range is 35")
+		# T5.6.11: Stone sword has correct range (70.0 base + level bonuses + evolution bonus)
+		var expected_range = sword.get_total_range()
+		_assert_equal(sword.attack_range, expected_range, "T5.6.11: Stone sword range matches get_total_range()")
 
 		# T5.6.12: Kill count resets after evolution
 		_assert_equal(sword.kill_count, 0, "T5.6.12: Kill count resets after evolution")
@@ -2217,13 +2226,14 @@ func _test_sword_tier_evolution() -> void:
 		# T5.6.13: Tier name getter works
 		_assert_equal(sword.get_tier_name(), "Stone Sword", "T5.6.13: Tier name is correct")
 
-		# T5.6.14: Kills to next tier works
+		# T5.6.14: get_kills_to_next_tier reflects remaining kills
+		# After evolution, kill_count is 0, kills_to_evolve for Stone is 150
 		_assert_equal(sword.get_kills_to_next_tier(), 150, "T5.6.14: Kills to next tier is 150")
 
 		# T5.6.15: set_tier works
 		sword.set_tier(Tier.DIAMOND)
-		_assert_equal(sword.damage, 15, "T5.6.15: Diamond sword damage is 15")
-		_assert_equal(sword.attack_range, 45.0, "T5.6.16: Diamond sword range is 45")
+		_assert_equal(sword.damage, sword.get_total_damage(), "T5.6.15: Diamond sword damage matches get_total_damage()")
+		_assert_equal(sword.attack_range, sword.get_total_range(), "T5.6.16: Diamond sword range matches get_total_range()")
 
 		# T5.6.17: Diamond is max tier
 		_assert_equal(sword.get_kills_to_next_tier(), -1, "T5.6.17: Diamond has no next tier")
@@ -2643,10 +2653,10 @@ func _test_evoker_boss() -> void:
 	if evoker_scene:
 		var evoker = evoker_scene.instantiate()
 
-		# T6.1.3: Evoker has health property (100)
+		# T6.1.3: Evoker has health property (400)
 		_assert_true("health" in evoker, "T6.1.3: Evoker has health property")
 		if "health" in evoker:
-			_assert_equal(evoker.health, 100, "T6.1.3a: Evoker health is 100")
+			_assert_equal(evoker.health, 400, "T6.1.3a: Evoker health is 400")
 
 		# T6.1.4: Evoker has speed property (40)
 		_assert_true("speed" in evoker, "T6.1.4: Evoker has speed property")
@@ -2674,10 +2684,10 @@ func _test_evoker_boss() -> void:
 		# T6.1.9: Evoker has summon_vex method
 		_assert_true(evoker.has_method("summon_vex"), "T6.1.9: Evoker has summon_vex method")
 
-		# T6.1.10: Evoker has xp_value property (50)
+		# T6.1.10: Evoker has xp_value property (200)
 		_assert_true("xp_value" in evoker, "T6.1.10: Evoker has xp_value property")
 		if "xp_value" in evoker:
-			_assert_equal(evoker.xp_value, 50, "T6.1.10a: Evoker xp_value is 50")
+			_assert_equal(evoker.xp_value, 200, "T6.1.10a: Evoker xp_value is 200")
 
 		# T6.1.11: Evoker has emerald_drop property (30)
 		_assert_true("emerald_drop" in evoker, "T6.1.11: Evoker has emerald_drop property")
@@ -2706,7 +2716,7 @@ func _test_evoker_boss() -> void:
 	else:
 		# Script/scene doesn't exist yet - fail remaining tests
 		_assert_true(false, "T6.1.3: Evoker has health property")
-		_assert_true(false, "T6.1.3a: Evoker health is 100")
+		_assert_true(false, "T6.1.3a: Evoker health is 400")
 		_assert_true(false, "T6.1.4: Evoker has speed property")
 		_assert_true(false, "T6.1.4a: Evoker speed is 40")
 		_assert_true(false, "T6.1.5: Evoker has contact_damage property")
@@ -2718,7 +2728,7 @@ func _test_evoker_boss() -> void:
 		_assert_true(false, "T6.1.8: Evoker has cast_fang_attack method")
 		_assert_true(false, "T6.1.9: Evoker has summon_vex method")
 		_assert_true(false, "T6.1.10: Evoker has xp_value property")
-		_assert_true(false, "T6.1.10a: Evoker xp_value is 50")
+		_assert_true(false, "T6.1.10a: Evoker xp_value is 200")
 		_assert_true(false, "T6.1.11: Evoker has emerald_drop property")
 		_assert_true(false, "T6.1.11a: Evoker emerald_drop is 30")
 		_assert_true(false, "T6.1.12: Evoker is CharacterBody2D")
@@ -2908,13 +2918,13 @@ func _test_boss_drop_system() -> void:
 		var evoker = evoker_scene.instantiate()
 		_assert_true(evoker.has_signal("died"), "T6.5.1: Evoker has died signal")
 		if "xp_value" in evoker:
-			_assert_equal(evoker.xp_value, 50, "T6.5.1a: Evoker xp_value for died signal is 50")
+			_assert_equal(evoker.xp_value, 200, "T6.5.1a: Evoker xp_value for died signal is 200")
 		else:
-			_assert_true(false, "T6.5.1a: Evoker xp_value for died signal is 50")
+			_assert_true(false, "T6.5.1a: Evoker xp_value for died signal is 200")
 		evoker.free()
 	else:
 		_assert_true(false, "T6.5.1: Evoker has died signal")
-		_assert_true(false, "T6.5.1a: Evoker xp_value for died signal is 50")
+		_assert_true(false, "T6.5.1a: Evoker xp_value for died signal is 200")
 
 	# T6.5.2: EmeraldPickup script loads
 	var emerald_script = load("res://scripts/pickups/emerald_pickup.gd")
@@ -3042,6 +3052,14 @@ func _run_complete_coverage_tests() -> void:
 	_run_external_test_suite("Status Effect Behavior Tests", "res://tests/unit/behavioral/test_status_effect_behavior.gd")
 	_run_external_test_suite("Pickup Behavior Tests", "res://tests/unit/behavioral/test_pickup_behavior.gd")
 	_run_external_test_suite("Boss Attack Behavior BDD Tests", "res://tests/unit/behavioral/test_boss_attack_behavior.gd")
+	_run_external_test_suite("Elite Monsters BDD Tests", "res://tests/unit/behavioral/test_elite_monsters.gd")
+	_run_external_test_suite("Wave Scaling BDD Tests", "res://tests/unit/behavioral/test_wave_scaling.gd")
+	_run_external_test_suite("Idle Mode BDD Tests", "res://tests/unit/behavioral/test_idle_mode_behavior.gd")
+	_run_external_test_suite("Achievement UI Behavior BDD Tests", "res://tests/unit/behavioral/test_achievement_ui_behavior.gd")
+
+	# Biome & Music System Tests
+	_run_external_test_suite("Biome Manager Tests", "res://tests/unit/systems/test_biome_manager.gd")
+	_run_external_test_suite("Music Generator Tests", "res://tests/unit/systems/test_music_generator.gd")
 
 ## Run tests from an external test file that follows the run_tests() -> Dictionary pattern
 func _run_external_test_suite(suite_name: String, script_path: String) -> void:

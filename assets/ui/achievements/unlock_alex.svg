@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" shape-rendering="crispEdges">
+  <!-- Octagonal badge frame - dark border -->
+  <rect x="10" y="2" width="12" height="1" fill="#333"/>
+  <rect x="8" y="3" width="2" height="1" fill="#333"/>
+  <rect x="22" y="3" width="2" height="1" fill="#333"/>
+  <rect x="6" y="4" width="2" height="1" fill="#333"/>
+  <rect x="24" y="4" width="2" height="1" fill="#333"/>
+  <rect x="4" y="5" width="2" height="1" fill="#333"/>
+  <rect x="26" y="5" width="2" height="1" fill="#333"/>
+  <rect x="3" y="6" width="1" height="2" fill="#333"/>
+  <rect x="28" y="6" width="1" height="2" fill="#333"/>
+  <rect x="2" y="8" width="1" height="2" fill="#333"/>
+  <rect x="29" y="8" width="1" height="2" fill="#333"/>
+  <rect x="2" y="10" width="1" height="12" fill="#333"/>
+  <rect x="29" y="10" width="1" height="12" fill="#333"/>
+  <rect x="2" y="22" width="1" height="2" fill="#333"/>
+  <rect x="29" y="22" width="1" height="2" fill="#333"/>
+  <rect x="3" y="24" width="1" height="2" fill="#333"/>
+  <rect x="28" y="24" width="1" height="2" fill="#333"/>
+  <rect x="4" y="26" width="2" height="1" fill="#333"/>
+  <rect x="26" y="26" width="2" height="1" fill="#333"/>
+  <rect x="6" y="27" width="2" height="1" fill="#333"/>
+  <rect x="24" y="27" width="2" height="1" fill="#333"/>
+  <rect x="8" y="28" width="2" height="1" fill="#333"/>
+  <rect x="22" y="28" width="2" height="1" fill="#333"/>
+  <rect x="10" y="29" width="12" height="1" fill="#333"/>
+  <!-- Octagonal badge fill - pink/magenta -->
+  <rect x="10" y="3" width="12" height="1" fill="#E91E63"/>
+  <rect x="8" y="4" width="16" height="1" fill="#E91E63"/>
+  <rect x="6" y="5" width="20" height="1" fill="#E91E63"/>
+  <rect x="4" y="6" width="24" height="2" fill="#E91E63"/>
+  <rect x="3" y="8" width="26" height="2" fill="#E91E63"/>
+  <rect x="3" y="10" width="26" height="12" fill="#E91E63"/>
+  <rect x="3" y="22" width="26" height="2" fill="#E91E63"/>
+  <rect x="4" y="24" width="24" height="2" fill="#E91E63"/>
+  <rect x="6" y="26" width="20" height="1" fill="#E91E63"/>
+  <rect x="8" y="27" width="16" height="1" fill="#E91E63"/>
+  <rect x="10" y="28" width="12" height="1" fill="#E91E63"/>
+  <!-- Alex head - hair (orange/auburn) -->
+  <rect x="11" y="6" width="10" height="1" fill="#C65100"/>
+  <rect x="10" y="7" width="12" height="1" fill="#C65100"/>
+  <rect x="10" y="8" width="12" height="1" fill="#C65100"/>
+  <rect x="10" y="9" width="2" height="1" fill="#C65100"/>
+  <rect x="20" y="9" width="2" height="1" fill="#C65100"/>
+  <rect x="10" y="10" width="1" height="3" fill="#C65100"/>
+  <rect x="21" y="10" width="1" height="3" fill="#C65100"/>
+  <!-- Hair highlight -->
+  <rect x="12" y="7" width="2" height="1" fill="#E07020"/>
+  <rect x="11" y="8" width="1" height="1" fill="#E07020"/>
+  <!-- Alex face (skin) -->
+  <rect x="12" y="9" width="8" height="1" fill="#D4A574"/>
+  <rect x="11" y="10" width="10" height="1" fill="#D4A574"/>
+  <rect x="11" y="11" width="10" height="1" fill="#D4A574"/>
+  <rect x="11" y="12" width="10" height="1" fill="#D4A574"/>
+  <rect x="11" y="13" width="10" height="1" fill="#D4A574"/>
+  <rect x="12" y="14" width="8" height="1" fill="#D4A574"/>
+  <!-- Eyes (green for Alex) -->
+  <rect x="13" y="10" width="2" height="2" fill="#FFFFFF"/>
+  <rect x="17" y="10" width="2" height="2" fill="#FFFFFF"/>
+  <rect x="14" y="10" width="1" height="2" fill="#2E7D32"/>
+  <rect x="18" y="10" width="1" height="2" fill="#2E7D32"/>
+  <!-- Nose -->
+  <rect x="15" y="11" width="2" height="1" fill="#C49060"/>
+  <!-- Mouth -->
+  <rect x="14" y="13" width="4" height="1" fill="#C49060"/>
+  <rect x="15" y="13" width="2" height="1" fill="#A0522D"/>
+  <!-- Hair sides hanging down -->
+  <rect x="9" y="9" width="1" height="5" fill="#C65100"/>
+  <rect x="22" y="9" width="1" height="5" fill="#C65100"/>
+  <!-- Body (green top like Alex) -->
+  <rect x="11" y="15" width="10" height="1" fill="#388E3C"/>
+  <rect x="10" y="16" width="12" height="1" fill="#388E3C"/>
+  <rect x="9" y="17" width="14" height="1" fill="#388E3C"/>
+  <rect x="8" y="18" width="16" height="1" fill="#388E3C"/>
+  <rect x="8" y="19" width="16" height="1" fill="#388E3C"/>
+  <rect x="8" y="20" width="16" height="1" fill="#2E7D32"/>
+  <rect x="9" y="21" width="14" height="1" fill="#2E7D32"/>
+  <rect x="10" y="22" width="12" height="1" fill="#2E7D32"/>
+  <!-- Body highlight -->
+  <rect x="12" y="16" width="2" height="1" fill="#4CAF50"/>
+  <rect x="10" y="17" width="2" height="1" fill="#4CAF50"/>
+  <!-- Belt -->
+  <rect x="11" y="22" width="10" height="1" fill="#5D4037"/>
+  <!-- Star sparkle near head -->
+  <rect x="25" y="8" width="1" height="1" fill="#FFF"/>
+  <rect x="24" y="9" width="3" height="1" fill="#FFF"/>
+  <rect x="25" y="10" width="1" height="1" fill="#FFF"/>
+  <rect x="5" y="12" width="1" height="1" fill="#FFF"/>
+  <rect x="6" y="11" width="1" height="1" fill="#FFF"/>
+</svg>

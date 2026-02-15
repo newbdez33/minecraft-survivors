@@ -466,6 +466,19 @@ static func achievement_unlock() -> AudioStreamWAV:
 	)
 
 
+## Preset: Elite spawn - ascending triangle wave, ominous power-up
+static func elite_spawn() -> AudioStreamWAV:
+	return generate({
+		"wave_type": WaveType.TRIANGLE,
+		"frequency": 400.0,
+		"freq_end": 800.0,
+		"duration": 0.3,
+		"volume": 0.4,
+		"attack": 0.01,
+		"decay": 0.15
+	})
+
+
 ## Generate XP collect sound at a specific pitch index (0-7 for C-C octave)
 static func xp_collect_pitched(pitch_index: int) -> AudioStreamWAV:
 	# C major scale: C5, D5, E5, F5, G5, A5, B5, C6

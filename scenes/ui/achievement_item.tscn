@@ -3,32 +3,39 @@
 [ext_resource type="Script" path="res://scripts/ui/achievement_item.gd" id="1_script"]
 
 [node name="AchievementItem" type="PanelContainer"]
-custom_minimum_size = Vector2(280, 80)
+custom_minimum_size = Vector2(300, 90)
 script = ExtResource("1_script")
 
-[node name="HBox" type="HBoxContainer" parent="."]
+[node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
-theme_override_constants/separation = 10
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
 
-[node name="Icon" type="TextureRect" parent="HBox"]
+[node name="HBox" type="HBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Icon" type="TextureRect" parent="MarginContainer/HBox"]
 custom_minimum_size = Vector2(48, 48)
 layout_mode = 2
 size_flags_vertical = 4
 stretch_mode = 5
 
-[node name="VBox" type="VBoxContainer" parent="HBox"]
+[node name="VBox" type="VBoxContainer" parent="MarginContainer/HBox"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 4
 
-[node name="NameLabel" type="Label" parent="HBox/VBox"]
+[node name="NameLabel" type="Label" parent="MarginContainer/HBox/VBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_constants/outline_size = 2
-theme_override_font_sizes/font_size = 12
+theme_override_font_sizes/font_size = 13
 text = "Achievement Name"
 
-[node name="DescLabel" type="Label" parent="HBox/VBox"]
+[node name="DescLabel" type="Label" parent="MarginContainer/HBox/VBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.7, 0.7, 0.7, 1)
 theme_override_constants/outline_size = 1
@@ -36,15 +43,23 @@ theme_override_font_sizes/font_size = 10
 text = "Description text here"
 autowrap_mode = 2
 
-[node name="ProgressBar" type="ProgressBar" parent="HBox/VBox"]
+[node name="ProgressBar" type="ProgressBar" parent="MarginContainer/HBox/VBox"]
 custom_minimum_size = Vector2(0, 8)
 layout_mode = 2
 max_value = 100.0
 value = 50.0
 show_percentage = false
 
-[node name="StatusLabel" type="Label" parent="HBox/VBox"]
+[node name="StatusLabel" type="Label" parent="MarginContainer/HBox/VBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
 theme_override_font_sizes/font_size = 9
 text = "0 / 100 (0%)"
+
+[node name="CheckIcon" type="Label" parent="MarginContainer/HBox"]
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_colors/font_color = Color(0.18, 0.8, 0.25, 1)
+theme_override_font_sizes/font_size = 24
+text = "✓"
+visible = false

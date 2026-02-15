@@ -3,6 +3,8 @@ extends Node
 ## Registered as autoload: AudioManager
 
 const SFXGeneratorClass = preload("res://scripts/systems/sfx_generator.gd")
+const MusicGeneratorClass = preload("res://scripts/systems/music_generator.gd")
+const MusicPlayerClass = preload("res://scripts/systems/music_player.gd")
 
 const SFX_BUS_NAME: String = "SFX"
 const MUSIC_BUS_NAME: String = "Music"
@@ -22,6 +24,10 @@ var _positional_index: int = 0
 
 # Sound cache (lazy loaded)
 var _sound_cache: Dictionary = {}
+
+# Music system
+var _music_player: Node = null
+var _music_cache: Dictionary = {}  # biome -> AudioStreamWAV
 
 # XP orb state
 var _xp_count_this_second: int = 0
@@ -58,6 +64,7 @@ func _ready() -> void:
 	_create_global_pool()
 	_create_positional_pool()
 	_precache_procedural_sounds()
+	_setup_music_player()
 
 
 func _process(delta: float) -> void:
@@ -146,6 +153,7 @@ func _precache_procedural_sounds() -> void:
 	_sound_cache["night_transition"] = SFXGeneratorClass.night_transition()
 	_sound_cache["achievement_unlock"] = SFXGeneratorClass.achievement_unlock()
 	_sound_cache["poison_applied"] = SFXGeneratorClass.poison_tick()
+	_sound_cache["elite_spawn"] = SFXGeneratorClass.elite_spawn()
 
 	# Pre-generate XP pitched sounds
 	for i in range(8):
@@ -308,6 +316,38 @@ func _get_pitch(sfx_name: String) -> float:
 	if variance <= 0.0:
 		return 1.0
 	return randf_range(1.0 - variance, 1.0 + variance)
+
+
+## Setup music player node for biome crossfade
+func _setup_music_player() -> void:
+	_music_player = MusicPlayerClass.new()
+	_music_player.name = "MusicPlayer"
+	add_child(_music_player)
+
+
+## Play biome music with crossfade (generates track on first call, then caches)
+func play_biome_music(biome: int) -> void:
+	if not _music_player:
+		return
+
+	# Generate and cache music if not already done
+	if biome not in _music_cache:
+		_music_cache[biome] = MusicGeneratorClass.generate_biome_track(biome)
+
+	_music_player.play_track(_music_cache[biome], biome)
+
+
+## Stop all background music
+func stop_music() -> void:
+	if _music_player:
+		_music_player.stop_music()
+
+
+## Check if music is playing
+func is_music_playing() -> bool:
+	if _music_player:
+		return _music_player.is_playing()
+	return false
 
 
 func _load_volume_settings() -> void:

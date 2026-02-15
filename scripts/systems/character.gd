@@ -28,8 +28,9 @@ func _init(p_id: String = "", p_name: String = "", p_desc: String = "") -> void:
 func apply_to_player(player: Node) -> void:
 	# Apply stat multipliers
 	if "max_health" in player:
+		var health_pct: float = float(player.current_health) / float(player.max_health) if player.max_health > 0 else 1.0
 		player.max_health = int(player.max_health * health_mult)
-		player.current_health = player.max_health
+		player.current_health = int(player.max_health * health_pct)
 
 	if "speed" in player:
 		player.speed *= speed_mult

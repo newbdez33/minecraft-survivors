@@ -8,11 +8,14 @@ signal main_menu_pressed
 
 @onready var resume_button: Button = $CenterContainer/VBoxContainer/ResumeButton
 @onready var main_menu_button: Button = $CenterContainer/VBoxContainer/MainMenuButton
+@onready var achievements_button: Button = $CenterContainer/VBoxContainer/AchievementsButton
 @onready var title_label: Label = $CenterContainer/VBoxContainer/TitleLabel
 @onready var language_container: HBoxContainer = $CenterContainer/VBoxContainer/LanguageContainer
+@onready var _achievement_panel: Control = $AchievementPanel
 
 var _language_buttons: Array[Button] = []
 var _localization_manager: Node = null
+var achievement_manager: Node = null
 
 func _ready() -> void:
 	# Set process mode to always run even when paused
@@ -22,6 +25,12 @@ func _ready() -> void:
 		resume_button.pressed.connect(_on_resume_pressed)
 	if main_menu_button:
 		main_menu_button.pressed.connect(_on_main_menu_pressed)
+	if achievements_button:
+		achievements_button.pressed.connect(_on_achievements_pressed)
+
+	# Wire achievement panel close
+	if _achievement_panel:
+		_achievement_panel.closed.connect(_on_achievement_panel_closed)
 
 	# Get LocalizationManager autoload
 	_localization_manager = get_node_or_null("/root/LocalizationManager")
@@ -56,6 +65,8 @@ func _update_texts() -> void:
 		resume_button.text = tr("RESUME")
 	if main_menu_button:
 		main_menu_button.text = tr("MAIN_MENU")
+	if achievements_button:
+		achievements_button.text = tr("ACHIEVEMENTS")
 
 func _on_language_changed(_locale: String) -> void:
 	_update_texts()
@@ -94,6 +105,20 @@ func _update_language_button_states() -> void:
 		else:
 			btn.disabled = false
 			btn.modulate = Color.WHITE
+
+func _on_achievements_pressed() -> void:
+	if _achievement_panel:
+		if achievement_manager and _achievement_panel.has_method("set_achievement_manager"):
+			_achievement_panel.set_achievement_manager(achievement_manager)
+		_achievement_panel.show_panel()
+
+func _on_achievement_panel_closed() -> void:
+	# Return focus to resume button
+	if resume_button:
+		resume_button.grab_focus()
+
+func set_achievement_manager(manager: Node) -> void:
+	achievement_manager = manager
 
 func _on_language_button_pressed(locale: String) -> void:
 	if _localization_manager:

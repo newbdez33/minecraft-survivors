@@ -13,13 +13,14 @@ signal died(xp_value: int)
 @export var explosion_radius: float = 80.0
 @export var fuse_time: float = 1.5
 @export var trigger_distance: float = 40.0
-@export var meat_drop_chance: float = 0.18  # 18% chance (harder enemy)
+@export var meat_drop_chance: float = 0.0  # Creepers don't drop meat
 
 var target: Node2D = null
 var is_fusing: bool = false
 var _fuse_elapsed: float = 0.0
 var knockback_velocity: Vector2 = Vector2.ZERO
 var knockback_decay: float = 10.0
+var is_elite: bool = false
 
 # Animation
 var _animator = null  # EnemyAnimator instance
@@ -145,6 +146,11 @@ func _flash_sprite() -> void:
 		var flash_rate = 10.0 + (_fuse_elapsed / fuse_time) * 20.0
 		sprite.modulate = Color.WHITE if int(_fuse_elapsed * flash_rate) % 2 == 0 else Color.RED
 
+func make_elite() -> void:
+	is_elite = true
+	# Charged explosion: wider radius
+	explosion_radius = 120.0
+
 func explode() -> void:
 	# Damage player if in radius
 	if target and is_instance_valid(target):
@@ -152,6 +158,10 @@ func explode() -> void:
 		if distance <= explosion_radius:
 			if target.has_method("take_damage"):
 				target.take_damage(explosion_damage)
+
+	# Elite Charged Explosion: chain damage to nearby enemies
+	if is_elite:
+		_chain_damage_nearby()
 
 	# Spawn explosion effect
 	var audio = get_node_or_null("/root/AudioManager")
@@ -162,6 +172,19 @@ func explode() -> void:
 
 	died.emit(xp_value)
 	queue_free()
+
+const CHAIN_DAMAGE: int = 15
+
+func _chain_damage_nearby() -> void:
+	if not get_tree():
+		return
+	var enemies = get_tree().get_nodes_in_group("enemies")
+	for enemy in enemies:
+		if enemy == self or not is_instance_valid(enemy):
+			continue
+		var dist = global_position.distance_to(enemy.global_position)
+		if dist <= explosion_radius and enemy.has_method("take_damage"):
+			enemy.take_damage(CHAIN_DAMAGE)
 
 func _spawn_explosion_effect() -> void:
 	if not get_tree() or not get_tree().current_scene:

@@ -17,6 +17,7 @@ signal facing_changed(direction: Vector2)
 var current_health: int
 var is_invincible: bool = false
 var god_mode: bool = false  # Testing flag - prevents all damage
+var idle_mode: bool = false  # Idle mode - AI controls movement
 var _health_component: Node = null
 var _status_effect_manager: Node = null
 var _weapon_slots: Node = null
@@ -68,18 +69,20 @@ func _ready() -> void:
 			_weapon_slots.register_weapon(sword, 0)  # Slot 0 = right side
 
 func _physics_process(_delta: float) -> void:
-	var input_direction = get_input_direction()
+	if not idle_mode:
+		var input_direction = get_input_direction()
 
-	if input_direction != Vector2.ZERO:
-		velocity = input_direction.normalized() * speed
-		# Update facing direction when moving
-		var new_facing = input_direction.normalized()
-		if new_facing != facing_direction:
-			facing_direction = new_facing
-			facing_changed.emit(facing_direction)
-	else:
-		velocity = Vector2.ZERO
+		if input_direction != Vector2.ZERO:
+			velocity = input_direction.normalized() * speed
+			# Update facing direction when moving
+			var new_facing = input_direction.normalized()
+			if new_facing != facing_direction:
+				facing_direction = new_facing
+				facing_changed.emit(facing_direction)
+		else:
+			velocity = Vector2.ZERO
 
+	# In idle mode, velocity is set by IdleController
 	move_and_slide()
 
 func get_input_direction() -> Vector2:

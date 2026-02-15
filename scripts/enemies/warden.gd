@@ -1,19 +1,20 @@
 extends CharacterBody2D
 class_name Warden
-## Warden Boss (Wave 20) - Sonic boom and anger tracking
-## HP: 400, Damage: 40, Speed: 35
+## Warden Boss (Wave 20) - Sonic boom, ground slam, darkness aura, and anger tracking
+## HP: 1000, Damage: 40, Speed: 35
 
 const EnemyAnimatorClass = preload("res://scripts/components/enemy_animator.gd")
 
 signal died(xp_value: int)
 signal health_changed(current: int, maximum: int)
+signal darkness_aura_changed(active: bool)
 
 # Boss stats
 @export var max_health: int = 1000
 @export var health: int = 1000
 @export var speed: float = 35.0
 @export var contact_damage: int = 40
-@export var xp_value: int = 300
+@export var xp_value: int = 600
 @export var emerald_drop: int = 75
 
 # Attack properties
@@ -23,26 +24,46 @@ signal health_changed(current: int, maximum: int)
 @export var melee_damage: int = 55
 @export var melee_cooldown: float = 1.5
 
+# Ground slam properties
+@export var ground_slam_cooldown: float = 6.0
+@export var ground_slam_damage: int = 45
+@export var ground_slam_radius: float = 150.0
+
+# Darkness aura properties
+@export var darkness_radius: float = 350.0
+@export var darkness_visibility_reduction: float = 0.40
+
 # Anger/Detection system
 @export var anger_level: int = 0
 @export var max_anger: int = 100
-@export var anger_per_sound: int = 15
+@export var anger_per_sound: int = 25
 
 # Boss immunities
 @export var knockback_immune: bool = true
 @export var damage_reduction: float = 0.30
 
 # AI State
-enum State { IDLE, TRACKING, SONIC_BOOM, MELEE_ATTACK }
+enum State { IDLE, TRACKING, SONIC_BOOM, MELEE_ATTACK, GROUND_SLAM }
 var _state: State = State.IDLE
 var _sonic_timer: float = 0.0
 var _melee_timer: float = 0.0
+var _slam_timer: float = 0.0
 
 var target: Node2D = null
+
+# Darkness aura state
+var _darkness_active: bool = false
+
+# Enrage state
+var _enraged: bool = false
+const ENRAGE_THRESHOLD: float = 0.5
+const ENRAGE_SPEED_MULT: float = 1.5
+const ENRAGE_COOLDOWN_MULT: float = 0.6
 
 # Animation
 var _animator = null  # EnemyAnimator instance
 var _was_moving: bool = false
+var _enrage_tween: Tween = null
 
 func _ready() -> void:
 	add_to_group("enemies")
@@ -87,9 +108,17 @@ func _physics_process(delta: float) -> void:
 
 	_sonic_timer += delta
 	_melee_timer += delta
+	_slam_timer += delta
 
 	# Track by sound - increase anger when player moves
 	_track_by_sound(delta)
+
+	# Darkness aura check
+	var distance = global_position.distance_to(target.global_position)
+	var in_darkness_range = distance < darkness_radius
+	if in_darkness_range != _darkness_active:
+		_darkness_active = in_darkness_range
+		darkness_aura_changed.emit(_darkness_active)
 
 	match _state:
 		State.IDLE:
@@ -100,9 +129,10 @@ func _physics_process(delta: float) -> void:
 			pass
 		State.MELEE_ATTACK:
 			pass
+		State.GROUND_SLAM:
+			pass
 
 	# Prevent sticking to player - strong separation when too close
-	var distance = global_position.distance_to(target.global_position)
 	var min_distance = 50.0
 	if distance < min_distance and distance > 0:
 		var push_direction = (global_position - target.global_position).normalized()
@@ -115,8 +145,13 @@ func _process_idle(_delta: float) -> void:
 	var distance = global_position.distance_to(target.global_position)
 
 	# Sonic boom for ranged attack when anger is high (lowered threshold)
-	if _sonic_timer >= sonic_boom_cooldown and anger_level >= 30:
+	if _sonic_timer >= sonic_boom_cooldown and anger_level >= 20:
 		_do_sonic_boom()
+		return
+
+	# Ground slam when player is within 200px and cooldown is ready
+	if distance <= 200 and _slam_timer >= ground_slam_cooldown:
+		_do_ground_slam()
 		return
 
 	# Melee attack when close (wider range to avoid anti-sticking deadlock)
@@ -157,10 +192,14 @@ func _track_by_sound(_delta: float) -> void:
 			_update_anger(anger_per_sound)
 
 func _update_anger(amount: int) -> void:
+	if _enraged:
+		anger_level = max_anger
+		return
+
 	anger_level = clampi(anger_level + amount, 0, max_anger)
 
 	# Become more aggressive at high anger
-	if anger_level >= 80:
+	if anger_level >= 50:
 		_state = State.TRACKING
 
 func _do_sonic_boom() -> void:
@@ -192,7 +231,7 @@ func _do_sonic_boom() -> void:
 				target.take_damage(sonic_boom_damage)
 			_spawn_sonic_effect()
 
-	anger_level = max(0, anger_level - 30)  # Reset some anger
+	anger_level = max(0, anger_level - 15)  # Stays angry longer (was 30)
 
 	# Wait for recovery animation to finish
 	if _animator:
@@ -213,6 +252,54 @@ func _spawn_sonic_effect() -> void:
 			hit.global_position = global_position + direction * total_distance * t
 			hit.modulate = Color(0, 0.8, 0.8)  # Teal
 			hit.scale = Vector2(5, 5)
+			get_tree().current_scene.call_deferred("add_child", hit)
+
+func _do_ground_slam() -> void:
+	_state = State.GROUND_SLAM
+	_slam_timer = 0.0
+	velocity = Vector2.ZERO
+
+	# Play boss stomp animation (reuse Ravager pattern)
+	if _animator:
+		_animator.stop_walk_animation()
+		_animator.play_boss_stomp()
+
+	# Play SFX
+	var audio = get_node_or_null("/root/AudioManager")
+	if audio and audio.has_method("play_sfx_at"):
+		audio.play_sfx_at("boss_attack", global_position)
+
+	# Wait for slam to land (matches animation phase 1 + phase 2 timing)
+	await get_tree().create_timer(0.4).timeout
+
+	if not is_instance_valid(self):
+		return
+
+	if target and is_instance_valid(target):
+		var distance = global_position.distance_to(target.global_position)
+		if distance <= ground_slam_radius:
+			if target.has_method("take_damage"):
+				target.take_damage(ground_slam_damage)
+
+	_spawn_slam_effect()
+
+	# Wait for recovery animation to finish
+	await get_tree().create_timer(0.55).timeout
+
+	if is_instance_valid(self):
+		_state = State.IDLE
+
+func _spawn_slam_effect() -> void:
+	# Visual slam effect - 5 hit effects in a ring (dark teal), larger than Ravager's
+	var hit_scene = load("res://scenes/effects/hit_effect.tscn")
+	if hit_scene and get_tree() and get_tree().current_scene:
+		for i in range(5):
+			var hit = hit_scene.instantiate()
+			var angle = (i / 5.0) * TAU
+			var offset = Vector2(cos(angle), sin(angle)) * ground_slam_radius * 0.6
+			hit.global_position = global_position + offset
+			hit.modulate = Color(0, 0.5, 0.5)  # Dark teal
+			hit.scale = Vector2(4, 4)
 			get_tree().current_scene.call_deferred("add_child", hit)
 
 func _do_melee_attack() -> void:
@@ -254,8 +341,8 @@ func take_damage(amount: int) -> void:
 	health -= reduced_damage
 	health_changed.emit(health, max_health)
 
-	# Taking damage increases anger
-	_update_anger(20)
+	# Taking damage increases anger (faster buildup)
+	_update_anger(35)
 
 	# Play hit reaction
 	if _animator:
@@ -263,8 +350,40 @@ func take_damage(amount: int) -> void:
 
 	_spawn_hit_effect()
 
+	# Check for enrage
+	if not _enraged and health <= max_health * ENRAGE_THRESHOLD:
+		_enter_enrage()
+
 	if health <= 0:
 		_on_died()
+
+func _enter_enrage() -> void:
+	_enraged = true
+	anger_level = max_anger
+
+	# Boost stats
+	speed *= ENRAGE_SPEED_MULT
+	sonic_boom_cooldown *= ENRAGE_COOLDOWN_MULT
+	melee_cooldown *= ENRAGE_COOLDOWN_MULT
+	ground_slam_cooldown *= ENRAGE_COOLDOWN_MULT
+
+	# Play SFX for dramatic effect
+	var audio = get_node_or_null("/root/AudioManager")
+	if audio and audio.has_method("play_sfx_at"):
+		audio.play_sfx_at("boss_attack", global_position)
+
+	# Visual flash: white to red tint
+	var sprite = get_node_or_null("Sprite2D")
+	if sprite:
+		if _enrage_tween and _enrage_tween.is_running():
+			_enrage_tween.kill()
+		_enrage_tween = create_tween()
+		_enrage_tween.tween_property(sprite, "modulate", Color.WHITE, 0.15)
+		_enrage_tween.tween_property(sprite, "modulate", Color(1.0, 0.3, 0.3), 0.15)
+
+		# Update animator's original modulate so hit reactions return to red
+		if _animator:
+			_animator._original_modulate = Color(1.0, 0.3, 0.3)
 
 func apply_knockback(_force: Vector2) -> void:
 	if knockback_immune:
@@ -279,6 +398,15 @@ func _spawn_hit_effect() -> void:
 		get_tree().current_scene.call_deferred("add_child", hit)
 
 func _on_died() -> void:
+	# Emit darkness aura off before dying
+	if _darkness_active:
+		_darkness_active = false
+		darkness_aura_changed.emit(false)
+
+	# Clean up enrage tween
+	if _enrage_tween and _enrage_tween.is_running():
+		_enrage_tween.kill()
+
 	# Clean up animator
 	if _animator:
 		_animator.reset_to_original()

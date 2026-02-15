@@ -6,6 +6,7 @@ signal start_pressed
 signal character_pressed
 signal settings_pressed
 signal scoreboard_pressed
+signal achievements_pressed
 signal quit_pressed
 
 @onready var _start_button: TextureButton = $Container/VBox/StartButton
@@ -16,13 +17,17 @@ signal quit_pressed
 @onready var _settings_label: Label = $Container/VBox/SettingsButton/Label
 @onready var _scoreboard_button: TextureButton = $Container/VBox/ScoreboardButton
 @onready var _scoreboard_label: Label = $Container/VBox/ScoreboardButton/Label
+@onready var _achievements_button: TextureButton = $Container/VBox/AchievementsButton
+@onready var _achievements_label: Label = $Container/VBox/AchievementsButton/Label
 @onready var _quit_button: TextureButton = $Container/VBox/QuitButton
 @onready var _quit_label: Label = $Container/VBox/QuitButton/Label
 @onready var _settings_panel: Control = $SettingsPanel
 @onready var _scoreboard_panel: Control = $ScoreboardPanel
+@onready var _achievement_panel: Control = $AchievementPanel
 @onready var _character_panel: Control = $CharacterSelect
 @onready var _dim_overlay: ColorRect = $DimOverlay
 @onready var _character_manager: Node = $CharacterManager
+@onready var _achievement_manager_menu: Node = $AchievementManagerMenu
 
 func _ready() -> void:
 	# Check for test mode - auto-skip menu
@@ -31,6 +36,11 @@ func _ready() -> void:
 
 	# Load saved language setting
 	_load_language_setting()
+
+	# Connect to LocalizationManager for live language updates
+	var loc_manager = get_node_or_null("/root/LocalizationManager")
+	if loc_manager and loc_manager.has_signal("language_changed"):
+		loc_manager.language_changed.connect(_on_language_changed)
 
 	# Update all labels with translations
 	_update_labels()
@@ -44,6 +54,8 @@ func _ready() -> void:
 		_settings_button.pressed.connect(_on_settings_pressed)
 	if _scoreboard_button:
 		_scoreboard_button.pressed.connect(_on_scoreboard_pressed)
+	if _achievements_button:
+		_achievements_button.pressed.connect(_on_achievements_pressed)
 	if _quit_button:
 		_quit_button.pressed.connect(_on_quit_pressed)
 
@@ -57,6 +69,11 @@ func _ready() -> void:
 	if _scoreboard_panel:
 		_scoreboard_panel.visible = false
 		_scoreboard_panel.closed.connect(_on_panel_closed)
+	if _achievement_panel:
+		_achievement_panel.visible = false
+		_achievement_panel.closed.connect(_on_panel_closed)
+		if _achievement_manager_menu:
+			_achievement_panel.set_achievement_manager(_achievement_manager_menu)
 	if _character_panel:
 		_character_panel.visible = false
 		_character_panel.closed.connect(_on_panel_closed)
@@ -100,11 +117,16 @@ func _update_labels() -> void:
 		_settings_label.text = tr("SETTINGS")
 	if _scoreboard_label:
 		_scoreboard_label.text = tr("SCOREBOARD")
+	if _achievements_label:
+		_achievements_label.text = tr("ACHIEVEMENTS")
 	if _quit_label:
 		_quit_label.text = tr("QUIT")
 
 func _on_settings_changed() -> void:
 	# Refresh labels when language changes
+	_update_labels()
+
+func _on_language_changed(_locale: String) -> void:
 	_update_labels()
 
 func _on_panel_closed() -> void:
@@ -137,6 +159,13 @@ func _on_scoreboard_pressed() -> void:
 	if _scoreboard_panel:
 		_scoreboard_panel.visible = true
 
+func _on_achievements_pressed() -> void:
+	achievements_pressed.emit()
+	if _dim_overlay:
+		_dim_overlay.visible = true
+	if _achievement_panel:
+		_achievement_panel.show_panel()
+
 func _on_quit_pressed() -> void:
 	quit_pressed.emit()
 	get_tree().quit()
@@ -146,3 +175,5 @@ func hide_panels() -> void:
 		_settings_panel.visible = false
 	if _scoreboard_panel:
 		_scoreboard_panel.visible = false
+	if _achievement_panel:
+		_achievement_panel.visible = false

@@ -21,6 +21,11 @@ extends Node2D
 @onready var boss_health_bar: CanvasLayer = $BossHealthBar
 @onready var achievement_manager: Node = $AchievementManager
 @onready var character_manager: Node = $CharacterManager
+@onready var arena: Node2D = $Arena
+
+const WaveScalerClass = preload("res://scripts/systems/wave_scaler.gd")
+const ComboSystemClass = preload("res://scripts/systems/combo_system.gd")
+var _achievement_notification_scene: PackedScene = preload("res://scenes/ui/achievement_notification.tscn")
 
 var evoker_scene: PackedScene = preload("res://scenes/enemies/evoker.tscn")
 var elder_guardian_scene: PackedScene = preload("res://scenes/enemies/elder_guardian.tscn")
@@ -33,6 +38,13 @@ var _current_boss: Node = null
 var _total_time: float = 0.0
 var _is_paused: bool = false
 var _fog_material: ShaderMaterial = null
+var _idle_controller: Node = null
+var _achievement_notification: Node = null
+var _combo_system: RefCounted = null
+var _poison_survived_count: int = 0
+var _no_damage_time: float = 0.0
+var _last_no_damage_check: int = 0
+var _last_health: int = -1
 
 func _ready() -> void:
 	# Load language setting
@@ -127,9 +139,42 @@ func _ready() -> void:
 	if achievement_manager:
 		achievement_manager.achievement_unlocked.connect(_on_achievement_unlocked)
 
+	# Pass achievement_manager to pause menu
+	if pause_menu and pause_menu.has_method("set_achievement_manager"):
+		pause_menu.set_achievement_manager(achievement_manager)
+
+	# Instantiate achievement notification
+	if _achievement_notification_scene:
+		_achievement_notification = _achievement_notification_scene.instantiate()
+		add_child(_achievement_notification)
+
+	# Setup combo system for achievement tracking
+	_combo_system = ComboSystemClass.new()
+	_combo_system.combo_changed.connect(_on_combo_changed)
+
 	# Apply selected character stats if character manager is present
 	if character_manager and player:
 		character_manager.apply_selected_to_player(player)
+
+	# Setup idle controller (always present, disabled by default)
+	var IdleControllerClass = preload("res://scripts/systems/idle_controller.gd")
+	_idle_controller = IdleControllerClass.new()
+	_idle_controller.name = "IdleController"
+	_idle_controller.player = player
+	add_child(_idle_controller)
+
+	# Show idle mode hint if unlocked
+	if hud and hud.has_method("set_idle_unlocked") and achievement_manager:
+		hud.set_idle_unlocked(achievement_manager.is_achievement_unlocked("idle_master"))
+
+	# Connect arena biome changes to music
+	if arena and arena.has_signal("biome_changed"):
+		arena.biome_changed.connect(_on_biome_changed)
+
+	# Start plains music
+	var audio = get_node_or_null("/root/AudioManager")
+	if audio and audio.has_method("play_biome_music"):
+		audio.play_biome_music(0)  # 0 = Plains
 
 var _last_survival_check: int = 0  # Track last checked second for achievements
 
@@ -138,6 +183,18 @@ func _process(delta: float) -> void:
 		_total_time += delta
 		if hud:
 			hud.set_time(_total_time)
+
+		# Update combo system timer
+		if _combo_system:
+			_combo_system.update(delta)
+
+		# Track no-damage time for achievement (throttle to once per second)
+		_no_damage_time += delta
+		var no_damage_second = int(_no_damage_time)
+		if no_damage_second > _last_no_damage_check:
+			_last_no_damage_check = no_damage_second
+			if achievement_manager:
+				achievement_manager.check_no_damage_time(no_damage_second)
 
 		# Check survival time achievements every second
 		var current_second = int(_total_time)
@@ -158,6 +215,10 @@ func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):  # ESC key
 		_toggle_pause()
 
+	# Tab key toggles idle mode
+	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_TAB:
+		_toggle_idle_mode()
+
 func _toggle_pause() -> void:
 	_is_paused = !_is_paused
 	get_tree().paused = _is_paused
@@ -167,12 +228,59 @@ func _toggle_pause() -> void:
 		else:
 			pause_menu.hide_menu()
 
+## Force-enable idle mode (bypasses achievement check, used by test mode)
+func force_idle_mode() -> void:
+	if not _idle_controller or not player:
+		return
+	_idle_controller.set_enabled(true)
+	player.idle_mode = true
+	if upgrade_ui:
+		upgrade_ui.set_use_timer(true)
+		upgrade_ui.idle_controller = _idle_controller
+	if hud and hud.has_method("set_idle_mode"):
+		hud.set_idle_mode(true)
+	print("[GAME] Idle mode force-enabled (test mode)")
+
+func _toggle_idle_mode() -> void:
+	# Check if idle mode is unlocked
+	if achievement_manager and not achievement_manager.is_achievement_unlocked("idle_master"):
+		if hud and hud.has_method("show_notification"):
+			hud.show_notification(tr("IDLE_MODE_LOCKED"))
+		return
+
+	if not _idle_controller or not player:
+		return
+
+	var new_state = not _idle_controller.is_enabled()
+	_idle_controller.set_enabled(new_state)
+	player.idle_mode = new_state
+
+	# Toggle upgrade auto-select
+	if upgrade_ui:
+		upgrade_ui.set_use_timer(new_state)
+		upgrade_ui.idle_controller = _idle_controller if new_state else null
+
+	# Update HUD indicator
+	if hud and hud.has_method("set_idle_mode"):
+		hud.set_idle_mode(new_state)
+
+	var audio = get_node_or_null("/root/AudioManager")
+	if audio:
+		audio.play_sfx("level_up" if new_state else "pickup")
+
 func _on_resume_pressed() -> void:
 	_toggle_pause()
 
 func _on_player_health_changed(current: int, maximum: int) -> void:
 	if hud:
 		hud.update_health(current, maximum)
+	# Reset no-damage timer if health decreased (took damage)
+	if _last_health >= 0 and current < _last_health:
+		_no_damage_time = 0.0
+		_last_no_damage_check = 0
+		if _combo_system:
+			_combo_system.on_player_damaged()
+	_last_health = current
 
 func _on_player_xp_changed(current: int, needed: int) -> void:
 	if hud:
@@ -245,6 +353,10 @@ func _on_enemy_killed(_xp_value: int) -> void:
 		if achievement_manager:
 			achievement_manager.check_kill_count(game_stats.kills)
 
+	# Update combo system
+	if _combo_system:
+		_combo_system.on_enemy_killed()
+
 	# Notify sword for evolution tracking
 	if _sword and _sword.has_method("on_enemy_killed"):
 		_sword.on_enemy_killed()
@@ -263,8 +375,34 @@ func _on_sword_evolved(new_tier: int) -> void:
 ## Called when an achievement is unlocked
 func _on_achievement_unlocked(achievement) -> void:
 	print("[ACHIEVEMENT] Unlocked: %s" % achievement.name)
-	if hud and hud.has_method("show_notification"):
+
+	# Show achievement notification popup
+	if _achievement_notification and _achievement_notification.has_method("show_achievement"):
+		_achievement_notification.show_achievement(achievement)
+	elif hud and hud.has_method("show_notification"):
 		hud.show_notification("Achievement: %s!" % achievement.name)
+
+	# Play achievement SFX
+	var audio = get_node_or_null("/root/AudioManager")
+	if audio:
+		audio.play_sfx("achievement_unlock")
+
+	# Show idle mode hint when idle_master is unlocked
+	if achievement.id == "idle_master" and hud and hud.has_method("set_idle_unlocked"):
+		hud.set_idle_unlocked(true)
+
+## Called when combo changes (from ComboSystem)
+func _on_combo_changed(combo: int) -> void:
+	if achievement_manager:
+		achievement_manager.check_combo(combo)
+
+
+## Called when player enters a new biome zone
+func _on_biome_changed(biome: int) -> void:
+	var audio = get_node_or_null("/root/AudioManager")
+	if audio and audio.has_method("play_biome_music"):
+		audio.play_biome_music(biome)
+
 
 func _on_wave_started(wave_number: int) -> void:
 	if hud:
@@ -330,9 +468,16 @@ func _spawn_boss(wave_number: int) -> void:
 	var spawn_distance = 500.0
 	boss.global_position = player.global_position + Vector2(cos(spawn_angle), sin(spawn_angle)) * spawn_distance
 
+	# Apply post-wave-30 scaling to boss
+	WaveScalerClass.apply_scaling(boss, wave_number, true)
+
 	# Connect boss signals
 	if boss.has_signal("died"):
 		boss.died.connect(_on_boss_died)
+
+	# Connect Warden darkness aura signal
+	if boss.has_signal("darkness_aura_changed"):
+		boss.darkness_aura_changed.connect(_on_warden_darkness)
 
 	# Add boss to scene
 	add_child(boss)
@@ -355,9 +500,33 @@ func _on_boss_died(_xp: int) -> void:
 ## Called when boss health bar finishes (after death animation)
 func _on_boss_defeated() -> void:
 	_current_boss = null
+	# Restore fog of war in case Warden darkness was active
+	_update_fog_of_war()
 	# Resume normal spawning
 	if spawner:
 		spawner.resume_spawning()
+
+
+## Called when Warden darkness aura activates/deactivates
+func _on_warden_darkness(active: bool) -> void:
+	if not _fog_material:
+		return
+	if active:
+		_fog_material.set_shader_parameter("enabled", true)
+		var base_radius = 0.25
+		if torch_manager and torch_manager.has_method("get_visibility_radius"):
+			base_radius = torch_manager.get_visibility_radius()
+		_fog_material.set_shader_parameter("visibility_radius", base_radius * (1.0 - darkness_visibility_reduction))
+	else:
+		# Fully restore fog state based on current time of day
+		var is_night = day_night_cycle and day_night_cycle.is_night()
+		if is_night:
+			_update_fog_of_war()
+		else:
+			_fog_material.set_shader_parameter("enabled", false)
+
+## Warden darkness visibility reduction (matches warden.gd export)
+var darkness_visibility_reduction: float = 0.40
 
 
 func _on_torch_level_changed(_level: int) -> void:
@@ -377,6 +546,10 @@ func _on_player_effect_removed(effect) -> void:
 	if StatusEffectClass and effect.type == StatusEffectClass.Type.POISON:
 		if hud and hud.has_method("set_poisoned"):
 			hud.set_poisoned(false)
+		# Track poison survived for achievement
+		_poison_survived_count += 1
+		if achievement_manager:
+			achievement_manager.check_poison_survived(_poison_survived_count)
 
 func _on_time_changed(time: float, _is_night: bool) -> void:
 	# Update time icon with 8-phase granularity (uses cycling time for day/night phases)
@@ -445,7 +618,8 @@ func _load_language_setting() -> void:
 
 ## Test Mode Support
 func _check_test_mode() -> void:
-	var args = OS.get_cmdline_args()
+	# Combine engine args and user args (after --) for full coverage
+	var args = OS.get_cmdline_args() + OS.get_cmdline_user_args()
 	var test_mode_enabled = false
 
 	for arg in args:
@@ -501,4 +675,5 @@ func _get_scenario_enum(scenario_name: String) -> int:
 		"SWORD_TEST": return 5
 		"WEAPON_TEST": return 6
 		"BOUNDARY_TEST": return 7
+		"IDLE_TEST": return 8
 		_: return 0

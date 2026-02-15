@@ -67,8 +67,8 @@ static func run_tests() -> Dictionary:
 	# Feature: Warden Sonic Boom Tuning
 	# =========================================================================
 	_add_result(results, test_warden_sonic_boom_cooldown_is_4s())
-	_add_result(results, test_warden_sonic_boom_anger_threshold_is_30())
-	_add_result(results, test_warden_anger_per_sound_is_15())
+	_add_result(results, test_warden_sonic_boom_anger_threshold_is_20())
+	_add_result(results, test_warden_anger_per_sound_is_25())
 	_add_result(results, test_warden_sonic_boom_range_is_400())
 
 	# =========================================================================
@@ -424,24 +424,24 @@ static func test_warden_sonic_boom_cooldown_is_4s() -> Dictionary:
 		warden.queue_free()
 	return {"name": "BDD.WA.4: Given Warden, When sonic boom ready, Then cooldown is 4s (was 6s)", "passed": passed}
 
-static func test_warden_sonic_boom_anger_threshold_is_30() -> Dictionary:
+static func test_warden_sonic_boom_anger_threshold_is_20() -> Dictionary:
 	# Given the Warden checks anger before sonic boom
 	# When anger reaches threshold
-	# Then threshold is 30 (lowered from 50)
+	# Then threshold is 20 (lowered from 30 for faster attacks)
 	var source = _get_warden_source()
-	var passed = source.contains("anger_level >= 30")
-	return {"name": "BDD.WA.5: Given Warden, When anger checked for sonic boom, Then threshold is 30 (was 50)", "passed": passed}
+	var passed = source.contains("anger_level >= 20")
+	return {"name": "BDD.WA.5: Given Warden, When anger checked for sonic boom, Then threshold is 20 (was 30)", "passed": passed}
 
-static func test_warden_anger_per_sound_is_15() -> Dictionary:
+static func test_warden_anger_per_sound_is_25() -> Dictionary:
 	# Given a Warden boss instance
 	# When player makes sound
-	# Then anger increases by 15 per tick (was 10)
+	# Then anger increases by 25 per tick (was 15, faster buildup)
 	var warden = _get_warden_instance()
 	var passed = false
 	if warden:
-		passed = warden.anger_per_sound == 15
+		passed = warden.anger_per_sound == 25
 		warden.queue_free()
-	return {"name": "BDD.WA.6: Given Warden, When player moves, Then anger increases by 15 per tick (was 10)", "passed": passed}
+	return {"name": "BDD.WA.6: Given Warden, When player moves, Then anger increases by 25 per tick (was 15)", "passed": passed}
 
 static func test_warden_sonic_boom_range_is_400() -> Dictionary:
 	# Given a Warden boss instance
@@ -608,23 +608,23 @@ static func test_warden_anger_builds_from_sound() -> Dictionary:
 static func test_warden_anger_builds_from_damage() -> Dictionary:
 	# Given the Warden takes damage
 	# When take_damage is called
-	# Then anger increases by 20
+	# Then anger increases by 35 (faster buildup)
 	var source = _get_warden_source()
 	var dmg_idx = source.find("func take_damage")
 	var passed = false
 	if dmg_idx >= 0:
 		var section = source.substr(dmg_idx, 400)
-		passed = section.contains("_update_anger(20)")
-	return {"name": "BDD.WA.21: Given Warden hit, When taking damage, Then anger increases by 20", "passed": passed}
+		passed = section.contains("_update_anger(35)")
+	return {"name": "BDD.WA.21: Given Warden hit, When taking damage, Then anger increases by 35", "passed": passed}
 
 static func test_warden_sonic_boom_reduces_anger() -> Dictionary:
 	# Given the Warden fires a sonic boom
 	# When attack completes
-	# Then anger reduces by 30
+	# Then anger reduces by 15 (stays angry longer)
 	var source = _get_warden_source()
 	var section = _extract_function(source, "_do_sonic_boom")
-	var passed = section.contains("anger_level - 30")
-	return {"name": "BDD.WA.22: Given Warden sonic boom, When attack completes, Then anger reduces by 30", "passed": passed}
+	var passed = section.contains("anger_level - 15")
+	return {"name": "BDD.WA.22: Given Warden sonic boom, When attack completes, Then anger reduces by 15", "passed": passed}
 
 static func test_warden_tracks_player_movement() -> Dictionary:
 	# Given the Warden has _track_by_sound method

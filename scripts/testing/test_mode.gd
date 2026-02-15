@@ -17,7 +17,8 @@ enum TestScenario {
 	DAY_NIGHT_TEST, # Test day/night cycle
 	SWORD_TEST,     # Test full sword upgrade path to Diamond
 	WEAPON_TEST,    # Test sword + bow together
-	BOUNDARY_TEST   # Test ALL bosses and ALL weapon upgrades to max
+	BOUNDARY_TEST,  # Test ALL bosses and ALL weapon upgrades to max
+	IDLE_TEST       # Test idle mode AI (uses IdleController instead of AutoPlayer)
 }
 
 @export var scenario: TestScenario = TestScenario.FULL_AUTO
@@ -65,6 +66,9 @@ var _initial_objects: int = 0
 var _initial_orphans: int = 0
 
 func _ready() -> void:
+	# Process even when tree is paused (upgrade UI pauses tree)
+	process_mode = Node.PROCESS_MODE_ALWAYS
+
 	print("\n" + "=".repeat(50))
 	print("  TEST MODE INITIALIZED")
 	print("  Scenario: %s" % TestScenario.keys()[scenario])
@@ -91,11 +95,12 @@ func _ready() -> void:
 	_start_test()
 
 func _setup_components() -> void:
-	# Create AutoPlayer
-	auto_player = AutoPlayerScript.new()
-	auto_player.name = "AutoPlayer"
-	add_child(auto_player)
-	auto_player.test_event.connect(_on_auto_player_event)
+	# Create AutoPlayer (skipped for IDLE_TEST - uses game's IdleController instead)
+	if scenario != TestScenario.IDLE_TEST:
+		auto_player = AutoPlayerScript.new()
+		auto_player.name = "AutoPlayer"
+		add_child(auto_player)
+		auto_player.test_event.connect(_on_auto_player_event)
 
 	# Create Debug Overlay
 	debug_overlay = TestDebugOverlayScript.new()
@@ -176,6 +181,9 @@ func _connect_game_events() -> void:
 				if upgrade_ui.visible:
 					_on_upgrade_ui_shown()
 			)
+			# Track actual upgrade selections for IDLE_TEST
+			if scenario == TestScenario.IDLE_TEST:
+				upgrade_ui.upgrade_selected.connect(_on_idle_upgrade_selected)
 
 		# Game over
 		var game_over_ui = main.get_node_or_null("GameOverUI")
@@ -242,8 +250,13 @@ func _configure_scenario() -> void:
 					print("[TEST] Sword and Bow prioritized in upgrade selection")
 		TestScenario.BOUNDARY_TEST:
 			_configure_boundary_test()
+		TestScenario.IDLE_TEST:
+			_configure_idle_test()
 
-	debug_overlay.set_strategy(strategy_names[auto_player.strategy])
+	if auto_player:
+		debug_overlay.set_strategy(strategy_names[auto_player.strategy])
+	else:
+		debug_overlay.set_strategy("IDLE_MODE")
 
 func _start_test() -> void:
 	_is_running = true
@@ -291,6 +304,13 @@ func _process(delta: float) -> void:
 	if _perf_timer >= _perf_log_interval:
 		_perf_timer = 0.0
 		_log_performance("periodic")
+
+	# Periodic screenshots for idle test (uses real delta, not paused delta)
+	if scenario == TestScenario.IDLE_TEST and auto_screenshots:
+		_idle_screenshot_timer += delta
+		if _idle_screenshot_timer >= IDLE_SCREENSHOT_INTERVAL:
+			_idle_screenshot_timer = 0.0
+			screenshot_capture.capture_custom("idle_%.0fs" % elapsed)
 
 	# Check test duration
 	if elapsed >= test_duration and not _game_over_triggered:
@@ -446,9 +466,14 @@ func _on_upgrade_ui_shown() -> void:
 	if auto_screenshots:
 		screenshot_capture.capture_upgrade_selection()
 
+	# In IDLE_TEST, upgrade auto-select is handled by upgrade_ui timer + idle_controller
+	if scenario == TestScenario.IDLE_TEST:
+		_test_results["upgrades_selected"] += 1
+		return
+
 	# Let auto player handle selection
 	var main = get_tree().current_scene
-	if main:
+	if main and auto_player:
 		var upgrade_ui = main.get_node_or_null("UpgradeUI")
 		if upgrade_ui:
 			auto_player.handle_upgrade_selection(upgrade_ui)
@@ -572,6 +597,42 @@ func _save_results() -> void:
 		file.store_string(json)
 		file.close()
 		print("[TEST] Results saved to: %s" % ProjectSettings.globalize_path(path))
+
+## ==================== IDLE TEST FUNCTIONS ====================
+
+var _idle_screenshot_timer: float = 0.0
+const IDLE_SCREENSHOT_INTERVAL: float = 15.0  # Screenshot every 15 real seconds
+
+const WEAPON_IDS = ["sword", "bow", "torch"]
+
+func _on_idle_upgrade_selected(upgrade) -> void:
+	var upgrade_id = upgrade.id if "id" in upgrade else ""
+	var is_weapon = upgrade_id in WEAPON_IDS
+	if is_weapon:
+		_test_results["sword_upgrades"] += 1
+		if _sword and "level" in _sword:
+			_test_results["sword_level"] = _sword.level
+		print("[IDLE TEST] Weapon upgrade selected: %s" % upgrade_id)
+	else:
+		print("[IDLE TEST] Enchant upgrade selected: %s" % upgrade_id)
+
+func _configure_idle_test() -> void:
+	print("\n[IDLE TEST] Configuring idle mode auto-play test...")
+
+	# Enable god mode + fast progression for testing
+	god_mode = true
+	fast_progression = true
+
+	# Force idle mode on via game.gd
+	var main = get_tree().current_scene
+	if main and main.has_method("force_idle_mode"):
+		main.force_idle_mode()
+		print("[IDLE TEST] Idle mode force-enabled via game.gd")
+	else:
+		print("[IDLE TEST] WARNING: Could not force idle mode - game.gd missing force_idle_mode()")
+
+	print("[IDLE TEST] Configuration complete! AI will auto-dodge, collect, and upgrade.")
+	print("[IDLE TEST] Periodic screenshots every %.0fs" % IDLE_SCREENSHOT_INTERVAL)
 
 ## ==================== BOUNDARY TEST FUNCTIONS ====================
 

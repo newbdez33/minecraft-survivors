@@ -1,8 +1,8 @@
 # Project Handoff Document
 
-**Last Updated:** 2026-02-08
+**Last Updated:** 2026-02-11
 **Project:** Minecraft Survivors
-**Version:** v0.7.0-alpha
+**Version:** v0.7.3-alpha
 **Current Phase:** Phase 5 & 6 Complete ✅ | Phase 7 In Progress
 
 ---
@@ -74,7 +74,7 @@ A Vampire Survivors-like roguelike game with Minecraft theme built in Godot 4.5.
 
 ## Test Status
 
-**1538 tests total** (1454 passed, 84 pre-existing failures)
+**1663 tests total** (1663 passed, 0 failures)
 
 ```
 Phase 1: Core Foundation - 37 tests
@@ -83,7 +83,7 @@ Phase 3: Progression Loop - 63 tests
 Phase 4: Game Feel - 145 tests
 Phase 5: Game Enhancements - 112 tests
 Visual Tests - 128 tests (enemy animations, upgrade effects, all enemies)
-Behavioral BDD Tests - 52 tests (boss attack behavior)
+Behavioral BDD Tests - 148 tests (boss attacks 52, elite monsters 40, wave scaling 29, idle mode 27)
 External Test Suites - 969+ tests (combat, pickups, enemies, animations, bosses)
 ```
 
@@ -235,8 +235,12 @@ See [phase5_enhancements.md](./phases/phase5_enhancements.md) for detailed plan.
 
 **Phase 7 (In Progress):**
 - [x] Procedural 8-bit Audio System (SFX)
-- [ ] Achievement System
-- [ ] Elite Monsters
+- [x] Elite Monsters (6 enemy types with unique abilities, golden outline shader)
+- [x] Post-Wave-30 Infinite Scaling (HP, damage, speed, XP scale infinitely)
+- [x] Idle Mode / Auto-Play (AI kiting, dodge, weapon-first upgrades)
+- [x] Fixed elite spider venom bug (Dictionary instead of StatusEffect)
+- [x] Fixed all 86 pre-existing test failures (1663/1663 pass)
+- [ ] Achievement System UI
 
 **Audio System (COMPLETE):**
 - [x] AudioManager autoload singleton with object pool (8 global + 16 positional players)
@@ -249,10 +253,10 @@ See [phase5_enhancements.md](./phases/phase5_enhancements.md) for detailed plan.
 **Boss System (COMPLETE + IMPROVED):**
 - [x] Evoker (Wave 5, 400 HP) - Summons fangs
 - [x] Elder Guardian (Wave 10, 600 HP) - Mining fatigue beam
-- [x] Ravager (Wave 15, 800 HP) - Charge + stomp attacks (improved animations & damage)
-- [x] Warden (Wave 20, 1000 HP) - Sonic boom + melee attacks (improved animations & triggers)
-- [x] Wither (Wave 25, 1200 HP) - Wither skulls
-- [x] Ender Dragon (Wave 30, 1500 HP) - Dragon breath
+- [x] Ravager (Wave 15, 2400 HP) - Charge + stomp attacks (improved animations & damage)
+- [x] Warden (Wave 20, 3000 HP) - Sonic boom + melee + ground slam + darkness aura + enrage phase
+- [x] Wither (Wave 25, 3600 HP) - Homing wither skulls (2.5 rad/s tracking)
+- [x] Ender Dragon (Wave 30, 4500 HP) - Homing dragon fireballs (1.8 rad/s tracking) + dive
 - [x] All bosses have detailed pixel art SVG sprites with proper textures
 - [x] Boss attack improvements: exaggerated multi-phase animations, increased damage, fixed melee deadlock
 
@@ -293,7 +297,64 @@ All development follows Red→Green→Refactor:
 
 ## Recent Updates
 
-### v0.7.0-alpha (2026-02-08) - Latest
+### v0.7.3-alpha (2026-02-11) - Latest
+
+**Idle Mode / Auto-Play System:**
+- New `IdleController` AI with **kiting behavior**: maintains attack range distance from enemies
+- Kiting distances: `_danger_distance=50` (flee), `_kite_distance=70` (strafe), `_safe_distance=200` (projectiles)
+- AI priority: dodge projectiles > kite enemies > collect pickups > engage enemies > wander
+- **Weapons ALWAYS selected first** regardless of strategy (enchant strategies only for fallback)
+- Unlocked via "Idle Master" achievement (survive past wave 30, target=31)
+- Toggle with **Tab** key during gameplay
+- HUD shows cyan "IDLE MODE" indicator when active, subtle "Tab: Idle Mode" hint when unlocked
+- Localized in EN/ZH/JA (IDLE_MODE, IDLE_MODE_ACTIVE, IDLE_MODE_LOCKED keys)
+- 27 BDD tests in `tests/unit/behavioral/test_idle_mode_behavior.gd`
+- Files: `scripts/systems/idle_controller.gd` (new), modified `game.gd`, `player.gd`, `hud.gd`, `upgrade_ui.gd`
+
+**Bug Fixes:**
+- Fixed elite spider venom passing Dictionary instead of StatusEffect (caused `remaining_time` errors and FPS drops to 4-7)
+- Fixed all 86 pre-existing test failures across 23 test files (outdated values, missing scenes, wrong API, infrastructure)
+- Test suite now: **1663 passed, 0 failures**
+
+**Visual Test Results (IDLE_TEST, 120s @ 2x speed):**
+- 233 kills, wave 7, level 12, Stone Sword (Tier 2)
+- 60 FPS stable, 0 orphan nodes, ~97 MB memory
+- 11/11 upgrades were weapon upgrades (weapon-first verified)
+
+### v0.7.2-alpha (2026-02-10)
+
+**Warden Boss Improvements:**
+- Darkness Aura: reduces player visibility by 40% when within 350px (signal-based fog shader control)
+- Ground Slam AoE: 45 damage in 150px radius, 6s cooldown, reuses boss stomp animation
+- Enrage Phase: at 50% HP, 1.5x speed, 40% faster attacks, permanent red tint, max anger
+- Faster Anger Buildup: anger_per_sound 15→25, damage anger 20→35, sonic threshold 30→20, tracking threshold 80→50, anger decay 30→15
+- game.gd connects `darkness_aura_changed` signal, restores fog on boss defeat
+
+### v0.7.1-alpha (2026-02-09)
+
+**Elite Monsters System:**
+- EliteModifier static component: 2.5x HP, 1.5x damage, 1.2x speed, 20x XP, 1.3x scale
+- Golden outline shader (`elite_outline.gdshader`) with pulsing effect
+- Wave-based spawn chance (0% wave 1-3 → 25% wave 20+), night +10% bonus
+- Max elite cap (0 → 5 based on wave)
+- 6 unique elite abilities: Undead Rally, Multi-Shot, Venom, Charged, Void Strike, Potion Storm
+- Elite monsters don't drop meat
+- 40 BDD tests in `tests/unit/behavioral/test_elite_monsters.gd`
+
+**Homing Boss Projectiles:**
+- Wither skulls now track the player (2.5 rad/s turn rate, smooth curve)
+- Dragon fireballs now track the player (1.8 rad/s turn rate, gentler curve)
+- Both use `angle_difference` + clamped turn for dodgeable but persistent tracking
+
+**Post-Wave-30 Infinite Scaling:**
+- WaveScaler static component (`scripts/systems/wave_scaler.gd`)
+- Normal enemies: +10% HP, +5% damage, +2% speed (cap +50%), +10% XP per wave past 30
+- Boss enemies: +50% HP, +25% damage, +10% speed (cap +100%) per 5-wave cycle
+- Elite scaling: +1% chance/wave (cap 50%), +1 max elites per 5 waves
+- Safety caps: HP 2^31, damage 100K, XP 1M
+- 29 BDD tests in `tests/unit/behavioral/test_wave_scaling.gd`
+
+### v0.7.0-alpha (2026-02-08)
 
 **Procedural Audio System:**
 - AudioManager autoload with object pool (8 global + 16 positional AudioStreamPlayers)
