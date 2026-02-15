@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://totempickup001"]
 
 [ext_resource type="Script" path="res://scripts/pickups/totem_pickup.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/items/totem.svg" id="2_texture"]
+[ext_resource type="Texture2D" path="res://assets/items/tiger_tally.svg" id="2_texture"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_pickup"]
 size = Vector2(16, 24)

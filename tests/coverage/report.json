@@ -1,10 +1,14 @@
 {
 	"scripts": {
 		"res://scripts/arena.gd": {
-			"coverage_percent": 100.0,
-			"tested_functions": 5,
-			"total_functions": 5,
-			"untested": []
+			"coverage_percent": 57.1428571428571,
+			"tested_functions": 4,
+			"total_functions": 7,
+			"untested": [
+				"_get_biome_texture",
+				"_update_current_biome",
+				"get_current_biome"
+			]
 		},
 		"res://scripts/camera.gd": {
 			"coverage_percent": 100.0,
@@ -54,16 +58,16 @@
 			"total_functions": 2,
 			"untested": []
 		},
-		"res://scripts/effects/evoker_fang.gd": {
-			"coverage_percent": 100.0,
-			"tested_functions": 6,
-			"total_functions": 6,
-			"untested": []
-		},
 		"res://scripts/effects/explosion.gd": {
 			"coverage_percent": 100.0,
 			"tested_functions": 1,
 			"total_functions": 1,
+			"untested": []
+		},
+		"res://scripts/effects/ground_spike.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 6,
+			"total_functions": 6,
 			"untested": []
 		},
 		"res://scripts/effects/hit_effect.gd": {
@@ -84,18 +88,17 @@
 			"total_functions": 8,
 			"untested": []
 		},
-		"res://scripts/enemies/creeper.gd": {
-			"coverage_percent": 77.7777777777778,
-			"tested_functions": 14,
-			"total_functions": 18,
+		"res://scripts/enemies/archer.gd": {
+			"coverage_percent": 81.25,
+			"tested_functions": 13,
+			"total_functions": 16,
 			"untested": [
 				"_setup_animator",
 				"_update_walk_animation",
-				"make_elite",
-				"_chain_damage_nearby"
+				"make_elite"
 			]
 		},
-		"res://scripts/enemies/enderman.gd": {
+		"res://scripts/enemies/assassin.gd": {
 			"coverage_percent": 81.8181818181818,
 			"tested_functions": 18,
 			"total_functions": 22,
@@ -106,17 +109,7 @@
 				"_void_strike"
 			]
 		},
-		"res://scripts/enemies/evoker.gd": {
-			"coverage_percent": 86.9565217391304,
-			"tested_functions": 20,
-			"total_functions": 23,
-			"untested": [
-				"_setup_animator",
-				"_update_walk_animation",
-				"_exit_tree"
-			]
-		},
-		"res://scripts/enemies/skeleton.gd": {
+		"res://scripts/enemies/cavalry.gd": {
 			"coverage_percent": 81.25,
 			"tested_functions": 13,
 			"total_functions": 16,
@@ -126,33 +119,18 @@
 				"make_elite"
 			]
 		},
-		"res://scripts/enemies/spider.gd": {
-			"coverage_percent": 81.25,
-			"tested_functions": 13,
-			"total_functions": 16,
+		"res://scripts/enemies/fire_soldier.gd": {
+			"coverage_percent": 77.7777777777778,
+			"tested_functions": 14,
+			"total_functions": 18,
 			"untested": [
 				"_setup_animator",
 				"_update_walk_animation",
-				"make_elite"
+				"make_elite",
+				"_chain_damage_nearby"
 			]
 		},
-		"res://scripts/enemies/vex.gd": {
-			"coverage_percent": 100.0,
-			"tested_functions": 10,
-			"total_functions": 10,
-			"untested": []
-		},
-		"res://scripts/enemies/witch.gd": {
-			"coverage_percent": 81.25,
-			"tested_functions": 13,
-			"total_functions": 16,
-			"untested": [
-				"_setup_animator",
-				"_update_walk_animation",
-				"make_elite"
-			]
-		},
-		"res://scripts/enemies/zombie.gd": {
+		"res://scripts/enemies/infantry.gd": {
 			"coverage_percent": 78.5714285714286,
 			"tested_functions": 11,
 			"total_functions": 14,
@@ -162,16 +140,44 @@
 				"make_elite"
 			]
 		},
+		"res://scripts/enemies/shadow_guard.gd": {
+			"coverage_percent": 100.0,
+			"tested_functions": 10,
+			"total_functions": 10,
+			"untested": []
+		},
+		"res://scripts/enemies/sorcerer.gd": {
+			"coverage_percent": 81.25,
+			"tested_functions": 13,
+			"total_functions": 16,
+			"untested": [
+				"_setup_animator",
+				"_update_walk_animation",
+				"make_elite"
+			]
+		},
+		"res://scripts/enemies/xiahou_dun.gd": {
+			"coverage_percent": 82.6086956521739,
+			"tested_functions": 19,
+			"total_functions": 23,
+			"untested": [
+				"_setup_animator",
+				"_update_walk_animation",
+				"_on_guard_died",
+				"_exit_tree"
+			]
+		},
 		"res://scripts/game.gd": {
-			"coverage_percent": 84.8484848484848,
+			"coverage_percent": 82.3529411764706,
 			"tested_functions": 28,
-			"total_functions": 33,
+			"total_functions": 34,
 			"untested": [
 				"force_idle_mode",
 				"_toggle_idle_mode",
 				"_on_achievement_unlocked",
 				"_on_combo_changed",
-				"_on_warden_darkness"
+				"_on_biome_changed",
+				"_on_boss_darkness"
 			]
 		},
 		"res://scripts/pickups/emerald_pickup.gd": {
@@ -234,7 +240,7 @@
 			"total_functions": 8,
 			"untested": []
 		},
-		"res://scripts/projectiles/potion.gd": {
+		"res://scripts/projectiles/poison_dart.gd": {
 			"coverage_percent": 100.0,
 			"tested_functions": 7,
 			"total_functions": 7,
@@ -248,7 +254,7 @@
 				"_get_elite_chance",
 				"_get_max_elites",
 				"_on_rally_requested",
-				"_spawn_rally_zombies"
+				"_spawn_rally_infantry"
 			]
 		},
 		"res://scripts/systems/achievement.gd": {
@@ -459,7 +465,7 @@
 			"total_functions": 9,
 			"untested": []
 		},
-		"res://scripts/weapons/diamond_sword.gd": {
+		"res://scripts/weapons/divine_weapon.gd": {
 			"coverage_percent": 100.0,
 			"tested_functions": 11,
 			"total_functions": 11,
@@ -478,8 +484,8 @@
 			"untested": []
 		}
 	},
-	"tested_functions": 636,
-	"timestamp": "2026-02-11T12:29:58",
-	"total_coverage_percent": 93.1185944363104,
-	"total_functions": 683
+	"tested_functions": 634,
+	"timestamp": "2026-02-16T02:17:37",
+	"total_coverage_percent": 92.4198250728863,
+	"total_functions": 686
 }

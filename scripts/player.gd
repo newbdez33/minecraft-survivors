@@ -1,5 +1,5 @@
 extends CharacterBody2D
-## Player character controller (Steve)
+## Player character controller (Three Kingdoms general)
 ## Handles movement, health, and combat interactions
 
 signal health_changed(current: int, maximum: int)

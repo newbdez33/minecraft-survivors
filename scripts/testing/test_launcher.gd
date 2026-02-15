@@ -13,7 +13,7 @@ extends SceneTree
 
 func _init() -> void:
 	print("\n" + "=".repeat(60))
-	print("  MINECRAFT SURVIVORS - TEST LAUNCHER")
+	print("  THREE KINGDOMS SURVIVORS - TEST LAUNCHER")
 	print("=".repeat(60))
 	print("")
 	print("RECOMMENDED: Use built-in test mode instead:")

@@ -53,11 +53,11 @@ static func test_spawner_has_spawn_interval() -> Dictionary:
 
 static func test_spawner_has_enemy_scenes() -> Dictionary:
 	var spawner = get_spawner_instance()
-	# MobSpawner uses individual scene vars (zombie_scene, skeleton_scene, etc.)
-	var passed = spawner != null and "zombie_scene" in spawner
+	# MobSpawner uses individual scene vars (infantry_scene, archer_scene, etc.)
+	var passed = spawner != null and "infantry_scene" in spawner
 	if spawner:
 		spawner.queue_free()
-	return {"name": "TC.SP.4: Spawner has zombie_scene property", "passed": passed}
+	return {"name": "TC.SP.4: Spawner has infantry_scene property", "passed": passed}
 
 static func test_spawner_has_spawn_radius() -> Dictionary:
 	var spawner = get_spawner_instance()

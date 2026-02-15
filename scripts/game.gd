@@ -27,12 +27,12 @@ const WaveScalerClass = preload("res://scripts/systems/wave_scaler.gd")
 const ComboSystemClass = preload("res://scripts/systems/combo_system.gd")
 var _achievement_notification_scene: PackedScene = preload("res://scenes/ui/achievement_notification.tscn")
 
-var evoker_scene: PackedScene = preload("res://scenes/enemies/evoker.tscn")
-var elder_guardian_scene: PackedScene = preload("res://scenes/enemies/elder_guardian.tscn")
-var ravager_scene: PackedScene = preload("res://scenes/enemies/ravager.tscn")
-var warden_scene: PackedScene = preload("res://scenes/enemies/warden.tscn")
-var wither_scene: PackedScene = preload("res://scenes/enemies/wither.tscn")
-var ender_dragon_scene: PackedScene = preload("res://scenes/enemies/ender_dragon.tscn")
+var xiahou_dun_scene: PackedScene = preload("res://scenes/enemies/xiahou_dun.tscn")
+var xu_chu_scene: PackedScene = preload("res://scenes/enemies/xu_chu.tscn")
+var zhang_liao_scene: PackedScene = preload("res://scenes/enemies/zhang_liao.tscn")
+var dian_wei_scene: PackedScene = preload("res://scenes/enemies/dian_wei.tscn")
+var sima_yi_scene: PackedScene = preload("res://scenes/enemies/sima_yi.tscn")
+var lv_bu_scene: PackedScene = preload("res://scenes/enemies/lv_bu.tscn")
 var _sword: Node = null
 var _current_boss: Node = null
 var _total_time: float = 0.0
@@ -436,24 +436,24 @@ func _spawn_boss(wave_number: int) -> void:
 	var boss_scene: PackedScene = null
 	var boss_name: String = ""
 	match boss_type:
-		"evoker":
-			boss_scene = evoker_scene
-			boss_name = tr("BOSS_EVOKER") if TranslationServer.get_locale() else "Evoker"
-		"elder_guardian":
-			boss_scene = elder_guardian_scene
-			boss_name = tr("BOSS_ELDER_GUARDIAN") if TranslationServer.get_locale() else "Elder Guardian"
-		"ravager":
-			boss_scene = ravager_scene
-			boss_name = tr("BOSS_RAVAGER") if TranslationServer.get_locale() else "Ravager"
-		"warden":
-			boss_scene = warden_scene
-			boss_name = tr("BOSS_WARDEN") if TranslationServer.get_locale() else "Warden"
-		"wither":
-			boss_scene = wither_scene
-			boss_name = tr("BOSS_WITHER") if TranslationServer.get_locale() else "Wither"
-		"ender_dragon":
-			boss_scene = ender_dragon_scene
-			boss_name = tr("BOSS_ENDER_DRAGON") if TranslationServer.get_locale() else "Ender Dragon"
+		"xiahou_dun":
+			boss_scene = xiahou_dun_scene
+			boss_name = tr("BOSS_XIAHOU_DUN") if TranslationServer.get_locale() else "Xiahou Dun"
+		"xu_chu":
+			boss_scene = xu_chu_scene
+			boss_name = tr("BOSS_XU_CHU") if TranslationServer.get_locale() else "Xu Chu"
+		"zhang_liao":
+			boss_scene = zhang_liao_scene
+			boss_name = tr("BOSS_ZHANG_LIAO") if TranslationServer.get_locale() else "Zhang Liao"
+		"dian_wei":
+			boss_scene = dian_wei_scene
+			boss_name = tr("BOSS_DIAN_WEI") if TranslationServer.get_locale() else "Dian Wei"
+		"sima_yi":
+			boss_scene = sima_yi_scene
+			boss_name = tr("BOSS_SIMA_YI") if TranslationServer.get_locale() else "Sima Yi"
+		"lv_bu":
+			boss_scene = lv_bu_scene
+			boss_name = tr("BOSS_LV_BU") if TranslationServer.get_locale() else "Lv Bu"
 
 	if not boss_scene:
 		return
@@ -475,9 +475,9 @@ func _spawn_boss(wave_number: int) -> void:
 	if boss.has_signal("died"):
 		boss.died.connect(_on_boss_died)
 
-	# Connect Warden darkness aura signal
+	# Connect Dian Wei darkness aura signal
 	if boss.has_signal("darkness_aura_changed"):
-		boss.darkness_aura_changed.connect(_on_warden_darkness)
+		boss.darkness_aura_changed.connect(_on_boss_darkness)
 
 	# Add boss to scene
 	add_child(boss)
@@ -500,15 +500,15 @@ func _on_boss_died(_xp: int) -> void:
 ## Called when boss health bar finishes (after death animation)
 func _on_boss_defeated() -> void:
 	_current_boss = null
-	# Restore fog of war in case Warden darkness was active
+	# Restore fog of war in case Dian Wei darkness was active
 	_update_fog_of_war()
 	# Resume normal spawning
 	if spawner:
 		spawner.resume_spawning()
 
 
-## Called when Warden darkness aura activates/deactivates
-func _on_warden_darkness(active: bool) -> void:
+## Called when Dian Wei darkness aura activates/deactivates
+func _on_boss_darkness(active: bool) -> void:
 	if not _fog_material:
 		return
 	if active:
@@ -525,7 +525,7 @@ func _on_warden_darkness(active: bool) -> void:
 		else:
 			_fog_material.set_shader_parameter("enabled", false)
 
-## Warden darkness visibility reduction (matches warden.gd export)
+## Dian Wei darkness visibility reduction (matches dian_wei.gd export)
 var darkness_visibility_reduction: float = 0.40
 
 

@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" shape-rendering="crispEdges">
+  <!-- Xu Chu (许褚) - Tiger Fool - Wave 10 Boss -->
+  <!-- Massive bare-chested warrior, very broad/bulky, fierce face -->
+
+  <!-- Head (broad, fierce) -->
+  <rect x="10" y="2" width="12" height="9" fill="#B87D56"/>
+  <!-- Short wild hair -->
+  <rect x="10" y="1" width="12" height="2" fill="#2A2A2A"/>
+  <rect x="9" y="2" width="1" height="2" fill="#2A2A2A"/>
+  <rect x="22" y="2" width="1" height="2" fill="#2A2A2A"/>
+  <rect x="11" y="1" width="2" height="1" fill="#333333"/>
+  <rect x="19" y="1" width="2" height="1" fill="#333333"/>
+
+  <!-- Fierce eyes (small, angry) -->
+  <rect x="11" y="5" width="3" height="2" fill="#FFFFFF"/>
+  <rect x="12" y="5" width="2" height="2" fill="#1A1A1A"/>
+  <rect x="18" y="5" width="3" height="2" fill="#FFFFFF"/>
+  <rect x="18" y="5" width="2" height="2" fill="#1A1A1A"/>
+  <!-- Heavy angry eyebrows -->
+  <rect x="10" y="4" width="5" height="1" fill="#1A1A1A"/>
+  <rect x="17" y="4" width="5" height="1" fill="#1A1A1A"/>
+
+  <!-- Nose (broad) -->
+  <rect x="14" y="7" width="4" height="2" fill="#A06D46"/>
+
+  <!-- Fierce open mouth (yelling) -->
+  <rect x="12" y="9" width="8" height="2" fill="#8B2020"/>
+  <rect x="13" y="9" width="1" height="1" fill="#FFFFFF"/>
+  <rect x="18" y="9" width="1" height="1" fill="#FFFFFF"/>
+
+  <!-- Thick neck -->
+  <rect x="12" y="11" width="8" height="2" fill="#B87D56"/>
+
+  <!-- Massive bare chest (very wide torso) -->
+  <rect x="4" y="13" width="24" height="12" fill="#B87D56"/>
+  <rect x="6" y="14" width="20" height="10" fill="#C48D66"/>
+
+  <!-- Chest muscle definition -->
+  <rect x="10" y="14" width="5" height="3" fill="#B07D52"/>
+  <rect x="17" y="14" width="5" height="3" fill="#B07D52"/>
+  <!-- Abs suggestion -->
+  <rect x="14" y="18" width="1" height="4" fill="#A06D46"/>
+  <rect x="17" y="18" width="1" height="4" fill="#A06D46"/>
+  <rect x="14" y="20" width="4" height="1" fill="#A06D46"/>
+
+  <!-- Leather strap across chest (diagonal) -->
+  <rect x="8" y="13" width="2" height="1" fill="#5C3A1E"/>
+  <rect x="10" y="14" width="2" height="1" fill="#5C3A1E"/>
+  <rect x="12" y="15" width="2" height="1" fill="#5C3A1E"/>
+  <rect x="14" y="16" width="2" height="1" fill="#5C3A1E"/>
+  <rect x="16" y="17" width="2" height="1" fill="#5C3A1E"/>
+  <rect x="18" y="18" width="2" height="1" fill="#5C3A1E"/>
+  <rect x="20" y="19" width="2" height="1" fill="#5C3A1E"/>
+
+  <!-- Leather belt/waistband -->
+  <rect x="6" y="23" width="20" height="2" fill="#5C3A1E"/>
+  <rect x="14" y="23" width="4" height="2" fill="#8B6914"/>
+  <rect x="15" y="23" width="2" height="2" fill="#A07B1E"/>
+
+  <!-- Massive arms (bulging muscles) -->
+  <rect x="1" y="13" width="5" height="10" fill="#B87D56"/>
+  <rect x="2" y="14" width="3" height="8" fill="#C48D66"/>
+  <rect x="26" y="13" width="5" height="10" fill="#B87D56"/>
+  <rect x="27" y="14" width="3" height="8" fill="#C48D66"/>
+  <!-- Muscle highlights -->
+  <rect x="2" y="15" width="2" height="2" fill="#D09D76"/>
+  <rect x="28" y="15" width="2" height="2" fill="#D09D76"/>
+  <!-- Wrist wraps -->
+  <rect x="1" y="22" width="4" height="1" fill="#5C3A1E"/>
+  <rect x="27" y="22" width="4" height="1" fill="#5C3A1E"/>
+
+  <!-- Fists -->
+  <rect x="1" y="23" width="4" height="2" fill="#A06D46"/>
+  <rect x="27" y="23" width="4" height="2" fill="#A06D46"/>
+
+  <!-- Pants (rough cloth) -->
+  <rect x="8" y="25" width="7" height="5" fill="#4A3520"/>
+  <rect x="17" y="25" width="7" height="5" fill="#4A3520"/>
+
+  <!-- Legs (massive) -->
+  <rect x="9" y="28" width="5" height="4" fill="#3D2A15"/>
+  <rect x="18" y="28" width="5" height="4" fill="#3D2A15"/>
+
+  <!-- Feet/sandals -->
+  <rect x="8" y="30" width="6" height="2" fill="#3A2510"/>
+  <rect x="18" y="30" width="6" height="2" fill="#3A2510"/>
+</svg>

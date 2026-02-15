@@ -18,7 +18,7 @@ concurrency:
 
 env:
   GODOT_VERSION: 4.5.1
-  GAME_NAME: MinecraftSurvivors
+  GAME_NAME: ThreeKingdomsSurvivors
 
 jobs:
   build-web:

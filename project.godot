@@ -10,8 +10,8 @@ config_version=5
 
 [application]
 
-config/name="Minecraft Survivors"
-config/description="A Vampire Survivors-like roguelike game with Minecraft theme - Play as Steve and survive waves of mobs!"
+config/name="Three Kingdoms Survivors"
+config/description="A Vampire Survivors-like roguelike game with Three Kingdoms theme - Play as legendary generals and survive waves of Cao Cao's forces!"
 run/main_scene="res://scenes/ui/splash_screen.tscn"
 config/features=PackedStringArray("4.5", "Forward Plus")
 boot_splash/bg_color=Color(0.05, 0.05, 0.05, 1)

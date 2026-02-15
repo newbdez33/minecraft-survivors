@@ -21,7 +21,7 @@ const WEAPON_UPGRADE_IDS = ["sword", "bow", "torch"]
 
 ## Upgrade definitions with translation keys
 const UPGRADE_DEFS = {
-	"sword": {"name_key": "UPGRADE_SWORD", "desc_key": "DESC_SWORD", "max": 12, "effect": 1.0, "icon": "res://assets/weapons/wood_sword.svg"},
+	"sword": {"name_key": "UPGRADE_SWORD", "desc_key": "DESC_SWORD", "max": 12, "effect": 1.0, "icon": "res://assets/weapons/iron_blade.svg"},
 	"bow": {"name_key": "UPGRADE_BOW", "desc_key": "DESC_BOW", "max": 4, "effect": 1.0, "icon": "res://assets/weapons/bow.svg"},
 	"sharpness": {"name_key": "UPGRADE_SHARPNESS", "desc_key": "DESC_SHARPNESS", "max": 5, "effect": 5.0, "icon": "res://assets/ui/upgrades/sharpness.svg"},
 	"knockback": {"name_key": "UPGRADE_KNOCKBACK", "desc_key": "DESC_KNOCKBACK", "max": 3, "effect": 30.0, "icon": "res://assets/ui/upgrades/knockback.svg"},
@@ -30,7 +30,7 @@ const UPGRADE_DEFS = {
 	"swiftness": {"name_key": "UPGRADE_SWIFTNESS", "desc_key": "DESC_SWIFTNESS", "max": 3, "effect": 15.0, "icon": "res://assets/ui/upgrades/swiftness.svg"},
 	"sweeping": {"name_key": "UPGRADE_SWEEPING", "desc_key": "DESC_SWEEPING", "max": 3, "effect": 20.0, "icon": "res://assets/ui/upgrades/sweeping.svg"},
 	"haste": {"name_key": "UPGRADE_HASTE", "desc_key": "DESC_HASTE", "max": 3, "effect": 10.0, "icon": "res://assets/ui/upgrades/haste.svg"},
-	"torch": {"name_key": "UPGRADE_TORCH", "desc_key": "DESC_TORCH", "max": 3, "effect": 1.0, "icon": "res://assets/weapons/torch.svg"},
+	"torch": {"name_key": "UPGRADE_TORCH", "desc_key": "DESC_TORCH", "max": 3, "effect": 1.0, "icon": "res://assets/weapons/war_lantern.svg"},
 }
 
 func _ready() -> void:
@@ -140,23 +140,23 @@ func get_weapon_icon(upgrade_id: String) -> String:
 			var sword = player.get_node_or_null("Sword")
 			if sword and "current_tier" in sword:
 				match sword.current_tier:
-					1:  # WOOD
-						return "res://assets/weapons/wood_sword.svg"
-					2:  # STONE
-						return "res://assets/weapons/stone_sword.svg"
-					3:  # IRON
-						return "res://assets/weapons/iron_sword.svg"
-					4:  # DIAMOND
-						return "res://assets/weapons/diamond_sword.svg"
-			return "res://assets/weapons/wood_sword.svg"
+					1:  # IRON_BLADE
+						return "res://assets/weapons/iron_blade.svg"
+					2:  # STEEL_BLADE
+						return "res://assets/weapons/steel_blade.svg"
+					3:  # FINE_STEEL
+						return "res://assets/weapons/fine_steel_blade.svg"
+					4:  # DIVINE
+						return "res://assets/weapons/divine_weapon.svg"
+			return "res://assets/weapons/iron_blade.svg"
 		"bow":
-			# Check if we already have crossbow
+			# Check if we already have crossbow (repeating crossbow)
 			var crossbow = player.get_node_or_null("Crossbow")
 			if crossbow:
-				return "res://assets/weapons/crossbow.svg"
+				return "res://assets/weapons/repeating_crossbow.svg"
 			return "res://assets/weapons/bow.svg"
 		"torch":
-			return "res://assets/weapons/torch.svg"
+			return "res://assets/weapons/war_lantern.svg"
 		_:
 			return UPGRADE_DEFS[upgrade_id].icon if upgrade_id in UPGRADE_DEFS else ""
 
@@ -167,15 +167,15 @@ func get_next_evolution_icon(upgrade_id: String) -> String:
 			var sword = player.get_node_or_null("Sword") if player else null
 			if sword and "current_tier" in sword:
 				match sword.current_tier:
-					1:  # WOOD -> STONE
-						return "res://assets/weapons/stone_sword.svg"
-					2:  # STONE -> IRON
-						return "res://assets/weapons/iron_sword.svg"
-					3:  # IRON -> DIAMOND
-						return "res://assets/weapons/diamond_sword.svg"
+					1:  # IRON_BLADE -> STEEL_BLADE
+						return "res://assets/weapons/steel_blade.svg"
+					2:  # STEEL_BLADE -> FINE_STEEL
+						return "res://assets/weapons/fine_steel_blade.svg"
+					3:  # FINE_STEEL -> DIVINE
+						return "res://assets/weapons/divine_weapon.svg"
 			return ""
 		"bow":
-			return "res://assets/weapons/crossbow.svg"
+			return "res://assets/weapons/repeating_crossbow.svg"
 		_:
 			return ""
 
@@ -230,9 +230,9 @@ func get_next_tier_name(upgrade_id: String) -> String:
 	match upgrade_id:
 		"sword":
 			match next_level:
-				3: return tr("STONE_SWORD")
-				6: return tr("IRON_SWORD")
-				9: return tr("DIAMOND_SWORD")
+				3: return tr("STEEL_BLADE")
+				6: return tr("FINE_STEEL_BLADE")
+				9: return tr("DIVINE_WEAPON")
 				_: return ""
 		"bow":
 			if next_level == 4:

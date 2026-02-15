@@ -259,7 +259,7 @@ func flash_color(color: Color, duration: float = 0.1) -> void:
 # ============================================================================
 
 func play_jump_squash() -> void:
-	"""Play squash animation for jump preparation (Spider)"""
+	"""Play squash animation for charge preparation (Cavalry)"""
 	if sprite == null:
 		return
 
@@ -273,7 +273,7 @@ func play_jump_squash() -> void:
 
 
 func play_jump_stretch() -> void:
-	"""Play stretch animation for jump (Spider)"""
+	"""Play stretch animation for charge (Cavalry)"""
 	if sprite == null:
 		return
 
@@ -287,7 +287,7 @@ func play_jump_stretch() -> void:
 
 
 func play_jump_land() -> void:
-	"""Play landing animation (Spider)"""
+	"""Play landing animation (Cavalry)"""
 	if sprite == null:
 		return
 
@@ -333,7 +333,7 @@ func play_charge_rush() -> void:
 
 
 func play_teleport_out() -> void:
-	"""Play teleport out animation (Enderman)"""
+	"""Play teleport out animation (Assassin)"""
 	if sprite == null:
 		return
 
@@ -348,7 +348,7 @@ func play_teleport_out() -> void:
 
 
 func play_teleport_in() -> void:
-	"""Play teleport in animation (Enderman)"""
+	"""Play teleport in animation (Assassin)"""
 	if sprite == null:
 		return
 
@@ -367,7 +367,7 @@ func play_teleport_in() -> void:
 
 
 func play_explosion_swell(progress: float) -> void:
-	"""Play swelling animation for explosion preparation (Creeper)"""
+	"""Play swelling animation for explosion preparation (Fire Soldier)"""
 	if sprite == null:
 		return
 
@@ -394,7 +394,7 @@ func play_breath_attack() -> void:
 
 
 func play_sonic_boom() -> void:
-	"""Play sonic boom animation (Warden) - enhanced with scale pulsing and cyan flash"""
+	"""Play sonic boom animation (Dian Wei) - enhanced with scale pulsing and cyan flash"""
 	if sprite == null:
 		return
 
@@ -445,7 +445,7 @@ func play_sonic_boom() -> void:
 
 
 func play_summon_animation() -> void:
-	"""Play summoning animation (Evoker)"""
+	"""Play summoning animation (Xiahou Dun)"""
 	if sprite == null:
 		return
 
@@ -596,7 +596,7 @@ func play_boss_charge() -> void:
 
 
 func play_boss_melee() -> void:
-	"""Play boss melee animation (Warden) - dramatic wind-up and heavy slam"""
+	"""Play boss melee animation (Dian Wei) - dramatic wind-up and heavy slam"""
 	if sprite == null:
 		return
 

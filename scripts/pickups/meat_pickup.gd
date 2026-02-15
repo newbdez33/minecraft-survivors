@@ -1,6 +1,6 @@
 extends Area2D
 class_name MeatPickup
-## Meat pickup dropped by enemies - restores 1 heart (10 HP)
+## Steamed Bun pickup dropped by enemies - restores 1 heart (10 HP)
 
 signal collected(heal_amount: int)
 

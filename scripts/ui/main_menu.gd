@@ -1,6 +1,6 @@
 extends CanvasLayer
 class_name MainMenu
-## Main menu UI with game options - Minecraft Dungeons style
+## Main menu UI with game options - Three Kingdoms Survivors
 
 signal start_pressed
 signal character_pressed

@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" shape-rendering="crispEdges">
+  <!-- Archer (弓兵) - Top-down view - Cao Cao's bowman -->
+
+  <!-- Archer cap (light leather) -->
+  <rect x="10" y="2" width="12" height="3" fill="#8A7A60"/>
+  <rect x="9" y="5" width="14" height="2" fill="#9A8A70"/>
+  <!-- Cap point -->
+  <rect x="14" y="0" width="4" height="2" fill="#7A6A50"/>
+
+  <!-- Head / Face (skin) -->
+  <rect x="9" y="7" width="14" height="7" fill="#D4A574"/>
+
+  <!-- Eyes (focused, dark) -->
+  <rect x="12" y="9" width="2" height="2" fill="#1A1A1A"/>
+  <rect x="18" y="9" width="2" height="2" fill="#1A1A1A"/>
+
+  <!-- Mouth -->
+  <rect x="14" y="12" width="4" height="1" fill="#A07050"/>
+
+  <!-- Light armor torso (tan) -->
+  <rect x="8" y="14" width="16" height="10" fill="#A09070"/>
+  <!-- Chest wrap / light plate -->
+  <rect x="11" y="15" width="10" height="6" fill="#B0A080"/>
+  <!-- Belt -->
+  <rect x="9" y="22" width="14" height="2" fill="#5A4A30"/>
+
+  <!-- Quiver on back (visible behind right shoulder) -->
+  <rect x="22" y="8" width="4" height="12" fill="#6B4423"/>
+  <!-- Arrow tips sticking out of quiver -->
+  <rect x="22" y="6" width="1" height="3" fill="#888888"/>
+  <rect x="24" y="7" width="1" height="2" fill="#888888"/>
+  <rect x="23" y="5" width="1" height="3" fill="#888888"/>
+  <!-- Arrow fletching -->
+  <rect x="22" y="6" width="1" height="1" fill="#CCCCCC"/>
+  <rect x="24" y="7" width="1" height="1" fill="#CCCCCC"/>
+  <rect x="23" y="5" width="1" height="1" fill="#CCCCCC"/>
+
+  <!-- Shoulder pads (light) -->
+  <rect x="5" y="14" width="4" height="3" fill="#8A7A60"/>
+  <rect x="23" y="14" width="4" height="3" fill="#8A7A60"/>
+
+  <!-- Left arm holding bow -->
+  <rect x="3" y="15" width="3" height="4" fill="#D4A574"/>
+  <!-- Bow (curved wood) -->
+  <rect x="1" y="10" width="2" height="14" fill="#6B4423"/>
+  <rect x="0" y="12" width="1" height="10" fill="#5A3318"/>
+  <!-- Bowstring -->
+  <rect x="3" y="10" width="1" height="14" fill="#CCCCAA"/>
+
+  <!-- Right arm -->
+  <rect x="26" y="16" width="3" height="4" fill="#D4A574"/>
+
+  <!-- Pants (dark tan) -->
+  <rect x="10" y="24" width="5" height="4" fill="#4A3728"/>
+  <rect x="17" y="24" width="5" height="4" fill="#4A3728"/>
+
+  <!-- Feet (lighter, wrapped sandals) -->
+  <rect x="10" y="28" width="5" height="2" fill="#5A4A38"/>
+  <rect x="17" y="28" width="5" height="2" fill="#5A4A38"/>
+</svg>

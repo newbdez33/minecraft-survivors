@@ -1,10 +1,10 @@
-# CLAUDE.md - AI Assistant Guide for Minecraft Survivors
+# CLAUDE.md - AI Assistant Guide for Three Kingdoms Survivors
 
-This document provides essential context for AI assistants working on the Minecraft Survivors codebase.
+This document provides essential context for AI assistants working on the Three Kingdoms Survivors codebase.
 
 ## Project Overview
 
-**Minecraft Survivors** is a Vampire Survivors-like roguelike game built with **Godot 4.5** featuring Minecraft-themed characters and enemies. Players control Steve, survive waves of mobs using auto-attack combat, collect XP, and select upgrades to become stronger.
+**Three Kingdoms Survivors** (三国幸存者) is a Vampire Survivors-like roguelike game built with **Godot 4.5** featuring Romance of the Three Kingdoms (三国演义) themed characters and enemies. Players control legendary generals (Guan Yu, Zhao Yun, Zhang Fei), survive waves of Cao Cao's forces using auto-attack combat, collect War Merits (战功), and select upgrades to become stronger.
 
 - **Engine:** Godot 4.5
 - **Language:** GDScript
@@ -14,14 +14,14 @@ This document provides essential context for AI assistants working on the Minecr
 ## Directory Structure
 
 ```
-minecraft-survivors/
+three-kingdoms-survivors/
 ├── assets/              # SVG pixel art assets
-│   ├── characters/      # Player and enemy sprites
+│   ├── characters/      # Player generals and enemy sprites
 │   ├── effects/         # Visual effect sprites
-│   ├── items/           # Collectibles (xp_orb, heart, meat, golden_apple)
+│   ├── items/           # Collectibles (war_merit, heart, steamed_bun, immortal_peach)
 │   ├── tiles/           # Ground tiles (grass, desert, snow, swamp)
 │   ├── ui/              # UI icons (upgrades, day/night)
-│   └── weapons/         # Weapon sprites (wood/stone/iron/diamond swords, bow, crossbow)
+│   └── weapons/         # Weapon sprites (iron/steel/fine_steel blades, divine_weapon, bow, crossbow)
 ├── docs/                # Comprehensive documentation
 │   ├── tutorials/       # Beginner learning guides
 │   └── screenshots/     # Test verification images
@@ -30,7 +30,7 @@ minecraft-survivors/
 │   ├── enemies/         # Enemy scenes
 │   ├── effects/         # Effect scenes
 │   ├── pickups/         # Collectible scenes
-│   ├── projectiles/     # Arrow, potion scenes
+│   ├── projectiles/     # Arrow, poison dart scenes
 │   ├── ui/              # UI scenes (HUD, upgrade, game over)
 │   └── weapons/         # Weapon scenes
 ├── scripts/             # GDScript source files
@@ -77,8 +77,8 @@ minecraft-survivors/
 | `scripts/components/status_effect_manager.gd` | Poison/buff stacking system |
 | `scripts/components/weapon_slots.gd` | 4-slot weapon system |
 | `scripts/weapons/sword_base.gd` | Sword evolution system (4 tiers) |
-| `scripts/pickups/health_pickup.gd` | Golden Apple healing pickup |
-| `scripts/pickups/meat_pickup.gd` | Meat drop from enemies |
+| `scripts/pickups/health_pickup.gd` | Immortal Peach (仙桃) healing pickup |
+| `scripts/pickups/meat_pickup.gd` | Steamed Bun (馒头) drop from enemies |
 | `scripts/systems/achievement_manager.gd` | Achievement tracking, persistence, 21 achievements |
 | `scripts/systems/achievement.gd` | Achievement data class with icon_path |
 | `scripts/ui/achievement_panel.gd` | Achievement grid panel (main menu + pause menu) |
@@ -87,6 +87,78 @@ minecraft-survivors/
 | `tests/test_runner.gd` | Central test orchestrator (1718 tests) |
 | `scripts/testing/test_mode.gd` | Auto-play test mode with performance monitoring |
 | `docs/GAME_DATA.md` | Comprehensive game data reference (bilingual) |
+
+## Entity Reference
+
+### Player Characters (Shu Han Generals)
+
+| Character | Chinese | Script | Role |
+|-----------|---------|--------|------|
+| Guan Yu | 关羽 | `player.gd` | Balanced fighter, Green Dragon Blade |
+| Zhao Yun | 赵云 | `player.gd` | Agile warrior, +20% speed, +50% pickup |
+| Zhang Fei | 张飞 | `player.gd` | Tank/power: +20% HP, +10% dmg, -15% speed |
+
+### Regular Enemies (Cao Cao's Troops - 兵种)
+
+| Enemy | Chinese | Script | Behavior |
+|-------|---------|--------|----------|
+| Infantry | 步兵 | `infantry.gd` | Basic melee chaser |
+| Archer | 弓兵 | `archer.gd` | Ranged arrows |
+| Cavalry | 骑兵 | `cavalry.gd` | Fast, charge/leap attack |
+| Fire Soldier | 火兵 | `fire_soldier.gd` | Explodes (fire attack) |
+| Assassin | 刺客 | `assassin.gd` | Teleports when hit |
+| Sorcerer | 术士 | `sorcerer.gd` | Throws poison darts |
+
+### Boss Enemies (Cao Cao's Generals)
+
+| Boss | Chinese | Wave | Script |
+|------|---------|------|--------|
+| Xiahou Dun | 夏侯惇 | 5 | `xiahou_dun.gd` |
+| Xu Chu | 许褚 | 10 | `xu_chu.gd` |
+| Zhang Liao | 张辽 | 15 | `zhang_liao.gd` |
+| Dian Wei | 典韦 | 20 | `dian_wei.gd` |
+| Sima Yi | 司马懿 | 25 | `sima_yi.gd` |
+| Lv Bu | 吕布 | 30 | `lv_bu.gd` |
+
+### Weapons
+
+| Weapon | Chinese | Tier |
+|--------|---------|------|
+| Iron Blade | 铁刃 | T1 |
+| Steel Blade | 钢刃 | T2 |
+| Fine Steel Blade | 精钢刃 | T3 |
+| Divine Weapon | 神兵 | T4 |
+| Bow | 弓 | - |
+| Repeating Crossbow | 连弩 | Bow evolution |
+| War Lantern | 战灯 | - |
+
+### Pickups & Items
+
+| Item | Chinese | Description |
+|------|---------|-------------|
+| War Merit | 战功 | XP orb equivalent |
+| Immortal Peach | 仙桃 | Heals 50% max HP |
+| Steamed Bun | 馒头 | Heals 10 HP, drops from Archers |
+| Copper Coin | 铜钱 | Currency pickup |
+| Tiger Tally | 虎符 | Special item |
+
+### Projectiles
+
+| Projectile | Chinese | Used By |
+|------------|---------|---------|
+| Dark Flame | 暗火 | Sima Yi (homing) |
+| Sky Halberd | 天戟 | Lv Bu (homing + dive) |
+| Poison Dart | 毒针 | Sorcerer |
+| Ground Spike | 地刺 | Xiahou Dun |
+
+### Biomes
+
+| Biome | Chinese | Direction |
+|-------|---------|-----------|
+| Central Plains | 中原 | Inner (<800px) |
+| Western Regions | 西域 | East |
+| Northern Frontier | 北疆 | North |
+| Southern Marshes | 南蛮 | South-west |
 
 ## Development Commands
 
@@ -112,15 +184,15 @@ Exit code 0 = all tests pass, 1 = failures.
 ### Creating a Release
 Releases are triggered by pushing version tags:
 ```bash
-git tag v1.0.0
-git push origin v1.0.0
+git tag v2.0.0
+git push origin v2.0.0
 ```
 GitHub Actions automatically builds Windows/macOS executables.
 
 ## Code Conventions
 
 ### Naming
-- **Classes:** PascalCase (`class_name Zombie`, `class_name UpgradeManager`)
+- **Classes:** PascalCase (`class_name Infantry`, `class_name UpgradeManager`)
 - **Variables/Functions:** snake_case (`var move_speed`, `func take_damage()`)
 - **Constants:** UPPER_SNAKE_CASE (`const MAX_HEALTH`, `const UPGRADE_DEFS`)
 - **Signals:** snake_case (`signal health_changed`, `signal leveled_up`)
@@ -202,7 +274,7 @@ func test_player_takes_damage() -> void:
 Located at `localization/translations.csv`:
 ```csv
 keys,en,ja,zh
-GAME_TITLE,Minecraft Survivors,マインクラフト サバイバーズ,我的世界 幸存者
+GAME_TITLE,Three Kingdoms Survivors,三国サバイバーズ,三国幸存者
 YOU_DIED,You Died!,死亡した！,你死了！
 ```
 
@@ -233,7 +305,7 @@ Key translation keys:
 ### Release Workflow
 Located at `.github/workflows/release.yml`:
 
-1. **Trigger:** Git tags matching `v*` (e.g., `v1.0.0`)
+1. **Trigger:** Git tags matching `v*` (e.g., `v2.0.0`)
 2. **verify-main-branch:** Ensures tag is on main branch
 3. **build-windows:** Builds Windows executable
 4. **build-macos:** Builds macOS app bundle
@@ -256,30 +328,30 @@ Play the game at: `https://<username>.github.io/<repo-name>/`
 ### Weapon Evolution System
 Swords use a 4-tier evolution system (`scripts/weapons/sword_base.gd`):
 
-| Tier | Name | Damage | Range | Cooldown | Kills to Evolve |
-|------|------|--------|-------|----------|-----------------|
-| 1 | Wood Sword | 5 | 60 | 1.2s | 50 |
-| 2 | Stone Sword | 8 | 70 | 1.0s | 150 |
-| 3 | Iron Sword | 12 | 80 | 0.9s | 400 |
-| 4 | Diamond Sword | 15 | 90 | 0.8s | Max tier |
+| Tier | Name | Chinese | Damage | Range | Cooldown | Kills to Evolve |
+|------|------|---------|--------|-------|----------|-----------------|
+| 1 | Iron Blade | 铁刃 | 5 | 60 | 1.2s | 50 |
+| 2 | Steel Blade | 钢刃 | 8 | 70 | 1.0s | 150 |
+| 3 | Fine Steel Blade | 精钢刃 | 12 | 80 | 0.9s | 400 |
+| 4 | Divine Weapon | 神兵 | 15 | 90 | 0.8s | Max tier |
 
 **Per-level upgrades:** +2 damage, +5 range, -5% cooldown
 **Evolution bonuses:** Extra stats when evolving to next tier
 
 ### Upgrade System
 9 upgrades managed by `UpgradeManager`:
-- Sharpness (+5 damage per level)
-- Protection (-10% damage taken)
-- Swiftness (+15% movement speed)
-- Knockback (+30 knockback force)
-- Looting (+20% XP gain)
-- Sweeping Edge (+20 attack range)
-- Haste (-10% attack cooldown)
+- Sharpness / 锋利 (+5 damage per level)
+- Protection / 铁甲 (-10% damage taken)
+- Swiftness / 轻功 (+15% movement speed)
+- Power Strike / 力拔 (+30 knockback force)
+- Spoils / 缴获 (+20% XP gain)
+- Sweep / 横扫 (+20 attack range)
+- Swift Wind / 疾风 (-10% attack cooldown)
 
 ### Health Pickup System
 Two types of health pickups:
-- **Meat** - Drops from Skeletons (12% chance), heals 10 HP. Elite enemies never drop meat.
-- **Golden Apple** - Spawns every 20s, heals 50% max HP
+- **Steamed Bun (馒头)** - Drops from Archers (12% chance), heals 10 HP. Elite enemies never drop.
+- **Immortal Peach (仙桃)** - Spawns every 20s, heals 50% max HP
 
 `HealthPickupSpawner` adjusts spawn rate based on player health:
 - Health < 30%: Spawns at minimum interval (15s)
@@ -299,14 +371,14 @@ base_count = base_enemies_per_wave * pow(wave_scaling, wave - 1)
 ### Enemy Data
 6 enemy types with unique behaviors:
 
-| Enemy | HP | Damage | Speed | XP | Meat | Special |
-|-------|-----|--------|-------|-----|------|---------|
-| Zombie | 10 | 10 | 60 | 5 | 0% | Basic chaser |
-| Skeleton | 5 | 8 | 40 | 8 | 12% | Ranged arrows |
-| Spider | 6 | 8 | 100 | 6 | 0% | Jump attack |
-| Creeper | 12 | 30 | 50 | 10 | 0% | Explodes |
-| Enderman | 20 | 15 | 70 | 15 | 0% | Teleports when hit |
-| Witch | 10 | 12 | 35 | 12 | 0% | Throws poison potions |
+| Enemy | Chinese | HP | Damage | Speed | XP | Drop | Special |
+|-------|---------|-----|--------|-------|-----|------|---------|
+| Infantry | 步兵 | 10 | 10 | 60 | 5 | 0% | Basic chaser |
+| Archer | 弓兵 | 5 | 8 | 40 | 8 | 12% | Ranged arrows |
+| Cavalry | 骑兵 | 6 | 8 | 100 | 6 | 0% | Charge attack |
+| Fire Soldier | 火兵 | 12 | 30 | 50 | 10 | 0% | Explodes |
+| Assassin | 刺客 | 20 | 15 | 70 | 15 | 0% | Teleports when hit |
+| Sorcerer | 术士 | 10 | 12 | 35 | 12 | 0% | Throws poison darts |
 
 **Anti-sticking:** All enemies have push-back when < 30px from player.
 
@@ -315,7 +387,7 @@ Procedural 8-bit sound effects with no external audio files required:
 - `AudioManager` autoload singleton with object pool (8 global + 16 positional AudioStreamPlayers)
 - `SfxGenerator` generates AudioStreamWAV at runtime with 30 presets (square, saw, noise waveforms)
 - `SfxConnector` auto-wires signals from enemies, pickups, weapons, and player
-- XP orb collection plays ascending C major scale (8 notes, resets after 0.5s gap)
+- War Merit collection plays ascending C major scale (8 notes, resets after 0.5s gap)
 - Audio buses: Master, SFX, Music (volume controlled via settings panel)
 - Access pattern: `get_node_or_null("/root/AudioManager")` (never bare autoload name)
 
@@ -332,24 +404,24 @@ Procedural 8-bit sound effects with no external audio files required:
 ### Boss Enemies
 6 boss enemies spawn at specific waves with high HP. Bosses cycle after wave 30 with scaling.
 
-| Boss | Wave | HP | XP | Special |
-|------|------|-----|-----|---------|
-| Evoker | 5 | 400 | 200 | Summons fangs |
-| Elder Guardian | 10 | 600 | 300 | Mining fatigue beam |
-| Ravager | 15 | 2400 | 400 | Charge (50 dmg) + Stomp (40 dmg AoE) |
-| Warden | 20 | 3000 | 600 | Sonic boom (65 dmg) + Melee (55 dmg) + Ground Slam (45 dmg AoE) + Darkness Aura + Enrage at 50% HP |
-| Wither | 25 | 3600 | 800 | Homing wither skulls |
-| Ender Dragon | 30 | 4500 | 1200 | Homing dragon fireballs + dive |
+| Boss | Chinese | Wave | HP | XP | Special |
+|------|---------|------|-----|-----|---------|
+| Xiahou Dun | 夏侯惇 | 5 | 400 | 200 | Summons ground spikes (地刺) |
+| Xu Chu | 许褚 | 10 | 600 | 300 | Battle fatigue beam |
+| Zhang Liao | 张辽 | 15 | 2400 | 400 | Charge (50 dmg) + Stomp (40 dmg AoE) |
+| Dian Wei | 典韦 | 20 | 3000 | 600 | War cry (65 dmg) + Melee (55 dmg) + Ground Slam (45 dmg AoE) + Darkness Aura + Enrage at 50% HP |
+| Sima Yi | 司马懿 | 25 | 3600 | 800 | Homing dark flames (暗火) |
+| Lv Bu | 吕布 | 30 | 4500 | 1200 | Homing sky halberds (天戟) + dive |
 
 All bosses have detailed pixel art SVG sprites located in `assets/characters/`.
 Boss attacks use exaggerated multi-phase Tween animations with signal-based damage synchronization.
 
 ### Elite Monsters
 Elite enemies are stat-boosted normal enemies with golden outline shader and unique abilities.
-- **Stats:** 2.5x HP, 1.5x damage, 1.2x speed, 20x XP, 1.3x scale, no meat drops
+- **Stats:** 2.5x HP, 1.5x damage, 1.2x speed, 20x XP, 1.3x scale, no drops
 - **Spawn:** Wave-based chance (0% at wave 1-3 → 25% at wave 20+), night +10%
 - **Max cap:** 0 (wave 1-3) → 5 (wave 20+)
-- **Abilities:** Zombie=Undead Rally, Skeleton=Multi-Shot, Spider=Venom, Creeper=Charged, Enderman=Void Strike, Witch=Potion Storm
+- **Abilities:** Infantry=War Cry (战吼), Archer=Volley (齐射), Cavalry=Poisoned Lance (毒矛), Fire Soldier=Inferno (烈焰), Assassin=Shadow Strike (暗杀), Sorcerer=Spell Storm (法术风暴)
 - **Files:** `scripts/components/elite_modifier.gd`, `assets/shaders/elite_outline.gdshader`
 
 ### Wave Scaling (Post-Wave 30)
@@ -375,18 +447,18 @@ Elite enemies are stat-boosted normal enemies with golden outline shader and uni
 
 ### Biome Terrain System
 Direction-based biome zones beyond 800px from spawn with procedural tile transitions:
-- **4 Biomes:** Plains (inner <800px), Desert (east), Snow (north), Swamp (south-west)
+- **4 Biomes:** Central Plains/中原 (inner <800px), Western Regions/西域 (east), Northern Frontier/北疆 (north), Southern Marshes/南蛮 (south-west)
 - **Transition zone:** 800-1100px with probabilistic tile mixing (deterministic hash)
 - **Tiles:** 12 SVG tiles (4 biomes x 3 variants: base, variant1, variant2)
 - **Arena integration:** `arena.gd` uses `BiomeManager` for per-tile biome selection, emits `biome_changed` signal
-- **Sector angles** (atan2 from +X, Y-down): Desert 330-90°, Swamp 90-210°, Snow 210-330°
+- **Sector angles** (atan2 from +X, Y-down): Western Regions 330-90°, Southern Marshes 90-210°, Northern Frontier 210-330°
 - **Files:** `scripts/systems/biome_manager.gd`, `assets/tiles/{desert,snow,swamp}*.svg`
 
 ### Procedural Background Music
 Ambient music that crossfades between biome-specific tracks:
 - **Generation:** 12-second looping AudioStreamWAV per biome (deterministic, no `randf`)
 - **3 Layers:** Bass drone (triangle wave) + melody (triangle/square, pentatonic) + noise texture
-- **Scales:** Plains=C major penta, Desert=D minor penta, Snow=E minor penta, Swamp=A minor penta
+- **Scales:** Central Plains=C major penta, Western Regions=D minor penta, Northern Frontier=E minor penta, Southern Marshes=A minor penta
 - **Crossfade:** Dual AudioStreamPlayer, 2-second linear crossfade on biome change
 - **Integration:** AudioManager caches tracks on first biome entry; `game.gd` connects `arena.biome_changed` → `audio.play_biome_music()`
 - **Files:** `scripts/systems/music_generator.gd`, `scripts/systems/music_player.gd`
@@ -435,31 +507,38 @@ Detailed documentation is in `docs/`:
 
 **Phase 4 (Game Feel):** Complete
 **Phase 5 (Enhancements):** Complete
-- ✅ Poison stacking with visual effects
-- ✅ Weapon slots system (4 positions)
-- ✅ Score/combo systems
-- ✅ Main menu and settings
-- ✅ Sword evolution system (Wood → Stone → Iron → Diamond)
-- ✅ Health pickups (Meat drops, Golden Apple spawns)
-- ✅ Enemy anti-sticking mechanism
-- ✅ Bow weapon with Crossbow evolution
-- ✅ Boss enemies (6 bosses with pixel art sprites)
+- Poison stacking with visual effects
+- Weapon slots system (4 positions)
+- Score/combo systems
+- Main menu and settings
+- Sword evolution system (Iron Blade → Steel Blade → Fine Steel Blade → Divine Weapon)
+- Health pickups (Steamed Bun drops, Immortal Peach spawns)
+- Enemy anti-sticking mechanism
+- Bow weapon with Repeating Crossbow evolution
+- Boss enemies (6 bosses with pixel art sprites)
 
-**Phase 7 (Advanced Features):** In Progress
-- ✅ Procedural 8-bit audio system (30 SFX presets)
-- ✅ Boss attack improvements (Ravager & Warden)
-- ✅ Elite monsters (6 types with unique abilities, golden shader)
-- ✅ Post-wave-30 infinite scaling (enemies, bosses, elites)
-- ✅ Idle mode / auto-play (AI kiting controller, Tab toggle, weapon-first upgrades)
-- ✅ Fixed elite spider venom (was passing Dictionary instead of StatusEffect)
-- ✅ Fixed all 86 pre-existing test failures (1663/1663 pass)
-- ✅ Achievement system UI (21 achievements, badges, localization EN/JA/ZH, SFX, notification popup)
-- ✅ Biome terrain system (4 biomes, 12 tile SVGs, direction-based zones, transition blending)
-- ✅ Procedural background music (4 biome tracks, 12s loops, crossfade, pentatonic scales)
+**Phase 7 (Advanced Features):** Complete
+- Procedural 8-bit audio system (30 SFX presets)
+- Boss attack improvements (Zhang Liao & Dian Wei)
+- Elite monsters (6 types with unique abilities, golden shader)
+- Post-wave-30 infinite scaling (enemies, bosses, elites)
+- Idle mode / auto-play (AI kiting controller, Tab toggle, weapon-first upgrades)
+- Achievement system UI (21 achievements, badges, localization EN/JA/ZH, SFX, notification popup)
+- Biome terrain system (4 biomes, 12 tile SVGs, direction-based zones, transition blending)
+- Procedural background music (4 biome tracks, 12s loops, crossfade, pentatonic scales)
+
+**Phase 8 (Three Kingdoms Re-theme):** Complete
+- Full re-theme from Minecraft to Romance of the Three Kingdoms
+- 3 playable generals: Guan Yu, Zhao Yun, Zhang Fei
+- 6 enemy troops: Infantry, Archer, Cavalry, Fire Soldier, Assassin, Sorcerer
+- 6 boss generals: Xiahou Dun, Xu Chu, Zhang Liao, Dian Wei, Sima Yi, Lv Bu
+- All weapons, items, projectiles renamed with Chinese theme
+- Full trilingual localization (EN/JA/ZH)
+- All 1718 tests passing
 
 ## Git Workflow
 
-- Main development on `main` branch
+- Main development on `develop` branch
 - Feature branches: `claude/*` or `feature/*`
 - Releases triggered by version tags (`v*`)
 - All pushes verified by CI before release

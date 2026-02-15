@@ -34,9 +34,9 @@ static func run_tests() -> Dictionary:
 	_add_result(results, test_poison_cloud_script_loads())
 	_add_result(results, test_poison_cloud_scene_loads())
 
-	# Evoker Fang
-	_add_result(results, test_evoker_fang_script_loads())
-	_add_result(results, test_evoker_fang_scene_loads())
+	# Ground Spike
+	_add_result(results, test_ground_spike_script_loads())
+	_add_result(results, test_ground_spike_scene_loads())
 
 	return results
 
@@ -103,14 +103,14 @@ static func test_poison_cloud_scene_loads() -> Dictionary:
 	var scene = load("res://scenes/effects/poison_cloud.tscn")
 	return {"name": "TC.EF.12: Poison Cloud scene loads", "passed": scene != null}
 
-# Evoker Fang
-static func test_evoker_fang_script_loads() -> Dictionary:
-	var script = load("res://scripts/effects/evoker_fang.gd")
-	return {"name": "TC.EF.13: Evoker Fang script loads", "passed": script != null}
+# Ground Spike
+static func test_ground_spike_script_loads() -> Dictionary:
+	var script = load("res://scripts/effects/ground_spike.gd")
+	return {"name": "TC.EF.13: Ground Spike script loads", "passed": script != null}
 
-static func test_evoker_fang_scene_loads() -> Dictionary:
-	var scene = load("res://scenes/effects/evoker_fang.tscn")
-	return {"name": "TC.EF.14: Evoker Fang scene loads", "passed": scene != null}
+static func test_ground_spike_scene_loads() -> Dictionary:
+	var scene = load("res://scenes/effects/ground_spike.tscn")
+	return {"name": "TC.EF.14: Ground Spike scene loads", "passed": scene != null}
 
 static func get_tested_functions() -> Array:
 	return [
@@ -125,6 +125,6 @@ static func get_tested_functions() -> Array:
 		# Poison Cloud
 		"_generate_pixel_pattern", "_draw", "_create_pixel_visual", "_animate_particles",
 		"_on_body_entered", "_on_body_exited", "_apply_poison_to_player", "_exit_tree",
-		# Evoker Fang
+		# Ground Spike
 		"_activate_fang", "_spawn_activation_effect", "_destroy"
 	]

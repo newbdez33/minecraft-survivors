@@ -270,8 +270,8 @@ static func enemy_death() -> AudioStreamWAV:
 	})
 
 
-## Preset: Creeper explosion - heavy noise burst
-static func creeper_explosion() -> AudioStreamWAV:
+## Preset: Fire Soldier explosion - heavy noise burst
+static func fire_explosion() -> AudioStreamWAV:
 	return generate({
 		"wave_type": WaveType.NOISE,
 		"frequency": 150.0,
@@ -283,8 +283,8 @@ static func creeper_explosion() -> AudioStreamWAV:
 	})
 
 
-## Preset: Skeleton arrow shot
-static func skeleton_arrow() -> AudioStreamWAV:
+## Preset: Archer arrow shot
+static func archer_arrow() -> AudioStreamWAV:
 	return generate({
 		"wave_type": WaveType.TRIANGLE,
 		"frequency": 660.0,
@@ -296,8 +296,8 @@ static func skeleton_arrow() -> AudioStreamWAV:
 	})
 
 
-## Preset: Witch poison throw - bubbly
-static func witch_poison_throw() -> AudioStreamWAV:
+## Preset: Sorcerer poison throw - bubbly
+static func sorcerer_poison_throw() -> AudioStreamWAV:
 	return generate({
 		"wave_type": WaveType.SAWTOOTH,
 		"frequency": 330.0,
@@ -309,8 +309,8 @@ static func witch_poison_throw() -> AudioStreamWAV:
 	})
 
 
-## Preset: Enderman teleport - eerie warble
-static func enderman_teleport() -> AudioStreamWAV:
+## Preset: Assassin teleport - eerie warble
+static func assassin_teleport() -> AudioStreamWAV:
 	return generate({
 		"wave_type": WaveType.SQUARE,
 		"frequency": 1200.0,
@@ -323,8 +323,8 @@ static func enderman_teleport() -> AudioStreamWAV:
 	})
 
 
-## Preset: Spider jump - quick chirp
-static func spider_jump() -> AudioStreamWAV:
+## Preset: Cavalry charge - quick chirp
+static func cavalry_charge() -> AudioStreamWAV:
 	return generate({
 		"wave_type": WaveType.SQUARE,
 		"frequency": 200.0,

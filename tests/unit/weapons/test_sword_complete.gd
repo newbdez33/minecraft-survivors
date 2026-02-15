@@ -7,7 +7,7 @@ static func get_test_name() -> String:
 	return "Sword Complete Tests"
 
 static func get_sword_instance():
-	var scene = load("res://scenes/weapons/wood_sword.tscn")
+	var scene = load("res://scenes/weapons/iron_blade.tscn")
 	return scene.instantiate() if scene else null
 
 static func run_tests() -> Dictionary:
@@ -61,7 +61,7 @@ static func _add_result(results: Dictionary, test_result: Dictionary) -> void:
 		results.failed += 1
 
 static func test_sword_scene_loads() -> Dictionary:
-	var scene = load("res://scenes/weapons/wood_sword.tscn")
+	var scene = load("res://scenes/weapons/iron_blade.tscn")
 	return {"name": "TC.SW.1: Sword scene loads", "passed": scene != null}
 
 static func test_sword_script_loads() -> Dictionary:
@@ -119,7 +119,7 @@ static func test_sword_has_kill_count() -> Dictionary:
 
 static func test_sword_starts_at_wood_tier() -> Dictionary:
 	var sword = get_sword_instance()
-	var passed = sword != null and sword.current_tier == SwordBase.Tier.WOOD
+	var passed = sword != null and sword.current_tier == SwordBase.Tier.IRON_BLADE
 	if sword:
 		sword.queue_free()
 	return {"name": "TC.SW.10: Sword starts at WOOD tier", "passed": passed}
@@ -149,7 +149,7 @@ static func test_stone_tier_damage() -> Dictionary:
 	var sword = get_sword_instance()
 	if not sword:
 		return {"name": "TC.SW.14: Stone tier damage is 8", "passed": false}
-	sword.set_tier(SwordBase.Tier.STONE)
+	sword.set_tier(SwordBase.Tier.STEEL_BLADE)
 	var passed = sword.damage == 8
 	sword.queue_free()
 	return {"name": "TC.SW.14: Stone tier damage is 8", "passed": passed}
@@ -158,7 +158,7 @@ static func test_iron_tier_damage() -> Dictionary:
 	var sword = get_sword_instance()
 	if not sword:
 		return {"name": "TC.SW.15: Iron tier damage is 12", "passed": false}
-	sword.set_tier(SwordBase.Tier.IRON)
+	sword.set_tier(SwordBase.Tier.FINE_STEEL)
 	var passed = sword.damage == 12
 	sword.queue_free()
 	return {"name": "TC.SW.15: Iron tier damage is 12", "passed": passed}
@@ -167,7 +167,7 @@ static func test_diamond_tier_damage() -> Dictionary:
 	var sword = get_sword_instance()
 	if not sword:
 		return {"name": "TC.SW.16: Diamond tier damage is 15", "passed": false}
-	sword.set_tier(SwordBase.Tier.DIAMOND)
+	sword.set_tier(SwordBase.Tier.DIVINE)
 	var passed = sword.damage == 15
 	sword.queue_free()
 	return {"name": "TC.SW.16: Diamond tier damage is 15", "passed": passed}
@@ -197,10 +197,10 @@ static func test_diamond_is_max_tier() -> Dictionary:
 	var sword = get_sword_instance()
 	if not sword:
 		return {"name": "TC.SW.19: Diamond is max tier", "passed": false}
-	sword.set_tier(SwordBase.Tier.DIAMOND)
+	sword.set_tier(SwordBase.Tier.DIVINE)
 	for i in range(100):
 		sword.on_enemy_killed()
-	var passed = sword.current_tier == SwordBase.Tier.DIAMOND
+	var passed = sword.current_tier == SwordBase.Tier.DIVINE
 	sword.queue_free()
 	return {"name": "TC.SW.19: Diamond is max tier", "passed": passed}
 

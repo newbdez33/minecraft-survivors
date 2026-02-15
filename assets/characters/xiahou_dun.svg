@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" shape-rendering="crispEdges">
+  <!-- Xiahou Dun (夏侯惇) - One-Eyed Warrior - Wave 5 Boss -->
+  <!-- Dark blue armor, silver details, eyepatch over left eye -->
+
+  <!-- Helmet (dark blue with silver crest) -->
+  <rect x="9" y="1" width="14" height="3" fill="#1A3A6B"/>
+  <rect x="14" y="0" width="4" height="1" fill="#C0C0C0"/>
+  <rect x="15" y="1" width="2" height="1" fill="#D0D0D0"/>
+  <rect x="10" y="2" width="12" height="1" fill="#22478A"/>
+  <!-- Helmet side guards -->
+  <rect x="7" y="3" width="3" height="3" fill="#1A3A6B"/>
+  <rect x="22" y="3" width="3" height="3" fill="#1A3A6B"/>
+  <rect x="8" y="3" width="1" height="2" fill="#C0C0C0"/>
+  <rect x="23" y="3" width="1" height="2" fill="#C0C0C0"/>
+
+  <!-- Face (skin tone) -->
+  <rect x="10" y="4" width="12" height="8" fill="#D4A574"/>
+  <rect x="10" y="4" width="12" height="1" fill="#1A3A6B"/>
+
+  <!-- Left eye - eyepatch/scar (iconic feature) -->
+  <rect x="11" y="6" width="4" height="3" fill="#2A2A2A"/>
+  <rect x="11" y="5" width="1" height="5" fill="#1A1A1A"/>
+  <rect x="14" y="5" width="1" height="1" fill="#1A1A1A"/>
+  <!-- Scar line across eyepatch -->
+  <rect x="10" y="7" width="1" height="1" fill="#8B3030"/>
+  <rect x="15" y="7" width="1" height="1" fill="#8B3030"/>
+
+  <!-- Right eye (fierce, intact) -->
+  <rect x="18" y="6" width="3" height="2" fill="#FFFFFF"/>
+  <rect x="19" y="6" width="2" height="2" fill="#1A1A1A"/>
+  <!-- Fierce eyebrow -->
+  <rect x="17" y="5" width="4" height="1" fill="#1A1A1A"/>
+
+  <!-- Nose -->
+  <rect x="15" y="8" width="2" height="2" fill="#C49564"/>
+
+  <!-- Mouth (determined grimace) -->
+  <rect x="13" y="10" width="6" height="1" fill="#8B4040"/>
+  <rect x="14" y="11" width="4" height="1" fill="#C49564"/>
+
+  <!-- Neck -->
+  <rect x="13" y="12" width="6" height="1" fill="#D4A574"/>
+
+  <!-- Armor body (dark blue, imposing) -->
+  <rect x="6" y="13" width="20" height="15" fill="#1A3A6B"/>
+  <rect x="8" y="14" width="16" height="13" fill="#1E4278"/>
+
+  <!-- Silver chest plate details -->
+  <rect x="12" y="14" width="8" height="4" fill="#B0B0B0"/>
+  <rect x="13" y="15" width="6" height="2" fill="#C0C0C0"/>
+  <rect x="15" y="14" width="2" height="1" fill="#D8D8D8"/>
+  <!-- Chest plate rivets -->
+  <rect x="12" y="14" width="1" height="1" fill="#888888"/>
+  <rect x="19" y="14" width="1" height="1" fill="#888888"/>
+
+  <!-- Belt (silver buckle) -->
+  <rect x="8" y="20" width="16" height="2" fill="#152E55"/>
+  <rect x="14" y="20" width="4" height="2" fill="#C0C0C0"/>
+  <rect x="15" y="20" width="2" height="2" fill="#D8D8D8"/>
+
+  <!-- Arms (armored, strong build) -->
+  <rect x="3" y="14" width="5" height="8" fill="#1A3A6B"/>
+  <rect x="4" y="15" width="3" height="6" fill="#1E4278"/>
+  <rect x="24" y="14" width="5" height="8" fill="#1A3A6B"/>
+  <rect x="25" y="15" width="3" height="6" fill="#1E4278"/>
+
+  <!-- Silver shoulder pauldrons -->
+  <rect x="3" y="13" width="5" height="2" fill="#C0C0C0"/>
+  <rect x="4" y="13" width="3" height="1" fill="#D8D8D8"/>
+  <rect x="24" y="13" width="5" height="2" fill="#C0C0C0"/>
+  <rect x="25" y="13" width="3" height="1" fill="#D8D8D8"/>
+
+  <!-- Hands (gauntlets) -->
+  <rect x="3" y="22" width="4" height="2" fill="#A0A0A0"/>
+  <rect x="25" y="22" width="4" height="2" fill="#A0A0A0"/>
+
+  <!-- Legs (armored) -->
+  <rect x="10" y="27" width="5" height="5" fill="#152E55"/>
+  <rect x="17" y="27" width="5" height="5" fill="#152E55"/>
+  <!-- Knee guards -->
+  <rect x="11" y="27" width="3" height="1" fill="#C0C0C0"/>
+  <rect x="18" y="27" width="3" height="1" fill="#C0C0C0"/>
+
+  <!-- Boots -->
+  <rect x="10" y="30" width="5" height="2" fill="#111111"/>
+  <rect x="17" y="30" width="5" height="2" fill="#111111"/>
+</svg>

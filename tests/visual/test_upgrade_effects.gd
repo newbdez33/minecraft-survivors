@@ -19,7 +19,7 @@ func _ready() -> void:
 
 	# Add a sprite to make it visible
 	var sprite = Sprite2D.new()
-	var texture = load("res://assets/characters/steve.svg")
+	var texture = load("res://assets/characters/guan_yu.svg")
 	if texture:
 		sprite.texture = texture
 	_test_target.add_child(sprite)

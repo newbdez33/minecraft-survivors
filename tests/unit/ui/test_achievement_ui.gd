@@ -64,7 +64,7 @@ static func test_achievement_notification_has_name_label() -> Dictionary:
 	var passed = false
 	if scene:
 		var instance = scene.instantiate()
-		passed = instance.get_node_or_null("Panel/VBox/NameLabel") != null or instance.get_node_or_null("NameLabel") != null
+		passed = instance.get_node_or_null("Panel/VBox/NameLabel") != null or instance.get_node_or_null("Panel/MarginContainer/HBox/VBox/NameLabel") != null or instance.get_node_or_null("NameLabel") != null
 		instance.queue_free()
 	return {"name": "TC.AUI.4: Achievement notification has name label", "passed": passed}
 
@@ -73,7 +73,7 @@ static func test_achievement_notification_has_desc_label() -> Dictionary:
 	var passed = false
 	if scene:
 		var instance = scene.instantiate()
-		passed = instance.get_node_or_null("Panel/VBox/DescLabel") != null or instance.get_node_or_null("DescLabel") != null
+		passed = instance.get_node_or_null("Panel/VBox/DescLabel") != null or instance.get_node_or_null("Panel/MarginContainer/HBox/VBox/DescLabel") != null or instance.get_node_or_null("DescLabel") != null
 		instance.queue_free()
 	return {"name": "TC.AUI.5: Achievement notification has description label", "passed": passed}
 

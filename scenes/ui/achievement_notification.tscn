@@ -10,44 +10,66 @@ script = ExtResource("1_script")
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -320.0
+offset_left = -340.0
 offset_top = 20.0
 offset_right = -20.0
-offset_bottom = 100.0
+offset_bottom = 120.0
 grow_horizontal = 0
 
-[node name="VBox" type="VBoxContainer" parent="Panel"]
+[node name="MarginContainer" type="MarginContainer" parent="Panel"]
 layout_mode = 2
-theme_override_constants/separation = 4
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 10
 
-[node name="TitleHBox" type="HBoxContainer" parent="Panel/VBox"]
+[node name="HBox" type="HBoxContainer" parent="Panel/MarginContainer"]
 layout_mode = 2
+theme_override_constants/separation = 12
 
-[node name="Icon" type="TextureRect" parent="Panel/VBox/TitleHBox"]
-custom_minimum_size = Vector2(24, 24)
+[node name="AchievementIcon" type="TextureRect" parent="Panel/MarginContainer/HBox"]
+custom_minimum_size = Vector2(56, 56)
 layout_mode = 2
+size_flags_vertical = 4
 stretch_mode = 5
+expand_mode = 3
 
-[node name="TitleLabel" type="Label" parent="Panel/VBox/TitleHBox"]
+[node name="VBox" type="VBoxContainer" parent="Panel/MarginContainer/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 3
+
+[node name="TitleHBox" type="HBoxContainer" parent="Panel/MarginContainer/HBox/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="TrophyLabel" type="Label" parent="Panel/MarginContainer/HBox/VBox/TitleHBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.843, 0, 1)
+theme_override_font_sizes/font_size = 12
+text = "★"
+
+[node name="TitleLabel" type="Label" parent="Panel/MarginContainer/HBox/VBox/TitleHBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.843, 0, 1)
 theme_override_constants/outline_size = 2
-theme_override_font_sizes/font_size = 12
+theme_override_font_sizes/font_size = 11
 text = "Achievement Unlocked!"
 
-[node name="NameLabel" type="Label" parent="Panel/VBox"]
+[node name="NameLabel" type="Label" parent="Panel/MarginContainer/HBox/VBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_constants/outline_size = 2
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 15
 text = "Achievement Name"
 
-[node name="DescLabel" type="Label" parent="Panel/VBox"]
+[node name="DescLabel" type="Label" parent="Panel/MarginContainer/HBox/VBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
+theme_override_colors/font_color = Color(0.75, 0.75, 0.75, 1)
 theme_override_constants/outline_size = 1
 theme_override_font_sizes/font_size = 10
 text = "Achievement description here"
+autowrap_mode = 2
 
 [node name="Timer" type="Timer" parent="."]
 one_shot = true

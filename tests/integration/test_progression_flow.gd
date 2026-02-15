@@ -121,7 +121,7 @@ static func test_maxed_upgrades_not_offered() -> Dictionary:
 	return {"name": "TC.PF.6: Maxed upgrades not offered", "passed": passed}
 
 static func test_sword_kill_count_tracked() -> Dictionary:
-	var sword_scene = load("res://scenes/weapons/wood_sword.tscn")
+	var sword_scene = load("res://scenes/weapons/iron_blade.tscn")
 	if not sword_scene:
 		return {"name": "TC.PF.7: Sword kill count tracked", "passed": false}
 	var sword = sword_scene.instantiate()
@@ -133,7 +133,7 @@ static func test_sword_kill_count_tracked() -> Dictionary:
 	return {"name": "TC.PF.7: Sword kill count tracked", "passed": passed}
 
 static func test_sword_evolves_on_threshold() -> Dictionary:
-	var sword_scene = load("res://scenes/weapons/wood_sword.tscn")
+	var sword_scene = load("res://scenes/weapons/iron_blade.tscn")
 	if not sword_scene:
 		return {"name": "TC.PF.8: Sword evolves on threshold", "passed": false}
 	var sword = sword_scene.instantiate()

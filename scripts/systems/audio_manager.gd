@@ -41,14 +41,14 @@ var _pitch_variance: Dictionary = {
 	"enemy_hit": 0.2,
 	"enemy_death": 0.15,
 	"xp_orb": 0.0,  # Uses ascending pitch instead
-	"skeleton_arrow": 0.1,
-	"spider_jump": 0.15,
-	"creeper_explosion": 0.05,
+	"archer_arrow": 0.1,
+	"cavalry_charge": 0.15,
+	"fire_explosion": 0.05,
 }
 
 # Volume adjustments per sound (relative dB offset)
 var _volume_db: Dictionary = {
-	"creeper_explosion": 3.0,
+	"fire_explosion": 3.0,
 	"boss_appear": 2.0,
 	"player_death": 2.0,
 	"wave_start": 1.0,
@@ -138,11 +138,11 @@ func _precache_procedural_sounds() -> void:
 	_sound_cache["crossbow_shot"] = SFXGeneratorClass.crossbow_shot()
 	_sound_cache["enemy_hit"] = SFXGeneratorClass.enemy_hit()
 	_sound_cache["enemy_death"] = SFXGeneratorClass.enemy_death()
-	_sound_cache["creeper_explosion"] = SFXGeneratorClass.creeper_explosion()
-	_sound_cache["skeleton_arrow"] = SFXGeneratorClass.skeleton_arrow()
-	_sound_cache["witch_poison_throw"] = SFXGeneratorClass.witch_poison_throw()
-	_sound_cache["enderman_teleport"] = SFXGeneratorClass.enderman_teleport()
-	_sound_cache["spider_jump"] = SFXGeneratorClass.spider_jump()
+	_sound_cache["fire_explosion"] = SFXGeneratorClass.fire_explosion()
+	_sound_cache["archer_arrow"] = SFXGeneratorClass.archer_arrow()
+	_sound_cache["sorcerer_poison_throw"] = SFXGeneratorClass.sorcerer_poison_throw()
+	_sound_cache["assassin_teleport"] = SFXGeneratorClass.assassin_teleport()
+	_sound_cache["cavalry_charge"] = SFXGeneratorClass.cavalry_charge()
 	_sound_cache["boss_appear"] = SFXGeneratorClass.boss_appear()
 	_sound_cache["boss_attack"] = SFXGeneratorClass.boss_attack()
 	_sound_cache["health_collect"] = SFXGeneratorClass.health_collect()

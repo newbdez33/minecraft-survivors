@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://crossbow001"]
 
 [ext_resource type="Script" path="res://scripts/weapons/crossbow.gd" id="1_crossbow"]
-[ext_resource type="Texture2D" path="res://assets/weapons/crossbow.svg" id="2_texture"]
+[ext_resource type="Texture2D" path="res://assets/weapons/repeating_crossbow.svg" id="2_texture"]
 
 [node name="Crossbow" type="Node2D"]
 z_index = 5

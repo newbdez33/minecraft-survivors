@@ -1,8 +1,8 @@
-# Run all tests for Minecraft Survivors
+# Run all tests for Three Kingdoms Survivors
 # Usage: .\run_tests.ps1
 # Or: powershell -ExecutionPolicy Bypass -File run_tests.ps1
 
-Write-Host "Running Minecraft Survivors Test Suite..." -ForegroundColor Cyan
+Write-Host "Running Three Kingdoms Survivors Test Suite..." -ForegroundColor Cyan
 Write-Host ""
 
 # Function to find Godot executable

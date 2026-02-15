@@ -62,42 +62,42 @@ func _report_characters() -> void:
 func _test_character_stats() -> void:
 	print("\n[TESTING CHARACTER STATS]")
 
-	var steve = _character_manager.get_character("steve")
-	var alex = _character_manager.get_character("alex")
+	var guan_yu = _character_manager.get_character("guan_yu")
+	var zhao_yun = _character_manager.get_character("zhao_yun")
 
-	if steve:
-		print("\n  Steve (Default):")
-		print("    HP mult: %.2f (expected: 1.0)" % steve.health_mult)
-		print("    Speed mult: %.2f (expected: 1.0)" % steve.speed_mult)
-		print("    PASS: %s" % ("YES" if steve.health_mult == 1.0 and steve.speed_mult == 1.0 else "NO"))
+	if guan_yu:
+		print("\n  Guan Yu (Default):")
+		print("    HP mult: %.2f (expected: 1.0)" % guan_yu.health_mult)
+		print("    Speed mult: %.2f (expected: 1.0)" % guan_yu.speed_mult)
+		print("    PASS: %s" % ("YES" if guan_yu.health_mult == 1.0 and guan_yu.speed_mult == 1.0 else "NO"))
 
-	if alex:
-		print("\n  Alex (Unlockable):")
-		print("    HP mult: %.2f (expected: 0.9)" % alex.health_mult)
-		print("    Speed mult: %.2f (expected: 1.2)" % alex.speed_mult)
-		print("    Pickup mult: %.2f (expected: 1.5)" % alex.pickup_range_mult)
-		print("    PASS: %s" % ("YES" if alex.health_mult == 0.9 and alex.speed_mult == 1.2 else "NO"))
+	if zhao_yun:
+		print("\n  Zhao Yun (Unlockable):")
+		print("    HP mult: %.2f (expected: 0.9)" % zhao_yun.health_mult)
+		print("    Speed mult: %.2f (expected: 1.2)" % zhao_yun.speed_mult)
+		print("    Pickup mult: %.2f (expected: 1.5)" % zhao_yun.pickup_range_mult)
+		print("    PASS: %s" % ("YES" if zhao_yun.health_mult == 0.9 and zhao_yun.speed_mult == 1.2 else "NO"))
 
 func _test_unlock_conditions() -> void:
 	print("\n[TESTING UNLOCK CONDITIONS]")
 
-	var alex = _character_manager.get_character("alex")
-	if alex:
-		print("  Alex unlock type: %s" % alex.unlock_condition_type)
-		print("  Alex unlock value: %d" % alex.unlock_condition_value)
+	var zhao_yun = _character_manager.get_character("zhao_yun")
+	if zhao_yun:
+		print("  Zhao Yun unlock type: %s" % zhao_yun.unlock_condition_type)
+		print("  Zhao Yun unlock value: %d" % zhao_yun.unlock_condition_value)
 		print("  Expected: survival_time >= 900 (15 minutes)")
 
 		# Test unlock
-		var was_locked = not alex.is_unlocked
+		var was_locked = not zhao_yun.is_unlocked
 		print("\n  Testing unlock trigger...")
 		_character_manager.check_unlock_conditions({"survival_time": 900})
 
-		if was_locked and alex.is_unlocked:
-			print("  >>> ALEX UNLOCKED SUCCESSFULLY <<<")
-		elif alex.is_unlocked:
-			print("  Alex was already unlocked")
+		if was_locked and zhao_yun.is_unlocked:
+			print("  >>> ZHAO YUN UNLOCKED SUCCESSFULLY <<<")
+		elif zhao_yun.is_unlocked:
+			print("  Zhao Yun was already unlocked")
 		else:
-			print("  ERROR: Alex should be unlocked but isn't")
+			print("  ERROR: Zhao Yun should be unlocked but isn't")
 
 func _take_screenshot(name: String) -> void:
 	_screenshot_count += 1

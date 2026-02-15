@@ -232,10 +232,10 @@ static func test_no_evolution_at_other_levels() -> Dictionary:
 static func test_sword_icon_changes_per_tier() -> Dictionary:
 	# Sword icon should change: wood -> stone -> iron -> diamond
 	var icons = [
-		"res://assets/weapons/wood_sword.svg",
-		"res://assets/weapons/stone_sword.svg",
-		"res://assets/weapons/iron_sword.svg",
-		"res://assets/weapons/diamond_sword.svg"
+		"res://assets/weapons/iron_blade.svg",
+		"res://assets/weapons/steel_blade.svg",
+		"res://assets/weapons/fine_steel_blade.svg",
+		"res://assets/weapons/divine_weapon.svg"
 	]
 	var passed = icons.size() == 4
 	return {"name": "TC.UB.23: Sword has 4 different tier icons", "passed": passed}

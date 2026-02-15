@@ -7,45 +7,45 @@ const UpgradeEffectClass = preload("res://scripts/effects/upgrade_effect.gd")
 signal attacked(enemies_hit: int)
 signal evolved(new_tier: int)
 
-enum Tier { WOOD = 1, STONE = 2, IRON = 3, DIAMOND = 4 }
+enum Tier { IRON_BLADE = 1, STEEL_BLADE = 2, FINE_STEEL = 3, DIVINE = 4 }
 
-# Tier configurations - Minecraft authentic colors
+# Tier configurations - Three Kingdoms blade tiers
 const TIER_CONFIG = {
-	Tier.WOOD: {
-		"name": "Wood Sword",
+	Tier.IRON_BLADE: {
+		"name": "Iron Blade",
 		"damage": 5,
 		"attack_range": 60.0,
 		"attack_cooldown": 1.2,
-		"color": Color(0.53, 0.40, 0.15),  # #866526 Wood brown
+		"color": Color(0.53, 0.53, 0.53),  # Iron gray
 		"kills_to_evolve": 50
 	},
-	Tier.STONE: {
-		"name": "Stone Sword",
+	Tier.STEEL_BLADE: {
+		"name": "Steel Blade",
 		"damage": 8,
 		"attack_range": 70.0,
 		"attack_cooldown": 1.0,
-		"color": Color(0.55, 0.55, 0.55),  # #8B8B8B Stone gray
+		"color": Color(0.69, 0.69, 0.75),  # Steel blue-gray
 		"kills_to_evolve": 150
 	},
-	Tier.IRON: {
-		"name": "Iron Sword",
+	Tier.FINE_STEEL: {
+		"name": "Fine Steel Blade",
 		"damage": 12,
 		"attack_range": 80.0,
 		"attack_cooldown": 0.9,
-		"color": Color(0.85, 0.85, 0.85),  # #D8D8D8 Iron silver
+		"color": Color(0.85, 0.85, 0.90),  # Bright steel
 		"kills_to_evolve": 400
 	},
-	Tier.DIAMOND: {
-		"name": "Diamond Sword",
+	Tier.DIVINE: {
+		"name": "Divine Weapon",
 		"damage": 15,
 		"attack_range": 90.0,
 		"attack_cooldown": 0.8,
-		"color": Color(0.18, 0.80, 0.69),  # #2DCDB0 Diamond cyan
+		"color": Color(1.0, 0.84, 0.0),  # Golden divine
 		"kills_to_evolve": -1  # Max tier
 	}
 }
 
-@export var current_tier: Tier = Tier.WOOD
+@export var current_tier: Tier = Tier.IRON_BLADE
 @export var show_range_indicator: bool = true
 @export var knockback: float = 0.0
 @export var hand_offset: float = 24.0
@@ -72,9 +72,9 @@ const LEVELS_PER_TIER: int = 3  # Evolve tier every 3 levels
 
 # Evolution bonus - extra stats when evolving to new tier
 const EVOLUTION_BONUS = {
-	Tier.STONE: {"damage": 5, "range": 15.0, "cooldown_reduction": 0.1},
-	Tier.IRON: {"damage": 8, "range": 20.0, "cooldown_reduction": 0.15},
-	Tier.DIAMOND: {"damage": 12, "range": 25.0, "cooldown_reduction": 0.2}
+	Tier.STEEL_BLADE: {"damage": 5, "range": 15.0, "cooldown_reduction": 0.1},
+	Tier.FINE_STEEL: {"damage": 8, "range": 20.0, "cooldown_reduction": 0.15},
+	Tier.DIVINE: {"damage": 12, "range": 25.0, "cooldown_reduction": 0.2}
 }
 
 # Accumulated evolution bonuses
@@ -251,7 +251,7 @@ func on_enemy_killed() -> void:
 	kill_count += 1
 
 func evolve() -> void:
-	if current_tier == Tier.DIAMOND:
+	if current_tier == Tier.DIVINE:
 		return
 
 	current_tier = (current_tier + 1) as Tier
@@ -293,14 +293,14 @@ func _update_sword_sprite() -> void:
 	# Load the correct SVG for each tier
 	var texture_path = ""
 	match current_tier:
-		Tier.WOOD:
-			texture_path = "res://assets/weapons/wood_sword.svg"
-		Tier.STONE:
-			texture_path = "res://assets/weapons/stone_sword.svg"
-		Tier.IRON:
-			texture_path = "res://assets/weapons/iron_sword.svg"
-		Tier.DIAMOND:
-			texture_path = "res://assets/weapons/diamond_sword.svg"
+		Tier.IRON_BLADE:
+			texture_path = "res://assets/weapons/iron_blade.svg"
+		Tier.STEEL_BLADE:
+			texture_path = "res://assets/weapons/steel_blade.svg"
+		Tier.FINE_STEEL:
+			texture_path = "res://assets/weapons/fine_steel_blade.svg"
+		Tier.DIVINE:
+			texture_path = "res://assets/weapons/divine_weapon.svg"
 
 	print("[SWORD] Updating sprite to tier %d: %s" % [current_tier, texture_path])
 	var texture = load(texture_path)
@@ -322,9 +322,9 @@ func _play_evolution_effect() -> void:
 
 	# Tier-specific glow colors
 	var tier_glow = {
-		Tier.STONE: Color(0.6, 0.6, 0.65),
-		Tier.IRON: Color(0.85, 0.85, 0.9),
-		Tier.DIAMOND: Color(0.3, 0.9, 1.0),
+		Tier.STEEL_BLADE: Color(0.6, 0.6, 0.65),
+		Tier.FINE_STEEL: Color(0.85, 0.85, 0.9),
+		Tier.DIVINE: Color(1.0, 0.85, 0.3),
 	}
 
 	var glow_color = tier_glow.get(current_tier, Color.WHITE)
@@ -358,7 +358,7 @@ func get_tier_name() -> String:
 	return TIER_CONFIG[current_tier].name
 
 func get_kills_to_next_tier() -> int:
-	if current_tier == Tier.DIAMOND:
+	if current_tier == Tier.DIVINE:
 		return -1
 	return TIER_CONFIG[current_tier].kills_to_evolve - kill_count
 
@@ -400,7 +400,7 @@ func upgrade() -> void:
 	queue_redraw()
 
 	# Check for tier evolution at levels 4, 7, 10 (matching upgrade_manager expectations)
-	if level in [4, 7, 10] and current_tier < Tier.DIAMOND:
+	if level in [4, 7, 10] and current_tier < Tier.DIVINE:
 		evolve()
 
 func get_total_damage() -> int:

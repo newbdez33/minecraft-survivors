@@ -80,25 +80,25 @@ static func test_sword_no_evolve_after_evolution() -> Dictionary:
 
 static func test_wood_to_stone_icon() -> Dictionary:
 	# When upgrading from Wood (tier 1), next icon should be Stone
-	var expected_icon = "res://assets/weapons/stone_sword.svg"
+	var expected_icon = "res://assets/weapons/steel_blade.svg"
 	# At upgrade.current_level = 2 (next_level = 3), sword is still Wood (tier 1)
-	# get_next_evolution_icon should return stone_sword.svg
-	var passed = expected_icon == "res://assets/weapons/stone_sword.svg"
-	return {"name": "TC.EA.4: Wood->Stone shows stone_sword icon", "passed": passed}
+	# get_next_evolution_icon should return steel_blade.svg
+	var passed = expected_icon == "res://assets/weapons/steel_blade.svg"
+	return {"name": "TC.EA.4: Wood->Stone shows steel_blade icon", "passed": passed}
 
 static func test_stone_to_iron_icon() -> Dictionary:
 	# When upgrading from Stone (tier 2), next icon should be Iron
-	var expected_icon = "res://assets/weapons/iron_sword.svg"
+	var expected_icon = "res://assets/weapons/fine_steel_blade.svg"
 	# At upgrade.current_level = 5 (next_level = 6), sword is Stone (tier 2)
-	var passed = expected_icon == "res://assets/weapons/iron_sword.svg"
-	return {"name": "TC.EA.5: Stone->Iron shows iron_sword icon", "passed": passed}
+	var passed = expected_icon == "res://assets/weapons/fine_steel_blade.svg"
+	return {"name": "TC.EA.5: Stone->Iron shows fine_steel_blade icon", "passed": passed}
 
 static func test_iron_to_diamond_icon() -> Dictionary:
 	# When upgrading from Iron (tier 3), next icon should be Diamond
-	var expected_icon = "res://assets/weapons/diamond_sword.svg"
+	var expected_icon = "res://assets/weapons/divine_weapon.svg"
 	# At upgrade.current_level = 8 (next_level = 9), sword is Iron (tier 3)
-	var passed = expected_icon == "res://assets/weapons/diamond_sword.svg"
-	return {"name": "TC.EA.6: Iron->Diamond shows diamond_sword icon", "passed": passed}
+	var passed = expected_icon == "res://assets/weapons/divine_weapon.svg"
+	return {"name": "TC.EA.6: Iron->Diamond shows divine_weapon icon", "passed": passed}
 
 # =============================================================================
 # SWORD NAME TESTS

@@ -1,9 +1,9 @@
 [gd_scene load_steps=6 format=3 uid="uid://swordvisualtest"]
 
-[ext_resource type="Texture2D" path="res://assets/weapons/wood_sword.svg" id="1_wood"]
-[ext_resource type="Texture2D" path="res://assets/weapons/stone_sword.svg" id="2_stone"]
-[ext_resource type="Texture2D" path="res://assets/weapons/iron_sword.svg" id="3_iron"]
-[ext_resource type="Texture2D" path="res://assets/weapons/diamond_sword.svg" id="4_diamond"]
+[ext_resource type="Texture2D" path="res://assets/weapons/iron_blade.svg" id="1_wood"]
+[ext_resource type="Texture2D" path="res://assets/weapons/steel_blade.svg" id="2_stone"]
+[ext_resource type="Texture2D" path="res://assets/weapons/fine_steel_blade.svg" id="3_iron"]
+[ext_resource type="Texture2D" path="res://assets/weapons/divine_weapon.svg" id="4_diamond"]
 [ext_resource type="Script" path="res://scripts/testing/sword_visual_test.gd" id="5_script"]
 
 [node name="SwordVisualTest" type="Control"]
@@ -45,68 +45,68 @@ size_flags_vertical = 3
 theme_override_constants/separation = 50
 alignment = 1
 
-[node name="WoodPanel" type="VBoxContainer" parent="VBox/SwordsContainer"]
+[node name="IronBladePanel" type="VBoxContainer" parent="VBox/SwordsContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 alignment = 1
 
-[node name="Label" type="Label" parent="VBox/SwordsContainer/WoodPanel"]
+[node name="Label" type="Label" parent="VBox/SwordsContainer/IronBladePanel"]
 layout_mode = 2
-text = "WOOD"
+text = "IRON BLADE"
 horizontal_alignment = 1
 
-[node name="WoodSword" type="TextureRect" parent="VBox/SwordsContainer/WoodPanel"]
+[node name="IronBlade" type="TextureRect" parent="VBox/SwordsContainer/IronBladePanel"]
 custom_minimum_size = Vector2(128, 128)
 layout_mode = 2
 texture = ExtResource("1_wood")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="StonePanel" type="VBoxContainer" parent="VBox/SwordsContainer"]
+[node name="SteelBladePanel" type="VBoxContainer" parent="VBox/SwordsContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 alignment = 1
 
-[node name="Label" type="Label" parent="VBox/SwordsContainer/StonePanel"]
+[node name="Label" type="Label" parent="VBox/SwordsContainer/SteelBladePanel"]
 layout_mode = 2
-text = "STONE"
+text = "STEEL BLADE"
 horizontal_alignment = 1
 
-[node name="StoneSword" type="TextureRect" parent="VBox/SwordsContainer/StonePanel"]
+[node name="SteelBlade" type="TextureRect" parent="VBox/SwordsContainer/SteelBladePanel"]
 custom_minimum_size = Vector2(128, 128)
 layout_mode = 2
 texture = ExtResource("2_stone")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="IronPanel" type="VBoxContainer" parent="VBox/SwordsContainer"]
+[node name="FineSteelPanel" type="VBoxContainer" parent="VBox/SwordsContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 alignment = 1
 
-[node name="Label" type="Label" parent="VBox/SwordsContainer/IronPanel"]
+[node name="Label" type="Label" parent="VBox/SwordsContainer/FineSteelPanel"]
 layout_mode = 2
-text = "IRON"
+text = "FINE STEEL"
 horizontal_alignment = 1
 
-[node name="IronSword" type="TextureRect" parent="VBox/SwordsContainer/IronPanel"]
+[node name="FineSteelBlade" type="TextureRect" parent="VBox/SwordsContainer/FineSteelPanel"]
 custom_minimum_size = Vector2(128, 128)
 layout_mode = 2
 texture = ExtResource("3_iron")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="DiamondPanel" type="VBoxContainer" parent="VBox/SwordsContainer"]
+[node name="DivinePanel" type="VBoxContainer" parent="VBox/SwordsContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 alignment = 1
 
-[node name="Label" type="Label" parent="VBox/SwordsContainer/DiamondPanel"]
+[node name="Label" type="Label" parent="VBox/SwordsContainer/DivinePanel"]
 layout_mode = 2
-text = "DIAMOND"
+text = "DIVINE"
 horizontal_alignment = 1
 
-[node name="DiamondSword" type="TextureRect" parent="VBox/SwordsContainer/DiamondPanel"]
+[node name="DivineWeapon" type="TextureRect" parent="VBox/SwordsContainer/DivinePanel"]
 custom_minimum_size = Vector2(128, 128)
 layout_mode = 2
 texture = ExtResource("4_diamond")

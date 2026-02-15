@@ -20,7 +20,7 @@ const CATEGORIES = {
 	"level": {"name": "LEVEL_ACHIEVEMENTS", "ids": ["level_5", "level_10", "level_20"]},
 	"wave": {"name": "WAVE_ACHIEVEMENTS", "ids": ["wave_3", "wave_5", "wave_10", "idle_master"]},
 	"special": {"name": "SPECIAL_ACHIEVEMENTS", "ids": ["poison_survive", "combo_50", "combo_100", "no_damage_60"]},
-	"unlock": {"name": "UNLOCK_ACHIEVEMENTS", "ids": ["unlock_alex", "unlock_bow", "evolve_weapon"]},
+	"unlock": {"name": "UNLOCK_ACHIEVEMENTS", "ids": ["unlock_zhao_yun", "unlock_bow", "evolve_weapon"]},
 }
 
 const CATEGORY_ORDER = ["kill", "survival", "level", "wave", "special", "unlock"]

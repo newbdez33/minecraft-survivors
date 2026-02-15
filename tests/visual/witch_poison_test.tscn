@@ -3,11 +3,11 @@
 [ext_resource type="PackedScene" uid="uid://main001" path="res://scenes/main.tscn" id="1_main"]
 [ext_resource type="Script" path="res://tests/visual/witch_poison_test.gd" id="2_test"]
 
-[node name="WitchPoisonTest" type="Node2D"]
+[node name="SorcererPoisonTest" type="Node2D"]
 
 [node name="Main" parent="." instance=ExtResource("1_main")]
 
 [node name="TestController" type="Node" parent="."]
 script = ExtResource("2_test")
 test_duration = 20.0
-witch_count = 3
+sorcerer_count = 3

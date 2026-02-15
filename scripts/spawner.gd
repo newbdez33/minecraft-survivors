@@ -1,6 +1,6 @@
 extends Node
 class_name MobSpawner
-## Spawns enemies around the player at regular intervals
+## Spawns enemies around the player at regular intervals (Cao Cao's forces)
 
 const EliteModifierClass = preload("res://scripts/components/elite_modifier.gd")
 const WaveScalerClass = preload("res://scripts/systems/wave_scaler.gd")
@@ -30,20 +30,20 @@ var _current_wave: int = 1
 var _elite_count: int = 0
 
 # Enemy scenes
-var zombie_scene: PackedScene
-var skeleton_scene: PackedScene
-var creeper_scene: PackedScene
-var spider_scene: PackedScene
-var enderman_scene: PackedScene
-var witch_scene: PackedScene
+var infantry_scene: PackedScene
+var archer_scene: PackedScene
+var fire_soldier_scene: PackedScene
+var cavalry_scene: PackedScene
+var assassin_scene: PackedScene
+var sorcerer_scene: PackedScene
 
 # Spawn weights (increase over time)
-var zombie_weight: float = 100.0
-var skeleton_weight: float = 0.0
-var creeper_weight: float = 0.0
-var spider_weight: float = 0.0
-var enderman_weight: float = 0.0
-var witch_weight: float = 0.0
+var infantry_weight: float = 100.0
+var archer_weight: float = 0.0
+var fire_soldier_weight: float = 0.0
+var cavalry_weight: float = 0.0
+var assassin_weight: float = 0.0
+var sorcerer_weight: float = 0.0
 
 var player: Node2D = null
 var spawn_timer: Timer
@@ -62,12 +62,12 @@ func _ready() -> void:
 	_find_player()
 
 	# Load enemy scenes
-	zombie_scene = load("res://scenes/enemies/zombie.tscn")
-	skeleton_scene = load("res://scenes/enemies/skeleton.tscn")
-	creeper_scene = load("res://scenes/enemies/creeper.tscn")
-	spider_scene = load("res://scenes/enemies/spider.tscn")
-	enderman_scene = load("res://scenes/enemies/enderman.tscn")
-	witch_scene = load("res://scenes/enemies/witch.tscn")
+	infantry_scene = load("res://scenes/enemies/infantry.tscn")
+	archer_scene = load("res://scenes/enemies/archer.tscn")
+	fire_soldier_scene = load("res://scenes/enemies/fire_soldier.tscn")
+	cavalry_scene = load("res://scenes/enemies/cavalry.tscn")
+	assassin_scene = load("res://scenes/enemies/assassin.tscn")
+	sorcerer_scene = load("res://scenes/enemies/sorcerer.tscn")
 
 func _process(delta: float) -> void:
 	game_time += delta
@@ -75,25 +75,25 @@ func _process(delta: float) -> void:
 
 func _update_spawn_weights() -> void:
 	# Introduce new enemies over time
-	# Skeletons after 30 seconds
+	# Archers after 30 seconds
 	if game_time > 30.0:
-		skeleton_weight = min(50.0, (game_time - 30.0) * 0.5)
+		archer_weight = min(50.0, (game_time - 30.0) * 0.5)
 
-	# Spiders after 60 seconds
+	# Cavalry after 60 seconds
 	if game_time > 60.0:
-		spider_weight = min(40.0, (game_time - 60.0) * 0.4)
+		cavalry_weight = min(40.0, (game_time - 60.0) * 0.4)
 
-	# Creepers after 90 seconds
+	# Fire soldiers after 90 seconds
 	if game_time > 90.0:
-		creeper_weight = min(30.0, (game_time - 90.0) * 0.3)
+		fire_soldier_weight = min(30.0, (game_time - 90.0) * 0.3)
 
-	# Enderman after 120 seconds (rare, teleporting enemy)
+	# Assassins after 120 seconds (rare, teleporting enemy)
 	if game_time > 120.0:
-		enderman_weight = min(20.0, (game_time - 120.0) * 0.2)
+		assassin_weight = min(20.0, (game_time - 120.0) * 0.2)
 
-	# Witch after 150 seconds (rare, ranged enemy)
+	# Sorcerers after 150 seconds (rare, ranged enemy)
 	if game_time > 150.0:
-		witch_weight = min(15.0, (game_time - 150.0) * 0.15)
+		sorcerer_weight = min(15.0, (game_time - 150.0) * 0.15)
 
 func _find_player() -> void:
 	await get_tree().process_frame
@@ -132,7 +132,7 @@ func _spawn_enemy() -> void:
 	if enemy.has_signal("died"):
 		enemy.died.connect(_on_enemy_died.bind(enemy))
 
-	# Connect rally signal for elite zombies
+	# Connect rally signal for elite infantry
 	if enemy.has_signal("rally_requested"):
 		enemy.rally_requested.connect(_on_rally_requested)
 
@@ -151,33 +151,33 @@ func _spawn_enemy() -> void:
 	enemy_spawned.emit(enemy)
 
 func _select_enemy_type() -> PackedScene:
-	var total_weight = zombie_weight + skeleton_weight + creeper_weight + spider_weight + enderman_weight + witch_weight
+	var total_weight = infantry_weight + archer_weight + fire_soldier_weight + cavalry_weight + assassin_weight + sorcerer_weight
 	var roll = randf() * total_weight
 
-	if roll < zombie_weight:
-		return zombie_scene
-	roll -= zombie_weight
+	if roll < infantry_weight:
+		return infantry_scene
+	roll -= infantry_weight
 
-	if roll < skeleton_weight:
-		return skeleton_scene
-	roll -= skeleton_weight
+	if roll < archer_weight:
+		return archer_scene
+	roll -= archer_weight
 
-	if roll < spider_weight:
-		return spider_scene
-	roll -= spider_weight
+	if roll < cavalry_weight:
+		return cavalry_scene
+	roll -= cavalry_weight
 
-	if roll < creeper_weight:
-		return creeper_scene
-	roll -= creeper_weight
+	if roll < fire_soldier_weight:
+		return fire_soldier_scene
+	roll -= fire_soldier_weight
 
-	if roll < enderman_weight:
-		return enderman_scene
-	roll -= enderman_weight
+	if roll < assassin_weight:
+		return assassin_scene
+	roll -= assassin_weight
 
-	if roll < witch_weight:
-		return witch_scene
+	if roll < sorcerer_weight:
+		return sorcerer_scene
 
-	return zombie_scene
+	return infantry_scene
 
 func _on_enemy_died(xp_value: int, enemy: Node2D = null) -> void:
 	current_enemy_count -= 1
@@ -214,15 +214,15 @@ func set_wave(wave: int) -> void:
 
 	# Boost weights based on wave (in addition to time-based)
 	if wave >= 2:
-		skeleton_weight = max(skeleton_weight, 20.0)
+		archer_weight = max(archer_weight, 20.0)
 	if wave >= 3:
-		spider_weight = max(spider_weight, 15.0)
+		cavalry_weight = max(cavalry_weight, 15.0)
 	if wave >= 4:
-		creeper_weight = max(creeper_weight, 10.0)
+		fire_soldier_weight = max(fire_soldier_weight, 10.0)
 	if wave >= 5:
-		enderman_weight = max(enderman_weight, 8.0)
+		assassin_weight = max(assassin_weight, 8.0)
 	if wave >= 6:
-		witch_weight = max(witch_weight, 5.0)
+		sorcerer_weight = max(sorcerer_weight, 5.0)
 
 ## Called when night starts
 func _on_night_started() -> void:
@@ -314,22 +314,22 @@ func _get_max_elites() -> int:
 		return 5
 
 
-## Handle elite zombie rally: spawn tracked normal zombies
+## Handle elite infantry war cry: spawn tracked normal infantry
 ## Deferred to avoid physics query errors when called from _on_body_entered chain
 func _on_rally_requested(pos: Vector2, count: int) -> void:
-	call_deferred("_spawn_rally_zombies", pos, count)
+	call_deferred("_spawn_rally_infantry", pos, count)
 
-func _spawn_rally_zombies(pos: Vector2, count: int) -> void:
-	if not zombie_scene:
+func _spawn_rally_infantry(pos: Vector2, count: int) -> void:
+	if not infantry_scene:
 		return
 	for i in range(count):
-		var zombie = zombie_scene.instantiate()
+		var soldier = infantry_scene.instantiate()
 		var offset = Vector2(randf_range(-30, 30), randf_range(-30, 30))
-		zombie.global_position = pos + offset
-		if zombie.has_signal("died"):
-			zombie.died.connect(_on_enemy_died.bind(zombie))
-		if zombie.has_signal("rally_requested"):
-			zombie.rally_requested.connect(_on_rally_requested)
-		get_parent().add_child(zombie)
+		soldier.global_position = pos + offset
+		if soldier.has_signal("died"):
+			soldier.died.connect(_on_enemy_died.bind(soldier))
+		if soldier.has_signal("rally_requested"):
+			soldier.rally_requested.connect(_on_rally_requested)
+		get_parent().add_child(soldier)
 		current_enemy_count += 1
-		enemy_spawned.emit(zombie)
+		enemy_spawned.emit(soldier)

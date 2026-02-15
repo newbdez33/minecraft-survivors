@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16" shape-rendering="crispEdges">
+  <!-- Sky Halberd (天戟) - Spinning halberd projectile - Replaces dragon_fireball -->
+
+  <!-- Main blade (top, crescent shape) -->
+  <rect x="5" y="0" width="2" height="2" fill="#CCCCCC"/>
+  <rect x="3" y="1" width="3" height="2" fill="#DDDDDD"/>
+  <rect x="2" y="2" width="2" height="2" fill="#CCCCCC"/>
+  <rect x="7" y="1" width="3" height="2" fill="#DDDDDD"/>
+  <rect x="10" y="2" width="2" height="2" fill="#CCCCCC"/>
+
+  <!-- Blade edge highlights -->
+  <rect x="4" y="1" width="1" height="1" fill="#EEEEEE"/>
+  <rect x="8" y="1" width="1" height="1" fill="#EEEEEE"/>
+  <rect x="6" y="0" width="1" height="1" fill="#FFFFFF"/>
+
+  <!-- Spear point (top center) -->
+  <rect x="6" y="2" width="2" height="1" fill="#DDDDDD"/>
+
+  <!-- Shaft (center pole, vertical) -->
+  <rect x="7" y="3" width="2" height="8" fill="#8B5A2B"/>
+  <rect x="7" y="3" width="1" height="8" fill="#6B4423"/>
+
+  <!-- Metal shaft reinforcement -->
+  <rect x="6" y="4" width="4" height="1" fill="#888888"/>
+  <rect x="6" y="6" width="4" height="1" fill="#888888"/>
+
+  <!-- Red tassel (fluttering from mid-shaft) -->
+  <rect x="4" y="5" width="2" height="1" fill="#CC2222"/>
+  <rect x="3" y="6" width="2" height="1" fill="#CC2222"/>
+  <rect x="2" y="7" width="2" height="1" fill="#EE3333"/>
+  <rect x="10" y="5" width="2" height="1" fill="#CC2222"/>
+  <rect x="11" y="6" width="2" height="1" fill="#EE3333"/>
+
+  <!-- Bottom spike -->
+  <rect x="7" y="11" width="2" height="2" fill="#AAAAAA"/>
+  <rect x="7" y="13" width="2" height="1" fill="#CCCCCC"/>
+
+  <!-- Spin effect (motion lines) -->
+  <rect x="0" y="3" width="2" height="1" fill="#CCCCCC" fill-opacity="0.3"/>
+  <rect x="13" y="3" width="2" height="1" fill="#CCCCCC" fill-opacity="0.3"/>
+</svg>

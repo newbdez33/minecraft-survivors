@@ -1,10 +1,10 @@
 #!/bin/bash
-# Run all tests for Minecraft Survivors
+# Run all tests for Three Kingdoms Survivors
 # Usage: ./run_tests.sh
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-echo "Running Minecraft Survivors Test Suite..."
+echo "Running Three Kingdoms Survivors Test Suite..."
 echo ""
 
 godot --headless --script "$SCRIPT_DIR/tests/test_runner.gd"

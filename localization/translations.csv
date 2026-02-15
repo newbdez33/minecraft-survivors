@@ -1,5 +1,5 @@
 keys,en,zh,ja
-GAME_TITLE,Minecraft Survivors,我的世界 幸存者,マインクラフト サバイバーズ
+GAME_TITLE,Three Kingdoms Survivors,三国幸存者,三国サバイバーズ
 GAME_SUBTITLE,A Vampire Survivors-like game,类吸血鬼幸存者游戏,ヴァンパイアサバイバーズ風ゲーム
 START_GAME,Start Game,开始游戏,ゲーム開始
 SETTINGS,Settings,设置,設定
@@ -28,20 +28,20 @@ WEAPONS,Weapons,武器,武器
 WEAPONS_MAX,Weapons (MAX),武器 (已满),武器 (MAX)
 EVOLUTION,★ EVOLUTION ★,★ 进化 ★,★ 進化 ★
 BONUS,BONUS,奖励,ボーナス
-UPGRADE_SWORD,Sword,剑,剣
+UPGRADE_SWORD,Blade,刀,刀
 UPGRADE_BOW,Bow,弓,弓
-UPGRADE_CROSSBOW,Crossbow,弩,クロスボウ
+UPGRADE_CROSSBOW,Repeating Crossbow,连弩,連弩
 UPGRADE_SHARPNESS,Sharpness,锋利,鋭さ
-UPGRADE_KNOCKBACK,Knockback,击退,ノックバック
-UPGRADE_LOOTING,Looting,抢夺,ドロップ増加
-UPGRADE_PROTECTION,Protection,保护,防護
-UPGRADE_SWIFTNESS,Swiftness,迅捷,俊敏
-UPGRADE_SWEEPING,Sweeping Edge,横扫之刃,スイープ
-UPGRADE_HASTE,Haste,急迫,加速
-WOOD_SWORD,Wood Sword,木剑,木の剣
-STONE_SWORD,Stone Sword,石剑,石の剣
-IRON_SWORD,Iron Sword,铁剑,鉄の剣
-DIAMOND_SWORD,Diamond Sword,钻石剑,ダイヤの剣
+UPGRADE_KNOCKBACK,Power Strike,力拔,パワーストライク
+UPGRADE_LOOTING,Spoils,缴获,戦利品
+UPGRADE_PROTECTION,Iron Armor,铁甲,鉄甲
+UPGRADE_SWIFTNESS,Light Step,轻功,軽功
+UPGRADE_SWEEPING,Sweep,横扫,薙ぎ払い
+UPGRADE_HASTE,Swift Wind,疾风,疾風
+IRON_BLADE,Iron Blade,铁刃,鉄刃
+STEEL_BLADE,Steel Blade,钢刃,鋼刃
+FINE_STEEL_BLADE,Fine Steel Blade,精钢刃,精鋼刃
+DIVINE_WEAPON,Divine Weapon,神兵,神兵
 DESC_SWORD,+2 damage +5 range,+2伤害 +5范围,+2ダメージ +5範囲
 DESC_BOW,+3 DMG +25 range,+3伤害 +25范围,+3ダメージ +25範囲
 DESC_SHARPNESS,+{value} damage,+{value}伤害,+{value}ダメージ
@@ -59,19 +59,21 @@ HUD_LEVEL,Lv.,等级,Lv.
 HUD_WAVE,Wave,波次,ウェーブ
 HUD_KILLS,Kills,击杀,キル
 ALL_MAXED,All Weapons Maxed Out!,所有武器已满级!,全武器MAX!
-UPGRADE_TORCH,Torch,火把,松明
+UPGRADE_TORCH,War Lantern,战灯,戦灯
 DESC_TORCH,Illuminate the night,照亮夜晚,夜を照らす
-BOSS_EVOKER,Evoker,唤魔者,エヴォーカー
-BOSS_ELDER_GUARDIAN,Elder Guardian,远古守卫者,エルダーガーディアン
-BOSS_RAVAGER,Ravager,劫掠兽,ラヴェジャー
-BOSS_WARDEN,Warden,监守者,ウォーデン
-BOSS_WITHER,Wither,凋灵,ウィザー
-BOSS_ENDER_DRAGON,Ender Dragon,末影龙,エンダードラゴン
+BOSS_XIAHOU_DUN,Xiahou Dun,夏侯惇,夏侯惇
+BOSS_XU_CHU,Xu Chu,许褚,許褚
+BOSS_ZHANG_LIAO,Zhang Liao,张辽,張遼
+BOSS_DIAN_WEI,Dian Wei,典韦,典韋
+BOSS_SIMA_YI,Sima Yi,司马懿,司馬懿
+BOSS_LV_BU,Lv Bu,吕布,呂布
 SELECT_CHARACTER,Select Character,选择角色,キャラクター選択
-CHARACTER_STEVE,Steve,史蒂夫,スティーブ
-CHARACTER_ALEX,Alex,艾莉克斯,アレックス
-DESC_STEVE,Balanced fighter with no special abilities,平衡型战士 无特殊能力,バランス型ファイター 特殊能力なし
-DESC_ALEX,Fast and agile +20% speed +50% pickup range -10% HP,敏捷型 +20%速度 +50%拾取范围 -10%生命,俊敏タイプ +20%速度 +50%拾取範囲 -10%HP
+CHARACTER_GUAN_YU,Guan Yu,关羽,関羽
+CHARACTER_ZHAO_YUN,Zhao Yun,赵云,趙雲
+CHARACTER_ZHANG_FEI,Zhang Fei,张飞,張飛
+DESC_GUAN_YU,Balanced fighter with no special abilities,平衡型战士 无特殊能力,バランス型ファイター 特殊能力なし
+DESC_ZHAO_YUN,Fast and agile +20% speed +50% pickup range -10% HP,敏捷型 +20%速度 +50%拾取范围 -10%生命,俊敏タイプ +20%速度 +50%拾取範囲 -10%HP
+DESC_ZHANG_FEI,Tank fighter +20% HP +10% damage -15% speed,重甲战士 +20%生命 +10%伤害 -15%速度,タンクタイプ +20%HP +10%ダメージ -15%速度
 UNLOCK_SURVIVE_15,Survive for 15 minutes,存活15分钟,15分間生存する
 LOCKED,Locked,未解锁,ロック中
 UNLOCKED,Unlocked,已解锁,アンロック済み
@@ -130,8 +132,8 @@ ACH_COMBO_100_NAME,Unstoppable,势不可挡,アンストッパブル
 ACH_COMBO_100_DESC,Reach 100 combo,达到100连击,100コンボ達成
 ACH_NO_DAMAGE_60_NAME,Untouchable,无懈可击,アンタッチャブル
 ACH_NO_DAMAGE_60_DESC,Survive 60 seconds without damage,60秒不受伤,60秒間ダメージを受けない
-ACH_UNLOCK_ALEX_NAME,New Friend,新朋友,新しい仲間
-ACH_UNLOCK_ALEX_DESC,Unlock Alex character,解锁Alex角色,アレックスを解放
+ACH_UNLOCK_ZHAO_YUN_NAME,New Ally,新盟友,新しい盟友
+ACH_UNLOCK_ZHAO_YUN_DESC,Unlock Zhao Yun,解锁赵云,趙雲を解放
 ACH_UNLOCK_BOW_NAME,Archer,弓箭手,アーチャー
 ACH_UNLOCK_BOW_DESC,Get the Bow weapon,获得弓武器,弓を入手
 ACH_EVOLVE_WEAPON_NAME,Evolution,进化,進化

@@ -96,10 +96,10 @@ static func get_tile_variant(tile_x: int, tile_y: int) -> int:
 ## Get the biome name as a string
 static func biome_name(biome: int) -> String:
 	match biome:
-		Biome.PLAINS: return "Plains"
-		Biome.DESERT: return "Desert"
-		Biome.SNOW: return "Snow"
-		Biome.SWAMP: return "Swamp"
+		Biome.PLAINS: return "Central Plains"
+		Biome.DESERT: return "Western Regions"
+		Biome.SNOW: return "Northern Frontier"
+		Biome.SWAMP: return "Southern Marshes"
 		_: return "Unknown"
 
 
