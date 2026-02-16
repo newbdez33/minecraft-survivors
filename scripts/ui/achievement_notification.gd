@@ -1,14 +1,14 @@
 extends CanvasLayer
 class_name AchievementNotification
 ## Popup notification when an achievement is unlocked
-## Shows achievement name and description, then fades out
+## Shows achievement icon, name and description, then fades out
 
 @onready var panel: PanelContainer = $Panel
-@onready var title_label: Label = $Panel/VBox/TitleHBox/TitleLabel
-@onready var name_label: Label = $Panel/VBox/NameLabel
-@onready var desc_label: Label = $Panel/VBox/DescLabel
+@onready var title_label: Label = $Panel/MarginContainer/HBox/VBox/TitleHBox/TitleLabel
+@onready var name_label: Label = $Panel/MarginContainer/HBox/VBox/NameLabel
+@onready var desc_label: Label = $Panel/MarginContainer/HBox/VBox/DescLabel
+@onready var achievement_icon: TextureRect = $Panel/MarginContainer/HBox/AchievementIcon
 @onready var timer: Timer = $Timer
-@onready var anim_player: AnimationPlayer = $AnimationPlayer
 
 var _queue: Array = []  # Queue of achievements to show
 var _is_showing: bool = false
@@ -49,22 +49,39 @@ func _show_next() -> void:
 		var translated_desc: String = tr(desc_key)
 		desc_label.text = translated_desc if translated_desc != desc_key else achievement.description
 
+	# Load achievement badge icon
+	if achievement_icon and achievement.icon_path != "":
+		if ResourceLoader.exists(achievement.icon_path):
+			var texture = load(achievement.icon_path)
+			if texture:
+				achievement_icon.texture = texture
+				achievement_icon.visible = true
+			else:
+				achievement_icon.visible = false
+		else:
+			achievement_icon.visible = false
+
 	# Show with animation
 	panel.visible = true
 	panel.modulate.a = 0.0
 
-	# Fade in
+	# Slide in from right + fade in
+	panel.position.x = 30.0
 	var tween = create_tween()
-	tween.tween_property(panel, "modulate:a", 1.0, 0.3)
+	tween.set_parallel(true)
+	tween.tween_property(panel, "modulate:a", 1.0, 0.3).set_ease(Tween.EASE_OUT)
+	tween.tween_property(panel, "position:x", 0.0, 0.3).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
 
 	# Start display timer
 	timer.start(3.0)
 
 func _on_timer_timeout() -> void:
-	# Fade out
+	# Slide out to right + fade out
 	var tween = create_tween()
-	tween.tween_property(panel, "modulate:a", 0.0, 0.3)
-	tween.tween_callback(_on_fade_complete)
+	tween.set_parallel(true)
+	tween.tween_property(panel, "modulate:a", 0.0, 0.4).set_ease(Tween.EASE_IN)
+	tween.tween_property(panel, "position:x", 30.0, 0.4).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_BACK)
+	tween.chain().tween_callback(_on_fade_complete)
 
 func _on_fade_complete() -> void:
 	hide_notification()

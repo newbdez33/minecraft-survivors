@@ -9,12 +9,12 @@ var _screenshot_dir: String = "res://docs/screenshots"
 
 # Boss data: [scene_path, name, wave, hp]
 const BOSS_DATA: Array = [
-	["res://scenes/enemies/evoker.tscn", "Evoker", 5, 400],
-	["res://scenes/enemies/elder_guardian.tscn", "Elder Guardian", 10, 600],
-	["res://scenes/enemies/ravager.tscn", "Ravager", 15, 800],
-	["res://scenes/enemies/warden.tscn", "Warden", 20, 1000],
-	["res://scenes/enemies/wither.tscn", "Wither", 25, 1200],
-	["res://scenes/enemies/ender_dragon.tscn", "Ender Dragon", 30, 1500],
+	["res://scenes/enemies/xiahou_dun.tscn", "Xiahou Dun", 5, 400],
+	["res://scenes/enemies/xu_chu.tscn", "Xu Chu", 10, 600],
+	["res://scenes/enemies/zhang_liao.tscn", "Zhang Liao", 15, 800],
+	["res://scenes/enemies/dian_wei.tscn", "Dian Wei", 20, 1000],
+	["res://scenes/enemies/sima_yi.tscn", "Sima Yi", 25, 1200],
+	["res://scenes/enemies/lv_bu.tscn", "Lv Bu", 30, 1500],
 ]
 
 func _ready() -> void:

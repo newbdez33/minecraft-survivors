@@ -9,14 +9,14 @@ const CharacterClass = preload("res://scripts/systems/character.gd")
 const SAVE_PATH = "user://characters.json"
 
 var characters: Dictionary = {}  # id -> GameCharacter
-var selected_character_id: String = "steve"
+var selected_character_id: String = "guan_yu"
 
 # Character definitions
 const CHARACTER_DEFS = {
-	"steve": {
-		"name": "Steve",
+	"guan_yu": {
+		"name": "Guan Yu",
 		"desc": "Balanced fighter with no special abilities",
-		"sprite": "res://assets/characters/steve.svg",
+		"sprite": "res://assets/characters/guan_yu.svg",
 		"unlocked": true,
 		"health": 1.0,
 		"speed": 1.0,
@@ -27,10 +27,10 @@ const CHARACTER_DEFS = {
 		"unlock_value": 0,
 		"unlock_desc": "Default character"
 	},
-	"alex": {
-		"name": "Alex",
+	"zhao_yun": {
+		"name": "Zhao Yun",
 		"desc": "Fast and agile, +20% speed, +50% pickup range, -10% HP",
-		"sprite": "res://assets/characters/alex.svg",
+		"sprite": "res://assets/characters/zhao_yun.svg",
 		"unlocked": false,
 		"health": 0.9,
 		"speed": 1.2,
@@ -40,6 +40,20 @@ const CHARACTER_DEFS = {
 		"unlock_type": "survival_time",
 		"unlock_value": 900,  # 15 minutes
 		"unlock_desc": "Survive for 15 minutes"
+	},
+	"zhang_fei": {
+		"name": "Zhang Fei",
+		"desc": "Tank fighter, +20% HP, +10% damage, -15% speed",
+		"sprite": "res://assets/characters/zhang_fei.svg",
+		"unlocked": false,
+		"health": 1.2,
+		"speed": 0.85,
+		"damage": 1.1,
+		"xp": 1.0,
+		"pickup": 1.0,
+		"unlock_type": "kills",
+		"unlock_value": 500,
+		"unlock_desc": "Kill 500 enemies total"
 	}
 }
 

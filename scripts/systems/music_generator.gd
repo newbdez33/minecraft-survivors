@@ -1,7 +1,7 @@
 extends RefCounted
 ## Procedural ambient music generator
 ## Creates 12-second looping AudioStreamWAV tracks per biome
-## Uses triangle/square waves + noise for Minecraft-inspired ambient feel
+## Uses triangle/square waves + noise for Three Kingdoms-inspired ambient feel
 
 const SAMPLE_RATE: int = 22050
 const LOOP_DURATION: float = 12.0

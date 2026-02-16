@@ -34,16 +34,16 @@ static func _add_result(results: Dictionary, test_result: Dictionary) -> void:
 
 static func test_player_can_damage_enemy() -> Dictionary:
 	# Test enemy has take_damage method and health property
-	var zombie_scene = load("res://scenes/enemies/zombie.tscn")
-	if not zombie_scene:
+	var infantry_scene = load("res://scenes/enemies/infantry.tscn")
+	if not infantry_scene:
 		return {"name": "TC.CF.1: Player can damage enemy", "passed": false}
-	var zombie = zombie_scene.instantiate()
+	var infantry = infantry_scene.instantiate()
 
-	var has_damage_method = zombie.has_method("take_damage")
-	var has_health = "health" in zombie or zombie.has_node("HealthComponent")
+	var has_damage_method = infantry.has_method("take_damage")
+	var has_health = "health" in infantry or infantry.has_node("HealthComponent")
 
 	var passed = has_damage_method and has_health
-	zombie.queue_free()
+	infantry.queue_free()
 	return {"name": "TC.CF.1: Enemy has take_damage method and health", "passed": passed}
 
 static func test_enemy_can_damage_player() -> Dictionary:
@@ -59,12 +59,12 @@ static func test_enemy_can_damage_player() -> Dictionary:
 
 static func test_enemy_death_drops_xp() -> Dictionary:
 	# This tests the signal connection
-	var zombie_scene = load("res://scenes/enemies/zombie.tscn")
-	if not zombie_scene:
+	var infantry_scene = load("res://scenes/enemies/infantry.tscn")
+	if not infantry_scene:
 		return {"name": "TC.CF.3: Enemy death drops XP", "passed": false}
-	var zombie = zombie_scene.instantiate()
-	var passed = "xp_value" in zombie and zombie.xp_value > 0
-	zombie.queue_free()
+	var infantry = infantry_scene.instantiate()
+	var passed = "xp_value" in infantry and infantry.xp_value > 0
+	infantry.queue_free()
 	return {"name": "TC.CF.3: Enemy has XP value for drops", "passed": passed}
 
 static func test_player_collects_xp() -> Dictionary:
@@ -80,7 +80,7 @@ static func test_player_collects_xp() -> Dictionary:
 	return {"name": "TC.CF.4: Player collects XP", "passed": passed}
 
 static func test_sword_hits_enemies_in_range() -> Dictionary:
-	var sword_scene = load("res://scenes/weapons/wood_sword.tscn")
+	var sword_scene = load("res://scenes/weapons/iron_blade.tscn")
 	if not sword_scene:
 		return {"name": "TC.CF.5: Sword has attack range", "passed": false}
 	var sword = sword_scene.instantiate()
@@ -89,7 +89,7 @@ static func test_sword_hits_enemies_in_range() -> Dictionary:
 	return {"name": "TC.CF.5: Sword has attack range", "passed": passed}
 
 static func test_sword_knockback_works() -> Dictionary:
-	var sword_scene = load("res://scenes/weapons/wood_sword.tscn")
+	var sword_scene = load("res://scenes/weapons/iron_blade.tscn")
 	if not sword_scene:
 		return {"name": "TC.CF.6: Sword has knockback", "passed": false}
 	var sword = sword_scene.instantiate()

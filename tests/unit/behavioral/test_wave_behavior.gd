@@ -17,9 +17,9 @@ static func run_tests() -> Dictionary:
 	_add_result(results, test_night_multiplier_doubles_enemies())
 
 	# Enemy Type Distribution Tests
-	_add_result(results, test_wave_1_only_zombies())
-	_add_result(results, test_wave_4_adds_skeletons_spiders())
-	_add_result(results, test_wave_7_adds_creepers())
+	_add_result(results, test_wave_1_only_infantrys())
+	_add_result(results, test_wave_4_adds_archers_cavalrys())
+	_add_result(results, test_wave_7_adds_fire_soldiers())
 	_add_result(results, test_wave_10_full_mix())
 	_add_result(results, test_weight_normalization())
 
@@ -108,39 +108,39 @@ static func test_night_multiplier_doubles_enemies() -> Dictionary:
 # ENEMY TYPE DISTRIBUTION TESTS
 # =============================================================================
 
-static func test_wave_1_only_zombies() -> Dictionary:
-	# Waves 1-3: Only zombies (weight 1.0)
-	var weights = {"zombie": 1.0}
-	var passed = weights.size() == 1 and weights.has("zombie")
-	return {"name": "TC.WB.6: Waves 1-3 have only zombies", "passed": passed}
+static func test_wave_1_only_infantrys() -> Dictionary:
+	# Waves 1-3: Only infantrys (weight 1.0)
+	var weights = {"infantry": 1.0}
+	var passed = weights.size() == 1 and weights.has("infantry")
+	return {"name": "TC.WB.6: Waves 1-3 have only infantrys", "passed": passed}
 
-static func test_wave_4_adds_skeletons_spiders() -> Dictionary:
-	# Waves 4-6: zombie 0.6, skeleton 0.3, spider 0.1
-	var weights = {"zombie": 0.6, "skeleton": 0.3, "spider": 0.1}
-	var has_all = weights.has("zombie") and weights.has("skeleton") and weights.has("spider")
+static func test_wave_4_adds_archers_cavalrys() -> Dictionary:
+	# Waves 4-6: infantry 0.6, archer 0.3, cavalry 0.1
+	var weights = {"infantry": 0.6, "archer": 0.3, "cavalry": 0.1}
+	var has_all = weights.has("infantry") and weights.has("archer") and weights.has("cavalry")
 	var passed = has_all and weights.size() == 3
-	return {"name": "TC.WB.7: Wave 4+ adds skeletons and spiders", "passed": passed}
+	return {"name": "TC.WB.7: Wave 4+ adds archers and cavalrys", "passed": passed}
 
-static func test_wave_7_adds_creepers() -> Dictionary:
-	# Waves 7-9: zombie 0.4, skeleton 0.3, creeper 0.15, spider 0.15
-	var weights = {"zombie": 0.4, "skeleton": 0.3, "creeper": 0.15, "spider": 0.15}
-	var has_creeper = weights.has("creeper")
-	var passed = has_creeper and weights.size() == 4
-	return {"name": "TC.WB.8: Wave 7+ adds creepers", "passed": passed}
+static func test_wave_7_adds_fire_soldiers() -> Dictionary:
+	# Waves 7-9: infantry 0.4, archer 0.3, fire_soldier 0.15, cavalry 0.15
+	var weights = {"infantry": 0.4, "archer": 0.3, "fire_soldier": 0.15, "cavalry": 0.15}
+	var has_fire_soldier = weights.has("fire_soldier")
+	var passed = has_fire_soldier and weights.size() == 4
+	return {"name": "TC.WB.8: Wave 7+ adds fire_soldiers", "passed": passed}
 
 static func test_wave_10_full_mix() -> Dictionary:
-	# Waves 10+: zombie 0.3, skeleton 0.25, creeper 0.2, spider 0.25
-	var weights = {"zombie": 0.3, "skeleton": 0.25, "creeper": 0.2, "spider": 0.25}
+	# Waves 10+: infantry 0.3, archer 0.25, fire_soldier 0.2, cavalry 0.25
+	var weights = {"infantry": 0.3, "archer": 0.25, "fire_soldier": 0.2, "cavalry": 0.25}
 	var total_weight = 0.3 + 0.25 + 0.2 + 0.25
 	var passed = abs(total_weight - 1.0) < 0.01
 	return {"name": "TC.WB.9: Wave 10+ has full enemy mix", "passed": passed}
 
 static func test_weight_normalization() -> Dictionary:
 	# All weight sets should sum to 1.0
-	var w1 = {"zombie": 1.0}
-	var w4 = {"zombie": 0.6, "skeleton": 0.3, "spider": 0.1}
-	var w7 = {"zombie": 0.4, "skeleton": 0.3, "creeper": 0.15, "spider": 0.15}
-	var w10 = {"zombie": 0.3, "skeleton": 0.25, "creeper": 0.2, "spider": 0.25}
+	var w1 = {"infantry": 1.0}
+	var w4 = {"infantry": 0.6, "archer": 0.3, "cavalry": 0.1}
+	var w7 = {"infantry": 0.4, "archer": 0.3, "fire_soldier": 0.15, "cavalry": 0.15}
+	var w10 = {"infantry": 0.3, "archer": 0.25, "fire_soldier": 0.2, "cavalry": 0.25}
 
 	var sum1 = 0.0
 	for v in w1.values(): sum1 += v
@@ -178,19 +178,19 @@ static func test_wave_4_is_not_boss_wave() -> Dictionary:
 	return {"name": "TC.WB.13: Wave 4 is not a boss wave", "passed": passed}
 
 static func test_boss_type_for_wave_5() -> Dictionary:
-	# Boss rotation: wave 5 = evoker
+	# Boss rotation: wave 5 = xiahou_dun
 	var wave = 5
 	var boss_index = (wave / 5) % 3
-	var boss = "evoker"  # All bosses are currently evoker
-	var passed = boss == "evoker"
-	return {"name": "TC.WB.14: Wave 5 boss is Evoker", "passed": passed}
+	var boss = "xiahou_dun"  # All bosses are currently xiahou_dun
+	var passed = boss == "xiahou_dun"
+	return {"name": "TC.WB.14: Wave 5 boss is XiahouDun", "passed": passed}
 
 static func test_boss_type_for_wave_10() -> Dictionary:
 	# Wave 10 boss (boss_index = 2 % 3 = 2)
 	var wave = 10
-	var boss = "evoker"  # Currently all evoker
-	var passed = boss == "evoker"
-	return {"name": "TC.WB.15: Wave 10 boss is Evoker", "passed": passed}
+	var boss = "xiahou_dun"  # Currently all xiahou_dun
+	var passed = boss == "xiahou_dun"
+	return {"name": "TC.WB.15: Wave 10 boss is XiahouDun", "passed": passed}
 
 # =============================================================================
 # STATE MANAGEMENT TESTS
@@ -238,7 +238,7 @@ static func test_enemy_list_generation() -> Dictionary:
 	# _generate_enemy_list should produce count enemies
 	# Each enemy type selected by weighted random
 	var count = 10
-	var weights = {"zombie": 0.5, "skeleton": 0.5}
+	var weights = {"infantry": 0.5, "archer": 0.5}
 	# List should have exactly 'count' elements
 	var passed = count == 10
 	return {"name": "TC.WB.21: Enemy list has correct count", "passed": passed}

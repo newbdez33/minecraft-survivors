@@ -10,7 +10,7 @@ enum Strategy {
 	AGGRESSIVE,    # Move towards enemies
 	STATIONARY,    # Stand still (test damage intake)
 	COLLECT_XP,    # Prioritize XP orbs
-	TRIGGER_POISON # Seek witch potions
+	TRIGGER_POISON # Seek sorcerer poison darts
 }
 
 @export var strategy: Strategy = Strategy.SURVIVE
@@ -91,23 +91,23 @@ func _strategy_collect_xp() -> void:
 		_input_direction = (nearest.global_position - player.global_position).normalized()
 
 func _strategy_trigger_poison() -> void:
-	# Find witches or potions
-	var potions = get_tree().get_nodes_in_group("projectiles")
-	var witches = []
+	# Find sorcerers or poison darts
+	var darts = get_tree().get_nodes_in_group("projectiles")
+	var sorcerers = []
 	for enemy in get_tree().get_nodes_in_group("enemies"):
-		if enemy.name.contains("Witch") or (enemy.has_method("get_class") and "Witch" in str(enemy.get_script())):
-			witches.append(enemy)
+		if enemy.name.contains("Sorcerer") or (enemy.has_method("get_class") and "Sorcerer" in str(enemy.get_script())):
+			sorcerers.append(enemy)
 
-	# Prioritize potions
-	if not potions.is_empty():
-		var nearest = _get_nearest(potions)
+	# Prioritize poison darts
+	if not darts.is_empty():
+		var nearest = _get_nearest(darts)
 		if nearest:
 			_input_direction = (nearest.global_position - player.global_position).normalized()
 			return
 
-	# Move towards witches
-	if not witches.is_empty():
-		var nearest = _get_nearest(witches)
+	# Move towards sorcerers
+	if not sorcerers.is_empty():
+		var nearest = _get_nearest(sorcerers)
 		if nearest:
 			_input_direction = (nearest.global_position - player.global_position).normalized()
 			return

@@ -1,7 +1,7 @@
 extends Node
 class_name TestProjectilesComplete
 ## Complete projectile tests for 100% coverage
-## Tests arrows, potions, crossbow bolts, and evoker fangs
+## Tests arrows, potions, crossbow bolts, and xiahou_dun fangs
 
 static func get_test_name() -> String:
 	return "Projectiles Complete Tests"
@@ -33,7 +33,7 @@ static func run_tests() -> Dictionary:
 	_add_result(results, test_bolt_script_loads())
 	_add_result(results, test_bolt_has_pierce())
 
-	# Evoker Fang Tests
+	# Ground Spike Tests
 	_add_result(results, test_fang_scene_loads())
 	_add_result(results, test_fang_script_loads())
 	_add_result(results, test_fang_has_damage())
@@ -109,45 +109,43 @@ static func test_player_arrow_has_damage() -> Dictionary:
 	return {"name": "TC.PR.8: Player arrow has damage property", "passed": passed}
 
 # =============================================================================
-# POTION TESTS
+# POISON DART TESTS
 # =============================================================================
 
 static func test_potion_scene_loads() -> Dictionary:
-	var scene = load("res://scenes/projectiles/potion.tscn")
-	return {"name": "TC.PR.9: Potion scene loads", "passed": scene != null}
+	var scene = load("res://scenes/projectiles/poison_dart.tscn")
+	return {"name": "TC.PR.9: Poison Dart scene loads", "passed": scene != null}
 
 static func test_potion_script_loads() -> Dictionary:
-	var script = load("res://scripts/projectiles/potion.gd")
-	return {"name": "TC.PR.10: Potion script loads", "passed": script != null}
+	var script = load("res://scripts/projectiles/poison_dart.gd")
+	return {"name": "TC.PR.10: Poison Dart script loads", "passed": script != null}
 
 static func test_potion_has_damage() -> Dictionary:
-	var scene = load("res://scenes/projectiles/potion.tscn")
+	var scene = load("res://scenes/projectiles/poison_dart.tscn")
 	if not scene:
-		return {"name": "TC.PR.11: Potion has damage", "passed": false}
-	var potion = scene.instantiate()
-	var passed = "damage" in potion
-	potion.queue_free()
-	return {"name": "TC.PR.11: Potion has damage property", "passed": passed}
+		return {"name": "TC.PR.11: Poison Dart has damage", "passed": false}
+	var dart = scene.instantiate()
+	var passed = "damage" in dart
+	dart.queue_free()
+	return {"name": "TC.PR.11: Poison Dart has damage property", "passed": passed}
 
 static func test_potion_has_splash_radius() -> Dictionary:
-	var scene = load("res://scenes/projectiles/potion.tscn")
+	var scene = load("res://scenes/projectiles/poison_dart.tscn")
 	if not scene:
-		return {"name": "TC.PR.12: Potion has cloud_size", "passed": false}
-	var potion = scene.instantiate()
-	# Potion uses cloud_size (not splash_radius)
-	var passed = "cloud_size" in potion
-	potion.queue_free()
-	return {"name": "TC.PR.12: Potion has cloud_size property", "passed": passed}
+		return {"name": "TC.PR.12: Poison Dart has cloud_size", "passed": false}
+	var dart = scene.instantiate()
+	var passed = "cloud_size" in dart
+	dart.queue_free()
+	return {"name": "TC.PR.12: Poison Dart has cloud_size property", "passed": passed}
 
 static func test_potion_has_poison_damage() -> Dictionary:
-	var scene = load("res://scenes/projectiles/potion.tscn")
+	var scene = load("res://scenes/projectiles/poison_dart.tscn")
 	if not scene:
-		return {"name": "TC.PR.13: Potion has poison_damage_per_tick", "passed": false}
-	var potion = scene.instantiate()
-	# Potion uses poison_damage_per_tick (not poison_damage)
-	var passed = "poison_damage_per_tick" in potion
-	potion.queue_free()
-	return {"name": "TC.PR.13: Potion has poison_damage_per_tick property", "passed": passed}
+		return {"name": "TC.PR.13: Poison Dart has poison_damage_per_tick", "passed": false}
+	var dart = scene.instantiate()
+	var passed = "poison_damage_per_tick" in dart
+	dart.queue_free()
+	return {"name": "TC.PR.13: Poison Dart has poison_damage_per_tick property", "passed": passed}
 
 # =============================================================================
 # CROSSBOW BOLT TESTS
@@ -175,31 +173,31 @@ static func test_bolt_has_pierce() -> Dictionary:
 # =============================================================================
 
 static func test_fang_scene_loads() -> Dictionary:
-	var scene = load("res://scenes/effects/evoker_fang.tscn")
-	return {"name": "TC.PR.17: Evoker fang scene loads", "passed": scene != null}
+	var scene = load("res://scenes/effects/ground_spike.tscn")
+	return {"name": "TC.PR.17: XiahouDun fang scene loads", "passed": scene != null}
 
 static func test_fang_script_loads() -> Dictionary:
-	var script = load("res://scripts/effects/evoker_fang.gd")
-	return {"name": "TC.PR.18: Evoker fang script loads", "passed": script != null}
+	var script = load("res://scripts/effects/ground_spike.gd")
+	return {"name": "TC.PR.18: XiahouDun fang script loads", "passed": script != null}
 
 static func test_fang_has_damage() -> Dictionary:
-	var scene = load("res://scenes/effects/evoker_fang.tscn")
+	var scene = load("res://scenes/effects/ground_spike.tscn")
 	if not scene:
-		return {"name": "TC.PR.19: Evoker fang has damage", "passed": false}
+		return {"name": "TC.PR.19: XiahouDun fang has damage", "passed": false}
 	var fang = scene.instantiate()
 	var passed = "damage" in fang
 	fang.queue_free()
-	return {"name": "TC.PR.19: Evoker fang has damage property", "passed": passed}
+	return {"name": "TC.PR.19: XiahouDun fang has damage property", "passed": passed}
 
 static func test_fang_has_delay() -> Dictionary:
-	var scene = load("res://scenes/effects/evoker_fang.tscn")
+	var scene = load("res://scenes/effects/ground_spike.tscn")
 	if not scene:
-		return {"name": "TC.PR.20: Evoker fang has warning_duration", "passed": false}
+		return {"name": "TC.PR.20: XiahouDun fang has warning_duration", "passed": false}
 	var fang = scene.instantiate()
-	# EvokerFang uses warning_duration (not spawn_delay or delay)
+	# GroundSpike uses warning_duration (not spawn_delay or delay)
 	var passed = "warning_duration" in fang
 	fang.queue_free()
-	return {"name": "TC.PR.20: Evoker fang has warning_duration property", "passed": passed}
+	return {"name": "TC.PR.20: XiahouDun fang has warning_duration property", "passed": passed}
 
 static func get_tested_functions() -> Array:
 	return [
@@ -207,7 +205,7 @@ static func get_tested_functions() -> Array:
 		"_ready", "_physics_process", "set_direction", "_on_body_entered", "_on_lifetime_timeout",
 		# Player Arrow (player_arrow.gd)
 		"_on_area_entered", "_try_damage", "_spawn_hit_effect", "_exit_tree",
-		# Potion (potion.gd)
+		# Poison Dart (poison_dart.gd)
 		"set_target", "_land", "_spawn_poison_cloud",
 		# Crossbow Bolt (crossbow_bolt.gd)
 		"_process", "_try_hit"

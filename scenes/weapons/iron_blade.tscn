@@ -1,0 +1,30 @@
+[gd_scene load_steps=3 format=3 uid="uid://woodsword001"]
+
+[ext_resource type="Script" path="res://scripts/weapons/sword_base.gd" id="1_sword"]
+[ext_resource type="Texture2D" path="res://assets/weapons/iron_blade.svg" id="2_texture"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_range"]
+radius = 30.0
+
+[node name="IronBlade" type="Area2D"]
+z_index = -1
+collision_layer = 0
+collision_mask = 2
+monitoring = true
+monitorable = false
+script = ExtResource("1_sword")
+current_tier = 1
+knockback = 0.0
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+z_index = -1
+scale = Vector2(3, 3)
+texture = ExtResource("2_texture")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_range")
+debug_color = Color(0.5, 0.8, 0.5, 0.42)
+
+[node name="AttackTimer" type="Timer" parent="."]
+wait_time = 1.2
+one_shot = true

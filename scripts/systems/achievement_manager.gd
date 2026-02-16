@@ -41,7 +41,7 @@ const ACHIEVEMENT_DEFS = {
 	"no_damage_60": {"name": "Untouchable", "desc": "Survive 60 seconds without damage", "target": 60, "reward": 100},
 
 	# Unlock achievements
-	"unlock_alex": {"name": "New Friend", "desc": "Unlock Alex character", "target": 1, "reward": 50},
+	"unlock_zhao_yun": {"name": "New Ally", "desc": "Unlock Zhao Yun", "target": 1, "reward": 50},
 	"unlock_bow": {"name": "Archer", "desc": "Get the Bow weapon", "target": 1, "reward": 30},
 	"evolve_weapon": {"name": "Evolution", "desc": "Evolve a weapon", "target": 1, "reward": 100},
 
@@ -94,7 +94,7 @@ func check_no_damage_time(seconds: int) -> void:
 	_check_achievement("no_damage_60", seconds)
 
 func unlock_character_achievement() -> void:
-	_check_achievement("unlock_alex", 1)
+	_check_achievement("unlock_zhao_yun", 1)
 
 func unlock_bow_achievement() -> void:
 	_check_achievement("unlock_bow", 1)

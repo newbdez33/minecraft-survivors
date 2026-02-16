@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16" shape-rendering="crispEdges">
+  <!-- Immortal Peach (仙桃) - Pink/red peach fruit - Replaces golden_apple -->
+
+  <!-- Stem -->
+  <rect x="8" y="1" width="1" height="2" fill="#8B4513"/>
+
+  <!-- Leaf -->
+  <rect x="9" y="0" width="2" height="1" fill="#228B22"/>
+  <rect x="9" y="1" width="3" height="1" fill="#228B22"/>
+  <rect x="10" y="2" width="2" height="1" fill="#33AA33"/>
+
+  <!-- Peach body (rounded, wider at bottom) -->
+  <rect x="5" y="3" width="6" height="2" fill="#FF6666"/>
+  <rect x="3" y="5" width="10" height="6" fill="#FF6666"/>
+  <rect x="4" y="11" width="8" height="2" fill="#FF6666"/>
+  <rect x="5" y="13" width="6" height="2" fill="#FF9999"/>
+
+  <!-- Pink highlight (left top) -->
+  <rect x="4" y="4" width="3" height="3" fill="#FF9999"/>
+  <rect x="5" y="5" width="2" height="2" fill="#FFBBBB"/>
+
+  <!-- Red blush (bottom) -->
+  <rect x="3" y="8" width="2" height="3" fill="#DD4444"/>
+  <rect x="4" y="11" width="2" height="2" fill="#DD4444"/>
+
+  <!-- Crease line (center of peach) -->
+  <rect x="7" y="4" width="1" height="8" fill="#EE5555"/>
+
+  <!-- Glow effect -->
+  <rect x="2" y="7" width="1" height="2" fill="#FFAAAA" fill-opacity="0.4"/>
+  <rect x="13" y="7" width="1" height="2" fill="#FFAAAA" fill-opacity="0.4"/>
+</svg>

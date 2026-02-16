@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" shape-rendering="crispEdges">
+  <!-- Zhang Fei - Three Kingdoms Survivors -->
+
+  <!-- Red headband -->
+  <rect x="7" y="4" width="18" height="2" fill="#CC2222"/>
+  <rect x="6" y="4" width="1" height="2" fill="#AA1A1A"/>
+  <rect x="25" y="4" width="1" height="2" fill="#AA1A1A"/>
+  <!-- Headband knot (center) -->
+  <rect x="14" y="3" width="4" height="1" fill="#DD3333"/>
+
+  <!-- Hair (wild, black) -->
+  <rect x="7" y="3" width="18" height="1" fill="#1A1A1A"/>
+  <rect x="7" y="6" width="18" height="2" fill="#1A1A1A"/>
+  <rect x="6" y="5" width="1" height="4" fill="#1A1A1A"/>
+  <rect x="25" y="5" width="1" height="4" fill="#1A1A1A"/>
+  <!-- Wild hair spikes -->
+  <rect x="8" y="2" width="2" height="1" fill="#1A1A1A"/>
+  <rect x="22" y="2" width="2" height="1" fill="#1A1A1A"/>
+  <rect x="14" y="2" width="4" height="1" fill="#1A1A1A"/>
+
+  <!-- Fierce dark face -->
+  <rect x="7" y="8" width="18" height="8" fill="#8B6242"/>
+
+  <!-- Eyes (fierce, wide) -->
+  <rect x="10" y="10" width="4" height="2" fill="#FFFFFF"/>
+  <rect x="18" y="10" width="4" height="2" fill="#FFFFFF"/>
+  <rect x="11" y="10" width="3" height="2" fill="#1A1A1A"/>
+  <rect x="18" y="10" width="3" height="2" fill="#1A1A1A"/>
+
+  <!-- Thick angry eyebrows -->
+  <rect x="10" y="9" width="5" height="1" fill="#1A1A1A"/>
+  <rect x="17" y="9" width="5" height="1" fill="#1A1A1A"/>
+
+  <!-- Fierce mouth (open, shouting) -->
+  <rect x="12" y="13" width="8" height="2" fill="#5A3A2A"/>
+  <rect x="13" y="13" width="6" height="1" fill="#FFFFFF"/>
+
+  <!-- Thick black beard (bushy) -->
+  <rect x="9" y="14" width="14" height="2" fill="#1A1A1A"/>
+  <rect x="8" y="16" width="16" height="2" fill="#1A1A1A"/>
+  <rect x="9" y="18" width="14" height="1" fill="#222222"/>
+  <rect x="10" y="19" width="12" height="1" fill="#2A2A2A"/>
+  <rect x="11" y="20" width="10" height="1" fill="#333333"/>
+
+  <!-- Black armor (body - bulkier build) -->
+  <rect x="5" y="16" width="22" height="10" fill="#1A1A1A"/>
+  <!-- Armor plate detail -->
+  <rect x="5" y="16" width="22" height="1" fill="#2A2A2A"/>
+  <rect x="5" y="21" width="22" height="1" fill="#2A2A2A"/>
+  <!-- Armor rivets (studs) -->
+  <rect x="8" y="18" width="1" height="1" fill="#555555"/>
+  <rect x="12" y="18" width="1" height="1" fill="#555555"/>
+  <rect x="19" y="18" width="1" height="1" fill="#555555"/>
+  <rect x="23" y="18" width="1" height="1" fill="#555555"/>
+  <!-- Red sash across chest -->
+  <rect x="9" y="19" width="14" height="1" fill="#CC2222"/>
+  <!-- Belt -->
+  <rect x="7" y="23" width="18" height="1" fill="#444444"/>
+  <rect x="15" y="23" width="2" height="1" fill="#888888"/>
+
+  <!-- Bulky arms (armored) -->
+  <rect x="3" y="17" width="3" height="6" fill="#1A1A1A"/>
+  <rect x="26" y="17" width="3" height="6" fill="#1A1A1A"/>
+  <!-- Arm armor highlights -->
+  <rect x="4" y="17" width="1" height="1" fill="#333333"/>
+  <rect x="27" y="17" width="1" height="1" fill="#333333"/>
+  <!-- Hands (dark skin) -->
+  <rect x="3" y="23" width="3" height="2" fill="#8B6242"/>
+  <rect x="26" y="23" width="3" height="2" fill="#8B6242"/>
+
+  <!-- Legs/boots (dark, heavy) -->
+  <rect x="9" y="26" width="6" height="4" fill="#111111"/>
+  <rect x="17" y="26" width="6" height="4" fill="#111111"/>
+  <!-- Boot soles -->
+  <rect x="9" y="29" width="6" height="1" fill="#333333"/>
+  <rect x="17" y="29" width="6" height="1" fill="#333333"/>
+</svg>

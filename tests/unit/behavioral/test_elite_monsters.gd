@@ -19,10 +19,10 @@ static func run_tests() -> Dictionary:
 	# =========================================================================
 	# Feature: Elite Stat Multipliers
 	# =========================================================================
-	_add_result(results, test_elite_zombie_hp_is_25())
-	_add_result(results, test_elite_zombie_damage_is_15())
-	_add_result(results, test_elite_zombie_speed_is_72())
-	_add_result(results, test_elite_zombie_xp_is_100())
+	_add_result(results, test_elite_infantry_hp_is_25())
+	_add_result(results, test_elite_infantry_damage_is_15())
+	_add_result(results, test_elite_infantry_speed_is_72())
+	_add_result(results, test_elite_infantry_xp_is_100())
 	_add_result(results, test_elite_enemy_meat_drop_is_zero())
 	_add_result(results, test_elite_enemy_is_in_elite_group())
 
@@ -56,15 +56,15 @@ static func run_tests() -> Dictionary:
 	# =========================================================================
 	# Feature: Elite Special Abilities
 	# =========================================================================
-	_add_result(results, test_zombie_has_make_elite())
-	_add_result(results, test_zombie_make_elite_sets_is_elite())
-	_add_result(results, test_zombie_elite_undead_rally())
-	_add_result(results, test_skeleton_has_make_elite())
-	_add_result(results, test_skeleton_elite_multi_shot())
-	_add_result(results, test_spider_has_make_elite_with_venom())
-	_add_result(results, test_creeper_has_make_elite_with_charged())
-	_add_result(results, test_enderman_has_make_elite_with_void_strike())
-	_add_result(results, test_witch_has_make_elite_with_potion_storm())
+	_add_result(results, test_infantry_has_make_elite())
+	_add_result(results, test_infantry_make_elite_sets_is_elite())
+	_add_result(results, test_infantry_elite_undead_rally())
+	_add_result(results, test_archer_has_make_elite())
+	_add_result(results, test_archer_elite_multi_shot())
+	_add_result(results, test_cavalry_has_make_elite_with_venom())
+	_add_result(results, test_fire_soldier_has_make_elite_with_charged())
+	_add_result(results, test_assassin_has_make_elite_with_void_strike())
+	_add_result(results, test_sorcerer_has_make_elite_with_potion_storm())
 
 	# =========================================================================
 	# Feature: Elite Visuals
@@ -99,23 +99,23 @@ static func _get_source(path: String) -> String:
 		return script.source_code
 	return ""
 
-static func _get_zombie_source() -> String:
-	return _get_source("res://scripts/enemies/zombie.gd")
+static func _get_infantry_source() -> String:
+	return _get_source("res://scripts/enemies/infantry.gd")
 
-static func _get_skeleton_source() -> String:
-	return _get_source("res://scripts/enemies/skeleton.gd")
+static func _get_archer_source() -> String:
+	return _get_source("res://scripts/enemies/archer.gd")
 
-static func _get_spider_source() -> String:
-	return _get_source("res://scripts/enemies/spider.gd")
+static func _get_cavalry_source() -> String:
+	return _get_source("res://scripts/enemies/cavalry.gd")
 
-static func _get_creeper_source() -> String:
-	return _get_source("res://scripts/enemies/creeper.gd")
+static func _get_fire_soldier_source() -> String:
+	return _get_source("res://scripts/enemies/fire_soldier.gd")
 
-static func _get_enderman_source() -> String:
-	return _get_source("res://scripts/enemies/enderman.gd")
+static func _get_assassin_source() -> String:
+	return _get_source("res://scripts/enemies/assassin.gd")
 
-static func _get_witch_source() -> String:
-	return _get_source("res://scripts/enemies/witch.gd")
+static func _get_sorcerer_source() -> String:
+	return _get_source("res://scripts/enemies/sorcerer.gd")
 
 static func _get_spawner_source() -> String:
 	return _get_source("res://scripts/spawner.gd")
@@ -144,82 +144,82 @@ static var _EliteModifier = preload("res://scripts/components/elite_modifier.gd"
 # Given a normal enemy is promoted to elite status via EliteModifier.apply()
 # =============================================================================
 
-static func test_elite_zombie_hp_is_25() -> Dictionary:
-	# Given a zombie with 10 HP
+static func test_elite_infantry_hp_is_25() -> Dictionary:
+	# Given a infantry with 10 HP
 	# When EliteModifier.apply() is called
 	# Then HP = 25 (2.5x)
-	var scene = load("res://scenes/enemies/zombie.tscn")
+	var scene = load("res://scenes/enemies/infantry.tscn")
 	var passed = false
 	if scene:
-		var zombie = scene.instantiate()
-		_EliteModifier.apply(zombie)
-		passed = zombie.health == 25
-		zombie.queue_free()
-	return {"name": "BDD.EL.1: Given zombie (10 HP), When make_elite(), Then HP = 25 (2.5x)", "passed": passed}
+		var infantry = scene.instantiate()
+		_EliteModifier.apply(infantry)
+		passed = infantry.health == 25
+		infantry.queue_free()
+	return {"name": "BDD.EL.1: Given infantry (10 HP), When make_elite(), Then HP = 25 (2.5x)", "passed": passed}
 
-static func test_elite_zombie_damage_is_15() -> Dictionary:
-	# Given a zombie with 10 damage
+static func test_elite_infantry_damage_is_15() -> Dictionary:
+	# Given a infantry with 10 damage
 	# When EliteModifier.apply() is called
 	# Then damage = 15 (1.5x)
-	var scene = load("res://scenes/enemies/zombie.tscn")
+	var scene = load("res://scenes/enemies/infantry.tscn")
 	var passed = false
 	if scene:
-		var zombie = scene.instantiate()
-		_EliteModifier.apply(zombie)
-		passed = zombie.damage == 15
-		zombie.queue_free()
-	return {"name": "BDD.EL.2: Given zombie (10 dmg), When make_elite(), Then damage = 15 (1.5x)", "passed": passed}
+		var infantry = scene.instantiate()
+		_EliteModifier.apply(infantry)
+		passed = infantry.damage == 15
+		infantry.queue_free()
+	return {"name": "BDD.EL.2: Given infantry (10 dmg), When make_elite(), Then damage = 15 (1.5x)", "passed": passed}
 
-static func test_elite_zombie_speed_is_72() -> Dictionary:
-	# Given a zombie with 60 speed
+static func test_elite_infantry_speed_is_72() -> Dictionary:
+	# Given a infantry with 60 speed
 	# When EliteModifier.apply() is called
 	# Then speed = 72 (1.2x)
-	var scene = load("res://scenes/enemies/zombie.tscn")
+	var scene = load("res://scenes/enemies/infantry.tscn")
 	var passed = false
 	if scene:
-		var zombie = scene.instantiate()
-		_EliteModifier.apply(zombie)
-		passed = zombie.speed == 72.0
-		zombie.queue_free()
-	return {"name": "BDD.EL.3: Given zombie (60 spd), When make_elite(), Then speed = 72 (1.2x)", "passed": passed}
+		var infantry = scene.instantiate()
+		_EliteModifier.apply(infantry)
+		passed = infantry.speed == 72.0
+		infantry.queue_free()
+	return {"name": "BDD.EL.3: Given infantry (60 spd), When make_elite(), Then speed = 72 (1.2x)", "passed": passed}
 
-static func test_elite_zombie_xp_is_100() -> Dictionary:
-	# Given a zombie with 5 XP
+static func test_elite_infantry_xp_is_100() -> Dictionary:
+	# Given a infantry with 5 XP
 	# When EliteModifier.apply() is called
 	# Then xp_value = 100 (20x)
-	var scene = load("res://scenes/enemies/zombie.tscn")
+	var scene = load("res://scenes/enemies/infantry.tscn")
 	var passed = false
 	if scene:
-		var zombie = scene.instantiate()
-		_EliteModifier.apply(zombie)
-		passed = zombie.xp_value == 100
-		zombie.queue_free()
-	return {"name": "BDD.EL.4: Given zombie (5 XP), When make_elite(), Then xp_value = 100 (20x)", "passed": passed}
+		var infantry = scene.instantiate()
+		_EliteModifier.apply(infantry)
+		passed = infantry.xp_value == 100
+		infantry.queue_free()
+	return {"name": "BDD.EL.4: Given infantry (5 XP), When make_elite(), Then xp_value = 100 (20x)", "passed": passed}
 
 static func test_elite_enemy_meat_drop_is_zero() -> Dictionary:
 	# Given any enemy
 	# When EliteModifier.apply() is called
 	# Then meat_drop_chance = 0.0 (elites don't drop meat)
-	var scene = load("res://scenes/enemies/zombie.tscn")
+	var scene = load("res://scenes/enemies/infantry.tscn")
 	var passed = false
 	if scene:
-		var zombie = scene.instantiate()
-		_EliteModifier.apply(zombie)
-		passed = zombie.meat_drop_chance == 0.0
-		zombie.queue_free()
+		var infantry = scene.instantiate()
+		_EliteModifier.apply(infantry)
+		passed = infantry.meat_drop_chance == 0.0
+		infantry.queue_free()
 	return {"name": "BDD.EL.5: Given any enemy, When make_elite(), Then meat_drop_chance = 0.0 (no meat)", "passed": passed}
 
 static func test_elite_enemy_is_in_elite_group() -> Dictionary:
 	# Given any enemy
 	# When EliteModifier.apply() is called
 	# Then is_in_group("elite") = true
-	var scene = load("res://scenes/enemies/zombie.tscn")
+	var scene = load("res://scenes/enemies/infantry.tscn")
 	var passed = false
 	if scene:
-		var zombie = scene.instantiate()
-		_EliteModifier.apply(zombie)
-		passed = zombie.is_in_group("elite")
-		zombie.queue_free()
+		var infantry = scene.instantiate()
+		_EliteModifier.apply(infantry)
+		passed = infantry.is_in_group("elite")
+		infantry.queue_free()
 	return {"name": "BDD.EL.6: Given any enemy, When make_elite(), Then in 'elite' group", "passed": passed}
 
 # =============================================================================
@@ -375,53 +375,53 @@ static func test_spawner_has_get_max_elites() -> Dictionary:
 # Given each enemy type has a unique elite ability
 # =============================================================================
 
-static func test_zombie_has_make_elite() -> Dictionary:
-	# Given zombie.gd source
+static func test_infantry_has_make_elite() -> Dictionary:
+	# Given infantry.gd source
 	# Then has make_elite method
-	var source = _get_zombie_source()
+	var source = _get_infantry_source()
 	var passed = source.contains("func make_elite()")
-	return {"name": "BDD.EA.1: Given zombie.gd, Then has make_elite()", "passed": passed}
+	return {"name": "BDD.EA.1: Given infantry.gd, Then has make_elite()", "passed": passed}
 
-static func test_zombie_make_elite_sets_is_elite() -> Dictionary:
-	# Given zombie.gd source
+static func test_infantry_make_elite_sets_is_elite() -> Dictionary:
+	# Given infantry.gd source
 	# Then make_elite sets is_elite = true
-	var source = _get_zombie_source()
+	var source = _get_infantry_source()
 	var passed = source.contains("is_elite = true")
-	return {"name": "BDD.EA.2: Given zombie.gd, Then make_elite sets is_elite = true", "passed": passed}
+	return {"name": "BDD.EA.2: Given infantry.gd, Then make_elite sets is_elite = true", "passed": passed}
 
-static func test_zombie_elite_undead_rally() -> Dictionary:
-	# Given zombie.gd source
+static func test_infantry_elite_undead_rally() -> Dictionary:
+	# Given infantry.gd source
 	# Then _on_died checks is_elite and emits rally_requested signal
-	var source = _get_zombie_source()
+	var source = _get_infantry_source()
 	var died_section_idx = source.find("func _on_died()")
 	var passed = false
 	if died_section_idx >= 0:
 		var section = source.substr(died_section_idx, 600)
 		passed = section.contains("is_elite") and section.contains("rally_requested")
-	return {"name": "BDD.EA.3: Given elite zombie dies, Then Undead Rally spawns 2 normal zombies", "passed": passed}
+	return {"name": "BDD.EA.3: Given elite infantry dies, Then Undead Rally spawns 2 normal infantrys", "passed": passed}
 
-static func test_skeleton_has_make_elite() -> Dictionary:
-	# Given skeleton.gd source
+static func test_archer_has_make_elite() -> Dictionary:
+	# Given archer.gd source
 	# Then has make_elite method
-	var source = _get_skeleton_source()
+	var source = _get_archer_source()
 	var passed = source.contains("func make_elite()")
-	return {"name": "BDD.EA.4: Given skeleton.gd, Then has make_elite()", "passed": passed}
+	return {"name": "BDD.EA.4: Given archer.gd, Then has make_elite()", "passed": passed}
 
-static func test_skeleton_elite_multi_shot() -> Dictionary:
-	# Given skeleton.gd source
+static func test_archer_elite_multi_shot() -> Dictionary:
+	# Given archer.gd source
 	# Then shoot_arrow has is_elite multi-shot branch (3 arrows)
-	var source = _get_skeleton_source()
+	var source = _get_archer_source()
 	var arrow_idx = source.find("func shoot_arrow()")
 	var passed = false
 	if arrow_idx >= 0:
 		var section = source.substr(arrow_idx, 800)
 		passed = section.contains("is_elite")
-	return {"name": "BDD.EA.5: Given elite skeleton, Then shoot_arrow fires 3 arrows (multi-shot)", "passed": passed}
+	return {"name": "BDD.EA.5: Given elite archer, Then shoot_arrow fires 3 arrows (multi-shot)", "passed": passed}
 
-static func test_spider_has_make_elite_with_venom() -> Dictionary:
-	# Given spider.gd source
+static func test_cavalry_has_make_elite_with_venom() -> Dictionary:
+	# Given cavalry.gd source
 	# Then has make_elite with venom strike (poison on hit)
-	var source = _get_spider_source()
+	var source = _get_cavalry_source()
 	var passed = source.contains("func make_elite()") and source.contains("is_elite")
 	if passed:
 		# Check hitbox damage applies poison
@@ -429,38 +429,38 @@ static func test_spider_has_make_elite_with_venom() -> Dictionary:
 		if hitbox_idx >= 0:
 			var section = source.substr(hitbox_idx, 600)
 			passed = section.contains("is_elite")
-	return {"name": "BDD.EA.6: Given elite spider, Then venom strike applies poison on hit", "passed": passed}
+	return {"name": "BDD.EA.6: Given elite cavalry, Then venom strike applies poison on hit", "passed": passed}
 
-static func test_creeper_has_make_elite_with_charged() -> Dictionary:
-	# Given creeper.gd source
+static func test_fire_soldier_has_make_elite_with_charged() -> Dictionary:
+	# Given fire_soldier.gd source
 	# Then has make_elite with charged explosion (wider radius)
-	var source = _get_creeper_source()
+	var source = _get_fire_soldier_source()
 	var passed = source.contains("func make_elite()") and source.contains("is_elite")
 	if passed:
 		var make_elite_idx = source.find("func make_elite()")
 		if make_elite_idx >= 0:
 			var section = source.substr(make_elite_idx, 400)
 			passed = section.contains("explosion_radius")
-	return {"name": "BDD.EA.7: Given elite creeper, Then charged explosion has wider radius", "passed": passed}
+	return {"name": "BDD.EA.7: Given elite fire_soldier, Then charged explosion has wider radius", "passed": passed}
 
-static func test_enderman_has_make_elite_with_void_strike() -> Dictionary:
-	# Given enderman.gd source
+static func test_assassin_has_make_elite_with_void_strike() -> Dictionary:
+	# Given assassin.gd source
 	# Then has make_elite with void strike (teleport + double hit)
-	var source = _get_enderman_source()
+	var source = _get_assassin_source()
 	var passed = source.contains("func make_elite()") and source.contains("is_elite")
-	return {"name": "BDD.EA.8: Given elite enderman, Then void strike (teleport behind + double hit)", "passed": passed}
+	return {"name": "BDD.EA.8: Given elite assassin, Then void strike (teleport behind + double hit)", "passed": passed}
 
-static func test_witch_has_make_elite_with_potion_storm() -> Dictionary:
-	# Given witch.gd source
+static func test_sorcerer_has_make_elite_with_potion_storm() -> Dictionary:
+	# Given sorcerer.gd source
 	# Then has make_elite with potion storm (3 potions)
-	var source = _get_witch_source()
+	var source = _get_sorcerer_source()
 	var passed = source.contains("func make_elite()") and source.contains("is_elite")
 	if passed:
 		var throw_idx = source.find("func throw_potion()")
 		if throw_idx >= 0:
 			var section = source.substr(throw_idx, 800)
 			passed = section.contains("is_elite")
-	return {"name": "BDD.EA.9: Given elite witch, Then potion storm throws 3 potions", "passed": passed}
+	return {"name": "BDD.EA.9: Given elite sorcerer, Then potion storm throws 3 potions", "passed": passed}
 
 # =============================================================================
 # Feature: Elite Visuals

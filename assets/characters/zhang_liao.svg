@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" shape-rendering="crispEdges">
+  <!-- Zhang Liao (张辽) - Cavalry General - Wave 15 Boss -->
+  <!-- Full metal armor, impressive helmet with red plume, noble bearing -->
+
+  <!-- Helmet plume (red, tall and dramatic) -->
+  <rect x="14" y="0" width="4" height="1" fill="#CC2222"/>
+  <rect x="13" y="1" width="6" height="1" fill="#DD3333"/>
+  <rect x="14" y="2" width="4" height="1" fill="#CC2222"/>
+  <rect x="15" y="0" width="2" height="1" fill="#EE4444"/>
+
+  <!-- Helmet (polished metal) -->
+  <rect x="9" y="3" width="14" height="3" fill="#888888"/>
+  <rect x="10" y="3" width="12" height="2" fill="#AAAAAA"/>
+  <rect x="14" y="3" width="4" height="1" fill="#BBBBBB"/>
+  <!-- Helmet brow guard -->
+  <rect x="8" y="5" width="16" height="1" fill="#777777"/>
+  <!-- Helmet side pieces (cheek guards) -->
+  <rect x="7" y="5" width="2" height="4" fill="#888888"/>
+  <rect x="23" y="5" width="2" height="4" fill="#888888"/>
+  <rect x="8" y="5" width="1" height="3" fill="#999999"/>
+  <rect x="23" y="5" width="1" height="3" fill="#999999"/>
+
+  <!-- Face (noble, composed expression) -->
+  <rect x="9" y="6" width="14" height="6" fill="#D4A574"/>
+
+  <!-- Eyes (calm, focused) -->
+  <rect x="11" y="7" width="3" height="2" fill="#FFFFFF"/>
+  <rect x="12" y="7" width="2" height="2" fill="#2B1A0A"/>
+  <rect x="18" y="7" width="3" height="2" fill="#FFFFFF"/>
+  <rect x="19" y="7" width="2" height="2" fill="#2B1A0A"/>
+  <!-- Neat eyebrows -->
+  <rect x="11" y="6" width="4" height="1" fill="#2A2A2A"/>
+  <rect x="17" y="6" width="4" height="1" fill="#2A2A2A"/>
+
+  <!-- Nose -->
+  <rect x="15" y="9" width="2" height="2" fill="#C49564"/>
+
+  <!-- Thin moustache -->
+  <rect x="12" y="11" width="3" height="1" fill="#2A2A2A"/>
+  <rect x="17" y="11" width="3" height="1" fill="#2A2A2A"/>
+
+  <!-- Neck guard (gorget) -->
+  <rect x="10" y="12" width="12" height="2" fill="#888888"/>
+  <rect x="11" y="12" width="10" height="1" fill="#AAAAAA"/>
+
+  <!-- Full plate armor body -->
+  <rect x="6" y="14" width="20" height="14" fill="#888888"/>
+  <rect x="8" y="15" width="16" height="12" fill="#999999"/>
+
+  <!-- Chest plate (polished, ornate) -->
+  <rect x="10" y="15" width="12" height="6" fill="#AAAAAA"/>
+  <rect x="11" y="16" width="10" height="4" fill="#BBBBBB"/>
+  <!-- Central chest emblem (gold) -->
+  <rect x="14" y="16" width="4" height="3" fill="#DAA520"/>
+  <rect x="15" y="17" width="2" height="1" fill="#FFD700"/>
+
+  <!-- Belt/fauld -->
+  <rect x="8" y="22" width="16" height="2" fill="#777777"/>
+  <rect x="14" y="22" width="4" height="2" fill="#DAA520"/>
+
+  <!-- Shoulder pauldrons (large, imposing) -->
+  <rect x="2" y="13" width="6" height="4" fill="#888888"/>
+  <rect x="3" y="13" width="4" height="3" fill="#AAAAAA"/>
+  <rect x="4" y="13" width="2" height="2" fill="#BBBBBB"/>
+  <rect x="24" y="13" width="6" height="4" fill="#888888"/>
+  <rect x="25" y="13" width="4" height="3" fill="#AAAAAA"/>
+  <rect x="26" y="13" width="2" height="2" fill="#BBBBBB"/>
+  <!-- Pauldron edge trim (gold) -->
+  <rect x="2" y="16" width="6" height="1" fill="#DAA520"/>
+  <rect x="24" y="16" width="6" height="1" fill="#DAA520"/>
+
+  <!-- Arms (full plate) -->
+  <rect x="3" y="17" width="5" height="7" fill="#888888"/>
+  <rect x="4" y="18" width="3" height="5" fill="#999999"/>
+  <rect x="24" y="17" width="5" height="7" fill="#888888"/>
+  <rect x="25" y="18" width="3" height="5" fill="#999999"/>
+
+  <!-- Gauntlets -->
+  <rect x="3" y="24" width="4" height="2" fill="#AAAAAA"/>
+  <rect x="25" y="24" width="4" height="2" fill="#AAAAAA"/>
+
+  <!-- Leg armor (greaves) -->
+  <rect x="9" y="26" width="5" height="6" fill="#777777"/>
+  <rect x="10" y="27" width="3" height="4" fill="#888888"/>
+  <rect x="18" y="26" width="5" height="6" fill="#777777"/>
+  <rect x="19" y="27" width="3" height="4" fill="#888888"/>
+
+  <!-- Armored boots -->
+  <rect x="9" y="30" width="5" height="2" fill="#666666"/>
+  <rect x="18" y="30" width="5" height="2" fill="#666666"/>
+</svg>

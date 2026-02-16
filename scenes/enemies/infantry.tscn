@@ -1,0 +1,34 @@
+[gd_scene load_steps=4 format=3 uid="uid://zombie001"]
+
+[ext_resource type="Script" path="res://scripts/enemies/infantry.gd" id="1_infantry"]
+[ext_resource type="Texture2D" path="res://assets/characters/infantry.svg" id="2_texture"]
+[ext_resource type="Script" path="res://scripts/components/health.gd" id="3_health"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_infantry"]
+size = Vector2(28, 28)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_hitbox"]
+radius = 16.0
+
+[node name="Infantry" type="CharacterBody2D" groups=["enemies"]]
+collision_layer = 2
+collision_mask = 1
+script = ExtResource("1_infantry")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_texture")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_infantry")
+
+[node name="HealthComponent" type="Node" parent="."]
+script = ExtResource("3_health")
+max_health = 20
+
+[node name="HitBox" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 1
+monitorable = false
+
+[node name="HitBoxShape" type="CollisionShape2D" parent="HitBox"]
+shape = SubResource("CircleShape2D_hitbox")

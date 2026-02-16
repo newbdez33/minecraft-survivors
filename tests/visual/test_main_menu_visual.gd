@@ -51,7 +51,7 @@ func _test_main_menu_english() -> void:
 	await get_tree().create_timer(0.2).timeout
 
 	var result = await _take_screenshot("01_main_menu_en")
-	_verify_text_visible("MINECRAFT SURVIVORS", result)
+	_verify_text_visible("THREE KINGDOMS SURVIVORS", result)
 	_verify_text_visible("Start Game", result)
 
 func _test_main_menu_japanese() -> void:
@@ -62,7 +62,7 @@ func _test_main_menu_japanese() -> void:
 	await get_tree().create_timer(0.2).timeout
 
 	var result = await _take_screenshot("02_main_menu_ja")
-	_verify_text_visible("マインクラフト", result)
+	_verify_text_visible("三国", result)
 
 func _test_main_menu_chinese() -> void:
 	print("[TEST] Main Menu - Chinese")
@@ -72,7 +72,7 @@ func _test_main_menu_chinese() -> void:
 	await get_tree().create_timer(0.2).timeout
 
 	var result = await _take_screenshot("03_main_menu_zh")
-	_verify_text_visible("我的世界", result)
+	_verify_text_visible("三国", result)
 
 func _test_settings_panel_english() -> void:
 	print("[TEST] Settings Panel - English")

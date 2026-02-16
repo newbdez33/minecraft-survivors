@@ -55,7 +55,7 @@ var _bow: Node = null
 var _torch: Node = null
 var _wave_manager: Node = null
 var _boundary_test_complete: bool = false
-const ALL_BOSSES = ["evoker", "elder_guardian", "ravager", "warden", "wither", "ender_dragon"]
+const ALL_BOSSES = ["xiahou_dun", "xu_chu", "zhang_liao", "dian_wei", "sima_yi", "lv_bu"]
 const ALL_WEAPONS = ["sword", "bow", "torch"]
 
 # Performance monitoring
@@ -318,11 +318,11 @@ func _process(delta: float) -> void:
 
 	# For SWORD_TEST, end when Diamond tier reached
 	if scenario == TestScenario.SWORD_TEST and _sword:
-		if _sword.current_tier == SwordBase.Tier.DIAMOND:
+		if _sword.current_tier == SwordBase.Tier.DIVINE:
 			_test_results["sword_tier"] = _sword.current_tier
 			_test_results["sword_level"] = _sword.level if "level" in _sword else 0
-			_test_results["sword_name"] = _sword.get_tier_name() if _sword.has_method("get_tier_name") else "Diamond Sword"
-			_end_test("diamond_sword_reached")
+			_test_results["sword_name"] = _sword.get_tier_name() if _sword.has_method("get_tier_name") else "Divine Weapon"
+			_end_test("divine_weapon_reached")
 
 
 func _log_performance(reason: String) -> void:
@@ -712,12 +712,12 @@ func _check_boss_wave(wave: int) -> void:
 		return
 
 	var boss_map = {
-		5: "evoker",
-		10: "elder_guardian",
-		15: "ravager",
-		20: "warden",
-		25: "wither",
-		30: "ender_dragon"
+		5: "xiahou_dun",
+		10: "xu_chu",
+		15: "zhang_liao",
+		20: "dian_wei",
+		25: "sima_yi",
+		30: "lv_bu"
 	}
 
 	var boss_type = boss_map.get(wave, "")

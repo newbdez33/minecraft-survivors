@@ -15,7 +15,7 @@ func _ready() -> void:
 	# Create test sprite
 	_test_sprite = Sprite2D.new()
 	_test_sprite.position = Vector2(640, 360)
-	var texture = load("res://assets/characters/zombie.svg")
+	var texture = load("res://assets/characters/infantry.svg")
 	if texture:
 		_test_sprite.texture = texture
 	add_child(_test_sprite)
@@ -40,19 +40,19 @@ func _ready() -> void:
 		{"name": "EA.09: Reset to original", "func": _test_reset_original},
 
 		# Special animations
-		{"name": "EA.10: Jump squash (Spider)", "func": _test_jump_squash},
-		{"name": "EA.11: Jump stretch (Spider)", "func": _test_jump_stretch},
-		{"name": "EA.12: Jump land (Spider)", "func": _test_jump_land},
-		{"name": "EA.13: Charge windup (Ravager)", "func": _test_charge_windup},
-		{"name": "EA.14: Charge rush (Ravager)", "func": _test_charge_rush},
-		{"name": "EA.15: Teleport out (Enderman)", "func": _test_teleport_out},
-		{"name": "EA.16: Teleport in (Enderman)", "func": _test_teleport_in},
-		{"name": "EA.17: Explosion swell (Creeper)", "func": _test_explosion_swell},
-		{"name": "EA.18: Breath attack (Dragon)", "func": _test_breath_attack},
-		{"name": "EA.19: Sonic boom (Warden)", "func": _test_sonic_boom},
-		{"name": "EA.20: Summon animation (Evoker)", "func": _test_summon_animation},
-		{"name": "EA.21: Laser charge (Elder Guardian)", "func": _test_laser_charge},
-		{"name": "EA.22: Laser fire (Elder Guardian)", "func": _test_laser_fire},
+		{"name": "EA.10: Jump squash (Cavalry)", "func": _test_jump_squash},
+		{"name": "EA.11: Jump stretch (Cavalry)", "func": _test_jump_stretch},
+		{"name": "EA.12: Jump land (Cavalry)", "func": _test_jump_land},
+		{"name": "EA.13: Charge windup (Zhang Liao)", "func": _test_charge_windup},
+		{"name": "EA.14: Charge rush (Zhang Liao)", "func": _test_charge_rush},
+		{"name": "EA.15: Teleport out (Assassin)", "func": _test_teleport_out},
+		{"name": "EA.16: Teleport in (Assassin)", "func": _test_teleport_in},
+		{"name": "EA.17: Explosion swell (Fire Soldier)", "func": _test_explosion_swell},
+		{"name": "EA.18: Breath attack (Lv Bu)", "func": _test_breath_attack},
+		{"name": "EA.19: Sonic boom (Dian Wei)", "func": _test_sonic_boom},
+		{"name": "EA.20: Summon animation (Xiahou Dun)", "func": _test_summon_animation},
+		{"name": "EA.21: Laser charge (Xu Chu)", "func": _test_laser_charge},
+		{"name": "EA.22: Laser fire (Xu Chu)", "func": _test_laser_fire},
 
 		# Edge cases and state transitions
 		{"name": "EA.23: Walk during attack", "func": _test_walk_during_attack},

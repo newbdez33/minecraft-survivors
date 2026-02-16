@@ -35,14 +35,14 @@ var day_night_cycle: Node = null
 ## Enemy type weights by wave range
 ## Format: { "enemy_type": weight }
 var _wave_enemy_weights: Dictionary = {
-	# Waves 1-3: Only Zombies
-	1: { "zombie": 1.0 },
-	# Waves 4-6: Zombies, Skeletons, Spiders
-	4: { "zombie": 0.6, "skeleton": 0.3, "spider": 0.1 },
-	# Waves 7-9: Add Creepers
-	7: { "zombie": 0.4, "skeleton": 0.3, "creeper": 0.15, "spider": 0.15 },
+	# Waves 1-3: Only Infantry
+	1: { "infantry": 1.0 },
+	# Waves 4-6: Infantry, Archers, Cavalry
+	4: { "infantry": 0.6, "archer": 0.3, "cavalry": 0.1 },
+	# Waves 7-9: Add Fire Soldiers
+	7: { "infantry": 0.4, "archer": 0.3, "fire_soldier": 0.15, "cavalry": 0.15 },
 	# Waves 10+: Full mix
-	10: { "zombie": 0.3, "skeleton": 0.25, "creeper": 0.2, "spider": 0.25 }
+	10: { "infantry": 0.3, "archer": 0.25, "fire_soldier": 0.2, "cavalry": 0.25 }
 }
 
 
@@ -106,7 +106,7 @@ func get_enemies_for_wave(wave: int) -> int:
 
 ## Get enemy type weights for a given wave
 func get_enemy_types_for_wave(wave: int) -> Dictionary:
-	var weights = { "zombie": 1.0 }
+	var weights = { "infantry": 1.0 }
 
 	# Find the highest wave threshold that applies
 	for threshold in _wave_enemy_weights.keys():
@@ -156,12 +156,12 @@ func is_boss_wave(wave: int) -> bool:
 
 ## Boss wave mapping - specific bosses at specific waves
 const BOSS_WAVES = {
-	5: "evoker",
-	10: "elder_guardian",
-	15: "ravager",
-	20: "warden",
-	25: "wither",
-	30: "ender_dragon"
+	5: "xiahou_dun",
+	10: "xu_chu",
+	15: "zhang_liao",
+	20: "dian_wei",
+	25: "sima_yi",
+	30: "lv_bu"
 }
 
 ## Get the boss type for a specific wave
@@ -174,6 +174,6 @@ func get_boss_for_wave(wave: int) -> String:
 		return BOSS_WAVES[wave]
 
 	# For waves beyond 30, cycle through bosses with increasing difficulty
-	var boss_cycle = ["evoker", "elder_guardian", "ravager", "warden", "wither", "ender_dragon"]
+	var boss_cycle = ["xiahou_dun", "xu_chu", "zhang_liao", "dian_wei", "sima_yi", "lv_bu"]
 	var cycle_index = ((wave / 5) - 1) % boss_cycle.size()
 	return boss_cycle[cycle_index]

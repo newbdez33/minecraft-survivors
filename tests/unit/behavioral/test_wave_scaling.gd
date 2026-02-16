@@ -58,7 +58,7 @@ static func run_tests() -> Dictionary:
 	# =========================================================================
 	# Feature: Apply Scaling Integration
 	# =========================================================================
-	_add_result(results, test_apply_scaling_zombie_wave_40())
+	_add_result(results, test_apply_scaling_infantry_wave_40())
 	_add_result(results, test_apply_scaling_noop_at_wave_30())
 
 	# =========================================================================
@@ -302,31 +302,31 @@ static func test_max_elites_at_wave_45() -> Dictionary:
 # Feature: Apply Scaling Integration
 # =============================================================================
 
-static func test_apply_scaling_zombie_wave_40() -> Dictionary:
-	# Given a zombie with base stats (10 HP, 10 dmg, 60 speed, 5 XP)
-	# When apply_scaling(zombie, 40, false)
+static func test_apply_scaling_infantry_wave_40() -> Dictionary:
+	# Given a infantry with base stats (10 HP, 10 dmg, 60 speed, 5 XP)
+	# When apply_scaling(infantry, 40, false)
 	# Then HP=20, damage=15, speed=72, XP=10
-	var scene = load("res://scenes/enemies/zombie.tscn")
+	var scene = load("res://scenes/enemies/infantry.tscn")
 	var passed = false
 	if scene:
-		var zombie = scene.instantiate()
-		_WaveScaler.apply_scaling(zombie, 40, false)
-		passed = zombie.health == 20 and zombie.damage == 15 and _approx_eq(zombie.speed, 72.0) and zombie.xp_value == 10
-		zombie.queue_free()
-	return {"name": "BDD.WS.24: Given zombie, When apply_scaling(40, false), Then 2x HP, 1.5x dmg", "passed": passed}
+		var infantry = scene.instantiate()
+		_WaveScaler.apply_scaling(infantry, 40, false)
+		passed = infantry.health == 20 and infantry.damage == 15 and _approx_eq(infantry.speed, 72.0) and infantry.xp_value == 10
+		infantry.queue_free()
+	return {"name": "BDD.WS.24: Given infantry, When apply_scaling(40, false), Then 2x HP, 1.5x dmg", "passed": passed}
 
 static func test_apply_scaling_noop_at_wave_30() -> Dictionary:
-	# Given a zombie with base stats
-	# When apply_scaling(zombie, 30, false)
+	# Given a infantry with base stats
+	# When apply_scaling(infantry, 30, false)
 	# Then stats unchanged
-	var scene = load("res://scenes/enemies/zombie.tscn")
+	var scene = load("res://scenes/enemies/infantry.tscn")
 	var passed = false
 	if scene:
-		var zombie = scene.instantiate()
-		_WaveScaler.apply_scaling(zombie, 30, false)
-		passed = zombie.health == 10 and zombie.damage == 10 and _approx_eq(zombie.speed, 60.0) and zombie.xp_value == 5
-		zombie.queue_free()
-	return {"name": "BDD.WS.25: Given zombie, When apply_scaling(30, false), Then no change", "passed": passed}
+		var infantry = scene.instantiate()
+		_WaveScaler.apply_scaling(infantry, 30, false)
+		passed = infantry.health == 10 and infantry.damage == 10 and _approx_eq(infantry.speed, 60.0) and infantry.xp_value == 5
+		infantry.queue_free()
+	return {"name": "BDD.WS.25: Given infantry, When apply_scaling(30, false), Then no change", "passed": passed}
 
 # =============================================================================
 # Feature: Source Constants

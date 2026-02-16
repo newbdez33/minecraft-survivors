@@ -24,9 +24,9 @@ static func run_tests() -> Dictionary:
 	_add_result(results, test_character_card_has_stats_display())
 
 	# Character Manager Integration Tests
-	_add_result(results, test_character_manager_has_steve())
-	_add_result(results, test_character_manager_has_alex())
-	_add_result(results, test_alex_unlock_condition())
+	_add_result(results, test_character_manager_has_guan_yu())
+	_add_result(results, test_character_manager_has_zhao_yun())
+	_add_result(results, test_zhao_yun_unlock_condition())
 	_add_result(results, test_character_stats_different())
 
 	return results
@@ -121,36 +121,36 @@ static func test_character_card_has_stats_display() -> Dictionary:
 # CHARACTER MANAGER INTEGRATION TESTS
 # =============================================================================
 
-static func test_character_manager_has_steve() -> Dictionary:
+static func test_character_manager_has_guan_yu() -> Dictionary:
 	var script = load("res://scripts/systems/character_manager.gd")
 	var passed = false
 	if script:
 		var manager = Node.new()
 		manager.set_script(script)
 		manager._init_characters()
-		var steve = manager.get_character("steve")
-		passed = steve != null
-	return {"name": "TC.CSU.11: CharacterManager has Steve character", "passed": passed}
+		var guan_yu = manager.get_character("guan_yu")
+		passed = guan_yu != null
+	return {"name": "TC.CSU.11: CharacterManager has Guan Yu character", "passed": passed}
 
-static func test_character_manager_has_alex() -> Dictionary:
+static func test_character_manager_has_zhao_yun() -> Dictionary:
 	var script = load("res://scripts/systems/character_manager.gd")
 	var passed = false
 	if script:
 		var manager = Node.new()
 		manager.set_script(script)
 		manager._init_characters()
-		var alex = manager.get_character("alex")
-		passed = alex != null
-	return {"name": "TC.CSU.12: CharacterManager has Alex character", "passed": passed}
+		var zhao_yun = manager.get_character("zhao_yun")
+		passed = zhao_yun != null
+	return {"name": "TC.CSU.12: CharacterManager has Zhao Yun character", "passed": passed}
 
-static func test_alex_unlock_condition() -> Dictionary:
+static func test_zhao_yun_unlock_condition() -> Dictionary:
 	var script = load("res://scripts/systems/character_manager.gd")
 	var passed = false
 	if script:
 		var source = script.source_code
-		# Alex unlocks at 15 minutes (900 seconds) survival
+		# Zhao Yun unlocks at 15 minutes (900 seconds) survival
 		passed = source.contains("900") or source.contains("15") or source.contains("survive")
-	return {"name": "TC.CSU.13: Alex unlock condition is survival-based", "passed": passed}
+	return {"name": "TC.CSU.13: Zhao Yun unlock condition is survival-based", "passed": passed}
 
 static func test_character_stats_different() -> Dictionary:
 	var script = load("res://scripts/systems/character_manager.gd")
@@ -159,14 +159,14 @@ static func test_character_stats_different() -> Dictionary:
 		var manager = Node.new()
 		manager.set_script(script)
 		manager._init_characters()
-		var steve = manager.get_character("steve")
-		var alex = manager.get_character("alex")
-		if steve and alex:
-			# Alex should have different stats than Steve
-			passed = steve.health_mult != alex.health_mult or \
-					 steve.speed_mult != alex.speed_mult or \
-					 steve.pickup_range_mult != alex.pickup_range_mult
-	return {"name": "TC.CSU.14: Steve and Alex have different stats", "passed": passed}
+		var guan_yu = manager.get_character("guan_yu")
+		var zhao_yun = manager.get_character("zhao_yun")
+		if guan_yu and zhao_yun:
+			# Zhao Yun should have different stats than Guan Yu
+			passed = guan_yu.health_mult != zhao_yun.health_mult or \
+					 guan_yu.speed_mult != zhao_yun.speed_mult or \
+					 guan_yu.pickup_range_mult != zhao_yun.pickup_range_mult
+	return {"name": "TC.CSU.14: Guan Yu and Zhao Yun have different stats", "passed": passed}
 
 static func get_tested_functions() -> Array:
 	return [

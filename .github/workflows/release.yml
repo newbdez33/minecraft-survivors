@@ -7,7 +7,7 @@ on:
 
 env:
   GODOT_VERSION: 4.5.1
-  GAME_NAME: MinecraftSurvivors
+  GAME_NAME: ThreeKingdomsSurvivors
 
 jobs:
   verify-main-branch:
@@ -150,8 +150,8 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            MinecraftSurvivors-Windows-${{ github.ref_name }}.zip
-            MinecraftSurvivors-macOS-${{ github.ref_name }}.zip
+            ThreeKingdomsSurvivors-Windows-${{ github.ref_name }}.zip
+            ThreeKingdomsSurvivors-macOS-${{ github.ref_name }}.zip
           generate_release_notes: true
           draft: false
           prerelease: ${{ contains(github.ref_name, 'alpha') || contains(github.ref_name, 'beta') || contains(github.ref_name, 'rc') }}

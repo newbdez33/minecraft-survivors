@@ -1,6 +1,6 @@
 extends RefCounted
 class_name CoverageTracker
-## Coverage tracking system for Minecraft Survivors test suite
+## Coverage tracking system for Three Kingdoms Survivors test suite
 ## Tracks which functions have been tested and generates coverage reports
 
 ## Dictionary of script_path -> {functions: Array, tested: Dictionary}
@@ -25,17 +25,17 @@ const TRACKED_SCRIPTS: Array = [
 	"res://scripts/components/status_effect_manager.gd",
 	"res://scripts/components/weapon_slots.gd",
 	# Enemies
-	"res://scripts/enemies/zombie.gd",
-	"res://scripts/enemies/skeleton.gd",
-	"res://scripts/enemies/spider.gd",
-	"res://scripts/enemies/creeper.gd",
-	"res://scripts/enemies/enderman.gd",
-	"res://scripts/enemies/witch.gd",
-	"res://scripts/enemies/evoker.gd",
-	"res://scripts/enemies/vex.gd",
+	"res://scripts/enemies/infantry.gd",
+	"res://scripts/enemies/archer.gd",
+	"res://scripts/enemies/cavalry.gd",
+	"res://scripts/enemies/fire_soldier.gd",
+	"res://scripts/enemies/assassin.gd",
+	"res://scripts/enemies/sorcerer.gd",
+	"res://scripts/enemies/xiahou_dun.gd",
+	"res://scripts/enemies/shadow_guard.gd",
 	# Weapons
 	"res://scripts/weapons/sword_base.gd",
-	"res://scripts/weapons/diamond_sword.gd",
+	"res://scripts/weapons/divine_weapon.gd",
 	"res://scripts/weapons/bow.gd",
 	"res://scripts/weapons/crossbow.gd",
 	"res://scripts/weapons/torch.gd",
@@ -43,7 +43,7 @@ const TRACKED_SCRIPTS: Array = [
 	"res://scripts/projectiles/arrow.gd",
 	"res://scripts/projectiles/player_arrow.gd",
 	"res://scripts/projectiles/crossbow_bolt.gd",
-	"res://scripts/projectiles/potion.gd",
+	"res://scripts/projectiles/poison_dart.gd",
 	# Pickups
 	"res://scripts/pickups/xp_orb.gd",
 	"res://scripts/pickups/health_pickup.gd",
@@ -59,7 +59,7 @@ const TRACKED_SCRIPTS: Array = [
 	"res://scripts/effects/damage_number.gd",
 	"res://scripts/effects/screen_shake.gd",
 	"res://scripts/effects/poison_cloud.gd",
-	"res://scripts/effects/evoker_fang.gd",
+	"res://scripts/effects/ground_spike.gd",
 	# Systems
 	"res://scripts/systems/upgrade_manager.gd",
 	"res://scripts/systems/upgrade.gd",

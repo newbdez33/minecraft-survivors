@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" shape-rendering="crispEdges">
+  <!-- Zhao Yun - Three Kingdoms Survivors -->
+
+  <!-- Blue headband -->
+  <rect x="8" y="4" width="16" height="2" fill="#3366AA"/>
+  <rect x="7" y="4" width="1" height="2" fill="#2A5590"/>
+  <rect x="24" y="4" width="1" height="2" fill="#2A5590"/>
+  <!-- Headband tail (flowing right) -->
+  <rect x="25" y="4" width="2" height="1" fill="#3366AA"/>
+  <rect x="27" y="5" width="2" height="1" fill="#4477BB"/>
+
+  <!-- Hair (dark, neat) -->
+  <rect x="8" y="3" width="16" height="1" fill="#2A2218"/>
+  <rect x="8" y="6" width="16" height="2" fill="#2A2218"/>
+  <rect x="7" y="5" width="1" height="3" fill="#2A2218"/>
+  <rect x="24" y="5" width="1" height="3" fill="#2A2218"/>
+
+  <!-- Face (youthful, light skin) -->
+  <rect x="8" y="8" width="16" height="8" fill="#D4A574"/>
+
+  <!-- Eyes -->
+  <rect x="11" y="10" width="3" height="2" fill="#FFFFFF"/>
+  <rect x="18" y="10" width="3" height="2" fill="#FFFFFF"/>
+  <rect x="12" y="10" width="2" height="2" fill="#3A2A1A"/>
+  <rect x="18" y="10" width="2" height="2" fill="#3A2A1A"/>
+
+  <!-- Eyebrows (thin, sharp) -->
+  <rect x="11" y="9" width="3" height="1" fill="#2A2218"/>
+  <rect x="18" y="9" width="3" height="1" fill="#2A2218"/>
+
+  <!-- Mouth (subtle) -->
+  <rect x="14" y="14" width="4" height="1" fill="#C08A60"/>
+
+  <!-- Silver armor (body) -->
+  <rect x="6" y="16" width="20" height="10" fill="#C0C0C0"/>
+  <!-- Armor darker plates -->
+  <rect x="6" y="16" width="20" height="1" fill="#A0A0A0"/>
+  <rect x="6" y="20" width="20" height="1" fill="#A0A0A0"/>
+  <!-- Armor center plate (blue accent) -->
+  <rect x="13" y="17" width="6" height="5" fill="#3366AA"/>
+  <rect x="14" y="18" width="4" height="3" fill="#4477BB"/>
+  <!-- Shoulder guards (silver) -->
+  <rect x="4" y="16" width="3" height="3" fill="#D0D0D0"/>
+  <rect x="25" y="16" width="3" height="3" fill="#D0D0D0"/>
+  <!-- Shoulder guard highlights -->
+  <rect x="5" y="16" width="1" height="1" fill="#E8E8E8"/>
+  <rect x="26" y="16" width="1" height="1" fill="#E8E8E8"/>
+  <!-- Blue waist sash -->
+  <rect x="8" y="23" width="16" height="1" fill="#3366AA"/>
+
+  <!-- Arms (silver armor sleeves) -->
+  <rect x="4" y="19" width="2" height="5" fill="#B0B0B0"/>
+  <rect x="26" y="19" width="2" height="5" fill="#B0B0B0"/>
+  <!-- Hands -->
+  <rect x="4" y="24" width="2" height="1" fill="#D4A574"/>
+  <rect x="26" y="24" width="2" height="1" fill="#D4A574"/>
+
+  <!-- Legs/boots (darker silver with blue) -->
+  <rect x="10" y="26" width="5" height="4" fill="#909090"/>
+  <rect x="17" y="26" width="5" height="4" fill="#909090"/>
+  <!-- Boot blue accents -->
+  <rect x="10" y="26" width="5" height="1" fill="#2A5590"/>
+  <rect x="17" y="26" width="5" height="1" fill="#2A5590"/>
+</svg>

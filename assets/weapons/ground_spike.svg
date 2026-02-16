@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16" shape-rendering="crispEdges">
+  <!-- Ground Spike (地刺) - Earth spike erupting upward - Evoker fang reference -->
+
+  <!-- Debris particles (ejected from ground) -->
+  <rect x="1" y="8" width="1" height="1" fill="#8B6242"/>
+  <rect x="3" y="6" width="1" height="1" fill="#6B4423"/>
+  <rect x="13" y="7" width="1" height="1" fill="#8B6242"/>
+  <rect x="11" y="5" width="1" height="1" fill="#6B4423"/>
+  <rect x="14" y="9" width="1" height="1" fill="#777777"/>
+
+  <!-- Main spike (center, tall) -->
+  <rect x="7" y="1" width="2" height="2" fill="#888888"/>
+  <rect x="6" y="3" width="4" height="3" fill="#8B6242"/>
+  <rect x="7" y="2" width="1" height="1" fill="#999999"/>
+  <rect x="5" y="6" width="6" height="3" fill="#8B6242"/>
+  <rect x="4" y="9" width="8" height="2" fill="#7A5535"/>
+
+  <!-- Spike tip (stone/gray) -->
+  <rect x="7" y="0" width="2" height="1" fill="#AAAAAA"/>
+  <rect x="8" y="1" width="1" height="1" fill="#999999"/>
+
+  <!-- Side spikes (smaller, left) -->
+  <rect x="3" y="7" width="2" height="1" fill="#888888"/>
+  <rect x="2" y="8" width="3" height="2" fill="#8B6242"/>
+  <rect x="3" y="7" width="1" height="1" fill="#999999"/>
+
+  <!-- Side spikes (smaller, right) -->
+  <rect x="11" y="6" width="2" height="1" fill="#888888"/>
+  <rect x="11" y="7" width="3" height="2" fill="#8B6242"/>
+  <rect x="12" y="6" width="1" height="1" fill="#999999"/>
+
+  <!-- Ground line / earth base -->
+  <rect x="1" y="11" width="14" height="2" fill="#6B4423"/>
+  <rect x="0" y="12" width="16" height="2" fill="#5A3418"/>
+  <rect x="2" y="14" width="12" height="2" fill="#4A2810"/>
+
+  <!-- Earth texture in base -->
+  <rect x="3" y="12" width="2" height="1" fill="#7A5535"/>
+  <rect x="8" y="13" width="3" height="1" fill="#7A5535"/>
+  <rect x="12" y="12" width="2" height="1" fill="#6B4423"/>
+
+  <!-- Crack lines in ground -->
+  <rect x="4" y="11" width="1" height="1" fill="#4A2810"/>
+  <rect x="11" y="11" width="1" height="1" fill="#4A2810"/>
+</svg>

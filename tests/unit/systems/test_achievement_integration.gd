@@ -279,10 +279,10 @@ static func test_unlock_achievements_exist() -> Dictionary:
 	var manager = _create_achievement_manager()
 	var passed = false
 	if manager:
-		var unlock_alex = manager.get_achievement("unlock_alex")
+		var unlock_zhao_yun = manager.get_achievement("unlock_zhao_yun")
 		var unlock_bow = manager.get_achievement("unlock_bow")
 		var evolve = manager.get_achievement("evolve_weapon")
-		passed = unlock_alex != null and unlock_bow != null and evolve != null
+		passed = unlock_zhao_yun != null and unlock_bow != null and evolve != null
 	return {"name": "TC.AI.23: unlock achievements exist", "passed": passed}
 
 # =============================================================================

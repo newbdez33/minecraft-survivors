@@ -131,7 +131,7 @@ static func test_meat_spawns_from_enemy() -> Dictionary:
 	return {"name": "TC.PK.9: Meat spawns from enemy death", "passed": passed}
 
 static func test_meat_drop_chance_correct() -> Dictionary:
-	# Zombie: 15% (0.15)
+	# Infantry: 15% (0.15)
 	var drop_chance = 0.15
 	var passed = abs(drop_chance - 0.15) < 0.01
 	return {"name": "TC.PK.10: Meat drop chance is 15%", "passed": passed}

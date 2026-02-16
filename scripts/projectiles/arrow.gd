@@ -1,6 +1,6 @@
 extends Area2D
 class_name Arrow
-## Projectile shot by Skeleton, damages player on contact
+## Projectile shot by Archer, damages player on contact
 
 @export var speed: float = 250.0
 @export var damage: int = 8

@@ -10,10 +10,10 @@ static func run_tests() -> Dictionary:
 	var results = {"passed": 0, "failed": 0, "tests": []}
 
 	# Tier Configuration Tests
-	_add_result(results, test_wood_sword_base_stats())
-	_add_result(results, test_stone_sword_base_stats())
-	_add_result(results, test_iron_sword_base_stats())
-	_add_result(results, test_diamond_sword_base_stats())
+	_add_result(results, test_iron_blade_base_stats())
+	_add_result(results, test_steel_blade_base_stats())
+	_add_result(results, test_fine_steel_blade_base_stats())
+	_add_result(results, test_divine_weapon_base_stats())
 
 	# Damage Calculation Tests
 	_add_result(results, test_level_damage_scaling())
@@ -61,24 +61,24 @@ static func _add_result(results: Dictionary, test_result: Dictionary) -> void:
 # TIER CONFIGURATION TESTS
 # =============================================================================
 
-static func test_wood_sword_base_stats() -> Dictionary:
-	# Wood Sword: damage=5, range=60, cooldown=1.2, kills_to_evolve=50
-	var config = SwordBase.TIER_CONFIG[SwordBase.Tier.WOOD]
+static func test_iron_blade_base_stats() -> Dictionary:
+	# Iron Blade: damage=5, range=60, cooldown=1.2, kills_to_evolve=50
+	var config = SwordBase.TIER_CONFIG[SwordBase.Tier.IRON_BLADE]
 	var passed = config.damage == 5 and config.attack_range == 60.0 and config.attack_cooldown == 1.2 and config.kills_to_evolve == 50
 	return {"name": "TC.SB.1: Wood sword has correct base stats", "passed": passed}
 
-static func test_stone_sword_base_stats() -> Dictionary:
-	var config = SwordBase.TIER_CONFIG[SwordBase.Tier.STONE]
+static func test_steel_blade_base_stats() -> Dictionary:
+	var config = SwordBase.TIER_CONFIG[SwordBase.Tier.STEEL_BLADE]
 	var passed = config.damage == 8 and config.attack_range == 70.0 and config.attack_cooldown == 1.0 and config.kills_to_evolve == 150
 	return {"name": "TC.SB.2: Stone sword has correct base stats", "passed": passed}
 
-static func test_iron_sword_base_stats() -> Dictionary:
-	var config = SwordBase.TIER_CONFIG[SwordBase.Tier.IRON]
+static func test_fine_steel_blade_base_stats() -> Dictionary:
+	var config = SwordBase.TIER_CONFIG[SwordBase.Tier.FINE_STEEL]
 	var passed = config.damage == 12 and config.attack_range == 80.0 and config.attack_cooldown == 0.9 and config.kills_to_evolve == 400
 	return {"name": "TC.SB.3: Iron sword has correct base stats", "passed": passed}
 
-static func test_diamond_sword_base_stats() -> Dictionary:
-	var config = SwordBase.TIER_CONFIG[SwordBase.Tier.DIAMOND]
+static func test_divine_weapon_base_stats() -> Dictionary:
+	var config = SwordBase.TIER_CONFIG[SwordBase.Tier.DIVINE]
 	var passed = config.damage == 15 and config.attack_range == 90.0 and config.attack_cooldown == 0.8 and config.kills_to_evolve == -1
 	return {"name": "TC.SB.4: Diamond sword has correct base stats (max tier)", "passed": passed}
 
@@ -92,7 +92,7 @@ static func test_level_damage_scaling() -> Dictionary:
 	# Level 1: 5 + 0 = 5
 	# Level 2: 5 + 2 = 7
 	# Level 3: 5 + 4 = 9
-	var base = SwordBase.TIER_CONFIG[SwordBase.Tier.WOOD].damage  # 5
+	var base = SwordBase.TIER_CONFIG[SwordBase.Tier.IRON_BLADE].damage  # 5
 	var expected_l1 = base + (1 - 1) * SwordBase.DAMAGE_PER_LEVEL  # 5
 	var expected_l2 = base + (2 - 1) * SwordBase.DAMAGE_PER_LEVEL  # 7
 	var expected_l3 = base + (3 - 1) * SwordBase.DAMAGE_PER_LEVEL  # 9
@@ -115,7 +115,7 @@ static func test_total_damage_formula() -> Dictionary:
 	# Level bonus: (10-1) * 2 = 18
 	# Evolution bonus: 5 + 8 + 12 = 25
 	# Total: 15 + 18 + 25 = 58
-	var base = SwordBase.TIER_CONFIG[SwordBase.Tier.DIAMOND].damage  # 15
+	var base = SwordBase.TIER_CONFIG[SwordBase.Tier.DIVINE].damage  # 15
 	var level_bonus = (10 - 1) * SwordBase.DAMAGE_PER_LEVEL  # 18
 	var evo_bonus = 5 + 8 + 12  # 25
 	var expected = base + level_bonus + evo_bonus  # 58
@@ -124,7 +124,7 @@ static func test_total_damage_formula() -> Dictionary:
 
 static func test_damage_never_negative() -> Dictionary:
 	# Even with somehow negative modifiers, damage should be at least base
-	var min_damage = SwordBase.TIER_CONFIG[SwordBase.Tier.WOOD].damage
+	var min_damage = SwordBase.TIER_CONFIG[SwordBase.Tier.IRON_BLADE].damage
 	var passed = min_damage > 0
 	return {"name": "TC.SB.8: Base damage is always positive", "passed": passed}
 
@@ -136,7 +136,7 @@ static func test_level_range_scaling() -> Dictionary:
 	# RANGE_PER_LEVEL = 5.0
 	# Level 1: 60 + 0 = 60
 	# Level 2: 60 + 5 = 65
-	var base = SwordBase.TIER_CONFIG[SwordBase.Tier.WOOD].attack_range
+	var base = SwordBase.TIER_CONFIG[SwordBase.Tier.IRON_BLADE].attack_range
 	var expected_l2 = base + (2 - 1) * SwordBase.RANGE_PER_LEVEL
 	var passed = expected_l2 == 65.0
 	return {"name": "TC.SB.9: Level range scaling adds +5 per level", "passed": passed}
@@ -168,7 +168,7 @@ static func test_level_cooldown_scaling() -> Dictionary:
 	# COOLDOWN_REDUCTION_PER_LEVEL = 0.05 (5%)
 	# Level 1: 1.2 * (1 - 0) = 1.2
 	# Level 2: 1.2 * (1 - 0.05) = 1.14
-	var base = SwordBase.TIER_CONFIG[SwordBase.Tier.WOOD].attack_cooldown
+	var base = SwordBase.TIER_CONFIG[SwordBase.Tier.IRON_BLADE].attack_cooldown
 	var expected_l2 = base * (1.0 - SwordBase.COOLDOWN_REDUCTION_PER_LEVEL)
 	var passed = abs(expected_l2 - 1.14) < 0.01
 	return {"name": "TC.SB.12: Level cooldown reduces by 5% per level", "passed": passed}
@@ -224,7 +224,7 @@ static func test_no_evolution_at_non_milestone_levels() -> Dictionary:
 
 static func test_diamond_cannot_evolve_further() -> Dictionary:
 	# Diamond tier (4) is max, cannot evolve
-	var max_tier = SwordBase.Tier.DIAMOND
+	var max_tier = SwordBase.Tier.DIVINE
 	var passed = max_tier == 4 and SwordBase.TIER_CONFIG[max_tier].kills_to_evolve == -1
 	return {"name": "TC.SB.19: Diamond sword cannot evolve further", "passed": passed}
 
@@ -249,7 +249,7 @@ static func test_kill_count_resets_on_evolution() -> Dictionary:
 static func test_kills_to_next_tier_calculation() -> Dictionary:
 	# get_kills_to_next_tier() = kills_to_evolve - kill_count
 	# Wood: 50 - 0 = 50
-	var kills_to_evolve = SwordBase.TIER_CONFIG[SwordBase.Tier.WOOD].kills_to_evolve
+	var kills_to_evolve = SwordBase.TIER_CONFIG[SwordBase.Tier.IRON_BLADE].kills_to_evolve
 	var kill_count = 0
 	var expected = kills_to_evolve - kill_count
 	var passed = expected == 50
@@ -260,10 +260,10 @@ static func test_kills_to_next_tier_calculation() -> Dictionary:
 # =============================================================================
 
 static func test_max_level_stats() -> Dictionary:
-	# At level 12 (max), diamond sword with all bonuses
+	# At level 12 (max), divine weapon with all bonuses
 	# Damage: 15 + 22 + 25 = 62
 	# Range: 90 + 55 + 60 = 205
-	var base_damage = SwordBase.TIER_CONFIG[SwordBase.Tier.DIAMOND].damage
+	var base_damage = SwordBase.TIER_CONFIG[SwordBase.Tier.DIVINE].damage
 	var level_damage = (12 - 1) * SwordBase.DAMAGE_PER_LEVEL
 	var evo_damage = 25
 	var total_damage = base_damage + level_damage + evo_damage
@@ -279,7 +279,7 @@ static func test_set_tier_directly() -> Dictionary:
 static func test_upgrade_from_max_tier() -> Dictionary:
 	# upgrade() from diamond should still increase level but not evolve
 	# Level can go to 11, 12 but tier stays DIAMOND
-	var max_tier = SwordBase.Tier.DIAMOND
+	var max_tier = SwordBase.Tier.DIVINE
 	var max_level = 12
 	var passed = max_tier == 4 and max_level == 12
 	return {"name": "TC.SB.25: Upgrade from max tier increases level only", "passed": passed}

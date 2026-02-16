@@ -10,18 +10,18 @@ var _current_enemy: Node2D = null
 
 # Enemy scenes to test
 const ENEMY_SCENES = {
-	"Zombie": "res://scenes/enemies/zombie.tscn",
-	"Spider": "res://scenes/enemies/spider.tscn",
-	"Skeleton": "res://scenes/enemies/skeleton.tscn",
-	"Creeper": "res://scenes/enemies/creeper.tscn",
-	"Enderman": "res://scenes/enemies/enderman.tscn",
-	"Witch": "res://scenes/enemies/witch.tscn",
-	"Evoker": "res://scenes/enemies/evoker.tscn",
-	"ElderGuardian": "res://scenes/enemies/elder_guardian.tscn",
-	"Ravager": "res://scenes/enemies/ravager.tscn",
-	"Warden": "res://scenes/enemies/warden.tscn",
-	"Wither": "res://scenes/enemies/wither.tscn",
-	"EnderDragon": "res://scenes/enemies/ender_dragon.tscn",
+	"Infantry": "res://scenes/enemies/infantry.tscn",
+	"Cavalry": "res://scenes/enemies/cavalry.tscn",
+	"Archer": "res://scenes/enemies/archer.tscn",
+	"FireSoldier": "res://scenes/enemies/fire_soldier.tscn",
+	"Assassin": "res://scenes/enemies/assassin.tscn",
+	"Sorcerer": "res://scenes/enemies/sorcerer.tscn",
+	"XiahouDun": "res://scenes/enemies/xiahou_dun.tscn",
+	"XuChu": "res://scenes/enemies/xu_chu.tscn",
+	"ZhangLiao": "res://scenes/enemies/zhang_liao.tscn",
+	"DianWei": "res://scenes/enemies/dian_wei.tscn",
+	"SimaYi": "res://scenes/enemies/sima_yi.tscn",
+	"LvBu": "res://scenes/enemies/lv_bu.tscn",
 }
 
 func _ready() -> void:
@@ -57,47 +57,47 @@ func _ready() -> void:
 
 	# Special tests for specific enemies
 	_tests.append({
-		"name": "Spider: Jump animations",
-		"func": _test_spider_jump
+		"name": "Cavalry: Jump animations",
+		"func": _test_cavalry_jump
 	})
 	_tests.append({
-		"name": "Creeper: Explosion swell",
-		"func": _test_creeper_swell
+		"name": "FireSoldier: Explosion swell",
+		"func": _test_fire_soldier_swell
 	})
 	_tests.append({
-		"name": "Enderman: Teleport animations",
-		"func": _test_enderman_teleport
+		"name": "Assassin: Teleport animations",
+		"func": _test_assassin_teleport
 	})
 	_tests.append({
-		"name": "Skeleton: Bow draw animation",
-		"func": _test_skeleton_bow
+		"name": "Archer: Bow draw animation",
+		"func": _test_archer_bow
 	})
 	_tests.append({
-		"name": "Witch: Throw animation",
-		"func": _test_witch_throw
+		"name": "Sorcerer: Throw animation",
+		"func": _test_sorcerer_throw
 	})
 	_tests.append({
-		"name": "Ravager: Charge animation",
-		"func": _test_ravager_charge
+		"name": "ZhangLiao: Charge animation",
+		"func": _test_zhang_liao_charge
 	})
 	_tests.append({
-		"name": "Warden: Sonic boom animation",
-		"func": _test_warden_sonic
+		"name": "DianWei: Sonic boom animation",
+		"func": _test_dian_wei_sonic
 	})
 	_tests.append({
-		"name": "Elder Guardian: Laser animation",
-		"func": _test_elder_guardian_laser
+		"name": "XuChu: Laser animation",
+		"func": _test_xu_chu_laser
 	})
 	_tests.append({
-		"name": "Evoker: Summon animation",
-		"func": _test_evoker_summon
+		"name": "XiahouDun: Summon animation",
+		"func": _test_xiahou_dun_summon
 	})
 	_tests.append({
-		"name": "Wither: Skull attack animation",
-		"func": _test_wither_skull
+		"name": "SimaYi: Skull attack animation",
+		"func": _test_sima_yi_skull
 	})
 	_tests.append({
-		"name": "Ender Dragon: Flying animation",
+		"name": "LvBu: Flying animation",
 		"func": _test_dragon_flying
 	})
 
@@ -226,8 +226,8 @@ func _test_death_cleanup(scene_path: String) -> bool:
 
 # === SPECIFIC ENEMY TESTS ===
 
-func _test_spider_jump() -> bool:
-	var enemy = _spawn_enemy(ENEMY_SCENES["Spider"])
+func _test_cavalry_jump() -> bool:
+	var enemy = _spawn_enemy(ENEMY_SCENES["Cavalry"])
 	if not enemy:
 		return false
 	await get_tree().process_frame
@@ -240,13 +240,13 @@ func _test_spider_jump() -> bool:
 	return false
 
 
-func _test_creeper_swell() -> bool:
-	var enemy = _spawn_enemy(ENEMY_SCENES["Creeper"])
+func _test_fire_soldier_swell() -> bool:
+	var enemy = _spawn_enemy(ENEMY_SCENES["FireSoldier"])
 	if not enemy:
 		return false
 	await get_tree().process_frame
 
-	# Set up a mock target so the creeper can process
+	# Set up a mock target so the fire soldier can process
 	var mock_target = Node2D.new()
 	mock_target.global_position = enemy.global_position + Vector2(50, 0)
 	add_child(mock_target)
@@ -263,8 +263,8 @@ func _test_creeper_swell() -> bool:
 	return false
 
 
-func _test_enderman_teleport() -> bool:
-	var enemy = _spawn_enemy(ENEMY_SCENES["Enderman"])
+func _test_assassin_teleport() -> bool:
+	var enemy = _spawn_enemy(ENEMY_SCENES["Assassin"])
 	if not enemy:
 		return false
 	await get_tree().process_frame
@@ -277,8 +277,8 @@ func _test_enderman_teleport() -> bool:
 	return false
 
 
-func _test_skeleton_bow() -> bool:
-	var enemy = _spawn_enemy(ENEMY_SCENES["Skeleton"])
+func _test_archer_bow() -> bool:
+	var enemy = _spawn_enemy(ENEMY_SCENES["Archer"])
 	if not enemy:
 		return false
 	await get_tree().process_frame
@@ -297,8 +297,8 @@ func _test_skeleton_bow() -> bool:
 	return false
 
 
-func _test_witch_throw() -> bool:
-	var enemy = _spawn_enemy(ENEMY_SCENES["Witch"])
+func _test_sorcerer_throw() -> bool:
+	var enemy = _spawn_enemy(ENEMY_SCENES["Sorcerer"])
 	if not enemy:
 		return false
 	await get_tree().process_frame
@@ -317,8 +317,8 @@ func _test_witch_throw() -> bool:
 	return false
 
 
-func _test_ravager_charge() -> bool:
-	var enemy = _spawn_enemy(ENEMY_SCENES["Ravager"])
+func _test_zhang_liao_charge() -> bool:
+	var enemy = _spawn_enemy(ENEMY_SCENES["ZhangLiao"])
 	if not enemy:
 		return false
 	await get_tree().process_frame
@@ -337,8 +337,8 @@ func _test_ravager_charge() -> bool:
 	return false
 
 
-func _test_warden_sonic() -> bool:
-	var enemy = _spawn_enemy(ENEMY_SCENES["Warden"])
+func _test_dian_wei_sonic() -> bool:
+	var enemy = _spawn_enemy(ENEMY_SCENES["DianWei"])
 	if not enemy:
 		return false
 	await get_tree().process_frame
@@ -357,8 +357,8 @@ func _test_warden_sonic() -> bool:
 	return false
 
 
-func _test_elder_guardian_laser() -> bool:
-	var enemy = _spawn_enemy(ENEMY_SCENES["ElderGuardian"])
+func _test_xu_chu_laser() -> bool:
+	var enemy = _spawn_enemy(ENEMY_SCENES["XuChu"])
 	if not enemy:
 		return false
 	await get_tree().process_frame
@@ -377,8 +377,8 @@ func _test_elder_guardian_laser() -> bool:
 	return false
 
 
-func _test_evoker_summon() -> bool:
-	var enemy = _spawn_enemy(ENEMY_SCENES["Evoker"])
+func _test_xiahou_dun_summon() -> bool:
+	var enemy = _spawn_enemy(ENEMY_SCENES["XiahouDun"])
 	if not enemy:
 		return false
 	await get_tree().process_frame
@@ -397,8 +397,8 @@ func _test_evoker_summon() -> bool:
 	return false
 
 
-func _test_wither_skull() -> bool:
-	var enemy = _spawn_enemy(ENEMY_SCENES["Wither"])
+func _test_sima_yi_skull() -> bool:
+	var enemy = _spawn_enemy(ENEMY_SCENES["SimaYi"])
 	if not enemy:
 		return false
 	await get_tree().process_frame
@@ -418,7 +418,7 @@ func _test_wither_skull() -> bool:
 
 
 func _test_dragon_flying() -> bool:
-	var enemy = _spawn_enemy(ENEMY_SCENES["EnderDragon"])
+	var enemy = _spawn_enemy(ENEMY_SCENES["LvBu"])
 	if not enemy:
 		return false
 	await get_tree().process_frame

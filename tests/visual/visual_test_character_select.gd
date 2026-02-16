@@ -126,38 +126,38 @@ func _test_character_selection() -> void:
 		])
 
 	# Test unlock simulation
-	print("\n  Testing Alex unlock...")
-	var alex = _character_manager.get_character("alex")
-	if alex:
-		var was_locked = not alex.is_unlocked
+	print("\n  Testing Zhao Yun unlock...")
+	var zhao_yun = _character_manager.get_character("zhao_yun")
+	if zhao_yun:
+		var was_locked = not zhao_yun.is_unlocked
 		_character_manager.check_unlock_conditions({"survival_time": 900})
 
-		if was_locked and alex.is_unlocked:
-			print("  >>> Alex unlocked successfully! <<<")
-		elif alex.is_unlocked:
-			print("  Alex was already unlocked")
+		if was_locked and zhao_yun.is_unlocked:
+			print("  >>> Zhao Yun unlocked successfully! <<<")
+		elif zhao_yun.is_unlocked:
+			print("  Zhao Yun was already unlocked")
 
-		# Try to select Alex
-		if alex.is_unlocked:
-			var selected = _character_manager.select_character("alex")
+		# Try to select Zhao Yun
+		if zhao_yun.is_unlocked:
+			var selected = _character_manager.select_character("zhao_yun")
 			if selected:
-				print("  Alex selected: PASS")
+				print("  Zhao Yun selected: PASS")
 				# Refresh panel
 				if _character_panel and _character_panel.has_method("populate_characters"):
 					_character_panel.populate_characters()
 				await get_tree().create_timer(0.5).timeout
-				_take_screenshot("03_alex_selected")
+				_take_screenshot("03_zhao_yun_selected")
 			else:
-				print("  Failed to select Alex: FAIL")
+				print("  Failed to select Zhao Yun: FAIL")
 
-	# Test selecting Steve back
-	var steve_selected = _character_manager.select_character("steve")
-	if steve_selected:
-		print("  Steve re-selected: PASS")
+	# Test selecting Guan Yu back
+	var guan_yu_selected = _character_manager.select_character("guan_yu")
+	if guan_yu_selected:
+		print("  Guan Yu re-selected: PASS")
 		if _character_panel and _character_panel.has_method("populate_characters"):
 			_character_panel.populate_characters()
 		await get_tree().create_timer(0.5).timeout
-		_take_screenshot("04_steve_selected")
+		_take_screenshot("04_guan_yu_selected")
 
 	print("  Character selection test: PASS")
 

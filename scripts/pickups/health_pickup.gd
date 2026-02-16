@@ -1,6 +1,6 @@
 extends Area2D
 class_name HealthPickup
-## Health pickup (golden apple) that heals the player
+## Health pickup (Immortal Peach) that heals the player
 
 signal collected(heal_amount: int)
 

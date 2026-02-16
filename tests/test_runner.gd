@@ -1,5 +1,5 @@
 extends SceneTree
-## Test Runner for Minecraft Survivors (TDD)
+## Test Runner for Three Kingdoms Survivors (TDD)
 ## Run with: godot --headless --script tests/test_runner.gd
 ##
 ## TDD Workflow:
@@ -32,7 +32,7 @@ const ENABLE_COVERAGE: bool = true
 
 func _init() -> void:
 	print("\n" + "=".repeat(60))
-	print("  MINECRAFT SURVIVORS - TEST SUITE (TDD)")
+	print("  THREE KINGDOMS SURVIVORS - TEST SUITE (TDD)")
 	print("=".repeat(60) + "\n")
 
 	# Phase 1 Tests (should all pass)
@@ -48,8 +48,8 @@ func _init() -> void:
 		print("[PHASE 2: Combat Basics - TDD]")
 		print("")
 		_run_test_suite("Health Component Tests", _test_health_component)
-		_run_test_suite("Zombie Tests", _test_zombie)
-		_run_test_suite("Diamond Sword Tests", _test_diamond_sword)
+		_run_test_suite("Infantry Tests", _test_infantry)
+		_run_test_suite("Divine Weapon Tests", _test_divine_weapon)
 		_run_test_suite("Mob Spawner Tests", _test_spawner)
 		_run_test_suite("HUD Tests", _test_hud)
 
@@ -62,10 +62,10 @@ func _init() -> void:
 		_run_test_suite("XP Bar HUD Tests", _test_xp_bar)
 		_run_test_suite("Upgrade System Tests", _test_upgrade_system)
 		_run_test_suite("Upgrade UI Tests", _test_upgrade_ui)
-		_run_test_suite("Skeleton Tests", _test_skeleton)
+		_run_test_suite("Archer Tests", _test_archer)
 		_run_test_suite("Arrow Tests", _test_arrow)
-		_run_test_suite("Creeper Tests", _test_creeper)
-		_run_test_suite("Spider Tests", _test_spider)
+		_run_test_suite("Fire Soldier Tests", _test_fire_soldier)
+		_run_test_suite("Cavalry Tests", _test_cavalry)
 
 	# Phase 4 Tests (TDD - write first, implement later)
 	if RUN_PHASE4_TESTS:
@@ -77,8 +77,8 @@ func _init() -> void:
 		_run_test_suite("Game Over UI Tests", _test_game_over_ui)
 		_run_test_suite("Localization Tests", _test_localization)
 		# Step 8-10: New Enemies
-		_run_test_suite("Enderman Tests", _test_enderman)
-		_run_test_suite("Witch Tests", _test_witch)
+		_run_test_suite("Assassin Tests", _test_assassin)
+		_run_test_suite("Sorcerer Tests", _test_sorcerer)
 		_run_test_suite("Potion Tests", _test_potion)
 		# Step 12: Integration
 		_run_test_suite("Spawner Integration Tests", _test_spawner_integration)
@@ -123,7 +123,7 @@ func _init() -> void:
 		_run_test_suite("Sword Tier Evolution Tests", _test_sword_tier_evolution)
 		_run_test_suite("Torch Visibility Tests", _test_torch_visibility)
 		_run_test_suite("Fog of War Tests", _test_fog_of_war)
-		_run_test_suite("Enderman Arrow Dodge Tests", _test_enderman_arrow_dodge)
+		_run_test_suite("Assassin Arrow Dodge Tests", _test_assassin_arrow_dodge)
 		_run_test_suite("Elite Enemy Spawning Tests", _test_elite_enemy_spawning)
 		_run_test_suite("Upgrade Artwork Tests", _test_upgrade_artwork)
 
@@ -131,9 +131,9 @@ func _init() -> void:
 	if RUN_PHASE6_TESTS:
 		print("[PHASE 6: Boss System - TDD]")
 		print("")
-		_run_test_suite("Evoker Boss Tests", _test_evoker_boss)
-		_run_test_suite("Evoker Fang Tests", _test_evoker_fang)
-		_run_test_suite("Vex Tests", _test_vex)
+		_run_test_suite("Xiahou Dun Boss Tests", _test_xiahou_dun_boss)
+		_run_test_suite("Ground Spike Tests", _test_ground_spike)
+		_run_test_suite("Shadow Guard Tests", _test_shadow_guard)
 		_run_test_suite("Boss Battle System Tests", _test_boss_battle_system)
 		_run_test_suite("Boss Drop System Tests", _test_boss_drop_system)
 
@@ -257,7 +257,7 @@ func _test_arena() -> void:
 		main.free()
 
 func _test_assets() -> void:
-	var characters = ["steve", "zombie", "skeleton", "creeper", "spider", "enderman", "witch"]
+	var characters = ["guan_yu", "infantry", "archer", "fire_soldier", "cavalry", "assassin", "sorcerer"]
 	for c in characters:
 		_assert_true(ResourceLoader.exists("res://assets/characters/" + c + ".svg"), "Asset: " + c + ".svg")
 
@@ -265,7 +265,7 @@ func _test_assets() -> void:
 	for t in tiles:
 		_assert_true(ResourceLoader.exists("res://assets/tiles/" + t + ".svg"), "Asset: " + t + ".svg")
 
-	var weapons = ["diamond_sword", "bow", "arrow", "potion"]
+	var weapons = ["divine_weapon", "bow", "arrow", "potion"]
 	for w in weapons:
 		_assert_true(ResourceLoader.exists("res://assets/weapons/" + w + ".svg"), "Asset: " + w + ".svg")
 
@@ -318,53 +318,53 @@ func _test_health_component() -> void:
 		_assert_true(false, "T2.4.5: Health has heal method")
 		_assert_true(false, "T2.4.6: Health has is_dead method")
 
-func _test_zombie() -> void:
-	# T2.2.1: Zombie script exists
-	var zombie_script = load("res://scripts/enemies/zombie.gd")
-	_assert_not_null(zombie_script, "T2.2.1: Zombie script loads")
+func _test_infantry() -> void:
+	# T2.2.1: Infantry script exists
+	var infantry_script = load("res://scripts/enemies/infantry.gd")
+	_assert_not_null(infantry_script, "T2.2.1: Infantry script loads")
 
-	# T2.2.2: Zombie scene exists
-	var zombie_scene = load("res://scenes/enemies/zombie.tscn")
-	_assert_not_null(zombie_scene, "T2.2.2: Zombie scene loads")
+	# T2.2.2: Infantry scene exists
+	var infantry_scene = load("res://scenes/enemies/infantry.tscn")
+	_assert_not_null(infantry_scene, "T2.2.2: Infantry scene loads")
 
-	if zombie_scene:
-		var zombie = zombie_scene.instantiate()
+	if infantry_scene:
+		var infantry = infantry_scene.instantiate()
 
-		# T2.2.3: Zombie has health
-		_assert_true("health" in zombie or zombie.has_node("HealthComponent"), "T2.2.3: Zombie has health")
+		# T2.2.3: Infantry has health
+		_assert_true("health" in infantry or infantry.has_node("HealthComponent"), "T2.2.3: Infantry has health")
 
-		# T2.2.4: Zombie has speed
-		_assert_true("speed" in zombie, "T2.2.4: Zombie has speed property")
+		# T2.2.4: Infantry has speed
+		_assert_true("speed" in infantry, "T2.2.4: Infantry has speed property")
 
-		# T2.2.5: Zombie has damage
-		_assert_true("damage" in zombie, "T2.2.5: Zombie has damage property")
+		# T2.2.5: Infantry has damage
+		_assert_true("damage" in infantry, "T2.2.5: Infantry has damage property")
 
-		# T2.2.6: Zombie has Sprite2D
-		_assert_true(zombie.has_node("Sprite2D"), "T2.2.6: Zombie has Sprite2D")
+		# T2.2.6: Infantry has Sprite2D
+		_assert_true(infantry.has_node("Sprite2D"), "T2.2.6: Infantry has Sprite2D")
 
-		# T2.2.7: Zombie has CollisionShape2D
-		_assert_true(zombie.has_node("CollisionShape2D"), "T2.2.7: Zombie has CollisionShape2D")
+		# T2.2.7: Infantry has CollisionShape2D
+		_assert_true(infantry.has_node("CollisionShape2D"), "T2.2.7: Infantry has CollisionShape2D")
 
-		# T2.2.8: Zombie is CharacterBody2D
-		_assert_true(zombie is CharacterBody2D, "T2.2.8: Zombie is CharacterBody2D")
+		# T2.2.8: Infantry is CharacterBody2D
+		_assert_true(infantry is CharacterBody2D, "T2.2.8: Infantry is CharacterBody2D")
 
-		zombie.free()
+		infantry.free()
 	else:
-		_assert_true(false, "T2.2.3: Zombie has health")
-		_assert_true(false, "T2.2.4: Zombie has speed property")
-		_assert_true(false, "T2.2.5: Zombie has damage property")
-		_assert_true(false, "T2.2.6: Zombie has Sprite2D")
-		_assert_true(false, "T2.2.7: Zombie has CollisionShape2D")
-		_assert_true(false, "T2.2.8: Zombie is CharacterBody2D")
+		_assert_true(false, "T2.2.3: Infantry has health")
+		_assert_true(false, "T2.2.4: Infantry has speed property")
+		_assert_true(false, "T2.2.5: Infantry has damage property")
+		_assert_true(false, "T2.2.6: Infantry has Sprite2D")
+		_assert_true(false, "T2.2.7: Infantry has CollisionShape2D")
+		_assert_true(false, "T2.2.8: Infantry is CharacterBody2D")
 
-func _test_diamond_sword() -> void:
+func _test_divine_weapon() -> void:
 	# T2.1.1: Sword script exists
-	var sword_script = load("res://scripts/weapons/diamond_sword.gd")
-	_assert_not_null(sword_script, "T2.1.1: Diamond Sword script loads")
+	var sword_script = load("res://scripts/weapons/divine_weapon.gd")
+	_assert_not_null(sword_script, "T2.1.1: Divine Weapon script loads")
 
 	# T2.1.2: Sword scene exists
-	var sword_scene = load("res://scenes/weapons/diamond_sword.tscn")
-	_assert_not_null(sword_scene, "T2.1.2: Diamond Sword scene loads")
+	var sword_scene = load("res://scenes/weapons/divine_weapon.tscn")
+	_assert_not_null(sword_scene, "T2.1.2: Divine Weapon scene loads")
 
 	if sword_scene:
 		var sword = sword_scene.instantiate()
@@ -627,40 +627,40 @@ func _test_upgrade_ui() -> void:
 		_assert_true(false, "T3.5.10: Upgrade UI has get_remaining_time method")
 		_assert_true(false, "T3.5.11: Upgrade UI has is_active method")
 
-func _test_skeleton() -> void:
-	# T3.6.1: Skeleton script exists
-	var skeleton_script = load("res://scripts/enemies/skeleton.gd")
-	_assert_not_null(skeleton_script, "T3.6.1: Skeleton script loads")
+func _test_archer() -> void:
+	# T3.6.1: Archer script exists
+	var archer_script = load("res://scripts/enemies/archer.gd")
+	_assert_not_null(archer_script, "T3.6.1: Archer script loads")
 
-	# T3.6.2: Skeleton scene exists
-	var skeleton_scene = load("res://scenes/enemies/skeleton.tscn")
-	_assert_not_null(skeleton_scene, "T3.6.2: Skeleton scene loads")
+	# T3.6.2: Archer scene exists
+	var archer_scene = load("res://scenes/enemies/archer.tscn")
+	_assert_not_null(archer_scene, "T3.6.2: Archer scene loads")
 
-	if skeleton_scene:
-		var skeleton = skeleton_scene.instantiate()
+	if archer_scene:
+		var archer = archer_scene.instantiate()
 
-		# T3.6.3: Skeleton has health property
-		_assert_true("health" in skeleton, "T3.6.3: Skeleton has health property")
+		# T3.6.3: Archer has health property
+		_assert_true("health" in archer, "T3.6.3: Archer has health property")
 
-		# T3.6.4: Skeleton has speed property
-		_assert_true("speed" in skeleton, "T3.6.4: Skeleton has speed property")
+		# T3.6.4: Archer has speed property
+		_assert_true("speed" in archer, "T3.6.4: Archer has speed property")
 
-		# T3.6.5: Skeleton has shoot_arrow method
-		_assert_true(skeleton.has_method("shoot_arrow"), "T3.6.5: Skeleton has shoot_arrow method")
+		# T3.6.5: Archer has shoot_arrow method
+		_assert_true(archer.has_method("shoot_arrow"), "T3.6.5: Archer has shoot_arrow method")
 
-		# T3.6.6: Skeleton has attack_range property
-		_assert_true("attack_range" in skeleton, "T3.6.6: Skeleton has attack_range property")
+		# T3.6.6: Archer has attack_range property
+		_assert_true("attack_range" in archer, "T3.6.6: Archer has attack_range property")
 
-		# T3.6.7: Skeleton is CharacterBody2D
-		_assert_true(skeleton is CharacterBody2D, "T3.6.7: Skeleton is CharacterBody2D")
+		# T3.6.7: Archer is CharacterBody2D
+		_assert_true(archer is CharacterBody2D, "T3.6.7: Archer is CharacterBody2D")
 
-		skeleton.free()
+		archer.free()
 	else:
-		_assert_true(false, "T3.6.3: Skeleton has health property")
-		_assert_true(false, "T3.6.4: Skeleton has speed property")
-		_assert_true(false, "T3.6.5: Skeleton has shoot_arrow method")
-		_assert_true(false, "T3.6.6: Skeleton has attack_range property")
-		_assert_true(false, "T3.6.7: Skeleton is CharacterBody2D")
+		_assert_true(false, "T3.6.3: Archer has health property")
+		_assert_true(false, "T3.6.4: Archer has speed property")
+		_assert_true(false, "T3.6.5: Archer has shoot_arrow method")
+		_assert_true(false, "T3.6.6: Archer has attack_range property")
+		_assert_true(false, "T3.6.7: Archer is CharacterBody2D")
 
 func _test_arrow() -> void:
 	# T3.6.8: Arrow script exists
@@ -689,75 +689,75 @@ func _test_arrow() -> void:
 		_assert_true(false, "T3.6.11: Arrow has damage property")
 		_assert_true(false, "T3.6.12: Arrow is Area2D")
 
-func _test_creeper() -> void:
-	# T3.6.13: Creeper script exists
-	var creeper_script = load("res://scripts/enemies/creeper.gd")
-	_assert_not_null(creeper_script, "T3.6.13: Creeper script loads")
+func _test_fire_soldier() -> void:
+	# T3.6.13: Fire Soldier script exists
+	var fire_soldier_script = load("res://scripts/enemies/fire_soldier.gd")
+	_assert_not_null(fire_soldier_script, "T3.6.13: Fire Soldier script loads")
 
-	# T3.6.14: Creeper scene exists
-	var creeper_scene = load("res://scenes/enemies/creeper.tscn")
-	_assert_not_null(creeper_scene, "T3.6.14: Creeper scene loads")
+	# T3.6.14: Fire Soldier scene exists
+	var fire_soldier_scene = load("res://scenes/enemies/fire_soldier.tscn")
+	_assert_not_null(fire_soldier_scene, "T3.6.14: Fire Soldier scene loads")
 
-	if creeper_scene:
-		var creeper = creeper_scene.instantiate()
+	if fire_soldier_scene:
+		var fire_soldier = fire_soldier_scene.instantiate()
 
-		# T3.6.15: Creeper has health property
-		_assert_true("health" in creeper, "T3.6.15: Creeper has health property")
+		# T3.6.15: Fire Soldier has health property
+		_assert_true("health" in fire_soldier, "T3.6.15: Fire Soldier has health property")
 
-		# T3.6.16: Creeper has explosion_damage property
-		_assert_true("explosion_damage" in creeper, "T3.6.16: Creeper has explosion_damage property")
+		# T3.6.16: Fire Soldier has explosion_damage property
+		_assert_true("explosion_damage" in fire_soldier, "T3.6.16: Fire Soldier has explosion_damage property")
 
-		# T3.6.17: Creeper has fuse_time property
-		_assert_true("fuse_time" in creeper, "T3.6.17: Creeper has fuse_time property")
+		# T3.6.17: Fire Soldier has fuse_time property
+		_assert_true("fuse_time" in fire_soldier, "T3.6.17: Fire Soldier has fuse_time property")
 
-		# T3.6.18: Creeper has start_fuse method
-		_assert_true(creeper.has_method("start_fuse"), "T3.6.18: Creeper has start_fuse method")
+		# T3.6.18: Fire Soldier has start_fuse method
+		_assert_true(fire_soldier.has_method("start_fuse"), "T3.6.18: Fire Soldier has start_fuse method")
 
-		# T3.6.19: Creeper has explode method
-		_assert_true(creeper.has_method("explode"), "T3.6.19: Creeper has explode method")
+		# T3.6.19: Fire Soldier has explode method
+		_assert_true(fire_soldier.has_method("explode"), "T3.6.19: Fire Soldier has explode method")
 
-		# T3.6.20: Creeper is CharacterBody2D
-		_assert_true(creeper is CharacterBody2D, "T3.6.20: Creeper is CharacterBody2D")
+		# T3.6.20: Fire Soldier is CharacterBody2D
+		_assert_true(fire_soldier is CharacterBody2D, "T3.6.20: Fire Soldier is CharacterBody2D")
 
-		creeper.free()
+		fire_soldier.free()
 	else:
-		_assert_true(false, "T3.6.15: Creeper has health property")
-		_assert_true(false, "T3.6.16: Creeper has explosion_damage property")
-		_assert_true(false, "T3.6.17: Creeper has fuse_time property")
-		_assert_true(false, "T3.6.18: Creeper has start_fuse method")
-		_assert_true(false, "T3.6.19: Creeper has explode method")
-		_assert_true(false, "T3.6.20: Creeper is CharacterBody2D")
+		_assert_true(false, "T3.6.15: Fire Soldier has health property")
+		_assert_true(false, "T3.6.16: Fire Soldier has explosion_damage property")
+		_assert_true(false, "T3.6.17: Fire Soldier has fuse_time property")
+		_assert_true(false, "T3.6.18: Fire Soldier has start_fuse method")
+		_assert_true(false, "T3.6.19: Fire Soldier has explode method")
+		_assert_true(false, "T3.6.20: Fire Soldier is CharacterBody2D")
 
-func _test_spider() -> void:
-	# T3.6.21: Spider script exists
-	var spider_script = load("res://scripts/enemies/spider.gd")
-	_assert_not_null(spider_script, "T3.6.21: Spider script loads")
+func _test_cavalry() -> void:
+	# T3.6.21: Cavalry script exists
+	var cavalry_script = load("res://scripts/enemies/cavalry.gd")
+	_assert_not_null(cavalry_script, "T3.6.21: Cavalry script loads")
 
-	# T3.6.22: Spider scene exists
-	var spider_scene = load("res://scenes/enemies/spider.tscn")
-	_assert_not_null(spider_scene, "T3.6.22: Spider scene loads")
+	# T3.6.22: Cavalry scene exists
+	var cavalry_scene = load("res://scenes/enemies/cavalry.tscn")
+	_assert_not_null(cavalry_scene, "T3.6.22: Cavalry scene loads")
 
-	if spider_scene:
-		var spider = spider_scene.instantiate()
+	if cavalry_scene:
+		var cavalry = cavalry_scene.instantiate()
 
-		# T3.6.23: Spider has health property
-		_assert_true("health" in spider, "T3.6.23: Spider has health property")
+		# T3.6.23: Cavalry has health property
+		_assert_true("health" in cavalry, "T3.6.23: Cavalry has health property")
 
-		# T3.6.24: Spider has speed property
-		_assert_true("speed" in spider, "T3.6.24: Spider has speed property")
+		# T3.6.24: Cavalry has speed property
+		_assert_true("speed" in cavalry, "T3.6.24: Cavalry has speed property")
 
-		# T3.6.25: Spider has jump method
-		_assert_true(spider.has_method("jump"), "T3.6.25: Spider has jump method")
+		# T3.6.25: Cavalry has jump method
+		_assert_true(cavalry.has_method("jump"), "T3.6.25: Cavalry has jump method")
 
-		# T3.6.26: Spider is CharacterBody2D
-		_assert_true(spider is CharacterBody2D, "T3.6.26: Spider is CharacterBody2D")
+		# T3.6.26: Cavalry is CharacterBody2D
+		_assert_true(cavalry is CharacterBody2D, "T3.6.26: Cavalry is CharacterBody2D")
 
-		spider.free()
+		cavalry.free()
 	else:
-		_assert_true(false, "T3.6.23: Spider has health property")
-		_assert_true(false, "T3.6.24: Spider has speed property")
-		_assert_true(false, "T3.6.25: Spider has jump method")
-		_assert_true(false, "T3.6.26: Spider is CharacterBody2D")
+		_assert_true(false, "T3.6.23: Cavalry has health property")
+		_assert_true(false, "T3.6.24: Cavalry has speed property")
+		_assert_true(false, "T3.6.25: Cavalry has jump method")
+		_assert_true(false, "T3.6.26: Cavalry is CharacterBody2D")
 
 # =============================================================================
 # PHASE 4: GAME FEEL TESTS (TDD)
@@ -954,160 +954,160 @@ func _test_localization() -> void:
 		_assert_true(false, "T4.7.8: LocalizationManager supports Chinese")
 
 # =============================================================================
-# PHASE 4 STEP 8: ENDERMAN TESTS (TDD - Write First)
+# PHASE 4 STEP 8: ASSASSIN TESTS (TDD - Write First)
 # =============================================================================
 
-func _test_enderman() -> void:
-	# T4.6.1: Enderman script loads
-	var enderman_script = load("res://scripts/enemies/enderman.gd")
-	_assert_not_null(enderman_script, "T4.6.1: Enderman script loads")
+func _test_assassin() -> void:
+	# T4.6.1: Assassin script loads
+	var assassin_script = load("res://scripts/enemies/assassin.gd")
+	_assert_not_null(assassin_script, "T4.6.1: Assassin script loads")
 
-	# T4.6.2: Enderman scene loads
-	var enderman_scene = load("res://scenes/enemies/enderman.tscn")
-	_assert_not_null(enderman_scene, "T4.6.2: Enderman scene loads")
+	# T4.6.2: Assassin scene loads
+	var assassin_scene = load("res://scenes/enemies/assassin.tscn")
+	_assert_not_null(assassin_scene, "T4.6.2: Assassin scene loads")
 
-	if enderman_scene:
-		var enderman = enderman_scene.instantiate()
+	if assassin_scene:
+		var assassin = assassin_scene.instantiate()
 
-		# T4.6.3: Enderman has health property (40)
-		_assert_true("health" in enderman, "T4.6.3: Enderman has health property")
-		if "health" in enderman:
-			_assert_equal(enderman.health, 40, "T4.6.3a: Enderman health is 40")
+		# T4.6.3: Assassin has health property (40)
+		_assert_true("health" in assassin, "T4.6.3: Assassin has health property")
+		if "health" in assassin:
+			_assert_equal(assassin.health, 40, "T4.6.3a: Assassin health is 40")
 
-		# T4.6.4: Enderman has speed property (70)
-		_assert_true("speed" in enderman, "T4.6.4: Enderman has speed property")
-		if "speed" in enderman:
-			_assert_equal(enderman.speed, 70, "T4.6.4a: Enderman speed is 70")
+		# T4.6.4: Assassin has speed property (70)
+		_assert_true("speed" in assassin, "T4.6.4: Assassin has speed property")
+		if "speed" in assassin:
+			_assert_equal(assassin.speed, 70, "T4.6.4a: Assassin speed is 70")
 
-		# T4.6.5: Enderman has teleport method
-		_assert_true(enderman.has_method("teleport"), "T4.6.5: Enderman has teleport method")
+		# T4.6.5: Assassin has teleport method
+		_assert_true(assassin.has_method("teleport"), "T4.6.5: Assassin has teleport method")
 
-		# T4.6.6: Enderman has teleport_cooldown property
-		_assert_true("teleport_cooldown" in enderman, "T4.6.6: Enderman has teleport_cooldown property")
-		if "teleport_cooldown" in enderman:
-			_assert_equal(enderman.teleport_cooldown, 3.0, "T4.6.6a: Enderman teleport_cooldown is 3.0")
+		# T4.6.6: Assassin has teleport_cooldown property
+		_assert_true("teleport_cooldown" in assassin, "T4.6.6: Assassin has teleport_cooldown property")
+		if "teleport_cooldown" in assassin:
+			_assert_equal(assassin.teleport_cooldown, 3.0, "T4.6.6a: Assassin teleport_cooldown is 3.0")
 
-		# T4.6.7: Enderman has teleport_range property
-		_assert_true("teleport_range" in enderman, "T4.6.7: Enderman has teleport_range property")
-		if "teleport_range" in enderman:
-			_assert_equal(enderman.teleport_range, 200.0, "T4.6.7a: Enderman teleport_range is 200")
+		# T4.6.7: Assassin has teleport_range property
+		_assert_true("teleport_range" in assassin, "T4.6.7: Assassin has teleport_range property")
+		if "teleport_range" in assassin:
+			_assert_equal(assassin.teleport_range, 200.0, "T4.6.7a: Assassin teleport_range is 200")
 
-		# T4.6.8: Enderman has damage property (15)
-		_assert_true("damage" in enderman, "T4.6.8: Enderman has damage property")
-		if "damage" in enderman:
-			_assert_equal(enderman.damage, 15, "T4.6.8a: Enderman damage is 15")
+		# T4.6.8: Assassin has damage property (15)
+		_assert_true("damage" in assassin, "T4.6.8: Assassin has damage property")
+		if "damage" in assassin:
+			_assert_equal(assassin.damage, 15, "T4.6.8a: Assassin damage is 15")
 
-		# T4.6.9: Enderman has xp_value property (15)
-		_assert_true("xp_value" in enderman, "T4.6.9: Enderman has xp_value property")
-		if "xp_value" in enderman:
-			_assert_equal(enderman.xp_value, 15, "T4.6.9a: Enderman xp_value is 15")
+		# T4.6.9: Assassin has xp_value property (15)
+		_assert_true("xp_value" in assassin, "T4.6.9: Assassin has xp_value property")
+		if "xp_value" in assassin:
+			_assert_equal(assassin.xp_value, 15, "T4.6.9a: Assassin xp_value is 15")
 
-		# T4.6.10: Enderman is CharacterBody2D
-		_assert_true(enderman is CharacterBody2D, "T4.6.10: Enderman is CharacterBody2D")
+		# T4.6.10: Assassin is CharacterBody2D
+		_assert_true(assassin is CharacterBody2D, "T4.6.10: Assassin is CharacterBody2D")
 
-		# T4.6.11: Enderman has can_teleport property
-		_assert_true("can_teleport" in enderman, "T4.6.11: Enderman has can_teleport property")
+		# T4.6.11: Assassin has can_teleport property
+		_assert_true("can_teleport" in assassin, "T4.6.11: Assassin has can_teleport property")
 
-		# T4.6.12: Enderman has apply_knockback method (for knockback system)
-		_assert_true(enderman.has_method("apply_knockback"), "T4.6.12: Enderman has apply_knockback method")
+		# T4.6.12: Assassin has apply_knockback method (for knockback system)
+		_assert_true(assassin.has_method("apply_knockback"), "T4.6.12: Assassin has apply_knockback method")
 
-		enderman.free()
+		assassin.free()
 	else:
 		# Script/scene doesn't exist yet - fail remaining tests
-		_assert_true(false, "T4.6.3: Enderman has health property")
-		_assert_true(false, "T4.6.3a: Enderman health is 40")
-		_assert_true(false, "T4.6.4: Enderman has speed property")
-		_assert_true(false, "T4.6.4a: Enderman speed is 70")
-		_assert_true(false, "T4.6.5: Enderman has teleport method")
-		_assert_true(false, "T4.6.6: Enderman has teleport_cooldown property")
-		_assert_true(false, "T4.6.6a: Enderman teleport_cooldown is 3.0")
-		_assert_true(false, "T4.6.7: Enderman has teleport_range property")
-		_assert_true(false, "T4.6.7a: Enderman teleport_range is 200")
-		_assert_true(false, "T4.6.8: Enderman has damage property")
-		_assert_true(false, "T4.6.8a: Enderman damage is 15")
-		_assert_true(false, "T4.6.9: Enderman has xp_value property")
-		_assert_true(false, "T4.6.9a: Enderman xp_value is 15")
-		_assert_true(false, "T4.6.10: Enderman is CharacterBody2D")
-		_assert_true(false, "T4.6.11: Enderman has can_teleport property")
-		_assert_true(false, "T4.6.12: Enderman has apply_knockback method")
+		_assert_true(false, "T4.6.3: Assassin has health property")
+		_assert_true(false, "T4.6.3a: Assassin health is 40")
+		_assert_true(false, "T4.6.4: Assassin has speed property")
+		_assert_true(false, "T4.6.4a: Assassin speed is 70")
+		_assert_true(false, "T4.6.5: Assassin has teleport method")
+		_assert_true(false, "T4.6.6: Assassin has teleport_cooldown property")
+		_assert_true(false, "T4.6.6a: Assassin teleport_cooldown is 3.0")
+		_assert_true(false, "T4.6.7: Assassin has teleport_range property")
+		_assert_true(false, "T4.6.7a: Assassin teleport_range is 200")
+		_assert_true(false, "T4.6.8: Assassin has damage property")
+		_assert_true(false, "T4.6.8a: Assassin damage is 15")
+		_assert_true(false, "T4.6.9: Assassin has xp_value property")
+		_assert_true(false, "T4.6.9a: Assassin xp_value is 15")
+		_assert_true(false, "T4.6.10: Assassin is CharacterBody2D")
+		_assert_true(false, "T4.6.11: Assassin has can_teleport property")
+		_assert_true(false, "T4.6.12: Assassin has apply_knockback method")
 
 # =============================================================================
-# PHASE 4 STEP 9: WITCH TESTS (TDD - Write First)
+# PHASE 4 STEP 9: SORCERER TESTS (TDD - Write First)
 # =============================================================================
 
-func _test_witch() -> void:
-	# T4.6.13: Witch script loads
-	var witch_script = load("res://scripts/enemies/witch.gd")
-	_assert_not_null(witch_script, "T4.6.13: Witch script loads")
+func _test_sorcerer() -> void:
+	# T4.6.13: Sorcerer script loads
+	var sorcerer_script = load("res://scripts/enemies/sorcerer.gd")
+	_assert_not_null(sorcerer_script, "T4.6.13: Sorcerer script loads")
 
-	# T4.6.14: Witch scene loads
-	var witch_scene = load("res://scenes/enemies/witch.tscn")
-	_assert_not_null(witch_scene, "T4.6.14: Witch scene loads")
+	# T4.6.14: Sorcerer scene loads
+	var sorcerer_scene = load("res://scenes/enemies/sorcerer.tscn")
+	_assert_not_null(sorcerer_scene, "T4.6.14: Sorcerer scene loads")
 
-	if witch_scene:
-		var witch = witch_scene.instantiate()
+	if sorcerer_scene:
+		var sorcerer = sorcerer_scene.instantiate()
 
-		# T4.6.15: Witch has health property (20)
-		_assert_true("health" in witch, "T4.6.15: Witch has health property")
-		if "health" in witch:
-			_assert_equal(witch.health, 20, "T4.6.15a: Witch health is 20")
+		# T4.6.15: Sorcerer has health property (20)
+		_assert_true("health" in sorcerer, "T4.6.15: Sorcerer has health property")
+		if "health" in sorcerer:
+			_assert_equal(sorcerer.health, 20, "T4.6.15a: Sorcerer health is 20")
 
-		# T4.6.16: Witch has speed property (35)
-		_assert_true("speed" in witch, "T4.6.16: Witch has speed property")
-		if "speed" in witch:
-			_assert_equal(witch.speed, 35, "T4.6.16a: Witch speed is 35")
+		# T4.6.16: Sorcerer has speed property (35)
+		_assert_true("speed" in sorcerer, "T4.6.16: Sorcerer has speed property")
+		if "speed" in sorcerer:
+			_assert_equal(sorcerer.speed, 35, "T4.6.16a: Sorcerer speed is 35")
 
-		# T4.6.17: Witch has throw_potion method
-		_assert_true(witch.has_method("throw_potion"), "T4.6.17: Witch has throw_potion method")
+		# T4.6.17: Sorcerer has throw_potion method
+		_assert_true(sorcerer.has_method("throw_potion"), "T4.6.17: Sorcerer has throw_potion method")
 
-		# T4.6.18: Witch has attack_range property (250)
-		_assert_true("attack_range" in witch, "T4.6.18: Witch has attack_range property")
-		if "attack_range" in witch:
-			_assert_equal(witch.attack_range, 250.0, "T4.6.18a: Witch attack_range is 250")
+		# T4.6.18: Sorcerer has attack_range property (250)
+		_assert_true("attack_range" in sorcerer, "T4.6.18: Sorcerer has attack_range property")
+		if "attack_range" in sorcerer:
+			_assert_equal(sorcerer.attack_range, 250.0, "T4.6.18a: Sorcerer attack_range is 250")
 
-		# T4.6.19: Witch has attack_cooldown property (3.0)
-		_assert_true("attack_cooldown" in witch, "T4.6.19: Witch has attack_cooldown property")
-		if "attack_cooldown" in witch:
-			_assert_equal(witch.attack_cooldown, 3.0, "T4.6.19a: Witch attack_cooldown is 3.0")
+		# T4.6.19: Sorcerer has attack_cooldown property (3.0)
+		_assert_true("attack_cooldown" in sorcerer, "T4.6.19: Sorcerer has attack_cooldown property")
+		if "attack_cooldown" in sorcerer:
+			_assert_equal(sorcerer.attack_cooldown, 3.0, "T4.6.19a: Sorcerer attack_cooldown is 3.0")
 
-		# T4.6.20: Witch has potion_damage property (12)
-		_assert_true("potion_damage" in witch, "T4.6.20: Witch has potion_damage property")
-		if "potion_damage" in witch:
-			_assert_equal(witch.potion_damage, 12, "T4.6.20a: Witch potion_damage is 12")
+		# T4.6.20: Sorcerer has potion_damage property (12)
+		_assert_true("potion_damage" in sorcerer, "T4.6.20: Sorcerer has potion_damage property")
+		if "potion_damage" in sorcerer:
+			_assert_equal(sorcerer.potion_damage, 12, "T4.6.20a: Sorcerer potion_damage is 12")
 
-		# T4.6.21: Witch has xp_value property (12)
-		_assert_true("xp_value" in witch, "T4.6.21: Witch has xp_value property")
-		if "xp_value" in witch:
-			_assert_equal(witch.xp_value, 12, "T4.6.21a: Witch xp_value is 12")
+		# T4.6.21: Sorcerer has xp_value property (12)
+		_assert_true("xp_value" in sorcerer, "T4.6.21: Sorcerer has xp_value property")
+		if "xp_value" in sorcerer:
+			_assert_equal(sorcerer.xp_value, 12, "T4.6.21a: Sorcerer xp_value is 12")
 
-		# T4.6.22: Witch has preferred_distance property
-		_assert_true("preferred_distance" in witch, "T4.6.22: Witch has preferred_distance property")
+		# T4.6.22: Sorcerer has preferred_distance property
+		_assert_true("preferred_distance" in sorcerer, "T4.6.22: Sorcerer has preferred_distance property")
 
-		# T4.6.23: Witch is CharacterBody2D
-		_assert_true(witch is CharacterBody2D, "T4.6.23: Witch is CharacterBody2D")
+		# T4.6.23: Sorcerer is CharacterBody2D
+		_assert_true(sorcerer is CharacterBody2D, "T4.6.23: Sorcerer is CharacterBody2D")
 
-		# T4.6.24: Witch has apply_knockback method
-		_assert_true(witch.has_method("apply_knockback"), "T4.6.24: Witch has apply_knockback method")
+		# T4.6.24: Sorcerer has apply_knockback method
+		_assert_true(sorcerer.has_method("apply_knockback"), "T4.6.24: Sorcerer has apply_knockback method")
 
-		witch.free()
+		sorcerer.free()
 	else:
 		# Script/scene doesn't exist yet - fail remaining tests
-		_assert_true(false, "T4.6.15: Witch has health property")
-		_assert_true(false, "T4.6.15a: Witch health is 20")
-		_assert_true(false, "T4.6.16: Witch has speed property")
-		_assert_true(false, "T4.6.16a: Witch speed is 35")
-		_assert_true(false, "T4.6.17: Witch has throw_potion method")
-		_assert_true(false, "T4.6.18: Witch has attack_range property")
-		_assert_true(false, "T4.6.18a: Witch attack_range is 250")
-		_assert_true(false, "T4.6.19: Witch has attack_cooldown property")
-		_assert_true(false, "T4.6.19a: Witch attack_cooldown is 3.0")
-		_assert_true(false, "T4.6.20: Witch has potion_damage property")
-		_assert_true(false, "T4.6.20a: Witch potion_damage is 12")
-		_assert_true(false, "T4.6.21: Witch has xp_value property")
-		_assert_true(false, "T4.6.21a: Witch xp_value is 12")
-		_assert_true(false, "T4.6.22: Witch has preferred_distance property")
-		_assert_true(false, "T4.6.23: Witch is CharacterBody2D")
-		_assert_true(false, "T4.6.24: Witch has apply_knockback method")
+		_assert_true(false, "T4.6.15: Sorcerer has health property")
+		_assert_true(false, "T4.6.15a: Sorcerer health is 20")
+		_assert_true(false, "T4.6.16: Sorcerer has speed property")
+		_assert_true(false, "T4.6.16a: Sorcerer speed is 35")
+		_assert_true(false, "T4.6.17: Sorcerer has throw_potion method")
+		_assert_true(false, "T4.6.18: Sorcerer has attack_range property")
+		_assert_true(false, "T4.6.18a: Sorcerer attack_range is 250")
+		_assert_true(false, "T4.6.19: Sorcerer has attack_cooldown property")
+		_assert_true(false, "T4.6.19a: Sorcerer attack_cooldown is 3.0")
+		_assert_true(false, "T4.6.20: Sorcerer has potion_damage property")
+		_assert_true(false, "T4.6.20a: Sorcerer potion_damage is 12")
+		_assert_true(false, "T4.6.21: Sorcerer has xp_value property")
+		_assert_true(false, "T4.6.21a: Sorcerer xp_value is 12")
+		_assert_true(false, "T4.6.22: Sorcerer has preferred_distance property")
+		_assert_true(false, "T4.6.23: Sorcerer is CharacterBody2D")
+		_assert_true(false, "T4.6.24: Sorcerer has apply_knockback method")
 
 # =============================================================================
 # PHASE 4 STEP 10: POTION TESTS (TDD - Write First)
@@ -1115,11 +1115,11 @@ func _test_witch() -> void:
 
 func _test_potion() -> void:
 	# T4.6.25: Potion script loads
-	var potion_script = load("res://scripts/projectiles/potion.gd")
+	var potion_script = load("res://scripts/projectiles/poison_dart.gd")
 	_assert_not_null(potion_script, "T4.6.25: Potion script loads")
 
 	# T4.6.26: Potion scene loads
-	var potion_scene = load("res://scenes/projectiles/potion.tscn")
+	var potion_scene = load("res://scenes/projectiles/poison_dart.tscn")
 	_assert_not_null(potion_scene, "T4.6.26: Potion scene loads")
 
 	if potion_scene:
@@ -1178,7 +1178,7 @@ func _test_potion() -> void:
 # =============================================================================
 
 func _test_spawner_integration() -> void:
-	# T4.12.1: Spawner loads Enderman scene
+	# T4.12.1: Spawner loads Assassin scene
 	var spawner_script = load("res://scripts/spawner.gd")
 	_assert_not_null(spawner_script, "T4.12.1: Spawner script loads")
 
@@ -1186,27 +1186,27 @@ func _test_spawner_integration() -> void:
 		var spawner = Node.new()
 		spawner.set_script(spawner_script)
 
-		# T4.12.2: Spawner has enderman_scene variable
-		_assert_true("enderman_scene" in spawner, "T4.12.2: Spawner has enderman_scene")
+		# T4.12.2: Spawner has assassin_scene variable
+		_assert_true("assassin_scene" in spawner, "T4.12.2: Spawner has assassin_scene")
 
-		# T4.12.3: Spawner has witch_scene variable
-		_assert_true("witch_scene" in spawner, "T4.12.3: Spawner has witch_scene")
+		# T4.12.3: Spawner has sorcerer_scene variable
+		_assert_true("sorcerer_scene" in spawner, "T4.12.3: Spawner has sorcerer_scene")
 
-		# T4.12.4: Spawner has enderman_weight variable
-		_assert_true("enderman_weight" in spawner, "T4.12.4: Spawner has enderman_weight")
+		# T4.12.4: Spawner has assassin_weight variable
+		_assert_true("assassin_weight" in spawner, "T4.12.4: Spawner has assassin_weight")
 
-		# T4.12.5: Spawner has witch_weight variable
-		_assert_true("witch_weight" in spawner, "T4.12.5: Spawner has witch_weight")
+		# T4.12.5: Spawner has sorcerer_weight variable
+		_assert_true("sorcerer_weight" in spawner, "T4.12.5: Spawner has sorcerer_weight")
 
 		# T4.12.19: Spawner has enemy_killed signal for kill tracking
 		_assert_true(spawner.has_signal("enemy_killed"), "T4.12.19: Spawner has enemy_killed signal")
 
 		spawner.free()
 	else:
-		_assert_true(false, "T4.12.2: Spawner has enderman_scene")
-		_assert_true(false, "T4.12.3: Spawner has witch_scene")
-		_assert_true(false, "T4.12.4: Spawner has enderman_weight")
-		_assert_true(false, "T4.12.5: Spawner has witch_weight")
+		_assert_true(false, "T4.12.2: Spawner has assassin_scene")
+		_assert_true(false, "T4.12.3: Spawner has sorcerer_scene")
+		_assert_true(false, "T4.12.4: Spawner has assassin_weight")
+		_assert_true(false, "T4.12.5: Spawner has sorcerer_weight")
 		_assert_true(false, "T4.12.19: Spawner has enemy_killed signal")
 
 func _test_hud_integration() -> void:
@@ -1311,40 +1311,40 @@ func _test_wave_spawner_integration() -> void:
 	_assert_true(spawner.max_enemies > wave2_max, "T4.13.8: Wave 5 more enemies than wave 2")
 
 	# Reset weights for enemy type tests
-	spawner.skeleton_weight = 0.0
-	spawner.spider_weight = 0.0
-	spawner.creeper_weight = 0.0
-	spawner.enderman_weight = 0.0
-	spawner.witch_weight = 0.0
+	spawner.archer_weight = 0.0
+	spawner.cavalry_weight = 0.0
+	spawner.fire_soldier_weight = 0.0
+	spawner.assassin_weight = 0.0
+	spawner.sorcerer_weight = 0.0
 
-	# T4.13.9: Wave 1 has no skeleton weight boost
+	# T4.13.9: Wave 1 has no archer weight boost
 	spawner.set_wave(1)
-	_assert_equal(spawner.skeleton_weight, 0.0, "T4.13.9: Wave 1 no skeleton boost")
+	_assert_equal(spawner.archer_weight, 0.0, "T4.13.9: Wave 1 no archer boost")
 
-	# T4.13.10: Wave 2 adds skeleton weight
-	spawner.skeleton_weight = 0.0
+	# T4.13.10: Wave 2 adds archer weight
+	spawner.archer_weight = 0.0
 	spawner.set_wave(2)
-	_assert_true(spawner.skeleton_weight > 0, "T4.13.10: Wave 2 adds skeletons")
+	_assert_true(spawner.archer_weight > 0, "T4.13.10: Wave 2 adds archers")
 
-	# T4.13.11: Wave 3 adds spider weight
-	spawner.spider_weight = 0.0
+	# T4.13.11: Wave 3 adds cavalry weight
+	spawner.cavalry_weight = 0.0
 	spawner.set_wave(3)
-	_assert_true(spawner.spider_weight > 0, "T4.13.11: Wave 3 adds spiders")
+	_assert_true(spawner.cavalry_weight > 0, "T4.13.11: Wave 3 adds cavalry")
 
-	# T4.13.12: Wave 4 adds creeper weight
-	spawner.creeper_weight = 0.0
+	# T4.13.12: Wave 4 adds fire_soldier weight
+	spawner.fire_soldier_weight = 0.0
 	spawner.set_wave(4)
-	_assert_true(spawner.creeper_weight > 0, "T4.13.12: Wave 4 adds creepers")
+	_assert_true(spawner.fire_soldier_weight > 0, "T4.13.12: Wave 4 adds fire soldiers")
 
-	# T4.13.13: Wave 5 adds enderman weight
-	spawner.enderman_weight = 0.0
+	# T4.13.13: Wave 5 adds assassin weight
+	spawner.assassin_weight = 0.0
 	spawner.set_wave(5)
-	_assert_true(spawner.enderman_weight > 0, "T4.13.13: Wave 5 adds enderman")
+	_assert_true(spawner.assassin_weight > 0, "T4.13.13: Wave 5 adds assassin")
 
-	# T4.13.14: Wave 6 adds witch weight
-	spawner.witch_weight = 0.0
+	# T4.13.14: Wave 6 adds sorcerer weight
+	spawner.sorcerer_weight = 0.0
 	spawner.set_wave(6)
-	_assert_true(spawner.witch_weight > 0, "T4.13.14: Wave 6 adds witch")
+	_assert_true(spawner.sorcerer_weight > 0, "T4.13.14: Wave 6 adds sorcerer")
 
 	root.remove_child(spawner)
 	spawner.free()
@@ -1615,8 +1615,8 @@ func _test_status_effect_manager() -> void:
 	_assert_true(manager.has_signal("effect_tick"), "T5.1.17: Manager has effect_tick signal")
 
 func _test_poison_system() -> void:
-	# T5.1.18: Potion has cloud_size property (poison is always applied via cloud)
-	var potion_scene = load("res://scenes/projectiles/potion.tscn")
+	# T5.1.18: Poison Dart has cloud_size property (poison is always applied via cloud)
+	var potion_scene = load("res://scenes/projectiles/poison_dart.tscn")
 	if potion_scene == null:
 		_skip_test("T5.1.18-T5.1.24", "Potion scene not found")
 		return
@@ -2017,10 +2017,10 @@ func _test_character() -> void:
 	_assert_not_null(script, "T5.3.1: GameCharacter script loads")
 
 	if script:
-		var character = script.new("steve", "Steve", "Default character")
+		var character = script.new("guan_yu", "Guan Yu", "Default character")
 		_assert_not_null(character, "T5.3.2: GameCharacter can be instantiated")
-		_assert_equal(character.id, "steve", "T5.3.3: Character has correct id")
-		_assert_equal(character.name, "Steve", "T5.3.4: Character has correct name")
+		_assert_equal(character.id, "guan_yu", "T5.3.3: Character has correct id")
+		_assert_equal(character.name, "Guan Yu", "T5.3.4: Character has correct name")
 		_assert_equal(character.description, "Default character", "T5.3.5: Character has correct description")
 		_assert_equal(character.health_mult, 1.0, "T5.3.6: Character has default health multiplier")
 		_assert_equal(character.speed_mult, 1.0, "T5.3.7: Character has default speed multiplier")
@@ -2060,19 +2060,19 @@ func _test_character_manager() -> void:
 
 		# Test character definitions exist
 		_assert_true(manager.CHARACTER_DEFS.size() > 0, "T5.3.27: Has character definitions")
-		_assert_true("steve" in manager.CHARACTER_DEFS, "T5.3.28: Has steve character")
-		_assert_true("alex" in manager.CHARACTER_DEFS, "T5.3.29: Has alex character")
-		_assert_equal(manager.selected_character_id, "steve", "T5.3.30: Default selected is steve")
+		_assert_true("guan_yu" in manager.CHARACTER_DEFS, "T5.3.28: Has guan_yu character")
+		_assert_true("zhao_yun" in manager.CHARACTER_DEFS, "T5.3.29: Has zhao_yun character")
+		_assert_equal(manager.selected_character_id, "guan_yu", "T5.3.30: Default selected is guan_yu")
 
-		# Test steve is unlocked by default
-		var steve_def = manager.CHARACTER_DEFS["steve"]
-		_assert_true(steve_def.unlocked, "T5.3.31: Steve is unlocked by default")
+		# Test guan_yu is unlocked by default
+		var guan_yu_def = manager.CHARACTER_DEFS["guan_yu"]
+		_assert_true(guan_yu_def.unlocked, "T5.3.31: Guan Yu is unlocked by default")
 
-		# Test alex unlock condition
-		var alex_def = manager.CHARACTER_DEFS["alex"]
-		_assert_false(alex_def.unlocked, "T5.3.32: Alex is locked by default")
-		_assert_equal(alex_def.unlock_type, "survival_time", "T5.3.33: Alex unlock type is survival_time")
-		_assert_equal(alex_def.unlock_value, 900, "T5.3.34: Alex unlock value is 900 (15 min)")
+		# Test zhao_yun unlock condition
+		var zhao_yun_def = manager.CHARACTER_DEFS["zhao_yun"]
+		_assert_false(zhao_yun_def.unlocked, "T5.3.32: Zhao Yun is locked by default")
+		_assert_equal(zhao_yun_def.unlock_type, "survival_time", "T5.3.33: Zhao Yun unlock type is survival_time")
+		_assert_equal(zhao_yun_def.unlock_value, 900, "T5.3.34: Zhao Yun unlock value is 900 (15 min)")
 
 func _test_crossbow() -> void:
 	var script = load("res://scripts/weapons/crossbow.gd")
@@ -2175,26 +2175,26 @@ func _test_sword_tier_evolution() -> void:
 	var script = load("res://scripts/weapons/sword_base.gd")
 	_assert_not_null(script, "T5.6.1: SwordBase script loads")
 
-	# T5.6.2: Wood sword scene exists
-	var scene = load("res://scenes/weapons/wood_sword.tscn")
-	_assert_not_null(scene, "T5.6.2: Wood Sword scene loads")
+	# T5.6.2: Iron Blade scene exists
+	var scene = load("res://scenes/weapons/iron_blade.tscn")
+	_assert_not_null(scene, "T5.6.2: Iron Blade scene loads")
 
 	if scene and script:
 		var sword = scene.instantiate()
 		# Get Tier enum from script
 		var Tier = script.Tier
 
-		# T5.6.3: Sword starts at Wood tier
-		_assert_equal(sword.current_tier, Tier.WOOD, "T5.6.3: Sword starts at WOOD tier")
+		# T5.6.3: Sword starts at Iron Blade tier
+		_assert_equal(sword.current_tier, Tier.IRON_BLADE, "T5.6.3: Sword starts at IRON_BLADE tier")
 
-		# T5.6.4: Wood sword has correct damage
-		_assert_equal(sword.damage, 5, "T5.6.4: Wood sword damage is 5")
+		# T5.6.4: Iron Blade has correct damage
+		_assert_equal(sword.damage, 5, "T5.6.4: Iron Blade damage is 5")
 
-		# T5.6.5: Wood sword has correct range (60.0)
-		_assert_equal(sword.attack_range, 60.0, "T5.6.5: Wood sword range is 60")
+		# T5.6.5: Iron Blade has correct range (60.0)
+		_assert_equal(sword.attack_range, 60.0, "T5.6.5: Iron Blade range is 60")
 
-		# T5.6.6: Wood sword has correct cooldown
-		_assert_equal(sword.attack_cooldown, 1.2, "T5.6.6: Wood sword cooldown is 1.2")
+		# T5.6.6: Iron Blade has correct cooldown
+		_assert_equal(sword.attack_cooldown, 1.2, "T5.6.6: Iron Blade cooldown is 1.2")
 
 		# T5.6.7: Kill count starts at 0
 		_assert_equal(sword.kill_count, 0, "T5.6.7: Kill count starts at 0")
@@ -2203,40 +2203,40 @@ func _test_sword_tier_evolution() -> void:
 		sword.on_enemy_killed()
 		_assert_equal(sword.kill_count, 1, "T5.6.8: Kill count increments")
 
-		# T5.6.9: Evolve to Stone via upgrade() at level 4
+		# T5.6.9: Evolve to Steel Blade via upgrade() at level 4
 		# Evolution is level-based: levels 4, 7, 10 trigger tier evolution
 		sword.kill_count = 0  # Reset from previous test
 		sword.upgrade()  # level 2
 		sword.upgrade()  # level 3
-		sword.upgrade()  # level 4 -> triggers evolution to Stone
-		_assert_equal(sword.current_tier, Tier.STONE, "T5.6.9: Evolves to STONE at level 4 via upgrade()")
+		sword.upgrade()  # level 4 -> triggers evolution to Steel Blade
+		_assert_equal(sword.current_tier, Tier.STEEL_BLADE, "T5.6.9: Evolves to STEEL_BLADE at level 4 via upgrade()")
 
-		# T5.6.10: Stone sword has correct base damage (8) + level bonuses + evolution bonuses
+		# T5.6.10: Steel Blade has correct base damage (8) + level bonuses + evolution bonuses
 		# Base 8 + (level-1)*2 damage_per_level + evolution bonus 5 = 8 + 6 + 5 = 19
 		var expected_damage = sword.get_total_damage()
-		_assert_equal(sword.damage, expected_damage, "T5.6.10: Stone sword damage matches get_total_damage()")
+		_assert_equal(sword.damage, expected_damage, "T5.6.10: Steel Blade damage matches get_total_damage()")
 
-		# T5.6.11: Stone sword has correct range (70.0 base + level bonuses + evolution bonus)
+		# T5.6.11: Steel Blade has correct range (70.0 base + level bonuses + evolution bonus)
 		var expected_range = sword.get_total_range()
-		_assert_equal(sword.attack_range, expected_range, "T5.6.11: Stone sword range matches get_total_range()")
+		_assert_equal(sword.attack_range, expected_range, "T5.6.11: Steel Blade range matches get_total_range()")
 
 		# T5.6.12: Kill count resets after evolution
 		_assert_equal(sword.kill_count, 0, "T5.6.12: Kill count resets after evolution")
 
 		# T5.6.13: Tier name getter works
-		_assert_equal(sword.get_tier_name(), "Stone Sword", "T5.6.13: Tier name is correct")
+		_assert_equal(sword.get_tier_name(), "Steel Blade", "T5.6.13: Tier name is correct")
 
 		# T5.6.14: get_kills_to_next_tier reflects remaining kills
-		# After evolution, kill_count is 0, kills_to_evolve for Stone is 150
+		# After evolution, kill_count is 0, kills_to_evolve for Steel Blade is 150
 		_assert_equal(sword.get_kills_to_next_tier(), 150, "T5.6.14: Kills to next tier is 150")
 
 		# T5.6.15: set_tier works
-		sword.set_tier(Tier.DIAMOND)
-		_assert_equal(sword.damage, sword.get_total_damage(), "T5.6.15: Diamond sword damage matches get_total_damage()")
-		_assert_equal(sword.attack_range, sword.get_total_range(), "T5.6.16: Diamond sword range matches get_total_range()")
+		sword.set_tier(Tier.DIVINE)
+		_assert_equal(sword.damage, sword.get_total_damage(), "T5.6.15: Divine Weapon damage matches get_total_damage()")
+		_assert_equal(sword.attack_range, sword.get_total_range(), "T5.6.16: Divine Weapon range matches get_total_range()")
 
-		# T5.6.17: Diamond is max tier
-		_assert_equal(sword.get_kills_to_next_tier(), -1, "T5.6.17: Diamond has no next tier")
+		# T5.6.17: Divine is max tier
+		_assert_equal(sword.get_kills_to_next_tier(), -1, "T5.6.17: Divine has no next tier")
 
 		sword.free()
 
@@ -2401,59 +2401,59 @@ func _test_fog_of_war() -> void:
 
 
 # =============================================================================
-# PHASE 5: ENDERMAN ARROW DODGE TESTS
+# PHASE 5: ASSASSIN ARROW DODGE TESTS
 # =============================================================================
 
-func _test_enderman_arrow_dodge() -> void:
-	# T5.9.1: Enderman scene loads
-	var enderman_scene = load("res://scenes/enemies/enderman.tscn")
-	_assert_not_null(enderman_scene, "T5.9.1: Enderman scene loads")
+func _test_assassin_arrow_dodge() -> void:
+	# T5.9.1: Assassin scene loads
+	var assassin_scene = load("res://scenes/enemies/assassin.tscn")
+	_assert_not_null(assassin_scene, "T5.9.1: Assassin scene loads")
 
-	if enderman_scene:
-		var enderman = enderman_scene.instantiate()
+	if assassin_scene:
+		var assassin = assassin_scene.instantiate()
 
-		# T5.9.2: Enderman has arrow_dodge_enabled property
-		_assert_true("arrow_dodge_enabled" in enderman, "T5.9.2: Enderman has arrow_dodge_enabled")
+		# T5.9.2: Assassin has arrow_dodge_enabled property
+		_assert_true("arrow_dodge_enabled" in assassin, "T5.9.2: Assassin has arrow_dodge_enabled")
 
 		# T5.9.3: Arrow dodge is enabled by default
-		if "arrow_dodge_enabled" in enderman:
-			_assert_true(enderman.arrow_dodge_enabled, "T5.9.3: Arrow dodge enabled by default")
+		if "arrow_dodge_enabled" in assassin:
+			_assert_true(assassin.arrow_dodge_enabled, "T5.9.3: Arrow dodge enabled by default")
 
-		# T5.9.4: Enderman has arrow_detection_radius property
-		_assert_true("arrow_detection_radius" in enderman, "T5.9.4: Enderman has arrow_detection_radius")
+		# T5.9.4: Assassin has arrow_detection_radius property
+		_assert_true("arrow_detection_radius" in assassin, "T5.9.4: Assassin has arrow_detection_radius")
 
 		# T5.9.5: Detection radius is 120.0
-		if "arrow_detection_radius" in enderman:
-			_assert_equal(enderman.arrow_detection_radius, 120.0, "T5.9.5: Detection radius is 120")
+		if "arrow_detection_radius" in assassin:
+			_assert_equal(assassin.arrow_detection_radius, 120.0, "T5.9.5: Detection radius is 120")
 
-		# T5.9.6: Enderman has dodge_chance property
-		_assert_true("dodge_chance" in enderman, "T5.9.6: Enderman has dodge_chance")
+		# T5.9.6: Assassin has dodge_chance property
+		_assert_true("dodge_chance" in assassin, "T5.9.6: Assassin has dodge_chance")
 
 		# T5.9.7: Dodge chance is 0.8 (80%)
-		if "dodge_chance" in enderman:
-			_assert_equal(enderman.dodge_chance, 0.8, "T5.9.7: Dodge chance is 0.8")
+		if "dodge_chance" in assassin:
+			_assert_equal(assassin.dodge_chance, 0.8, "T5.9.7: Dodge chance is 0.8")
 
-		# T5.9.8: Enderman has _dodge_arrow method
-		_assert_true(enderman.has_method("_dodge_arrow"), "T5.9.8: Enderman has _dodge_arrow method")
+		# T5.9.8: Assassin has _dodge_arrow method
+		_assert_true(assassin.has_method("_dodge_arrow"), "T5.9.8: Assassin has _dodge_arrow method")
 
-		# T5.9.9: Enderman has _will_arrow_hit method
-		_assert_true(enderman.has_method("_will_arrow_hit"), "T5.9.9: Enderman has _will_arrow_hit method")
+		# T5.9.9: Assassin has _will_arrow_hit method
+		_assert_true(assassin.has_method("_will_arrow_hit"), "T5.9.9: Assassin has _will_arrow_hit method")
 
-		# T5.9.10: Enderman has _setup_arrow_detection method
-		_assert_true(enderman.has_method("_setup_arrow_detection"), "T5.9.10: Enderman has _setup_arrow_detection")
+		# T5.9.10: Assassin has _setup_arrow_detection method
+		_assert_true(assassin.has_method("_setup_arrow_detection"), "T5.9.10: Assassin has _setup_arrow_detection")
 
-		# T5.9.11: Enderman has target variable for dodge direction
-		_assert_true("target" in enderman, "T5.9.11: Enderman has target variable")
+		# T5.9.11: Assassin has target variable for dodge direction
+		_assert_true("target" in assassin, "T5.9.11: Assassin has target variable")
 
 		# T5.9.12: Verify dodge is random direction (not towards player)
 		# The _dodge_arrow method uses random angle for teleport direction
-		_assert_true(enderman.has_method("_dodge_arrow"), "T5.9.12: _dodge_arrow method verified")
+		_assert_true(assassin.has_method("_dodge_arrow"), "T5.9.12: _dodge_arrow method verified")
 
-		enderman.free()
+		assassin.free()
 	else:
 		# Fail all tests if scene doesn't load
 		for i in range(11):
-			_assert_true(false, "T5.9.%d: Enderman scene failed" % (i + 2))
+			_assert_true(false, "T5.9.%d: Assassin scene failed" % (i + 2))
 
 
 # =============================================================================
@@ -2465,61 +2465,61 @@ func _test_elite_enemy_spawning() -> void:
 	var spawner_script = load("res://scripts/spawner.gd")
 	_assert_not_null(spawner_script, "T5.E.1: Spawner script loads")
 
-	# T5.E.2: Enderman scene exists
-	var enderman_scene = load("res://scenes/enemies/enderman.tscn")
-	_assert_not_null(enderman_scene, "T5.E.2: Enderman scene exists")
+	# T5.E.2: Assassin scene exists
+	var assassin_scene = load("res://scenes/enemies/assassin.tscn")
+	_assert_not_null(assassin_scene, "T5.E.2: Assassin scene exists")
 
-	# T5.E.3: Witch scene exists
-	var witch_scene = load("res://scenes/enemies/witch.tscn")
-	_assert_not_null(witch_scene, "T5.E.3: Witch scene exists")
+	# T5.E.3: Sorcerer scene exists
+	var sorcerer_scene = load("res://scenes/enemies/sorcerer.tscn")
+	_assert_not_null(sorcerer_scene, "T5.E.3: Sorcerer scene exists")
 
 	# Create spawner instance for testing
 	if spawner_script:
 		var spawner = spawner_script.new()
 
-		# T5.E.4: Spawner has enderman_weight
-		_assert_true("enderman_weight" in spawner, "T5.E.4: Spawner has enderman_weight")
+		# T5.E.4: Spawner has assassin_weight
+		_assert_true("assassin_weight" in spawner, "T5.E.4: Spawner has assassin_weight")
 
-		# T5.E.5: Spawner has witch_weight
-		_assert_true("witch_weight" in spawner, "T5.E.5: Spawner has witch_weight")
+		# T5.E.5: Spawner has sorcerer_weight
+		_assert_true("sorcerer_weight" in spawner, "T5.E.5: Spawner has sorcerer_weight")
 
-		# T5.E.6: Enderman spawns after 120 seconds (check weight logic)
+		# T5.E.6: Assassin spawns after 120 seconds (check weight logic)
 		spawner.game_time = 0.0
 		spawner._update_spawn_weights()
-		_assert_equal(spawner.enderman_weight, 0.0, "T5.E.6: Enderman weight 0 at start")
+		_assert_equal(spawner.assassin_weight, 0.0, "T5.E.6: Assassin weight 0 at start")
 
-		# T5.E.7: Enderman weight increases after 120 seconds
+		# T5.E.7: Assassin weight increases after 120 seconds
 		spawner.game_time = 130.0
 		spawner._update_spawn_weights()
-		_assert_true(spawner.enderman_weight > 0, "T5.E.7: Enderman weight > 0 after 120s")
+		_assert_true(spawner.assassin_weight > 0, "T5.E.7: Assassin weight > 0 after 120s")
 
-		# T5.E.8: Witch spawns after 150 seconds
+		# T5.E.8: Sorcerer spawns after 150 seconds
 		spawner.game_time = 0.0
 		spawner._update_spawn_weights()
-		_assert_equal(spawner.witch_weight, 0.0, "T5.E.8: Witch weight 0 at start")
+		_assert_equal(spawner.sorcerer_weight, 0.0, "T5.E.8: Sorcerer weight 0 at start")
 
-		# T5.E.9: Witch weight increases after 150 seconds
+		# T5.E.9: Sorcerer weight increases after 150 seconds
 		spawner.game_time = 160.0
 		spawner._update_spawn_weights()
-		_assert_true(spawner.witch_weight > 0, "T5.E.9: Witch weight > 0 after 150s")
+		_assert_true(spawner.sorcerer_weight > 0, "T5.E.9: Sorcerer weight > 0 after 150s")
 
-		# T5.E.10: Wave 5 guarantees minimum enderman weight
-		spawner.enderman_weight = 0.0
+		# T5.E.10: Wave 5 guarantees minimum assassin weight
+		spawner.assassin_weight = 0.0
 		spawner.set_wave(5)
-		_assert_true(spawner.enderman_weight >= 8.0, "T5.E.10: Wave 5 guarantees enderman_weight >= 8")
+		_assert_true(spawner.assassin_weight >= 8.0, "T5.E.10: Wave 5 guarantees assassin_weight >= 8")
 
-		# T5.E.11: Wave 6 guarantees minimum witch weight
-		spawner.witch_weight = 0.0
+		# T5.E.11: Wave 6 guarantees minimum sorcerer weight
+		spawner.sorcerer_weight = 0.0
 		spawner.set_wave(6)
-		_assert_true(spawner.witch_weight >= 5.0, "T5.E.11: Wave 6 guarantees witch_weight >= 5")
+		_assert_true(spawner.sorcerer_weight >= 5.0, "T5.E.11: Wave 6 guarantees sorcerer_weight >= 5")
 
-		# T5.E.12: Enderman max weight is 20
+		# T5.E.12: Assassin max weight is 20
 		spawner.game_time = 500.0
 		spawner._update_spawn_weights()
-		_assert_true(spawner.enderman_weight <= 20.0, "T5.E.12: Enderman max weight is 20")
+		_assert_true(spawner.assassin_weight <= 20.0, "T5.E.12: Assassin max weight is 20")
 
-		# T5.E.13: Witch max weight is 15
-		_assert_true(spawner.witch_weight <= 15.0, "T5.E.13: Witch max weight is 15")
+		# T5.E.13: Sorcerer max weight is 15
+		_assert_true(spawner.sorcerer_weight <= 15.0, "T5.E.13: Sorcerer max weight is 15")
 
 		spawner.free()
 
@@ -2561,10 +2561,10 @@ func _test_upgrade_artwork() -> void:
 
 	# Test weapon icons exist
 	var weapon_icons = {
-		"wood_sword": "res://assets/weapons/wood_sword.svg",
-		"stone_sword": "res://assets/weapons/stone_sword.svg",
-		"iron_sword": "res://assets/weapons/iron_sword.svg",
-		"diamond_sword": "res://assets/weapons/diamond_sword.svg",
+		"iron_blade": "res://assets/weapons/iron_blade.svg",
+		"steel_blade": "res://assets/weapons/steel_blade.svg",
+		"fine_steel_blade": "res://assets/weapons/fine_steel_blade.svg",
+		"divine_weapon": "res://assets/weapons/divine_weapon.svg",
 		"bow": "res://assets/weapons/bow.svg",
 		"crossbow": "res://assets/weapons/crossbow.svg",
 		"torch": "res://assets/weapons/torch.svg",
@@ -2586,7 +2586,7 @@ func _test_upgrade_artwork() -> void:
 
 	# Test sword icon matches default in UPGRADE_DEFS
 	var sword_def = manager_script.UPGRADE_DEFS.get("sword", {})
-	_assert_equal(sword_def.get("icon", ""), "res://assets/weapons/wood_sword.svg", "T5.10.%d: Sword default icon is wood_sword" % test_num)
+	_assert_equal(sword_def.get("icon", ""), "res://assets/weapons/iron_blade.svg", "T5.10.%d: Sword default icon is iron_blade" % test_num)
 	test_num += 1
 
 	# Test bow icon matches default in UPGRADE_DEFS
@@ -2638,223 +2638,223 @@ func _test_upgrade_artwork() -> void:
 # =============================================================================
 
 # =============================================================================
-# PHASE 6 STEP 1: EVOKER BOSS TESTS (T6.1)
+# PHASE 6 STEP 1: XIAHOU DUN BOSS TESTS (T6.1)
 # =============================================================================
 
-func _test_evoker_boss() -> void:
-	# T6.1.1: Evoker script loads
-	var evoker_script = load("res://scripts/enemies/evoker.gd")
-	_assert_not_null(evoker_script, "T6.1.1: Evoker script loads")
+func _test_xiahou_dun_boss() -> void:
+	# T6.1.1: Xiahou Dun script loads
+	var xiahou_dun_script = load("res://scripts/enemies/xiahou_dun.gd")
+	_assert_not_null(xiahou_dun_script, "T6.1.1: Xiahou Dun script loads")
 
-	# T6.1.2: Evoker scene loads
-	var evoker_scene = load("res://scenes/enemies/evoker.tscn")
-	_assert_not_null(evoker_scene, "T6.1.2: Evoker scene loads")
+	# T6.1.2: Xiahou Dun scene loads
+	var xiahou_dun_scene = load("res://scenes/enemies/xiahou_dun.tscn")
+	_assert_not_null(xiahou_dun_scene, "T6.1.2: Xiahou Dun scene loads")
 
-	if evoker_scene:
-		var evoker = evoker_scene.instantiate()
+	if xiahou_dun_scene:
+		var xiahou_dun = xiahou_dun_scene.instantiate()
 
-		# T6.1.3: Evoker has health property (400)
-		_assert_true("health" in evoker, "T6.1.3: Evoker has health property")
-		if "health" in evoker:
-			_assert_equal(evoker.health, 400, "T6.1.3a: Evoker health is 400")
+		# T6.1.3: Xiahou Dun has health property (400)
+		_assert_true("health" in xiahou_dun, "T6.1.3: Xiahou Dun has health property")
+		if "health" in xiahou_dun:
+			_assert_equal(xiahou_dun.health, 400, "T6.1.3a: Xiahou Dun health is 400")
 
-		# T6.1.4: Evoker has speed property (40)
-		_assert_true("speed" in evoker, "T6.1.4: Evoker has speed property")
-		if "speed" in evoker:
-			_assert_equal(evoker.speed, 40, "T6.1.4a: Evoker speed is 40")
+		# T6.1.4: Xiahou Dun has speed property (40)
+		_assert_true("speed" in xiahou_dun, "T6.1.4: Xiahou Dun has speed property")
+		if "speed" in xiahou_dun:
+			_assert_equal(xiahou_dun.speed, 40, "T6.1.4a: Xiahou Dun speed is 40")
 
-		# T6.1.5: Evoker has contact_damage property (5)
-		_assert_true("contact_damage" in evoker, "T6.1.5: Evoker has contact_damage property")
-		if "contact_damage" in evoker:
-			_assert_equal(evoker.contact_damage, 5, "T6.1.5a: Evoker contact_damage is 5")
+		# T6.1.5: Xiahou Dun has contact_damage property (5)
+		_assert_true("contact_damage" in xiahou_dun, "T6.1.5: Xiahou Dun has contact_damage property")
+		if "contact_damage" in xiahou_dun:
+			_assert_equal(xiahou_dun.contact_damage, 5, "T6.1.5a: Xiahou Dun contact_damage is 5")
 
-		# T6.1.6: Evoker has fang_cooldown property (3.0)
-		_assert_true("fang_cooldown" in evoker, "T6.1.6: Evoker has fang_cooldown property")
-		if "fang_cooldown" in evoker:
-			_assert_equal(evoker.fang_cooldown, 3.0, "T6.1.6a: Evoker fang_cooldown is 3.0")
+		# T6.1.6: Xiahou Dun has fang_cooldown property (3.0)
+		_assert_true("fang_cooldown" in xiahou_dun, "T6.1.6: Xiahou Dun has fang_cooldown property")
+		if "fang_cooldown" in xiahou_dun:
+			_assert_equal(xiahou_dun.fang_cooldown, 3.0, "T6.1.6a: Xiahou Dun fang_cooldown is 3.0")
 
-		# T6.1.7: Evoker has summon_cooldown property (8.0)
-		_assert_true("summon_cooldown" in evoker, "T6.1.7: Evoker has summon_cooldown property")
-		if "summon_cooldown" in evoker:
-			_assert_equal(evoker.summon_cooldown, 8.0, "T6.1.7a: Evoker summon_cooldown is 8.0")
+		# T6.1.7: Xiahou Dun has summon_cooldown property (8.0)
+		_assert_true("summon_cooldown" in xiahou_dun, "T6.1.7: Xiahou Dun has summon_cooldown property")
+		if "summon_cooldown" in xiahou_dun:
+			_assert_equal(xiahou_dun.summon_cooldown, 8.0, "T6.1.7a: Xiahou Dun summon_cooldown is 8.0")
 
-		# T6.1.8: Evoker has cast_fang_attack method
-		_assert_true(evoker.has_method("cast_fang_attack"), "T6.1.8: Evoker has cast_fang_attack method")
+		# T6.1.8: Xiahou Dun has cast_fang_attack method
+		_assert_true(xiahou_dun.has_method("cast_fang_attack"), "T6.1.8: Xiahou Dun has cast_fang_attack method")
 
-		# T6.1.9: Evoker has summon_vex method
-		_assert_true(evoker.has_method("summon_vex"), "T6.1.9: Evoker has summon_vex method")
+		# T6.1.9: Xiahou Dun has summon_shadow_guard method
+		_assert_true(xiahou_dun.has_method("summon_shadow_guard"), "T6.1.9: Xiahou Dun has summon_shadow_guard method")
 
-		# T6.1.10: Evoker has xp_value property (200)
-		_assert_true("xp_value" in evoker, "T6.1.10: Evoker has xp_value property")
-		if "xp_value" in evoker:
-			_assert_equal(evoker.xp_value, 200, "T6.1.10a: Evoker xp_value is 200")
+		# T6.1.10: Xiahou Dun has xp_value property (200)
+		_assert_true("xp_value" in xiahou_dun, "T6.1.10: Xiahou Dun has xp_value property")
+		if "xp_value" in xiahou_dun:
+			_assert_equal(xiahou_dun.xp_value, 200, "T6.1.10a: Xiahou Dun xp_value is 200")
 
-		# T6.1.11: Evoker has emerald_drop property (30)
-		_assert_true("emerald_drop" in evoker, "T6.1.11: Evoker has emerald_drop property")
-		if "emerald_drop" in evoker:
-			_assert_equal(evoker.emerald_drop, 30, "T6.1.11a: Evoker emerald_drop is 30")
+		# T6.1.11: Xiahou Dun has emerald_drop property (30)
+		_assert_true("emerald_drop" in xiahou_dun, "T6.1.11: Xiahou Dun has emerald_drop property")
+		if "emerald_drop" in xiahou_dun:
+			_assert_equal(xiahou_dun.emerald_drop, 30, "T6.1.11a: Xiahou Dun emerald_drop is 30")
 
-		# T6.1.12: Evoker is CharacterBody2D
-		_assert_true(evoker is CharacterBody2D, "T6.1.12: Evoker is CharacterBody2D")
+		# T6.1.12: Xiahou Dun is CharacterBody2D
+		_assert_true(xiahou_dun is CharacterBody2D, "T6.1.12: Xiahou Dun is CharacterBody2D")
 
-		# T6.1.13: Evoker knockback_immune
-		_assert_true("knockback_immune" in evoker, "T6.1.13: Evoker has knockback_immune property")
-		if "knockback_immune" in evoker:
-			_assert_true(evoker.knockback_immune, "T6.1.13a: Evoker knockback_immune is true")
+		# T6.1.13: Xiahou Dun knockback_immune
+		_assert_true("knockback_immune" in xiahou_dun, "T6.1.13: Xiahou Dun has knockback_immune property")
+		if "knockback_immune" in xiahou_dun:
+			_assert_true(xiahou_dun.knockback_immune, "T6.1.13a: Xiahou Dun knockback_immune is true")
 
-		# T6.1.14: Evoker poison_immune
-		_assert_true("poison_immune" in evoker, "T6.1.14: Evoker has poison_immune property")
-		if "poison_immune" in evoker:
-			_assert_true(evoker.poison_immune, "T6.1.14a: Evoker poison_immune is true")
+		# T6.1.14: Xiahou Dun poison_immune
+		_assert_true("poison_immune" in xiahou_dun, "T6.1.14: Xiahou Dun has poison_immune property")
+		if "poison_immune" in xiahou_dun:
+			_assert_true(xiahou_dun.poison_immune, "T6.1.14a: Xiahou Dun poison_immune is true")
 
-		# T6.1.15: Evoker damage_reduction (0.2)
-		_assert_true("damage_reduction" in evoker, "T6.1.15: Evoker has damage_reduction property")
-		if "damage_reduction" in evoker:
-			_assert_equal(evoker.damage_reduction, 0.2, "T6.1.15a: Evoker damage_reduction is 0.2")
+		# T6.1.15: Xiahou Dun damage_reduction (0.2)
+		_assert_true("damage_reduction" in xiahou_dun, "T6.1.15: Xiahou Dun has damage_reduction property")
+		if "damage_reduction" in xiahou_dun:
+			_assert_equal(xiahou_dun.damage_reduction, 0.2, "T6.1.15a: Xiahou Dun damage_reduction is 0.2")
 
-		evoker.free()
+		xiahou_dun.free()
 	else:
 		# Script/scene doesn't exist yet - fail remaining tests
-		_assert_true(false, "T6.1.3: Evoker has health property")
-		_assert_true(false, "T6.1.3a: Evoker health is 400")
-		_assert_true(false, "T6.1.4: Evoker has speed property")
-		_assert_true(false, "T6.1.4a: Evoker speed is 40")
-		_assert_true(false, "T6.1.5: Evoker has contact_damage property")
-		_assert_true(false, "T6.1.5a: Evoker contact_damage is 5")
-		_assert_true(false, "T6.1.6: Evoker has fang_cooldown property")
-		_assert_true(false, "T6.1.6a: Evoker fang_cooldown is 3.0")
-		_assert_true(false, "T6.1.7: Evoker has summon_cooldown property")
-		_assert_true(false, "T6.1.7a: Evoker summon_cooldown is 8.0")
-		_assert_true(false, "T6.1.8: Evoker has cast_fang_attack method")
-		_assert_true(false, "T6.1.9: Evoker has summon_vex method")
-		_assert_true(false, "T6.1.10: Evoker has xp_value property")
-		_assert_true(false, "T6.1.10a: Evoker xp_value is 200")
-		_assert_true(false, "T6.1.11: Evoker has emerald_drop property")
-		_assert_true(false, "T6.1.11a: Evoker emerald_drop is 30")
-		_assert_true(false, "T6.1.12: Evoker is CharacterBody2D")
-		_assert_true(false, "T6.1.13: Evoker has knockback_immune property")
-		_assert_true(false, "T6.1.13a: Evoker knockback_immune is true")
-		_assert_true(false, "T6.1.14: Evoker has poison_immune property")
-		_assert_true(false, "T6.1.14a: Evoker poison_immune is true")
-		_assert_true(false, "T6.1.15: Evoker has damage_reduction property")
-		_assert_true(false, "T6.1.15a: Evoker damage_reduction is 0.2")
+		_assert_true(false, "T6.1.3: Xiahou Dun has health property")
+		_assert_true(false, "T6.1.3a: Xiahou Dun health is 400")
+		_assert_true(false, "T6.1.4: Xiahou Dun has speed property")
+		_assert_true(false, "T6.1.4a: Xiahou Dun speed is 40")
+		_assert_true(false, "T6.1.5: Xiahou Dun has contact_damage property")
+		_assert_true(false, "T6.1.5a: Xiahou Dun contact_damage is 5")
+		_assert_true(false, "T6.1.6: Xiahou Dun has fang_cooldown property")
+		_assert_true(false, "T6.1.6a: Xiahou Dun fang_cooldown is 3.0")
+		_assert_true(false, "T6.1.7: Xiahou Dun has summon_cooldown property")
+		_assert_true(false, "T6.1.7a: Xiahou Dun summon_cooldown is 8.0")
+		_assert_true(false, "T6.1.8: Xiahou Dun has cast_fang_attack method")
+		_assert_true(false, "T6.1.9: Xiahou Dun has summon_shadow_guard method")
+		_assert_true(false, "T6.1.10: Xiahou Dun has xp_value property")
+		_assert_true(false, "T6.1.10a: Xiahou Dun xp_value is 200")
+		_assert_true(false, "T6.1.11: Xiahou Dun has emerald_drop property")
+		_assert_true(false, "T6.1.11a: Xiahou Dun emerald_drop is 30")
+		_assert_true(false, "T6.1.12: Xiahou Dun is CharacterBody2D")
+		_assert_true(false, "T6.1.13: Xiahou Dun has knockback_immune property")
+		_assert_true(false, "T6.1.13a: Xiahou Dun knockback_immune is true")
+		_assert_true(false, "T6.1.14: Xiahou Dun has poison_immune property")
+		_assert_true(false, "T6.1.14a: Xiahou Dun poison_immune is true")
+		_assert_true(false, "T6.1.15: Xiahou Dun has damage_reduction property")
+		_assert_true(false, "T6.1.15a: Xiahou Dun damage_reduction is 0.2")
 
 
 # =============================================================================
-# PHASE 6 STEP 2: EVOKER FANG TESTS (T6.2)
+# PHASE 6 STEP 2: GROUND SPIKE TESTS (T6.2)
 # =============================================================================
 
-func _test_evoker_fang() -> void:
-	# T6.2.1: EvokerFang script loads
-	var fang_script = load("res://scripts/effects/evoker_fang.gd")
-	_assert_not_null(fang_script, "T6.2.1: EvokerFang script loads")
+func _test_ground_spike() -> void:
+	# T6.2.1: GroundSpike script loads
+	var fang_script = load("res://scripts/effects/ground_spike.gd")
+	_assert_not_null(fang_script, "T6.2.1: GroundSpike script loads")
 
-	# T6.2.2: EvokerFang scene loads
-	var fang_scene = load("res://scenes/effects/evoker_fang.tscn")
-	_assert_not_null(fang_scene, "T6.2.2: EvokerFang scene loads")
+	# T6.2.2: GroundSpike scene loads
+	var fang_scene = load("res://scenes/effects/ground_spike.tscn")
+	_assert_not_null(fang_scene, "T6.2.2: GroundSpike scene loads")
 
 	if fang_scene:
 		var fang = fang_scene.instantiate()
 
-		# T6.2.3: EvokerFang has damage property (15)
-		_assert_true("damage" in fang, "T6.2.3: EvokerFang has damage property")
+		# T6.2.3: GroundSpike has damage property (15)
+		_assert_true("damage" in fang, "T6.2.3: GroundSpike has damage property")
 		if "damage" in fang:
-			_assert_equal(fang.damage, 15, "T6.2.3a: EvokerFang damage is 15")
+			_assert_equal(fang.damage, 15, "T6.2.3a: GroundSpike damage is 15")
 
-		# T6.2.4: EvokerFang has lifetime property (0.5)
-		_assert_true("lifetime" in fang, "T6.2.4: EvokerFang has lifetime property")
+		# T6.2.4: GroundSpike has lifetime property (0.5)
+		_assert_true("lifetime" in fang, "T6.2.4: GroundSpike has lifetime property")
 		if "lifetime" in fang:
-			_assert_equal(fang.lifetime, 0.5, "T6.2.4a: EvokerFang lifetime is 0.5")
+			_assert_equal(fang.lifetime, 0.5, "T6.2.4a: GroundSpike lifetime is 0.5")
 
-		# T6.2.5: EvokerFang is Area2D
-		_assert_true(fang is Area2D, "T6.2.5: EvokerFang is Area2D")
+		# T6.2.5: GroundSpike is Area2D
+		_assert_true(fang is Area2D, "T6.2.5: GroundSpike is Area2D")
 
-		# T6.2.6: EvokerFang has warning_duration (0.5)
-		_assert_true("warning_duration" in fang, "T6.2.6: EvokerFang has warning_duration property")
+		# T6.2.6: GroundSpike has warning_duration (0.5)
+		_assert_true("warning_duration" in fang, "T6.2.6: GroundSpike has warning_duration property")
 		if "warning_duration" in fang:
-			_assert_equal(fang.warning_duration, 0.5, "T6.2.6a: EvokerFang warning_duration is 0.5")
+			_assert_equal(fang.warning_duration, 0.5, "T6.2.6a: GroundSpike warning_duration is 0.5")
 
 		fang.free()
 	else:
 		# Script/scene doesn't exist yet - fail remaining tests
-		_assert_true(false, "T6.2.3: EvokerFang has damage property")
-		_assert_true(false, "T6.2.3a: EvokerFang damage is 15")
-		_assert_true(false, "T6.2.4: EvokerFang has lifetime property")
-		_assert_true(false, "T6.2.4a: EvokerFang lifetime is 0.5")
-		_assert_true(false, "T6.2.5: EvokerFang is Area2D")
-		_assert_true(false, "T6.2.6: EvokerFang has warning_duration property")
-		_assert_true(false, "T6.2.6a: EvokerFang warning_duration is 0.5")
+		_assert_true(false, "T6.2.3: GroundSpike has damage property")
+		_assert_true(false, "T6.2.3a: GroundSpike damage is 15")
+		_assert_true(false, "T6.2.4: GroundSpike has lifetime property")
+		_assert_true(false, "T6.2.4a: GroundSpike lifetime is 0.5")
+		_assert_true(false, "T6.2.5: GroundSpike is Area2D")
+		_assert_true(false, "T6.2.6: GroundSpike has warning_duration property")
+		_assert_true(false, "T6.2.6a: GroundSpike warning_duration is 0.5")
 
 
 # =============================================================================
-# PHASE 6 STEP 3: VEX TESTS (T6.3)
+# PHASE 6 STEP 3: SHADOW GUARD TESTS (T6.3)
 # =============================================================================
 
-func _test_vex() -> void:
-	# T6.3.1: Vex script loads
-	var vex_script = load("res://scripts/enemies/vex.gd")
-	_assert_not_null(vex_script, "T6.3.1: Vex script loads")
+func _test_shadow_guard() -> void:
+	# T6.3.1: Shadow Guard script loads
+	var shadow_guard_script = load("res://scripts/enemies/shadow_guard.gd")
+	_assert_not_null(shadow_guard_script, "T6.3.1: Shadow Guard script loads")
 
-	# T6.3.2: Vex scene loads
-	var vex_scene = load("res://scenes/enemies/vex.tscn")
-	_assert_not_null(vex_scene, "T6.3.2: Vex scene loads")
+	# T6.3.2: Shadow Guard scene loads
+	var shadow_guard_scene = load("res://scenes/enemies/shadow_guard.tscn")
+	_assert_not_null(shadow_guard_scene, "T6.3.2: Shadow Guard scene loads")
 
-	if vex_scene:
-		var vex = vex_scene.instantiate()
+	if shadow_guard_scene:
+		var shadow_guard = shadow_guard_scene.instantiate()
 
-		# T6.3.3: Vex has health property (10)
-		_assert_true("health" in vex, "T6.3.3: Vex has health property")
-		if "health" in vex:
-			_assert_equal(vex.health, 10, "T6.3.3a: Vex health is 10")
+		# T6.3.3: Shadow Guard has health property (10)
+		_assert_true("health" in shadow_guard, "T6.3.3: Shadow Guard has health property")
+		if "health" in shadow_guard:
+			_assert_equal(shadow_guard.health, 10, "T6.3.3a: Shadow Guard health is 10")
 
-		# T6.3.4: Vex has damage property (8)
-		_assert_true("damage" in vex, "T6.3.4: Vex has damage property")
-		if "damage" in vex:
-			_assert_equal(vex.damage, 8, "T6.3.4a: Vex damage is 8")
+		# T6.3.4: Shadow Guard has damage property (8)
+		_assert_true("damage" in shadow_guard, "T6.3.4: Shadow Guard has damage property")
+		if "damage" in shadow_guard:
+			_assert_equal(shadow_guard.damage, 8, "T6.3.4a: Shadow Guard damage is 8")
 
-		# T6.3.5: Vex has speed property (120)
-		_assert_true("speed" in vex, "T6.3.5: Vex has speed property")
-		if "speed" in vex:
-			_assert_equal(vex.speed, 120, "T6.3.5a: Vex speed is 120")
+		# T6.3.5: Shadow Guard has speed property (120)
+		_assert_true("speed" in shadow_guard, "T6.3.5: Shadow Guard has speed property")
+		if "speed" in shadow_guard:
+			_assert_equal(shadow_guard.speed, 120, "T6.3.5a: Shadow Guard speed is 120")
 
-		# T6.3.6: Vex has xp_value property (3)
-		_assert_true("xp_value" in vex, "T6.3.6: Vex has xp_value property")
-		if "xp_value" in vex:
-			_assert_equal(vex.xp_value, 3, "T6.3.6a: Vex xp_value is 3")
+		# T6.3.6: Shadow Guard has xp_value property (3)
+		_assert_true("xp_value" in shadow_guard, "T6.3.6: Shadow Guard has xp_value property")
+		if "xp_value" in shadow_guard:
+			_assert_equal(shadow_guard.xp_value, 3, "T6.3.6a: Shadow Guard xp_value is 3")
 
-		# T6.3.7: Vex has lifetime property (15.0)
-		_assert_true("lifetime" in vex, "T6.3.7: Vex has lifetime property")
-		if "lifetime" in vex:
-			_assert_equal(vex.lifetime, 15.0, "T6.3.7a: Vex lifetime is 15.0")
+		# T6.3.7: Shadow Guard has lifetime property (15.0)
+		_assert_true("lifetime" in shadow_guard, "T6.3.7: Shadow Guard has lifetime property")
+		if "lifetime" in shadow_guard:
+			_assert_equal(shadow_guard.lifetime, 15.0, "T6.3.7a: Shadow Guard lifetime is 15.0")
 
-		# T6.3.8: Vex is CharacterBody2D
-		_assert_true(vex is CharacterBody2D, "T6.3.8: Vex is CharacterBody2D")
+		# T6.3.8: Shadow Guard is CharacterBody2D
+		_assert_true(shadow_guard is CharacterBody2D, "T6.3.8: Shadow Guard is CharacterBody2D")
 
-		# T6.3.9: Vex has can_pass_walls property (true)
-		_assert_true("can_pass_walls" in vex, "T6.3.9: Vex has can_pass_walls property")
-		if "can_pass_walls" in vex:
-			_assert_true(vex.can_pass_walls, "T6.3.9a: Vex can_pass_walls is true")
+		# T6.3.9: Shadow Guard has can_pass_walls property (true)
+		_assert_true("can_pass_walls" in shadow_guard, "T6.3.9: Shadow Guard has can_pass_walls property")
+		if "can_pass_walls" in shadow_guard:
+			_assert_true(shadow_guard.can_pass_walls, "T6.3.9a: Shadow Guard can_pass_walls is true")
 
-		# T6.3.10: Vex has apply_knockback method
-		_assert_true(vex.has_method("apply_knockback"), "T6.3.10: Vex has apply_knockback method")
+		# T6.3.10: Shadow Guard has apply_knockback method
+		_assert_true(shadow_guard.has_method("apply_knockback"), "T6.3.10: Shadow Guard has apply_knockback method")
 
-		vex.free()
+		shadow_guard.free()
 	else:
 		# Script/scene doesn't exist yet - fail remaining tests
-		_assert_true(false, "T6.3.3: Vex has health property")
-		_assert_true(false, "T6.3.3a: Vex health is 10")
-		_assert_true(false, "T6.3.4: Vex has damage property")
-		_assert_true(false, "T6.3.4a: Vex damage is 8")
-		_assert_true(false, "T6.3.5: Vex has speed property")
-		_assert_true(false, "T6.3.5a: Vex speed is 120")
-		_assert_true(false, "T6.3.6: Vex has xp_value property")
-		_assert_true(false, "T6.3.6a: Vex xp_value is 3")
-		_assert_true(false, "T6.3.7: Vex has lifetime property")
-		_assert_true(false, "T6.3.7a: Vex lifetime is 15.0")
-		_assert_true(false, "T6.3.8: Vex is CharacterBody2D")
-		_assert_true(false, "T6.3.9: Vex has can_pass_walls property")
-		_assert_true(false, "T6.3.9a: Vex can_pass_walls is true")
-		_assert_true(false, "T6.3.10: Vex has apply_knockback method")
+		_assert_true(false, "T6.3.3: Shadow Guard has health property")
+		_assert_true(false, "T6.3.3a: Shadow Guard health is 10")
+		_assert_true(false, "T6.3.4: Shadow Guard has damage property")
+		_assert_true(false, "T6.3.4a: Shadow Guard damage is 8")
+		_assert_true(false, "T6.3.5: Shadow Guard has speed property")
+		_assert_true(false, "T6.3.5a: Shadow Guard speed is 120")
+		_assert_true(false, "T6.3.6: Shadow Guard has xp_value property")
+		_assert_true(false, "T6.3.6a: Shadow Guard xp_value is 3")
+		_assert_true(false, "T6.3.7: Shadow Guard has lifetime property")
+		_assert_true(false, "T6.3.7a: Shadow Guard lifetime is 15.0")
+		_assert_true(false, "T6.3.8: Shadow Guard is CharacterBody2D")
+		_assert_true(false, "T6.3.9: Shadow Guard has can_pass_walls property")
+		_assert_true(false, "T6.3.9a: Shadow Guard can_pass_walls is true")
+		_assert_true(false, "T6.3.10: Shadow Guard has apply_knockback method")
 
 
 # =============================================================================
@@ -2912,19 +2912,19 @@ func _test_boss_battle_system() -> void:
 # =============================================================================
 
 func _test_boss_drop_system() -> void:
-	# T6.5.1: Evoker emits died signal with xp_value
-	var evoker_scene = load("res://scenes/enemies/evoker.tscn")
-	if evoker_scene:
-		var evoker = evoker_scene.instantiate()
-		_assert_true(evoker.has_signal("died"), "T6.5.1: Evoker has died signal")
-		if "xp_value" in evoker:
-			_assert_equal(evoker.xp_value, 200, "T6.5.1a: Evoker xp_value for died signal is 200")
+	# T6.5.1: Xiahou Dun emits died signal with xp_value
+	var xiahou_dun_scene = load("res://scenes/enemies/xiahou_dun.tscn")
+	if xiahou_dun_scene:
+		var xiahou_dun = xiahou_dun_scene.instantiate()
+		_assert_true(xiahou_dun.has_signal("died"), "T6.5.1: Xiahou Dun has died signal")
+		if "xp_value" in xiahou_dun:
+			_assert_equal(xiahou_dun.xp_value, 200, "T6.5.1a: Xiahou Dun xp_value for died signal is 200")
 		else:
-			_assert_true(false, "T6.5.1a: Evoker xp_value for died signal is 200")
-		evoker.free()
+			_assert_true(false, "T6.5.1a: Xiahou Dun xp_value for died signal is 200")
+		xiahou_dun.free()
 	else:
-		_assert_true(false, "T6.5.1: Evoker has died signal")
-		_assert_true(false, "T6.5.1a: Evoker xp_value for died signal is 200")
+		_assert_true(false, "T6.5.1: Xiahou Dun has died signal")
+		_assert_true(false, "T6.5.1a: Xiahou Dun xp_value for died signal is 200")
 
 	# T6.5.2: EmeraldPickup script loads
 	var emerald_script = load("res://scripts/pickups/emerald_pickup.gd")
@@ -2969,14 +2969,14 @@ func _run_complete_coverage_tests() -> void:
 	_run_external_test_suite("Upgrade Manager Complete Tests", "res://tests/unit/systems/test_upgrade_manager_complete.gd")
 
 	# Run Enemy Complete Tests
-	_run_external_test_suite("Zombie Complete Tests", "res://tests/unit/enemies/test_zombie_complete.gd")
-	_run_external_test_suite("Skeleton Complete Tests", "res://tests/unit/enemies/test_skeleton_complete.gd")
-	_run_external_test_suite("Spider Complete Tests", "res://tests/unit/enemies/test_spider_complete.gd")
-	_run_external_test_suite("Creeper Complete Tests", "res://tests/unit/enemies/test_creeper_complete.gd")
-	_run_external_test_suite("Enderman Complete Tests", "res://tests/unit/enemies/test_enderman_complete.gd")
-	_run_external_test_suite("Witch Complete Tests", "res://tests/unit/enemies/test_witch_complete.gd")
-	_run_external_test_suite("Evoker Complete Tests", "res://tests/unit/enemies/test_evoker_complete.gd")
-	_run_external_test_suite("Vex Complete Tests", "res://tests/unit/enemies/test_vex_complete.gd")
+	_run_external_test_suite("Infantry Complete Tests", "res://tests/unit/enemies/test_infantry_complete.gd")
+	_run_external_test_suite("Archer Complete Tests", "res://tests/unit/enemies/test_archer_complete.gd")
+	_run_external_test_suite("Cavalry Complete Tests", "res://tests/unit/enemies/test_cavalry_complete.gd")
+	_run_external_test_suite("Fire Soldier Complete Tests", "res://tests/unit/enemies/test_fire_soldier_complete.gd")
+	_run_external_test_suite("Assassin Complete Tests", "res://tests/unit/enemies/test_assassin_complete.gd")
+	_run_external_test_suite("Sorcerer Complete Tests", "res://tests/unit/enemies/test_sorcerer_complete.gd")
+	_run_external_test_suite("Xiahou Dun Complete Tests", "res://tests/unit/enemies/test_xiahou_dun_complete.gd")
+	_run_external_test_suite("Shadow Guard Complete Tests", "res://tests/unit/enemies/test_shadow_guard_complete.gd")
 	_run_external_test_suite("Boss Enemies Tests", "res://tests/unit/enemies/test_boss_enemies.gd")
 
 	# Run Weapon Complete Tests
@@ -3007,7 +3007,7 @@ func _run_complete_coverage_tests() -> void:
 	_run_external_test_suite("Weapon Slots Complete Tests", "res://tests/unit/components/test_weapon_slots_complete.gd")
 
 	# Run Additional Weapon Tests (NEW)
-	_run_external_test_suite("Diamond Sword Complete Tests", "res://tests/unit/weapons/test_diamond_sword_complete.gd")
+	_run_external_test_suite("Divine Weapon Complete Tests", "res://tests/unit/weapons/test_divine_weapon_complete.gd")
 	_run_external_test_suite("Torch Complete Tests", "res://tests/unit/weapons/test_torch_complete.gd")
 
 	# Run Pickups Complete Tests (NEW)
@@ -3144,23 +3144,23 @@ func _mark_coverage_from_test(test_script_path: String, tested_funcs: Array) -> 
 		target_script = "res://scripts/components/health.gd"
 	elif "upgrade_manager" in test_script_path:
 		target_script = "res://scripts/systems/upgrade_manager.gd"
-	elif "zombie_complete" in test_script_path:
-		target_script = "res://scripts/enemies/zombie.gd"
-	elif "skeleton_complete" in test_script_path:
-		target_script = "res://scripts/enemies/skeleton.gd"
-	elif "spider_complete" in test_script_path:
-		target_script = "res://scripts/enemies/spider.gd"
-	elif "creeper_complete" in test_script_path:
-		target_script = "res://scripts/enemies/creeper.gd"
-	elif "enderman_complete" in test_script_path:
-		target_script = "res://scripts/enemies/enderman.gd"
-	elif "witch_complete" in test_script_path:
-		target_script = "res://scripts/enemies/witch.gd"
-	elif "evoker_complete" in test_script_path:
-		target_script = "res://scripts/enemies/evoker.gd"
-	elif "vex_complete" in test_script_path:
-		target_script = "res://scripts/enemies/vex.gd"
-	elif "test_sword_complete" in test_script_path and "diamond" not in test_script_path:
+	elif "infantry_complete" in test_script_path:
+		target_script = "res://scripts/enemies/infantry.gd"
+	elif "archer_complete" in test_script_path:
+		target_script = "res://scripts/enemies/archer.gd"
+	elif "cavalry_complete" in test_script_path:
+		target_script = "res://scripts/enemies/cavalry.gd"
+	elif "fire_soldier_complete" in test_script_path:
+		target_script = "res://scripts/enemies/fire_soldier.gd"
+	elif "assassin_complete" in test_script_path:
+		target_script = "res://scripts/enemies/assassin.gd"
+	elif "sorcerer_complete" in test_script_path:
+		target_script = "res://scripts/enemies/sorcerer.gd"
+	elif "xiahou_dun_complete" in test_script_path:
+		target_script = "res://scripts/enemies/xiahou_dun.gd"
+	elif "shadow_guard_complete" in test_script_path:
+		target_script = "res://scripts/enemies/shadow_guard.gd"
+	elif "test_sword_complete" in test_script_path and "divine" not in test_script_path:
 		target_script = "res://scripts/weapons/sword_base.gd"
 	elif "test_bow_complete" in test_script_path and "crossbow" not in test_script_path:
 		target_script = "res://scripts/weapons/bow.gd"
@@ -3177,7 +3177,7 @@ func _mark_coverage_from_test(test_script_path: String, tested_funcs: Array) -> 
 		coverage_tracker.mark_functions_tested("res://scripts/projectiles/arrow.gd", tested_funcs)
 		coverage_tracker.mark_functions_tested("res://scripts/projectiles/player_arrow.gd", tested_funcs)
 		coverage_tracker.mark_functions_tested("res://scripts/projectiles/crossbow_bolt.gd", tested_funcs)
-		coverage_tracker.mark_functions_tested("res://scripts/projectiles/potion.gd", tested_funcs)
+		coverage_tracker.mark_functions_tested("res://scripts/projectiles/poison_dart.gd", tested_funcs)
 		return  # Already handled
 	elif "ui_complete" in test_script_path:
 		# UI test covers multiple scripts - mark all
@@ -3204,8 +3204,8 @@ func _mark_coverage_from_test(test_script_path: String, tested_funcs: Array) -> 
 	elif "weapon_slots_complete" in test_script_path:
 		target_script = "res://scripts/components/weapon_slots.gd"
 	# Weapons
-	elif "diamond_sword_complete" in test_script_path:
-		target_script = "res://scripts/weapons/diamond_sword.gd"
+	elif "divine_weapon_complete" in test_script_path:
+		target_script = "res://scripts/weapons/divine_weapon.gd"
 	elif "torch_complete" in test_script_path:
 		target_script = "res://scripts/weapons/torch.gd"
 	# Pickups
@@ -3228,7 +3228,7 @@ func _mark_coverage_from_test(test_script_path: String, tested_funcs: Array) -> 
 		coverage_tracker.mark_functions_tested("res://scripts/effects/damage_number.gd", tested_funcs)
 		coverage_tracker.mark_functions_tested("res://scripts/effects/screen_shake.gd", tested_funcs)
 		coverage_tracker.mark_functions_tested("res://scripts/effects/poison_cloud.gd", tested_funcs)
-		coverage_tracker.mark_functions_tested("res://scripts/effects/evoker_fang.gd", tested_funcs)
+		coverage_tracker.mark_functions_tested("res://scripts/effects/ground_spike.gd", tested_funcs)
 		return  # Already handled
 	# Systems
 	elif "systems_complete" in test_script_path:

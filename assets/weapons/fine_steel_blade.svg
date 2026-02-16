@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16" shape-rendering="crispEdges">
+  <!-- Fine Steel Blade (精钢刃) - High-quality dao - Replaces iron_sword -->
+
+  <!-- Blade (bright polished steel, wider) -->
+  <rect x="13" y="0" width="2" height="2" fill="#D0D0D0"/>
+  <rect x="12" y="1" width="2" height="2" fill="#E0E0E0"/>
+  <rect x="11" y="2" width="2" height="2" fill="#D0D0D0"/>
+  <rect x="10" y="3" width="3" height="2" fill="#E0E0E0"/>
+  <rect x="9" y="4" width="2" height="2" fill="#D0D0D0"/>
+  <rect x="8" y="5" width="3" height="2" fill="#E0E0E0"/>
+  <rect x="7" y="6" width="2" height="2" fill="#D0D0D0"/>
+  <rect x="6" y="7" width="2" height="2" fill="#E0E0E0"/>
+
+  <!-- Ornate guard (with blue accent) -->
+  <rect x="4" y="9" width="2" height="2" fill="#3366AA"/>
+  <rect x="6" y="9" width="2" height="2" fill="#3366AA"/>
+  <rect x="5" y="9" width="2" height="1" fill="#4488CC"/>
+
+  <!-- Handle (blue wrapped) -->
+  <rect x="3" y="11" width="2" height="2" fill="#3366AA"/>
+  <rect x="3" y="11" width="1" height="1" fill="#8B5A2B"/>
+  <rect x="4" y="12" width="1" height="1" fill="#8B5A2B"/>
+  <rect x="2" y="12" width="2" height="2" fill="#6B4423"/>
+
+  <!-- Pommel (steel) -->
+  <rect x="1" y="13" width="2" height="2" fill="#D0D0D0"/>
+</svg>

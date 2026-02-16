@@ -148,10 +148,10 @@ static func test_variant_deterministic() -> Dictionary:
 
 static func test_biome_names() -> Dictionary:
 	var passed = (
-		BiomeManagerClass.biome_name(BiomeManagerClass.Biome.PLAINS) == "Plains"
-		and BiomeManagerClass.biome_name(BiomeManagerClass.Biome.DESERT) == "Desert"
-		and BiomeManagerClass.biome_name(BiomeManagerClass.Biome.SNOW) == "Snow"
-		and BiomeManagerClass.biome_name(BiomeManagerClass.Biome.SWAMP) == "Swamp"
+		BiomeManagerClass.biome_name(BiomeManagerClass.Biome.PLAINS) == "Central Plains"
+		and BiomeManagerClass.biome_name(BiomeManagerClass.Biome.DESERT) == "Western Regions"
+		and BiomeManagerClass.biome_name(BiomeManagerClass.Biome.SNOW) == "Northern Frontier"
+		and BiomeManagerClass.biome_name(BiomeManagerClass.Biome.SWAMP) == "Southern Marshes"
 		and BiomeManagerClass.biome_name(99) == "Unknown"
 	)
 	return {"name": "biome_name() returns correct strings for all biomes", "passed": passed}

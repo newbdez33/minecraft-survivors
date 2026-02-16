@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16" shape-rendering="crispEdges">
+  <!-- War Lantern (战灯) - Chinese war lantern - Replaces torch -->
+
+  <!-- Handle/hook (top) -->
+  <rect x="7" y="0" width="2" height="1" fill="#DAA520"/>
+  <rect x="6" y="1" width="1" height="1" fill="#DAA520"/>
+  <rect x="9" y="1" width="1" height="1" fill="#DAA520"/>
+
+  <!-- Top frame (golden) -->
+  <rect x="5" y="2" width="6" height="1" fill="#DAA520"/>
+
+  <!-- Lantern body (red paper) -->
+  <rect x="4" y="3" width="8" height="8" fill="#CC3333"/>
+  <rect x="5" y="4" width="6" height="6" fill="#DD4444"/>
+
+  <!-- Inner warm glow -->
+  <rect x="6" y="5" width="4" height="4" fill="#FF8844"/>
+  <rect x="7" y="6" width="2" height="2" fill="#FFD700"/>
+
+  <!-- Side golden ribs -->
+  <rect x="4" y="3" width="1" height="8" fill="#DAA520"/>
+  <rect x="11" y="3" width="1" height="8" fill="#DAA520"/>
+
+  <!-- Bottom frame (golden) -->
+  <rect x="5" y="11" width="6" height="1" fill="#DAA520"/>
+
+  <!-- Bottom tassel -->
+  <rect x="7" y="12" width="2" height="1" fill="#CC3333"/>
+  <rect x="7" y="13" width="1" height="1" fill="#CC2222"/>
+  <rect x="8" y="14" width="1" height="1" fill="#CC2222"/>
+
+  <!-- Light glow effect -->
+  <rect x="3" y="5" width="1" height="4" fill="#FFD700" fill-opacity="0.3"/>
+  <rect x="12" y="5" width="1" height="4" fill="#FFD700" fill-opacity="0.3"/>
+</svg>
